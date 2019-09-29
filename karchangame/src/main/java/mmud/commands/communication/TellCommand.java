@@ -16,8 +16,8 @@
  */
 package mmud.commands.communication;
 
-import javax.naming.InitialContext;
-import javax.naming.NamingException;
+
+
 import mmud.commands.TargetCommand;
 import mmud.database.entities.characters.Person;
 import mmud.database.entities.characters.User;
@@ -25,6 +25,7 @@ import mmud.database.entities.game.DisplayInterface;
 import mmud.exceptions.MudException;
 import mmud.exceptions.PersonNotFoundException;
 import mmud.rest.services.PersonBean;
+import mmud.services.CommunicationService;
 
 /**
  *
@@ -61,10 +62,10 @@ public class TellCommand extends TargetCommand
 //                    + " is ignoring you fully.<BR>\r\n");
 //            return true;
 //        }
-        aUser.writeMessage(aUser, aTarget, "<b>%SNAME "
+        CommunicationService.getCommunicationService(aUser).writeMessage(aUser, aTarget, "<b>%SNAME "
                 + getCommType() + " [to %TNAME]</b> : "
                 + message + "<br/>\r\n");
-        aTarget.writeMessage(aUser, aTarget, "<b>%SNAME "
+        CommunicationService.getCommunicationService(aTarget).writeMessage(aUser, aTarget, "<b>%SNAME "
                 + getCommType().getPlural() + " [to %TNAME]</b> : "
                 + message + "<br/>\r\n");
         return aUser.getRoom();

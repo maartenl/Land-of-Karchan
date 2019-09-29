@@ -18,6 +18,7 @@ package mmud.commands.items;
 
 import mmud.Constants;
 import mmud.commands.NormalCommand;
+import mmud.database.OutputFormatter;
 import mmud.database.entities.characters.User;
 import mmud.database.entities.game.DisplayInterface;
 import mmud.exceptions.MudException;
@@ -39,7 +40,7 @@ public class InventoryCommand extends NormalCommand
         StringBuilder builder = new StringBuilder("<p>You have");
         Constants.addInventory(aUser.getItems(), builder);
         builder.append("You have ");
-        builder.append(aUser.getDescriptionOfMoney());
+        builder.append(OutputFormatter.getDescriptionOfMoney(aUser.getCopper()));
         builder.append(".<br/>\r\n");
 
         final String body = builder.toString();

@@ -35,6 +35,7 @@ import java.util.Comparator;
 import java.util.HashSet;
 import java.util.SortedSet;
 import java.util.TreeSet;
+import mmud.services.CommunicationService;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -83,7 +84,7 @@ public class RankChangeCommandTest extends MudTest
     DisplayInterface display = rankCommand.run("guildrank 1 Senior Deputy", karn);
     assertThat(display).isNotNull();
     assertThat(display.getBody()).isEqualTo("You are in a small room.");
-    String karnLog = karn.getLog(0);
+    String karnLog = CommunicationService.getCommunicationService(karn).getLog(0);
     assertThat(karnLog).isEqualTo("New rank created.<br />\r\n");
     // the important bit
     assertThat(karn.getGuild()).isEqualTo(deputy);
@@ -117,7 +118,7 @@ public class RankChangeCommandTest extends MudTest
     DisplayInterface display = rankCommand.run("guildrank 0 Deputy", karn);
     assertThat(display).isNotNull();
     assertThat(display.getBody()).isEqualTo("You are in a small room.");
-    String karnLog = karn.getLog(0);
+    String karnLog = CommunicationService.getCommunicationService(karn).getLog(0);
     assertThat(karnLog).isEqualTo("Existing rank updated.<br />\r\n");
     // the important bit
     assertThat(karn.getGuild()).isEqualTo(deputy);

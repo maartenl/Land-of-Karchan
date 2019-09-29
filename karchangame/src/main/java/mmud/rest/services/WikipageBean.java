@@ -41,6 +41,7 @@ import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import mmud.Constants;
+import mmud.database.RegularExpressions;
 import mmud.database.entities.characters.User;
 import mmud.exceptions.MudWebException;
 import mmud.rest.webentities.PrivateWikipage;
@@ -195,13 +196,13 @@ public class WikipageBean
         throw new MudWebException(name, "Parent wikipage does not have the same rights.", Response.Status.FORBIDDEN);
       }
     }
-    if (!Constants.regExpTest(Constants.COMMENTS_REGEXP, newWikipage.comment))
+    if (!RegularExpressions.regExpTest(RegularExpressions.COMMENTS_REGEXP, newWikipage.comment))
     {
-      throw new MudWebException(name, Constants.COMMENTS_MESSAGE, Response.Status.BAD_REQUEST);
+      throw new MudWebException(name, RegularExpressions.COMMENTS_MESSAGE, Response.Status.BAD_REQUEST);
     }
-    if (!Constants.regExpTest(Constants.WIKIPAGE_TITLE_REGEXP, newWikipage.title))
+    if (!RegularExpressions.regExpTest(RegularExpressions.WIKIPAGE_TITLE_REGEXP, newWikipage.title))
     {
-      throw new MudWebException(name, Constants.WIKIPAGE_TITLE_MESSAGE, Response.Status.BAD_REQUEST);
+      throw new MudWebException(name, RegularExpressions.WIKIPAGE_TITLE_MESSAGE, Response.Status.BAD_REQUEST);
     }
 
     Wikipage wikipage = new Wikipage();
@@ -280,18 +281,18 @@ public class WikipageBean
         {
           throw new MudWebException(null, "Parent wikipage does not have the same rights.", Response.Status.FORBIDDEN);
         }
-        if (!Constants.regExpTest(Constants.WIKIPAGE_TITLE_REGEXP, privateWikipage.parentTitle))
+        if (!RegularExpressions.regExpTest(RegularExpressions.WIKIPAGE_TITLE_REGEXP, privateWikipage.parentTitle))
         {
-          throw new MudWebException(name, Constants.WIKIPAGE_TITLE_MESSAGE, Response.Status.BAD_REQUEST);
+          throw new MudWebException(name, RegularExpressions.WIKIPAGE_TITLE_MESSAGE, Response.Status.BAD_REQUEST);
         }
       }
-      if (!Constants.regExpTest(Constants.COMMENTS_REGEXP, privateWikipage.comment))
+      if (!RegularExpressions.regExpTest(RegularExpressions.COMMENTS_REGEXP, privateWikipage.comment))
       {
-        throw new MudWebException(name, Constants.COMMENTS_MESSAGE, Response.Status.BAD_REQUEST);
+        throw new MudWebException(name, RegularExpressions.COMMENTS_MESSAGE, Response.Status.BAD_REQUEST);
       }
-      if (!Constants.regExpTest(Constants.WIKIPAGE_TITLE_REGEXP, privateWikipage.title))
+      if (!RegularExpressions.regExpTest(RegularExpressions.WIKIPAGE_TITLE_REGEXP, privateWikipage.title))
       {
-        throw new MudWebException(name, Constants.WIKIPAGE_TITLE_MESSAGE, Response.Status.BAD_REQUEST);
+        throw new MudWebException(name, RegularExpressions.WIKIPAGE_TITLE_MESSAGE, Response.Status.BAD_REQUEST);
       }
 
       WikipageHistory historie = new WikipageHistory(wikipage);

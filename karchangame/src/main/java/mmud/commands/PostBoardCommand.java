@@ -20,6 +20,7 @@ import mmud.database.entities.characters.User;
 import mmud.database.entities.game.Board;
 import mmud.database.entities.game.DisplayInterface;
 import mmud.exceptions.MudException;
+import mmud.services.CommunicationService;
 
 /**
  * Posts a message to a general board. Command is like "post public First post!" in the proper room.
@@ -42,11 +43,11 @@ public class PostBoardCommand extends NormalCommand
         Board board = aUser.getRoom().getBoard(myParsed[1]);
         if (board == null)
         {
-            aUser.writeMessage("Unable to post to board [" + myParsed[1] + "]. Board not found in this room.<br/>\r\n");
+            CommunicationService.getCommunicationService(aUser).writeMessage("Unable to post to board [" + myParsed[1] + "]. Board not found in this room.<br/>\r\n");
             return aUser.getRoom();
         }
         board.addMessage(aUser, myParsed[2]);
-        aUser.writeMessage("Message posted.<br/>\r\n");
+        CommunicationService.getCommunicationService(aUser).writeMessage("Message posted.<br/>\r\n");
         return aUser.getRoom();
     }
 }

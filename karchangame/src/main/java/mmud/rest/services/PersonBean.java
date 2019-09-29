@@ -28,6 +28,7 @@ import javax.persistence.Query;
 import mmud.database.entities.characters.Person;
 import mmud.database.entities.characters.User;
 import mmud.scripting.PersonsInterface;
+import mmud.services.CommunicationService;
 
 /**
  * @author maartenl
@@ -164,11 +165,11 @@ public class PersonBean implements PersonsInterface
    */
   public void sendWall(String message)
   {
-    getActivePlayers().stream().forEach(p -> p.writeMessage(message));
+    getActivePlayers().stream().forEach(p -> CommunicationService.getCommunicationService(p).writeMessage(message));
   }
 
   public void sendWall(String message, Predicate<User> predicate)
   {
-    getActivePlayers().stream().filter(predicate).forEach(p -> p.writeMessage(message));
+    getActivePlayers().stream().filter(predicate).forEach(p -> CommunicationService.getCommunicationService(p).writeMessage(message));
   }
 }

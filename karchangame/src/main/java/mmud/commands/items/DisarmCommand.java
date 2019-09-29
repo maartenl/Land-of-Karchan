@@ -21,6 +21,7 @@ import mmud.database.entities.characters.User;
 import mmud.database.entities.game.DisplayInterface;
 import mmud.database.enums.Wielding;
 import mmud.exceptions.MudException;
+import mmud.services.CommunicationService;
 
 /**
  * You start removing what you are carrying in either left hand, right hand
@@ -43,8 +44,8 @@ public class DisarmCommand extends NormalCommand
         {
             aUser.wield(null, position);
         }
-        aUser.getRoom().sendMessageExcl(aUser, "%SNAME disarms %SHIMHERself completely.<br/>\r\n");
-        aUser.writeMessage("You disarm yourself completely.<br/>\r\n");
+        CommunicationService.getCommunicationService(aUser.getRoom()).sendMessageExcl(aUser, "%SNAME disarms %SHIMHERself completely.<br/>\r\n");
+        CommunicationService.getCommunicationService(aUser).writeMessage("You disarm yourself completely.<br/>\r\n");
         return aUser.getRoom();
     }
 }

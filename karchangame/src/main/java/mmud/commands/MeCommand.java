@@ -19,25 +19,27 @@ package mmud.commands;
 import mmud.database.entities.characters.User;
 import mmud.database.entities.game.DisplayInterface;
 import mmud.exceptions.MudException;
+import mmud.services.CommunicationService;
 
 /**
  * The Me Command: "me closes the fridge.".
+ *
  * @author maartenl
  */
 public class MeCommand extends NormalCommand
 {
 
-	public MeCommand(String aRegExpr)
-	{
-		super(aRegExpr);
-	}
+  public MeCommand(String aRegExpr)
+  {
+    super(aRegExpr);
+  }
 
-	@Override
-	public DisplayInterface run(String command, User aUser) throws MudException
-	{
-		aUser.getRoom().sendMessage(aUser, aUser.getName() + " " + command.substring(3)
-				+ "<br/>\n");
-		return aUser.getRoom();
-	}
+  @Override
+  public DisplayInterface run(String command, User aUser) throws MudException
+  {
+    CommunicationService.getCommunicationService(aUser.getRoom()).sendMessage(aUser, aUser.getName() + " " + command.substring(3)
+            + "<br/>\n");
+    return aUser.getRoom();
+  }
 
 }

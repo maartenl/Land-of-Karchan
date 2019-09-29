@@ -22,6 +22,7 @@ import java.util.Set;
 import java.util.logging.Logger;
 import mmud.database.entities.characters.Person;
 import mmud.exceptions.PersonNotFoundException;
+import mmud.services.CommunicationService;
 
 /**
  *
@@ -215,12 +216,12 @@ public class Room
         {
             throw new PersonNotFoundException("Person " + targetname + " not found.");
         }
-        room.sendMessage(target, message);
+        CommunicationService.getCommunicationService(room).sendMessage(target, message);
     }
 
     public void sendMessage(String message)
     {
-        room.sendMessage(message);
+        CommunicationService.getCommunicationService(room).sendMessage(message);
     }
 
     public void sendMessageExcl(String targetname, String message)
@@ -230,7 +231,7 @@ public class Room
         {
             throw new PersonNotFoundException();
         }
-        room.sendMessageExcl(target, message);
+        CommunicationService.getCommunicationService(room).sendMessageExcl(target, message);
     }
 
     public Item[] getItems(Integer itemdefid)

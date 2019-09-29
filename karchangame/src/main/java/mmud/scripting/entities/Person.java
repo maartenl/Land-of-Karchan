@@ -16,12 +16,14 @@
  */
 package mmud.scripting.entities;
 
+import java.util.Objects;
 import mmud.database.entities.characters.User;
 import mmud.database.enums.Wearing;
 import mmud.database.enums.Wielding;
 import mmud.exceptions.MoneyException;
 import mmud.exceptions.PersonNotFoundException;
 import mmud.scripting.Items;
+import mmud.services.CommunicationService;
 
 /**
  * Scripting entity called Person.
@@ -118,7 +120,7 @@ public class Person
 
     public void personal(String string)
     {
-        person.writeMessage(string);
+        CommunicationService.getCommunicationService(person).writeMessage(string);
     }
 
     /**
@@ -132,7 +134,7 @@ public class Person
         {
             throw new PersonNotFoundException();
         }
-        person.getRoom().sendMessage(person, toperson.person, message);
+        CommunicationService.getCommunicationService(person.getRoom()).sendMessage(person, toperson.person, message);
     }
 
     /**
@@ -141,7 +143,7 @@ public class Person
      */
     public void sendMessage(String message)
     {
-        person.getRoom().sendMessage(person, message);
+        CommunicationService.getCommunicationService(person.getRoom()).sendMessage(person, message);
     }
 
     /**
@@ -152,7 +154,7 @@ public class Person
      */
     public void sendMessageExcl(String message)
     {
-        person.getRoom().sendMessageExcl(person, message);
+        CommunicationService.getCommunicationService(person.getRoom()).sendMessageExcl(person, message);
     }
 
     /**
@@ -163,11 +165,11 @@ public class Person
      */
     public void sendMessageExcl(Person toperson, String message)
     {
-        if (toperson == null || toperson.getRoom().getId() != this.getRoom().getId())
+        if (toperson == null || !Objects.equals(toperson.getRoom().getId(), this.getRoom().getId()))
         {
             throw new PersonNotFoundException();
         }
-        person.getRoom().sendMessageExcl(person, toperson.person, message);
+        CommunicationService.getCommunicationService(person.getRoom()).sendMessageExcl(person, toperson.person, message);
     }
     //item addItem(integer)
     //removeItem(Item)

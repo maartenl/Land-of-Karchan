@@ -19,8 +19,8 @@ package mmud.commands.items;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import javax.naming.InitialContext;
-import javax.naming.NamingException;
+
+
 import mmud.Constants;
 import mmud.commands.*;
 import mmud.database.entities.characters.User;
@@ -29,6 +29,8 @@ import mmud.database.entities.items.Item;
 import mmud.exceptions.MudException;
 import mmud.exceptions.ParseException;
 import mmud.rest.services.ItemBean;
+import mmud.services.CommunicationService;
+import mmud.services.PersonCommunicationService;
 
 /**
  * Put an item into a container: "put ring in sack". Requirements for it to be
@@ -65,9 +67,10 @@ public class PutCommand extends NormalCommand
         } catch (NumberFormatException e)
         {// do nothing here, we assume we need to put only one item.
         }
+      final PersonCommunicationService communicationService = CommunicationService.getCommunicationService(aUser);
         if (amount <= 0)
         {
-            aUser.writeMessage("That is an illegal amount.<br/>\n");
+            communicationService.writeMessage("That is an illegal amount.<br/>\n");
             return aUser.getRoom();
         }
         int pos = 0;
@@ -96,30 +99,30 @@ public class PutCommand extends NormalCommand
         }
         if (containerFound.isEmpty())
         {
-            aUser.writeMessage("No containers found that match that description.<br/>\n");
+            communicationService.writeMessage("No containers found that match that description.<br/>\n");
             return aUser.getRoom();
         }
         Item container = containerFound.get(0);
         if (!container.isContainer())
         {
-            aUser.writeMessage(container.getDescription() + " is not a container.<br/>\n");
+            communicationService.writeMessage(container.getDescription() + " is not a container.<br/>\n");
             return aUser.getRoom();
         }
         if (!container.isOpen())
         {
-            aUser.writeMessage(container.getDescription() + " is closed.<br/>\n");
+            communicationService.writeMessage(container.getDescription() + " is closed.<br/>\n");
             return aUser.getRoom();
         }
         // find the item on ourselves
         List<Item> itemsFound = aUser.findItems(itemDescription);
         if (itemsFound.isEmpty())
         {
-            aUser.writeMessage("You don't have that.<br/>\n");
+            communicationService.writeMessage("You don't have that.<br/>\n");
             return aUser.getRoom();
         }
         if (itemsFound.size() < amount)
         {
-            aUser.writeMessage("You do not have that many items in your inventory.<br/>\r\n");
+            communicationService.writeMessage("You do not have that many items in your inventory.<br/>\r\n");
             return aUser.getRoom();
         }
         boolean put = false;
@@ -133,7 +136,7 @@ public class PutCommand extends NormalCommand
                 {
                     continue;
                 }
-                aUser.getRoom().sendMessage(aUser, "%SNAME put%VERB2 " + item.getDescription() + " in " + container.getDescription() + ".<br/>\r\n");
+                CommunicationService.getCommunicationService(aUser.getRoom()).sendMessage(aUser, "%SNAME put%VERB2 " + item.getDescription() + " in " + container.getDescription() + ".<br/>\r\n");
                 put = true;
                 amount--;
                 if (amount == 0)
@@ -144,10 +147,10 @@ public class PutCommand extends NormalCommand
         }
         if (!put)
         {
-            aUser.writeMessage("You did not put anything.<br/>");
+            communicationService.writeMessage("You did not put anything.<br/>");
         } else
         {
-            aUser.writeMessage("You put some of your items.<br/>\r\n");
+            communicationService.writeMessage("You put some of your items.<br/>\r\n");
         }
 
         return aUser.getRoom();

@@ -20,6 +20,7 @@ import mmud.database.entities.characters.User;
 import mmud.database.entities.game.Board;
 import mmud.database.entities.game.DisplayInterface;
 import mmud.exceptions.MudException;
+import mmud.services.CommunicationService;
 
 /**
  * Reads a general board. Command is like "readboard public" in the proper room.
@@ -42,7 +43,7 @@ public class ReadBoardCommand extends NormalCommand
         Board board = aUser.getRoom().getBoard(myParsed[1]);
         if (board == null)
         {
-            aUser.writeMessage("Unable to find board [" + myParsed[1] + "] in this room. Board not found in this room.<br/>\r\n");
+            CommunicationService.getCommunicationService(aUser).writeMessage("Unable to find board [" + myParsed[1] + "] in this room. Board not found in this room.<br/>\r\n");
             return aUser.getRoom();
         }
         return board;

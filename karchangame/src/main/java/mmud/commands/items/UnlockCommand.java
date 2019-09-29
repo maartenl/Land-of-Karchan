@@ -19,8 +19,8 @@ package mmud.commands.items;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import javax.naming.InitialContext;
-import javax.naming.NamingException;
+
+
 import mmud.Constants;
 import mmud.commands.*;
 import mmud.database.entities.characters.User;
@@ -29,6 +29,8 @@ import mmud.database.entities.items.Item;
 import mmud.exceptions.MudException;
 import mmud.exceptions.ParseException;
 import mmud.rest.services.ItemBean;
+import mmud.services.CommunicationService;
+import mmud.services.PersonCommunicationService;
 
 /**
  * Unlocks a container with a key: "unlock chest with key". Requirements for it
@@ -84,31 +86,32 @@ public class UnlockCommand extends NormalCommand
             // find the item in the room
             containerFound = aUser.getRoom().findItems(containerDescription);
         }
+      final PersonCommunicationService communicationService = CommunicationService.getCommunicationService(aUser);
         if (containerFound.isEmpty())
         {
-            aUser.writeMessage("No containers found that match that description.<br/>\n");
+            communicationService.writeMessage("No containers found that match that description.<br/>\n");
             return aUser.getRoom();
         }
         Item container = containerFound.get(0);
         if (!container.isContainer())
         {
-            aUser.writeMessage(container.getDescription() + " is not a container.<br/>\n");
+            communicationService.writeMessage(container.getDescription() + " is not a container.<br/>\n");
             return aUser.getRoom();
         }
         if (container.isOpen())
         {
-            aUser.writeMessage(container.getDescription() + " is open.<br/>\n");
+            communicationService.writeMessage(container.getDescription() + " is open.<br/>\n");
             return aUser.getRoom();
         }
         if (!container.hasLock())
         {
-            aUser.writeMessage(container.getDescription()
+            communicationService.writeMessage(container.getDescription()
                     + " does not have a lock.<br/>\r\n");
             return aUser.getRoom();
         }
         if (!container.isLocked())
         {
-            aUser.writeMessage(container.getDescription()
+            communicationService.writeMessage(container.getDescription()
                     + " is already unlocked.<br/>\r\n");
             return aUser.getRoom();
         }
@@ -116,7 +119,7 @@ public class UnlockCommand extends NormalCommand
         List<Item> itemsFound = aUser.findItems(itemDescription);
         if (itemsFound.isEmpty())
         {
-            aUser.writeMessage("You don't have that.<br/>\n");
+            communicationService.writeMessage("You don't have that.<br/>\n");
             return aUser.getRoom();
         }
         for (Item key : itemsFound)
@@ -125,13 +128,13 @@ public class UnlockCommand extends NormalCommand
             {
                 // item is not used.
                 container.unlock();
-                aUser.getRoom().sendMessage(aUser, "%SNAME unlock%VERB2 "
+                CommunicationService.getCommunicationService(aUser.getRoom()).sendMessage(aUser, "%SNAME unlock%VERB2 "
                         + container.getDescription() + " with "
                         + key.getDescription() + ".<br/>\r\n");
                 return aUser.getRoom();
             }
         }
-        aUser.writeMessage("It doesn't fit in the lock.<br/>");
+        communicationService.writeMessage("It doesn't fit in the lock.<br/>");
         return aUser.getRoom();
     }
 }

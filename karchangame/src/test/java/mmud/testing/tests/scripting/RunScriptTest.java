@@ -75,49 +75,6 @@ public class RunScriptTest
         }
 
         @Override
-        public void sendMessage(Person aPerson, String aMessage) throws MudException
-        {
-            for (Person myChar : persons)
-            {
-                myChar.writeMessage(aPerson, aMessage);
-            }
-        }
-
-        @Override
-        public void sendMessage(Person aPerson, Person aSecondPerson,
-                String aMessage) throws MudException
-        {
-            for (Person myChar : persons)
-            {
-                myChar.writeMessage(aPerson, aSecondPerson, aMessage);
-            }
-        }
-
-        @Override
-        public void sendMessage(String aMessage)
-                throws MudException
-        {
-            for (Person myChar : persons)
-            {
-                myChar.writeMessage(aMessage);
-            }
-        }
-
-        @Override
-        public void sendMessageExcl(Person aPerson, Person aSecondPerson,
-                String aMessage) throws MudException
-        {
-            for (Person myChar : persons)
-            {
-                if (myChar != aPerson
-                        && myChar != aSecondPerson)
-                {
-                    myChar.writeMessage(aPerson, aSecondPerson, aMessage);
-                }
-            }
-        }
-
-        @Override
         public Person retrievePerson(String aName)
         {
             for (Person person : persons)

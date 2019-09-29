@@ -22,6 +22,7 @@ import java.util.GregorianCalendar;
 import mmud.database.entities.characters.User;
 import mmud.database.entities.game.DisplayInterface;
 import mmud.exceptions.MudException;
+import mmud.services.CommunicationService;
 
 /**
  * The Heehaw Command: "heehaw". Makes you go "Heeehaw!". It's a punishment
@@ -49,18 +50,18 @@ public class HeehawCommand extends NormalCommand
       LocalDateTime tenSecondsAgo = LocalDateTime.now().plusSeconds(-10L);
         if (tenSecondsAgo.isBefore(aUser.getLastcommand()))
         {
-            aUser.writeMessage("You cannot say 'Heehaw' that fast! You will get tongue tied!<br/>\r\n");
+            CommunicationService.getCommunicationService(aUser).writeMessage("You cannot say 'Heehaw' that fast! You will get tongue tied!<br/>\r\n");
             return aUser.getRoom();
         }
-        aUser.getRoom().sendMessage(aUser, "A jackass called " + aUser.getName() + " says \"Heeehaw!\""
+        CommunicationService.getCommunicationService(aUser.getRoom()).sendMessage(aUser, "A jackass called " + aUser.getName() + " says \"Heeehaw!\""
                 + ".<br/>\n");
         aUser.lessJackassing();
         if (aUser.getJackassing() == 0)
         {
-            aUser.getRoom().sendMessage(aUser, "A jackass called " + aUser.getName() + " magically changes back to a " + aUser.getRace() + ".<br/>\n");
+            CommunicationService.getCommunicationService(aUser.getRoom()).sendMessage(aUser, "A jackass called " + aUser.getName() + " magically changes back to a " + aUser.getRace() + ".<br/>\n");
         } else
         {
-            aUser.writeMessage("You feel the need to say 'Heehaw' just " + aUser.getJackassing() + " times.<br/>\r\n");
+            CommunicationService.getCommunicationService(aUser).writeMessage("You feel the need to say 'Heehaw' just " + aUser.getJackassing() + " times.<br/>\r\n");
         }
         return aUser.getRoom();
     }

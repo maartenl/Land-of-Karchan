@@ -19,6 +19,7 @@ package mmud.commands;
 import mmud.database.entities.characters.User;
 import mmud.database.entities.game.DisplayInterface;
 import mmud.exceptions.MudException;
+import mmud.services.CommunicationService;
 
 /**
  * Makes your character fall asleep: "sleep".
@@ -37,11 +38,11 @@ public class SleepCommand extends NormalCommand
     {
         if (aUser.getSleep())
         {
-            aUser.writeMessage("You already are asleep.<br/>\n");
+            CommunicationService.getCommunicationService(aUser).writeMessage("You already are asleep.<br/>\n");
         } else
         {
             aUser.setSleep(true);
-            aUser.getRoom().sendMessage(aUser, "%SNAME go%VERB1 to sleep.<br/>\n");
+            CommunicationService.getCommunicationService(aUser.getRoom()).sendMessage(aUser, "%SNAME go%VERB1 to sleep.<br/>\n");
         }
         return aUser.getRoom();
     }

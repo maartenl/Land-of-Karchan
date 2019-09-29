@@ -21,6 +21,7 @@ import mmud.database.entities.characters.User;
 import mmud.database.entities.game.DisplayInterface;
 import mmud.database.entities.game.Room;
 import mmud.exceptions.MudException;
+import mmud.services.CommunicationService;
 
 /**
  * Shout to someone "shout Help!". Or just shout in general. The interesting
@@ -67,27 +68,27 @@ public class ShoutCommand extends CommunicationCommand
         Room room = aUser.getRoom();
         if (room.getSouth() != null)
         {
-            room.getSouth().sendMessage(aUser, "Someone shouts : " + message + ".<BR>\r\n");
+            CommunicationService.getCommunicationService(room.getSouth()).sendMessage(aUser, "Someone shouts : " + message + ".<BR>\r\n");
         }
         if (room.getNorth() != null)
         {
-            room.getNorth().sendMessage(aUser, "Someone shouts : " + message + ".<BR>\r\n");
+          CommunicationService.getCommunicationService(            room.getNorth()).sendMessage(aUser, "Someone shouts : " + message + ".<BR>\r\n");
         }
         if (room.getWest() != null)
         {
-            room.getWest().sendMessage(aUser, "Someone shouts : " + message + ".<BR>\r\n");
+            CommunicationService.getCommunicationService(room.getWest()).sendMessage(aUser, "Someone shouts : " + message + ".<BR>\r\n");
         }
         if (room.getEast() != null)
         {
-            room.getEast().sendMessage(aUser, "Someone shouts : " + message + ".<BR>\r\n");
+            CommunicationService.getCommunicationService(room.getEast()).sendMessage(aUser, "Someone shouts : " + message + ".<BR>\r\n");
         }
         if (room.getUp() != null)
         {
-            room.getUp().sendMessage(aUser, "Someone shouts : " + message + ".<BR>\r\n");
+            CommunicationService.getCommunicationService(room.getUp()).sendMessage(aUser, "Someone shouts : " + message + ".<BR>\r\n");
         }
         if (room.getDown() != null)
         {
-            room.getDown().sendMessage(aUser, "Someone shouts : " + message + ".<BR>\r\n");
+            CommunicationService.getCommunicationService(room.getDown()).sendMessage(aUser, "Someone shouts : " + message + ".<BR>\r\n");
         }
     }
 

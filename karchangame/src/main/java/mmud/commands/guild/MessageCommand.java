@@ -20,6 +20,7 @@ import mmud.commands.GuildCommand;
 import mmud.database.entities.characters.User;
 import mmud.database.entities.game.DisplayInterface;
 import mmud.exceptions.MudException;
+import mmud.services.CommunicationService;
 
 /**
  * Say something in guildchat : "guild Good morning, everyone."
@@ -37,7 +38,7 @@ public class MessageCommand extends GuildCommand
     public DisplayInterface run(String command, User aUser) throws MudException
     {
         String message = command.substring("guild".length() + 1).trim();
-        aUser.getGuild().sendMessage(aUser, message);
+        CommunicationService.getCommunicationService(aUser.getGuild()).sendMessage(aUser, message);
         return aUser.getRoom();
     }
 }

@@ -25,6 +25,8 @@ import mmud.database.entities.game.DisplayInterface;
 import mmud.database.entities.items.Item;
 import mmud.database.enums.Wielding;
 import mmud.exceptions.MudException;
+import mmud.services.CommunicationService;
+import mmud.services.PersonCommunicationService;
 
 /**
  * Starts you wielding an item. Syntax: wield &lt;item&gt; with
@@ -49,15 +51,16 @@ public class WieldCommand extends NormalCommand
         // user
         String pos = parsed.get(parsed.size() - 1);
         Wielding position = Wielding.parse(pos);
+      final PersonCommunicationService communicationService = CommunicationService.getCommunicationService(aUser);
         if (position == null)
         {
-            aUser.writeMessage("Cannot wield something there.<br/>\r\n");
+            communicationService.writeMessage("Cannot wield something there.<br/>\r\n");
             return aUser.getRoom();
         }
         Item item = aUser.wields(position);
         if (item != null)
         {
-            aUser.writeMessage("You are already wielding something there.<br/>\r\n");
+            communicationService.writeMessage("You are already wielding something there.<br/>\r\n");
             return aUser.getRoom();
         }
         // find the item on ourselves
@@ -66,22 +69,22 @@ public class WieldCommand extends NormalCommand
         List<Item> itemsFound = aUser.findItems(parsed);
         if (itemsFound.isEmpty())
         {
-            aUser.writeMessage("You don't have that.<br/>\n");
+            communicationService.writeMessage("You don't have that.<br/>\n");
             return aUser.getRoom();
         }
         item = itemsFound.get(0);
         if (!item.isWieldable(position))
         {
-            aUser.writeMessage("You cannot wield that there.<BR>\r\n");
+            communicationService.writeMessage("You cannot wield that there.<BR>\r\n");
             return aUser.getRoom();
         }
         if (!aUser.unused(item))
         {
-            aUser.writeMessage("The item is already being used.<BR>\r\n");
+            communicationService.writeMessage("The item is already being used.<BR>\r\n");
             return aUser.getRoom();
         }
         aUser.wield(item, position);
-        aUser.getRoom().sendMessage(aUser, "%SNAME wield%VERB2 "
+        CommunicationService.getCommunicationService(aUser.getRoom()).sendMessage(aUser, "%SNAME wield%VERB2 "
                 + item.getDescription() + " " + position.toString()
                 + ".<br/>\r\n");
         return aUser.getRoom();

@@ -20,6 +20,7 @@ import mmud.database.entities.characters.Person;
 import mmud.database.entities.characters.User;
 import mmud.database.entities.game.DisplayInterface;
 import mmud.exceptions.MudException;
+import mmud.services.CommunicationService;
 
 /**
  * Whisper something : "whisper Anybody here?"
@@ -58,11 +59,11 @@ public class WhisperCommand extends CommunicationCommand
 //            return true;
 //        }
 
-        aUser.writeMessage("<B>You whisper [to " + aTarget.getName()
+        CommunicationService.getCommunicationService(aUser).writeMessage("<B>You whisper [to " + aTarget.getName()
                 + "]</B> : " + message + "<BR>\r\n");
-        aTarget.writeMessage("<B>" + aUser.getName()
+        CommunicationService.getCommunicationService(aTarget).writeMessage("<B>" + aUser.getName()
                 + " whispers [to you]</B> : " + message + "<BR>\r\n");
-        aUser.getRoom().sendMessageExcl(
+        CommunicationService.getCommunicationService(aUser.getRoom()).sendMessageExcl(
                 aUser,
                 aTarget,
                 "%SNAME %SISARE whispering something to %TNAME, but you cannot hear what.<BR>\r\n");

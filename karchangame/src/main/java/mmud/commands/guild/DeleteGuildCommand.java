@@ -22,6 +22,7 @@ import mmud.database.entities.game.DisplayInterface;
 import mmud.database.entities.game.Guild;
 import mmud.exceptions.MudException;
 import mmud.rest.services.LogBean;
+import mmud.services.CommunicationService;
 
 /**
  * Deletes a guild.
@@ -45,14 +46,14 @@ public class DeleteGuildCommand extends GuildMasterCommand
     Guild guild = aUser.getGuild();
     if (guild == null)
     {
-      aUser.writeMessage("You are not a member of a guild.<br/>\n");
+      CommunicationService.getCommunicationService(aUser).writeMessage("You are not a member of a guild.<br/>\n");
       return aUser.getRoom();
     }
     LogBean logBean = getLogBean();
     String guildName = guild.getName();
     getGuildBean().deleteGuild(aUser.getName());
     aUser.setGuild(null);
-    aUser.writeMessage("Guild " + guildName + " deleted.<br/ >\r\n");
+    CommunicationService.getCommunicationService(aUser).writeMessage("Guild " + guildName + " deleted.<br/ >\r\n");
     logBean.writeLog(aUser, " guild " + guildName + " deleted");
     return aUser.getRoom();
   }

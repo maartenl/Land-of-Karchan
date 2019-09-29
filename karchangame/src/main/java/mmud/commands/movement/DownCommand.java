@@ -21,6 +21,7 @@ import mmud.database.entities.characters.User;
 import mmud.database.entities.game.DisplayInterface;
 import mmud.database.entities.game.Room;
 import mmud.exceptions.MudException;
+import mmud.services.CommunicationService;
 
 /**
  * Go down below: "down". This is the same command as the command "go down",
@@ -41,12 +42,12 @@ public class DownCommand extends NormalCommand
         Room myRoom = aUser.getRoom();
         if (myRoom.getDown() != null)
         {
-            myRoom.sendMessageExcl(aUser, "%SNAME leave%VERB2 down.<BR>\r\n");
+            CommunicationService.getCommunicationService(myRoom).sendMessageExcl(aUser, "%SNAME leave%VERB2 down.<BR>\r\n");
             aUser.setRoom(myRoom.getDown());
-            aUser.getRoom().sendMessageExcl(aUser, "%SNAME appear%VERB2.<BR>\r\n");
+            CommunicationService.getCommunicationService(aUser.getRoom()).sendMessageExcl(aUser, "%SNAME appear%VERB2.<BR>\r\n");
         } else
         {
-            aUser.writeMessage("You cannot go down.<BR>\r\n");
+            CommunicationService.getCommunicationService(aUser).writeMessage("You cannot go down.<BR>\r\n");
         }
         return aUser.getRoom();
     }

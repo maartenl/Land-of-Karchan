@@ -19,22 +19,24 @@ package mmud.commands.items;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import javax.naming.InitialContext;
-import javax.naming.NamingException;
+
+
 import mmud.commands.*;
 import mmud.database.entities.characters.User;
 import mmud.database.entities.game.DisplayInterface;
 import mmud.database.entities.items.Item;
 import mmud.exceptions.MudException;
 import mmud.rest.services.ItemBean;
+import mmud.services.CommunicationService;
+import mmud.services.PersonCommunicationService;
 
 /**
- * Drop an item onto the floor: "drop bucket".
- * This command will make a <I>best effort</I> regarding dropping of the
- * requested items. This means that, if you request 5 items, and there are 5
- * or more items in your inventory, this method will attempt to aquire 5
- * items. It is possible that not all items are available, in which case you
- * could conceivably only receive 3 items for instance.
+ * Drop an item onto the floor: "drop bucket". This command will make a <I>best
+ * effort</I> regarding dropping of the requested items. This means that, if you
+ * request 5 items, and there are 5 or more items in your inventory, this method
+ * will attempt to aquire 5 items. It is possible that not all items are
+ * available, in which case you could conceivably only receive 3 items for
+ * instance.
  *
  * @see GetCommand
  * @author maartenl
@@ -42,68 +44,69 @@ import mmud.rest.services.ItemBean;
 public class DropCommand extends NormalCommand
 {
 
-    public DropCommand(String aRegExpr)
-    {
-        super(aRegExpr);
-    }
+  public DropCommand(String aRegExpr)
+  {
+    super(aRegExpr);
+  }
 
-    @Override
-    public DisplayInterface run(String command, User aUser) throws MudException
+  @Override
+  public DisplayInterface run(String command, User aUser) throws MudException
+  {
+    PersonCommunicationService communicationService = CommunicationService.getCommunicationService(aUser);
+    List<String> parsed = new ArrayList<>(Arrays.asList(parseCommand(command)));
+    parsed.remove(0); // remove "drop"
+    int amount = 1;
+    try
     {
-        List<String> parsed = new ArrayList<>(Arrays.asList(parseCommand(command)));
-        parsed.remove(0); // remove "drop"
-        int amount = 1;
-        try
-        {
-            amount = Integer.parseInt(parsed.get(0));
-            parsed.remove(0);
-        } catch (NumberFormatException e)
-        {// do nothing here, we assume we need to drop only one item.
-        }
-        if (amount <= 0)
-        {
-            aUser.writeMessage("That is an illegal amount.<br/>\n");
-            return aUser.getRoom();
-        }
-        // find the item on ourselves
-        List<Item> itemsFound = aUser.findItems(parsed);
-        if (itemsFound.isEmpty())
-        {
-            aUser.writeMessage("You don't have that.<br/>\n");
-            return aUser.getRoom();
-        }
-        if (itemsFound.size() < amount)
-        {
-            aUser.writeMessage("You do not have that many items in your inventory.<br/>\r\n");
-            return aUser.getRoom();
-        }
-        boolean dropped = false;
-        ItemBean itemBean = getItemBean();
-        for (Item item : itemsFound)
-        {
-            if (aUser.unused(item) && item.isDroppable())
-            {
-                // item is not used.
-                if (!itemBean.drop(item, aUser))
-                {
-                    continue;
-                }
-                aUser.getRoom().sendMessage(aUser, "%SNAME drop%VERB2 " + item.getDescription() + ".<br/>\r\n");
-                dropped = true;
-                amount--;
-                if (amount == 0)
-                {
-                    return aUser.getRoom();
-                }
-            }
-        }
-        if (!dropped)
-        {
-            aUser.writeMessage("You did not drop anything.<br/>");
-        } else
-        {
-            aUser.writeMessage("You dropped some of the items.<br/>\r\n");
-        }
-        return aUser.getRoom();
+      amount = Integer.parseInt(parsed.get(0));
+      parsed.remove(0);
+    } catch (NumberFormatException e)
+    {// do nothing here, we assume we need to drop only one item.
     }
+    if (amount <= 0)
+    {
+      communicationService.writeMessage("That is an illegal amount.<br/>\n");
+      return aUser.getRoom();
+    }
+    // find the item on ourselves
+    List<Item> itemsFound = aUser.findItems(parsed);
+    if (itemsFound.isEmpty())
+    {
+      communicationService.writeMessage("You don't have that.<br/>\n");
+      return aUser.getRoom();
+    }
+    if (itemsFound.size() < amount)
+    {
+      communicationService.writeMessage("You do not have that many items in your inventory.<br/>\r\n");
+      return aUser.getRoom();
+    }
+    boolean dropped = false;
+    ItemBean itemBean = getItemBean();
+    for (Item item : itemsFound)
+    {
+      if (aUser.unused(item) && item.isDroppable())
+      {
+        // item is not used.
+        if (!itemBean.drop(item, aUser))
+        {
+          continue;
+        }
+        CommunicationService.getCommunicationService(aUser.getRoom()).sendMessage(aUser, "%SNAME drop%VERB2 " + item.getDescription() + ".<br/>\r\n");
+        dropped = true;
+        amount--;
+        if (amount == 0)
+        {
+          return aUser.getRoom();
+        }
+      }
+    }
+    if (!dropped)
+    {
+      communicationService.writeMessage("You did not drop anything.<br/>");
+    } else
+    {
+      communicationService.writeMessage("You dropped some of the items.<br/>\r\n");
+    }
+    return aUser.getRoom();
+  }
 }

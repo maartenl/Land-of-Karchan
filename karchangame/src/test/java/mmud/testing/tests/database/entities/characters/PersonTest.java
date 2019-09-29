@@ -21,6 +21,7 @@ import java.io.IOException;
 import mmud.database.entities.characters.Person;
 import mmud.database.entities.characters.User;
 import mmud.exceptions.MudException;
+import mmud.services.CommunicationService;
 import mockit.Delegate;
 import mockit.Mocked;
 import mockit.NonStrictExpectations;
@@ -96,7 +97,7 @@ public class PersonTest
         // Unit under test is exercised.
         try
         {
-            person.writeMessage("Hello, world!");
+            CommunicationService.getCommunicationService(person).writeMessage("Hello, world!");
         } catch (MudException ex)
         {
             fail("unexpected exception", ex);
@@ -132,7 +133,7 @@ public class PersonTest
         // Unit under test is exercised.
         try
         {
-            person.writeMessage("Hello,<try me> world!");
+            CommunicationService.getCommunicationService(person).writeMessage("Hello,<try me> world!");
         } catch (MudException ex)
         {
             fail("unexpected exception", ex);
@@ -169,7 +170,7 @@ public class PersonTest
         // Unit under test is exercised.
         try
         {
-            person.writeMessage("Hello,<try me> wor<or>ld<this too>!");
+            CommunicationService.getCommunicationService(person).writeMessage("Hello,<try me> wor<or>ld<this too>!");
         } catch (MudException ex)
         {
             fail("unexpected exception", ex);
@@ -206,7 +207,7 @@ public class PersonTest
         // Unit under test is exercised.
         try
         {
-            person.writeMessage("hello,<try me world!");
+            CommunicationService.getCommunicationService(person).writeMessage("hello,<try me world!");
         } catch (MudException ex)
         {
             fail("unexpected exception", ex);

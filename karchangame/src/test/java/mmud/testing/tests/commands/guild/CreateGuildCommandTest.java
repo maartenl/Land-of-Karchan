@@ -34,6 +34,7 @@ import org.testng.annotations.Test;
 import java.io.File;
 import java.io.PrintWriter;
 import java.util.HashSet;
+import mmud.services.CommunicationService;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -77,7 +78,7 @@ public class CreateGuildCommandTest extends MudTest
     DisplayInterface display = rankCommand.run("createguild deputies The Royal Club Of Deputies", karn);
     assertThat(display).isNotNull();
     assertThat(display.getBody()).isEqualTo("You are in a small room.");
-    String karnLog = karn.getLog(0);
+    String karnLog = CommunicationService.getCommunicationService(karn).getLog(0);
     assertThat(karnLog).isEqualTo("Guild deputies created.<br />\r\n");
     // the important bit
     assertThat(karn.getGuild()).isNotNull();
@@ -101,7 +102,7 @@ public class CreateGuildCommandTest extends MudTest
     DisplayInterface display = rankCommand.run("createguild deputies The Royal Club Of Deputies", karn);
     assertThat(display).isNotNull();
     assertThat(display.getBody()).isEqualTo("You are in a small room.");
-    String karnLog = karn.getLog(0);
+    String karnLog = CommunicationService.getCommunicationService(karn).getLog(0);
 
     assertThat(karnLog).isEqualTo("You are a member of a guild, and can therefore not start a new guild.<br />\n");
     // the important bit

@@ -16,15 +16,17 @@
  */
 package mmud.commands.guild;
 
-import javax.naming.InitialContext;
-import javax.naming.NamingException;
-import mmud.Attributes;
+
+
+import mmud.database.Attributes;
 import mmud.commands.GuildMasterCommand;
 import mmud.database.entities.characters.User;
 import mmud.database.entities.game.DisplayInterface;
 import mmud.exceptions.MudException;
 import mmud.rest.services.LogBean;
 import mmud.rest.services.PersonBean;
+import mmud.services.CommunicationService;
+import mmud.services.PersonCommunicationService;
 
 /**
  * Makes you, as guildmaster, reject a person wanting to join your guild. There
@@ -41,46 +43,48 @@ import mmud.rest.services.PersonBean;
 public class RejectCommand extends GuildMasterCommand
 {
 
-    public RejectCommand(String aRegExpr)
-    {
-        super(aRegExpr);
-    }
+  public RejectCommand(String aRegExpr)
+  {
+    super(aRegExpr);
+  }
 
-    @Override
-    public DisplayInterface run(String command, User aUser) throws MudException
+  @Override
+  public DisplayInterface run(String command, User aUser) throws MudException
+  {
+    PersonCommunicationService communicationService = CommunicationService.getCommunicationService(aUser);
+
+    // TODO : similar to acceptcommand, refactor?
+    PersonBean personBean = getPersonBean();
+    LogBean logBean = getLogBean();
+    String[] myParsed = parseCommand(command);
+    User potentialGuildmember = personBean.getUser(myParsed[1]);
+    if (potentialGuildmember == null)
     {
-        // TODO : similar to acceptcommand, refactor?
-        PersonBean personBean = getPersonBean();
-        LogBean logBean = getLogBean();
-        String[] myParsed = parseCommand(command);
-        User potentialGuildmember = personBean.getUser(myParsed[1]);
-        if (potentialGuildmember == null)
-        {
-            aUser.writeMessage("Cannot find that person.<BR>\r\n");
-            return aUser.getRoom();
-        }
-        if (!potentialGuildmember.verifyAttribute(Attributes.GUILDWISH, aUser.getGuild().getName()))
-        {
-            aUser.writeMessage(potentialGuildmember.getName()
-                    + " does not wish to join your guild.<BR>\r\n");
-            return aUser.getRoom();
-        }
-        if (potentialGuildmember.getGuild() != null)
-        {
-            throw new MudException(
-                    "error occurred, a person is a member of a guild, yet has a guildwish parameter!");
-        }
-        potentialGuildmember.removeAttribute(Attributes.GUILDWISH);
-        logBean.writeLog(aUser, "denied " + potentialGuildmember.getName()
-                + " membership into guild " + aUser.getGuild().getName());
-        aUser.writeMessage("You have denied " + potentialGuildmember.getName()
-                + " admittance to your guild.<BR>\r\n");
-        if (potentialGuildmember.isActive())
-        {
-            potentialGuildmember.writeMessage("You have been denied membership of guild <I>"
-                    + aUser.getGuild().getTitle() + "</I>.<BR>\r\n");
-        }
-        return aUser.getRoom();
+      communicationService.writeMessage("Cannot find that person.<BR>\r\n");
+      return aUser.getRoom();
     }
+    if (!potentialGuildmember.verifyAttribute(Attributes.GUILDWISH, aUser.getGuild().getName()))
+    {
+      communicationService.writeMessage(potentialGuildmember.getName()
+              + " does not wish to join your guild.<BR>\r\n");
+      return aUser.getRoom();
+    }
+    if (potentialGuildmember.getGuild() != null)
+    {
+      throw new MudException(
+              "error occurred, a person is a member of a guild, yet has a guildwish parameter!");
+    }
+    potentialGuildmember.removeAttribute(Attributes.GUILDWISH);
+    logBean.writeLog(aUser, "denied " + potentialGuildmember.getName()
+            + " membership into guild " + aUser.getGuild().getName());
+    communicationService.writeMessage("You have denied " + potentialGuildmember.getName()
+            + " admittance to your guild.<BR>\r\n");
+    if (potentialGuildmember.isActive())
+    {
+      CommunicationService.getCommunicationService(potentialGuildmember).writeMessage("You have been denied membership of guild <I>"
+              + aUser.getGuild().getTitle() + "</I>.<BR>\r\n");
+    }
+    return aUser.getRoom();
+  }
 
 }

@@ -21,6 +21,8 @@ import mmud.database.entities.characters.User;
 import mmud.database.entities.game.Admin;
 import mmud.database.entities.game.DisplayInterface;
 import mmud.exceptions.MudException;
+import mmud.services.CommunicationService;
+import mmud.services.PersonCommunicationService;
 
 /**
  * Owner : "owner", "owner remove" and "owner Karn".
@@ -41,14 +43,15 @@ public class OwnerCommand extends NormalCommand
     @Override
     public DisplayInterface run(String command, User aUser) throws MudException
     {
+      PersonCommunicationService communicationService = CommunicationService.getCommunicationService(aUser);
         if (command.equalsIgnoreCase("owner"))
         {
             if (aUser.getOwner() == null)
             {
-                aUser.writeMessage("You are not owned.<br/>");
+                communicationService.writeMessage("You are not owned.<br/>");
             } else
             {
-                aUser.writeMessage("Your current owner is " + aUser.getOwner().getName() + ".<br/>");
+                communicationService.writeMessage("Your current owner is " + aUser.getOwner().getName() + ".<br/>");
             }
             return aUser.getRoom();
         }
@@ -56,7 +59,7 @@ public class OwnerCommand extends NormalCommand
         {
             getLogBean().writeLog(aUser, "has removed owner " + (aUser.getOwner() == null ? "null" : aUser.getOwner().getName()));
             aUser.setOwner(null);
-            aUser.writeMessage("Owner removed.<br/>");
+            communicationService.writeMessage("Owner removed.<br/>");
             return aUser.getRoom();
         }
         String adminName = command.substring("owner ".length());
@@ -65,11 +68,11 @@ public class OwnerCommand extends NormalCommand
         {
             Admin admin = administrator.get();
             aUser.setOwner(admin);
-            aUser.writeMessage("You are now owned by " + admin.getName() + ".<br/>");
+            communicationService.writeMessage("You are now owned by " + admin.getName() + ".<br/>");
             getLogBean().writeLog(aUser, "has set owner to " + aUser.getOwner().getName());
             return aUser.getRoom();
         }
-        aUser.writeMessage("Owner " + adminName + " is unknown.<br/>");
+        communicationService.writeMessage("Owner " + adminName + " is unknown.<br/>");
         return aUser.getRoom();
     }
 

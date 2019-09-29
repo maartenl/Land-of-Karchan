@@ -37,6 +37,7 @@ import java.time.LocalDateTime;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.HashSet;
+import mmud.services.CommunicationService;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -74,7 +75,7 @@ public class HeehawCommandTest extends MudTest
     assertThat(heehawCommand.getRegExpr()).isEqualTo("heehaw");
     DisplayInterface display = heehawCommand.run("heehaw", marvin);
     assertThat(display).isNull();
-    String log = marvin.getLog(0);
+    String log = CommunicationService.getCommunicationService(marvin).getLog(0);
     assertThat(log).isEqualTo("");
   }
 
@@ -92,7 +93,7 @@ public class HeehawCommandTest extends MudTest
     assertThat(heehawCommand.getRegExpr()).isEqualTo("heehaw");
     DisplayInterface display = heehawCommand.run("heehaw", marvin);
     assertThat(display).isNotNull();
-    String log = marvin.getLog(0);
+    String log = CommunicationService.getCommunicationService(marvin).getLog(0);
     assertThat(log).isEqualTo("A jackass called Marvin says &#34;Heeehaw!&#34;.<br />\nYou feel the need to say &#39;Heehaw&#39; just 4 times.<br />\r\n");
     assertThat(marvin.getJackassing()).isEqualTo(4);
     assertThat(logBean.getLog()).isEqualTo("");
@@ -112,7 +113,7 @@ public class HeehawCommandTest extends MudTest
     assertThat(heehawCommand.getRegExpr()).isEqualTo("heehaw");
     DisplayInterface display = heehawCommand.run("heehaw", marvin);
     assertThat(display).isNotNull();
-    String log = marvin.getLog(0);
+    String log = CommunicationService.getCommunicationService(marvin).getLog(0);
     assertThat(log).isEqualTo("You cannot say &#39;Heehaw&#39; that fast! You will get tongue tied!<br />\r\n");
     assertThat(marvin.getJackassing()).isEqualTo(5);
     assertThat(logBean.getLog()).isEqualTo("");
@@ -155,8 +156,8 @@ public class HeehawCommandTest extends MudTest
     final Room room = TestingConstants.getRoom(TestingConstants.getArea());
     karn.setRoom(room);
     marvin = TestingConstants.getMarvin(room);
-    karn.clearLog();
-    marvin.clearLog();
+    CommunicationService.getCommunicationService(karn).clearLog();
+    CommunicationService.getCommunicationService(marvin).clearLog();
     HashSet<Person> persons = new HashSet<>();
     persons.add(karn);
     persons.add(marvin);

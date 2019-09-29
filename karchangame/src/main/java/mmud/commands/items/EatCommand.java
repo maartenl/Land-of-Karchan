@@ -25,66 +25,70 @@ import mmud.database.entities.characters.User;
 import mmud.database.entities.game.DisplayInterface;
 import mmud.database.entities.items.Item;
 import mmud.exceptions.MudException;
+import mmud.services.CommunicationService;
+import mmud.services.PersonCommunicationService;
 
 /**
  * Eat an item from inventory. "eat apple pie". Should improve your eat stats.
+ *
  * @author maartenl
  */
 public class EatCommand extends NormalCommand
 {
 
-    public EatCommand(String aRegExpr)
+  public EatCommand(String aRegExpr)
+  {
+    super(aRegExpr);
+  }
+
+  @Override
+  public DisplayInterface run(String command, User aUser) throws MudException
+  {
+    PersonCommunicationService communicationService = CommunicationService.getCommunicationService(aUser);
+    List<String> parsed = new ArrayList<>(Arrays.asList(parseCommand(command)));
+    parsed.remove(0); // remove "eat"
+    // find the item on ourselves
+    List<Item> itemsFound = aUser.findItems(parsed);
+    if (itemsFound.isEmpty())
     {
-        super(aRegExpr);
+      communicationService.writeMessage("You don't have that.<br/>\n");
+      return aUser.getRoom();
     }
-
-    @Override
-    public DisplayInterface run(String command, User aUser) throws MudException
+    final Item item = itemsFound.get(0);
+    if (!item.isEatable())
     {
-        List<String> parsed = new ArrayList<>(Arrays.asList(parseCommand(command)));
-        parsed.remove(0); // remove "eat"
-        // find the item on ourselves
-        List<Item> itemsFound = aUser.findItems(parsed);
-        if (itemsFound.isEmpty())
-        {
-            aUser.writeMessage("You don't have that.<br/>\n");
-            return aUser.getRoom();
-        }
-        final Item item = itemsFound.get(0);
-        if (!item.isEatable())
-        {
-            aUser.writeMessage("You cannot eat that.<BR>\r\n");
-            return aUser.getRoom();
-        }
-        if (!aUser.unused(item))
-        {
-            aUser.writeMessage("You are using that.<BR>\r\n");
-            return aUser.getRoom();
-        }
-        aUser.getRoom().sendMessage(aUser, "%SNAME eat%VERB2 "
-                + item.getDescription() + ".<br/>\r\n");
-        //TODO increase eat stats
-        aUser.destroyItem(item);
-        return new DisplayInterface()
-        {
-
-            @Override
-            public String getMainTitle() throws MudException
-            {
-               return item.getDescription();
-            }
-
-            @Override
-            public String getImage() throws MudException
-            {
-                return item.getImage();
-            }
-
-            @Override
-            public String getBody() throws MudException
-            {
-                return item.getEatable();
-            }
-        };
+      communicationService.writeMessage("You cannot eat that.<BR>\r\n");
+      return aUser.getRoom();
     }
+    if (!aUser.unused(item))
+    {
+      communicationService.writeMessage("You are using that.<BR>\r\n");
+      return aUser.getRoom();
+    }
+    CommunicationService.getCommunicationService(aUser.getRoom()).sendMessage(aUser, "%SNAME eat%VERB2 "
+            + item.getDescription() + ".<br/>\r\n");
+    //TODO increase eat stats
+    aUser.destroyItem(item);
+    return new DisplayInterface()
+    {
+
+      @Override
+      public String getMainTitle() throws MudException
+      {
+        return item.getDescription();
+      }
+
+      @Override
+      public String getImage() throws MudException
+      {
+        return item.getImage();
+      }
+
+      @Override
+      public String getBody() throws MudException
+      {
+        return item.getEatable();
+      }
+    };
+  }
 }

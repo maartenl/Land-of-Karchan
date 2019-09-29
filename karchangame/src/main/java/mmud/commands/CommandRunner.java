@@ -40,6 +40,7 @@ import mmud.scripting.Persons;
 import mmud.scripting.Rooms;
 import mmud.scripting.RunScript;
 import mmud.scripting.World;
+import mmud.services.CommunicationService;
 
 /**
  * Will run the command provided.
@@ -140,7 +141,7 @@ public class CommandRunner
     {
       try
       {
-        aUser.writeMessage(e.getMessage());
+        CommunicationService.getCommunicationService(aUser).writeMessage(e.getMessage());
       } catch (MudException ex)
       {
         LOGGER.throwing("play: throws ", ex.getMessage(), ex);

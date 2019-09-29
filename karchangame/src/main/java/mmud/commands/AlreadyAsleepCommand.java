@@ -19,6 +19,7 @@ package mmud.commands;
 import mmud.database.entities.characters.User;
 import mmud.database.entities.game.DisplayInterface;
 import mmud.exceptions.MudException;
+import mmud.services.CommunicationService;
 
 /**
  * Command used if the person is asleep, and the command is not
@@ -39,7 +40,7 @@ class AlreadyAsleepCommand extends NormalCommand
     public DisplayInterface run(String command, User aUser)
             throws MudException
     {
-        aUser.writeMessage("You cannot do that, you are asleep.<br/>\n");
+        CommunicationService.getCommunicationService(aUser).writeMessage("You cannot do that, you are asleep.<br/>\n");
         return aUser.getRoom();
     }
 }

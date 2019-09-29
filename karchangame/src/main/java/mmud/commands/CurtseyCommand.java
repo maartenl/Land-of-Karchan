@@ -20,6 +20,7 @@ import mmud.database.entities.characters.Person;
 import mmud.database.entities.characters.User;
 import mmud.database.entities.game.DisplayInterface;
 import mmud.exceptions.MudException;
+import mmud.services.CommunicationService;
 
 /**
  *
@@ -46,10 +47,10 @@ public class CurtseyCommand extends TargetCommand
     {
         if (aUser == aTarget)
         {
-            aUser.writeMessage("Drop a curtsey to myself? What are you trying to do?<BR>\r\n");
+            CommunicationService.getCommunicationService(aUser).writeMessage("Drop a curtsey to myself? What are you trying to do?<BR>\r\n");
             return aUser.getRoom();
         }
-        aUser.getRoom().sendMessage(aUser, aTarget,
+        CommunicationService.getCommunicationService(aUser.getRoom()).sendMessage(aUser, aTarget,
                 "%SNAME drop%VERB2 a curtsey to %TNAME.<BR>\r\n");
         return aUser.getRoom();
 
@@ -58,7 +59,7 @@ public class CurtseyCommand extends TargetCommand
     @Override
     protected DisplayInterface action(User aUser, String verb, String command) throws MudException
     {
-        aUser.getRoom().sendMessage(aUser, "%SNAME drop%VERB2 a curtsey.<BR>\r\n");
+        CommunicationService.getCommunicationService(aUser.getRoom()).sendMessage(aUser, "%SNAME drop%VERB2 a curtsey.<BR>\r\n");
         return aUser.getRoom();
     }
 }

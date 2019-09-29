@@ -16,14 +16,10 @@
  */
 package mmud;
 
-import mmud.exceptions.MudException;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.TreeMap;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-import mmud.exceptions.RegularExpressionException;
 
 /**
  * @author maartenl
@@ -349,73 +345,6 @@ public class Utils
   }
 
   /**
-   * Returns a safe string, containing no javascript at all.
-   *
-   * @param dirtyInput the original string.
-   * @return the new string, without javascript.
-   */
-  public static String security(String dirtyInput)
-  {
-    return EbayPolicy.sanitize(dirtyInput);
-  }
-
-  /**
-   * Returns a safe string, containing only alphabetical characters and space.
-   *
-   * @param value the original string.
-   * @return the new string
-   */
-  public static String alphabeticalandspace(String value)
-  {
-    return value.replaceAll("[^A-Za-z ]", "");
-  }
-
-  /**
-   * Returns a safe string, containing only alphabetical characters.
-   *
-   * @param value the original string.
-   * @return the new string
-   */
-  public static String alphabetical(String value)
-  {
-    return value.replaceAll("[^A-Za-z]", "");
-  }
-
-  /**
-   * Returns a safe string, containing only alphanumerical characters and space.
-   *
-   * @param value the original string.
-   * @return the new string
-   */
-  public static String alphanumericalandspace(String value)
-  {
-    return value.replaceAll("[^A-Za-z0-9 ]", "");
-  }
-
-  /**
-   * Returns a safe string, containing only alphanumerical characters and
-   * punctuation.
-   *
-   * @param value the original string.
-   * @return the new string
-   */
-  public static String alphanumericalandpuntuation(String value)
-  {
-    return value.replaceAll("[^A-Za-z0-9!&()_=+;:.,?'\"\\- ]", "");
-  }
-
-  /**
-   * Returns a safe string, containing only alphanumerical characters.
-   *
-   * @param value the original string.
-   * @return the new string
-   */
-  public static String alphanumerical(String value)
-  {
-    return value.replaceAll("[^A-Za-z0-9]", "");
-  }
-
-  /**
    * Indicates the game is offline for maintenance.
    *
    * @return usually false, indicating the game is live.
@@ -424,22 +353,6 @@ public class Utils
   {
     // TODO: put some env var here.
     return false;
-  }
-
-  /**
-   * Checks if the value matches the regular expression
-   * @param regexp the regular expression
-   * @param value the value to verify
-   * @throws RegularExpressionException a checked exception indicating failure.
-   */
-  public static void checkRegexp(String regexp, String value) throws RegularExpressionException
-  {
-    Pattern p = Pattern.compile(regexp);
-    Matcher m = p.matcher(value);
-    if (!m.matches())
-    {
-      throw new RegularExpressionException("value " + value + " should match regexp " + regexp);
-    }
   }
 
   /**
@@ -490,24 +403,4 @@ public class Utils
     return theEmotion2Structure.get(anEmotion);
   }
 
-  /**
-   * Changes a sentence to always start with a capital.
-   *
-   * @param string the string to change, may be empty or null.
-   * @return a new string, containing a capital for the first letter. If
-   * original is null, returns null. If original is empty string, returns empty
-   * string.
-   */
-  public static String startWithCapital(String string)
-  {
-    if (string == null)
-    {
-      return null;
-    }
-    if (string.equals(""))
-    {
-      return "";
-    }
-    return string.substring(0, 1).toUpperCase() + string.substring(1);
-  }
 }

@@ -37,6 +37,7 @@ import java.io.PrintWriter;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
+import mmud.services.CommunicationService;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -85,7 +86,7 @@ public class WhoCommandTest extends MudTest
         };
         DisplayInterface display = whoCommand.run("who", marvin);
         assertThat(display).isNotNull();
-        assertThat(marvin.getLog(0)).isEqualTo("");
+        assertThat(CommunicationService.getCommunicationService(marvin).getLog(0)).isEqualTo("");
         assertThat(display.getMainTitle()).isEqualTo("Who");
         assertThat(display.getImage()).isNull();
         assertThat(display.getBody()).contains("There are 2 players.");
@@ -112,7 +113,7 @@ public class WhoCommandTest extends MudTest
         };
         DisplayInterface display = whoCommand.run("who", marvin);
         assertThat(display).isNotNull();
-        assertThat(marvin.getLog(0)).isEqualTo("");
+        assertThat(CommunicationService.getCommunicationService(marvin).getLog(0)).isEqualTo("");
         assertThat(display.getMainTitle()).isEqualTo("Who");
         assertThat(display.getImage()).isNull();
         assertThat(display.getBody()).contains("There are 2 players.");
@@ -139,7 +140,7 @@ public class WhoCommandTest extends MudTest
         };
         DisplayInterface display = whoCommand.run("who", marvin);
         assertThat(display).isNotNull();
-        assertThat(marvin.getLog(0)).isEqualTo("");
+        assertThat(CommunicationService.getCommunicationService(marvin).getLog(0)).isEqualTo("");
         assertThat(display.getMainTitle()).isEqualTo("Who");
         assertThat(display.getImage()).isNull();
         assertThat(display.getBody()).contains("There are 1 players.");
@@ -166,7 +167,7 @@ public class WhoCommandTest extends MudTest
         };
         DisplayInterface display = whoCommand.run("who", marvin);
         assertThat(display).isNotNull();
-        assertThat(marvin.getLog(0)).isEqualTo("");
+        assertThat(CommunicationService.getCommunicationService(marvin).getLog(0)).isEqualTo("");
         assertThat(display.getMainTitle()).isEqualTo("Who");
         assertThat(display.getImage()).isNull();
         assertThat(display.getBody()).contains("There are 2 players.");
@@ -193,7 +194,7 @@ public class WhoCommandTest extends MudTest
         };
         DisplayInterface display = whoCommand.run("who", marvin);
         assertThat(display).isNotNull();
-        assertThat(marvin.getLog(0)).isEqualTo("");
+        assertThat(CommunicationService.getCommunicationService(marvin).getLog(0)).isEqualTo("");
         assertThat(display.getMainTitle()).isEqualTo("Who");
         assertThat(display.getImage()).isNull();
         assertThat(display.getBody()).contains("There are 2 players.");
@@ -243,8 +244,8 @@ public class WhoCommandTest extends MudTest
         final Room room = TestingConstants.getRoom(TestingConstants.getArea());
         karn.setRoom(room);
         marvin = TestingConstants.getMarvin(room);
-        karn.clearLog();
-        marvin.clearLog();
+        CommunicationService.getCommunicationService(karn).clearLog();
+        CommunicationService.getCommunicationService(marvin).clearLog();
         HashSet<Person> persons = new HashSet<>();
         persons.add(karn);
         persons.add(marvin);

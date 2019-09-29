@@ -34,6 +34,7 @@ import org.testng.annotations.*;
 import java.io.File;
 import java.io.PrintWriter;
 import java.util.HashSet;
+import mmud.services.CommunicationService;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
@@ -67,7 +68,7 @@ public class TitleCommandTest extends MudTest
         assertThat(titleCommand.getRegExpr()).isEqualTo("(title|title ?.+)");
         DisplayInterface display = titleCommand.run("title Ruler of the Land", marvin);
         assertThat(display).isNotNull();
-        String log = marvin.getLog(0);
+        String log = CommunicationService.getCommunicationService(marvin).getLog(0);
         assertThat(log).isEqualTo("Changed your title to : &#39;Ruler of the Land&#39;.<br />\r\n");
         assertThat(marvin.getTitle()).isEqualTo("Ruler of the Land");
     }
@@ -81,7 +82,7 @@ public class TitleCommandTest extends MudTest
         assertThat(titleCommand.getRegExpr()).isEqualTo("(title|title ?.+)");
         DisplayInterface display = titleCommand.run("title remove", marvin);
         assertThat(display).isNotNull();
-        String log = marvin.getLog(0);
+        String log = CommunicationService.getCommunicationService(marvin).getLog(0);
         assertThat(log).isEqualTo("You have removed your current title.<br />\r\n");
         assertThat(marvin.getTitle()).isNull();
     }
@@ -95,7 +96,7 @@ public class TitleCommandTest extends MudTest
         assertThat(titleCommand.getRegExpr()).isEqualTo("(title|title ?.+)");
         DisplayInterface display = titleCommand.run("title", marvin);
         assertThat(display).isNotNull();
-        String log = marvin.getLog(0);
+        String log = CommunicationService.getCommunicationService(marvin).getLog(0);
         assertThat(log).isEqualTo("Your current title is &#39;The Paranoid Android&#39;.<br />\r\n");
         assertThat(marvin.getTitle()).isEqualTo("The Paranoid Android");
     }
@@ -137,8 +138,8 @@ public class TitleCommandTest extends MudTest
         final Room room = TestingConstants.getRoom(TestingConstants.getArea());
         karn.setRoom(room);
         marvin = TestingConstants.getMarvin(room);
-        karn.clearLog();
-        marvin.clearLog();
+        CommunicationService.getCommunicationService(karn).clearLog();
+        CommunicationService.getCommunicationService(marvin).clearLog();
         HashSet<Person> persons = new HashSet<>();
         persons.add(karn);
         persons.add(marvin);
