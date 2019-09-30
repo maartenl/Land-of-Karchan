@@ -59,6 +59,10 @@ export class RoomsRestService {
       );
   }
 
+  public getCount(): Observable<number> {
+    return of(7000);
+  }
+
   public getRooms(startRow: number, endRow: number): Observable<Room[]> {
     if (window.console) {
       console.log('rooms-rest.service getRooms start: ' + startRow + ' end: ' + endRow);

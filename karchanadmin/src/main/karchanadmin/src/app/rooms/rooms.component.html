@@ -4,7 +4,7 @@
             <h1>Room</h1>
         </div>
         <div class="col-xs-12 col-xl-6">
-            <cdk-virtual-scroll-viewport style="height: 400px;" [itemSize]="20">
+            <cdk-virtual-scroll-viewport style="height: 400px;" [itemSize]="33">
                 <table class="table table-sm table-hover">
                 <thead>
                     <tr>
@@ -17,7 +17,7 @@
                     </tr>
                 </thead>
                 <tbody>
-                        <tr *cdkVirtualFor="let room of rooms">
+                        <tr *cdkVirtualFor="let room of datasource; templateCacheSize: 1000">
                             <th scope="row">{{ room.id }}</th>
                             <td>{{ room.title }}</td>
                             <td>{{ room.north }}</td>

@@ -1,3 +1,5 @@
+import { CollectionViewer, DataSource } from '@angular/cdk/collections';
+import { BehaviorSubject, Observable, of, Subscription } from 'rxjs';
 import { Component, OnInit } from '@angular/core';
 import { RoomsRestService } from '../rooms-rest.service';
 import { Room } from './room.model';
@@ -8,11 +10,11 @@ import { Page } from '../page.model';
   templateUrl: './rooms.component.html',
   styleUrls: ['./rooms.component.css']
 })
-export class RoomsComponent implements OnInit {
+export class RoomsComponent extends DataSource<Room> implements OnInit {
 
   rooms: Room[];
 
-  public datasource: any;
+  datasource: DataSource<Room>;
 
   columnDefs = [
     { headerName: 'Id', field: 'id' },
@@ -26,19 +28,45 @@ export class RoomsComponent implements OnInit {
   ];
 
   constructor(private roomsRestService: RoomsRestService) {
+    super();
     if (window.console) {
       console.log('construcotr roomscomponent');
     }
-    this.roomsRestService.getAllRooms().subscribe({
-      next: (data) => {
-        this.rooms = data;
-      }
-    });
+    this.roomsRestService.getCount().subscribe({next : amount => {
+      this.rooms = Array.from<Room>({length: amount});
+    }});
+    this.datasource = this;
   }
 
   ngOnInit() {
     if (window.console) {
       console.log('ngOnInit');
+    }
+  }
+
+  connect(collectionViewer: CollectionViewer): Observable<Room[]> {
+    if (window.console) {
+      console.log('connect');
+    }
+    collectionViewer.viewChange.subscribe(range => {
+      if (window.console) {
+        console.log('viewChange start=' + range.start + ' end=' + range.end + ' size=' + (range.end - range.start));
+      }
+      this.roomsRestService.getRooms(range.start, range.end).subscribe({
+        next: (data) => {
+          this.rooms.splice(range.start, range.end - range.start, ...data);
+        }
+      });
+    });
+    if (window.console) {
+      console.log('end connect');
+    }
+    return of(this.rooms);
+  }
+
+  disconnect(collectionViewer: CollectionViewer): void {
+    if (window.console) {
+      console.log('disconnect');
     }
   }
 
