@@ -81,8 +81,14 @@ import mmud.scripting.WorldInterface;
  * <img
  * src="doc-files/Gamebean.png">
  *
- * @startuml doc-files/Gamebean.png (*) --> "Create character" --> "Login" -->
- * "Play" --> "Retrieve log" --> "Play" --> "Quit" -->(*)
+ * @startuml doc-files/Gamebean.png 
+ * (*) --> "Create character" 
+ * --> "Login" 
+ * --> "Play" 
+ * --> "Retrieve log" 
+ * --> "Play" 
+ * --> "Quit" 
+ * -->(*)
  * @enduml
  * @author maartenl
  */
@@ -154,8 +160,11 @@ public class GameBean implements RoomsInterface, WorldInterface
    * or is not a proper user. BAD_REQUEST if an unexpected exception crops up or
    * provided info is really not proper. UNAUTHORIZED if session passwords do
    * not match.
-   * @startuml doc-files/Gamebean_authenticate.png (*) --> "find character" -->
-   * "character found" --> "character == user" --> "session password is good"
+   * @startuml doc-files/Gamebean_authenticate.png 
+   * (*) --> "find character" 
+   * --> "character found" 
+   * --> "character == user" 
+   * --> "session password is good"
    * -->(*)
    * @enduml
    */
@@ -196,9 +205,12 @@ public class GameBean implements RoomsInterface, WorldInterface
    * @throws WebApplicationException BAD_REQUEST if an unexpected exception
    * crops up or provided info is really not proper. UNAUTHORIZED if session
    * passwords do not match or user not found.
-   * @startuml doc-files/Gamebean_authenticateWithPassword.png (*) --> "find
-   * character" --> "character found" --> "character == user" --> "password is
-   * good" -->(*)
+   * @startuml doc-files/Gamebean_authenticateWithPassword.png 
+   * (*) --> "find character" 
+   * --> "character found" 
+   * --> "character == user" 
+   * --> "password is good" 
+   * -->(*)
    * @enduml
    */
   protected User getPlayer(String name)
@@ -241,8 +253,12 @@ public class GameBean implements RoomsInterface, WorldInterface
    * @param name the name of the person
    * @param address the ip address the person is playing from
    * @return true if banned, false otherwise.
-   * @startuml doc-files/Gamebean_isBanned.png (*) --> "check silly names" -->
-   * "check unbanned" --> "check address banned" --> "check name banned" -->(*)
+   * @startuml doc-files/Gamebean_isBanned.png 
+   * (*) --> "check silly names" 
+   * --> "check unbanned" 
+   * --> "check address banned"
+   * --> "check name banned" 
+   * -->(*)
    * @enduml
    */
   public boolean isBanned(String name, String address)
@@ -313,10 +329,15 @@ public class GameBean implements RoomsInterface, WorldInterface
    * @return NO_CONTENT if the game is offline for maintenance.
    * @throws WebApplicationException BAD_REQUEST if an unexpected exception
    * crops up or something could not be validated.
-   * @startuml doc-files/Gamebean_create.png (*) --> "check for offline" -->
-   * "check presence of data" --> "check name == pperson.name" --> "check
-   * password == password2" --> "check isBanned" --> "check already person" -->
-   * "create person" -->(*)
+   * @startuml doc-files/Gamebean_create.png 
+   * (*) --> "check for offline" 
+   * --> "check presence of data" 
+   * --> "check name == pperson.name" 
+   * --> "check password == password2" 
+   * --> "check isBanned" 
+   * --> "check already person" 
+   * --> "create person" 
+   * -->(*)
    * @enduml
    */
   @PermitAll
