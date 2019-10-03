@@ -6,18 +6,19 @@
         <div class="col-xs-12 col-xl-6">
             <cdk-virtual-scroll-viewport style="height: 400px;" [itemSize]="33">
                 <table class="table table-sm table-hover">
-                <thead>
-                    <tr>
-                        <th scope="col">#</th>
-                        <th scope="col">Title</th>
-                        <th scope="col">North</th>
-                        <th scope="col">South</th>
-                        <th scope="col">West</th>
-                        <th scope="col">East</th>
-                    </tr>
-                </thead>
-                <tbody>
-                        <tr *cdkVirtualFor="let room of datasource; templateCacheSize: 1000">
+                    <thead>
+                        <tr>
+                            <th scope="col">#</th>
+                            <th scope="col">Title</th>
+                            <th scope="col">North</th>
+                            <th scope="col">South</th>
+                            <th scope="col">West</th>
+                            <th scope="col">East</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *cdkVirtualFor="let room of datasource; templateCacheSize: 1000"
+                            [ngClass]="isActive(room.id)" (click)="setRoom(room)">
                             <th scope="row">{{ room.id }}</th>
                             <td>{{ room.title }}</td>
                             <td>{{ room.north }}</td>
@@ -25,9 +26,9 @@
                             <td>{{ room.west }}</td>
                             <td>{{ room.east }}</td>
                         </tr>
-                </tbody>
-            </table>
-        </cdk-virtual-scroll-viewport>
-    </div>
+                    </tbody>
+                </table>
+            </cdk-virtual-scroll-viewport>
+        </div>
     </div>
 </div>

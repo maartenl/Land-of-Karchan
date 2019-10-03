@@ -3,7 +3,6 @@ import { BehaviorSubject, Observable, of, Subscription } from 'rxjs';
 import { Component, OnInit } from '@angular/core';
 import { RoomsRestService } from '../rooms-rest.service';
 import { Room } from './room.model';
-import { Page } from '../page.model';
 
 @Component({
   selector: 'app-rooms',
@@ -13,6 +12,8 @@ import { Page } from '../page.model';
 export class RoomsComponent extends DataSource<Room> implements OnInit {
 
   rooms: Room[];
+
+  room: Room;
 
   datasource: DataSource<Room>;
 
@@ -32,9 +33,11 @@ export class RoomsComponent extends DataSource<Room> implements OnInit {
     if (window.console) {
       console.log('construcotr roomscomponent');
     }
-    this.roomsRestService.getCount().subscribe({next : amount => {
-      this.rooms = Array.from<Room>({length: amount});
-    }});
+    this.roomsRestService.getCount().subscribe({
+      next: amount => {
+        this.rooms = Array.from<Room>({ length: amount });
+      }
+    });
     this.datasource = this;
   }
 
@@ -49,18 +52,21 @@ export class RoomsComponent extends DataSource<Room> implements OnInit {
       console.log('connect');
     }
     collectionViewer.viewChange.subscribe(range => {
-      if (window.console) {
-        console.log('viewChange start=' + range.start + ' end=' + range.end + ' size=' + (range.end - range.start));
-      }
-      this.roomsRestService.getRooms(range.start, range.end).subscribe({
-        next: (data) => {
-          this.rooms.splice(range.start, range.end - range.start, ...data);
+      if (this.rooms.slice(range.start, range.end).some(x => x === undefined)) {
+        if (window.console) {
+          console.log('Call restservice');
         }
-      });
+        this.roomsRestService.getRooms(range.start, range.end).subscribe({
+          next: (data) => {
+            this.rooms.splice(range.start, range.end - range.start, ...data);
+          }
+        });
+      } else {
+        if (window.console) {
+          console.log('Already have results');
+        }
+      }
     });
-    if (window.console) {
-      console.log('end connect');
-    }
     return of(this.rooms);
   }
 
@@ -70,4 +76,14 @@ export class RoomsComponent extends DataSource<Room> implements OnInit {
     }
   }
 
+  isActive(id: number) {
+    if (this.room === undefined) {
+      return '';
+    }
+    return (this.room.id === id) ? 'table-active' : '';
+  }
+
+  setRoom(room: Room) {
+    this.room = room;
+  }
 }

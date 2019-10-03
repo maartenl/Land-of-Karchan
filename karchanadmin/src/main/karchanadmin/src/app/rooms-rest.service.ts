@@ -10,8 +10,6 @@ import { environment } from '../environments/environment';
 import { ErrorsService } from './errors.service';
 import { Room } from './rooms/room.model';
 import { ErrorMessage } from './errors/errormessage.model';
-import { Page } from './page.model';
-import { PagedData } from './paged-data.model';
 
 @Injectable({
   providedIn: 'root'
@@ -22,9 +20,9 @@ export class RoomsRestService {
   rooms = new Array<Room>();
 
   constructor(private http: HttpClient, private errorsService: ErrorsService) {
-    if (window.console) { console.log('rooms-rest.service constructor'); }
     this.url = environment.ROOMS_URL;
     if (environment.production === false) {
+      if (window.console) { console.log('rooms-rest.service constructor'); }
       for (let i = 0; i < 7000; i++) {
         const room: Room = {
           id: i,
@@ -45,10 +43,10 @@ export class RoomsRestService {
       }
     }
   }
-  public getAllRooms(): Observable<Room[]> {
-    const rooms = this.rooms;
+
+  public getCount(): Observable<number> {
     if (environment.production === false) {
-      return from([rooms]);
+      return of(this.rooms.length);
     }
     return this.http.get<Room[]>(this.url)
       .pipe(
@@ -59,15 +57,11 @@ export class RoomsRestService {
       );
   }
 
-  public getCount(): Observable<number> {
-    return of(7000);
-  }
-
   public getRooms(startRow: number, endRow: number): Observable<Room[]> {
-    if (window.console) {
-      console.log('rooms-rest.service getRooms start: ' + startRow + ' end: ' + endRow);
-    }
     if (environment.production === false) {
+      if (window.console) {
+        console.log('rooms-rest.service getRooms start: ' + startRow + ' end: ' + endRow);
+      }
       return of(this.rooms.slice(startRow, endRow));
     }
     return this.http.get<Room[]>(this.url)
@@ -79,49 +73,14 @@ export class RoomsRestService {
       );
   }
 
-  /**
-   * Package rooms into a PagedData object based on the selected Page
-   * @param page The page data used to get the selected data from rooms
-   * @returns An array of the selected data and page
-   */
-  private getPagedData(page: Page): PagedData<Room> {
-    if (window.console) {
-      console.log('entering getPagedData');
-      console.log(page);
+  public deleteRoom(room: Room): Observable<any> {
+    if (environment.production === false) {
+      const index = this.rooms.findIndex(lroom => lroom.id === room.id);
+      if (index !== -1) {
+        this.rooms = this.rooms.splice(index, 1);
+      }
+      return of();
     }
-    const pagedData = new PagedData<Room>();
-    page.totalElements = this.rooms.length;
-    page.totalPages = page.totalElements / page.size;
-    const start = page.pageNumber * page.size;
-    const end = Math.min(start + page.size, page.totalElements);
-    for (let i = start; i < end; i++) {
-      const jsonObj = this.rooms[i];
-      const room = new Room();
-      room.id = jsonObj.id;
-      room.west = jsonObj.west;
-      room.east = jsonObj.east;
-      room.north = jsonObj.north;
-      room.south = jsonObj.south;
-      room.up = jsonObj.up;
-      room.down = jsonObj.down;
-      room.contents = jsonObj.contents;
-      room.owner = jsonObj.owner;
-      room.creation = jsonObj.creation;
-      room.area = jsonObj.area;
-      room.title = jsonObj.title;
-      room.picture = jsonObj.picture;
-      if (window.console) { console.log(pagedData); }
-      pagedData.data.push(room);
-    }
-    pagedData.page = page;
-    if (window.console) {
-      console.log('leaving getPagedData');
-      console.log(pagedData);
-    }
-    return pagedData;
-  }
-
-  public deleteRoom(room: Room): any {
     return this.http.delete(this.url + '/' + room.id)
       .pipe(
         catchError(err => {
