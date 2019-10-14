@@ -1,7 +1,78 @@
 <div class="container-fluid">
     <div class="row row-content">
         <div class="col-xs-12 col-xl-6">
-            <h1>Room</h1>
+            <h1>Room id {{ room === undefined ? '-' : room.id }}</h1>
+            <form [formGroup]="form" (ngSubmit)="saveRoom()" novalidate>
+                <fieldset class="form-group">
+                    <label for="title">Title</label>
+                    <input type="text" class="form-control" id="title" name="title" formControlName="title">
+                </fieldset>
+                <fieldset class="form-group">
+                    <label for="picture">Picture</label>
+                    <input type="text" class="form-control" id="picture" name="picture" formControlName="picture">
+                    <small id="picture" class="form-text text-muted">Only valid urls please. For example:
+                        'https://www.pictures.org/gif/web.gif'.</small>
+                </fieldset>
+                <div class="form-row">
+                    <div class="col">
+                        <fieldset class="form-group">
+                            <label for="north">North</label>
+                            <input type="text" class="form-control" id="north" name="north" formControlName="north">
+                        </fieldset>
+                    </div>
+                    <div class="col">
+                        <fieldset class="form-group">
+                            <label for="south">South</label>
+                            <input type="text" class="form-control" id="south" name="south" formControlName="south">
+                        </fieldset>
+                    </div>
+                    <div class="col">
+                        <fieldset class="form-group">
+                            <label for="west">West</label>
+                            <input type="text" class="form-control" id="west" name="west" formControlName="west">
+                        </fieldset>
+                    </div>
+                    <div class="col">
+                        <fieldset class="form-group">
+                            <label for="east">East</label>
+                            <input type="text" class="form-control" id="east" name="east" formControlName="east">
+                        </fieldset>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="col">
+                        <fieldset class="form-group">
+                            <label for="up">Up</label>
+                            <input type="text" class="form-control" id="up" name="up" formControlName="up">
+                        </fieldset>
+                    </div>
+                    <div class="col">
+                        <fieldset class="form-group">
+                            <label for="down">Down</label>
+                            <input type="text" class="form-control" id="down" name="down" formControlName="down">
+                        </fieldset>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-header">
+                        Contents
+                    </div>
+                    <div class="card-block" [innerHTML]="form.get('contents').value">
+                    </div>
+                </div>
+                <fieldset class="form-group">
+                    <label for="body">Contents</label>
+                    <textarea class="form-control" id="contents" rows="13" formControlName="contents"></textarea>
+                    <small id="contents" class="form-text text-muted">First letter will automatically be turned into
+                        a
+                        calligraphic picture.</small>
+                </fieldset>
+                <div class="col-xs-12 col-sm-12 text-right">
+                    <button type="submit" [disabled]="form.pristine" class="btn btn-primary">Save</button>
+                    <button type="reset" class="btn btn-primary" (click)="cancel()">Cancel</button>
+                    <button type="button" class="btn btn-primary" (click)="deleteRoom()">Delete</button>
+                </div>
+            </form>
         </div>
         <div class="col-xs-12 col-xl-6">
             <cdk-virtual-scroll-viewport style="height: 400px;" [itemSize]="33">
@@ -10,21 +81,19 @@
                         <tr>
                             <th scope="col">#</th>
                             <th scope="col">Title</th>
-                            <th scope="col">North</th>
-                            <th scope="col">South</th>
-                            <th scope="col">West</th>
-                            <th scope="col">East</th>
+                            <th scope="col">Area</th>
+                            <th scope="col">Owner</th>
+                            <th scope="col">Creation</th>
                         </tr>
                     </thead>
                     <tbody>
-                        <tr *cdkVirtualFor="let room of datasource; templateCacheSize: 1000"
-                            [ngClass]="isActive(room.id)" (click)="setRoom(room)">
+                        <tr *cdkVirtualFor="let room of datasource; 
+                        templateCacheSize: 0" [ngClass]="isActive(room)" (click)="setRoom(room)">
                             <th scope="row">{{ room.id }}</th>
                             <td>{{ room.title }}</td>
-                            <td>{{ room.north }}</td>
-                            <td>{{ room.south }}</td>
-                            <td>{{ room.west }}</td>
-                            <td>{{ room.east }}</td>
+                            <td>{{ room.area }}</td>
+                            <td>{{ room.owner }}</td>
+                            <td>{{ room.creation }}</td>
                         </tr>
                     </tbody>
                 </table>

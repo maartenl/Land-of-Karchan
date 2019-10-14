@@ -62,7 +62,8 @@ export class RoomsRestService {
       if (window.console) {
         console.log('rooms-rest.service getRooms start: ' + startRow + ' end: ' + endRow);
       }
-      return of(this.rooms.slice(startRow, endRow));
+      const slice = this.rooms.slice(startRow, endRow);
+      return of(slice);
     }
     return this.http.get<Room[]>(this.url)
       .pipe(
@@ -77,9 +78,9 @@ export class RoomsRestService {
     if (environment.production === false) {
       const index = this.rooms.findIndex(lroom => lroom.id === room.id);
       if (index !== -1) {
-        this.rooms = this.rooms.splice(index, 1);
+        this.rooms.splice(index, 1);
       }
-      return of();
+      return of(room);
     }
     return this.http.delete(this.url + '/' + room.id)
       .pipe(
@@ -92,6 +93,13 @@ export class RoomsRestService {
 
   public updateRoom(room: Room): any {
     if (room.id !== undefined) {
+      if (environment.production === false) {
+        const index = this.rooms.findIndex(lroom => lroom.id === room.id);
+        if (index !== -1) {
+          this.rooms[index] = room;
+        }
+        return of(room);
+      }
       // update
       return this.http.put<Room[]>(this.url + '/' + room.id, room)
         .pipe(
@@ -102,6 +110,10 @@ export class RoomsRestService {
         );
     }
     // new
+    if (environment.production === false) {
+      this.rooms.push(room);
+      return of(room);
+    }
     return this.http.post(this.url, room)
       .pipe(
         catchError(err => {
