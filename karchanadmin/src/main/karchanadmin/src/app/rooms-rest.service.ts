@@ -57,6 +57,20 @@ export class RoomsRestService {
       );
   }
 
+  public getRoom(id: number): Observable<Room> {
+    if (environment.production === false) {
+      const room = this.rooms.find(room => room.id === id);
+      return of(room);
+    }
+    return this.http.get<Room>(this.url + '/' + id)
+      .pipe(
+        catchError(err => {
+          this.handleError(err);
+          return [];
+        })
+      );
+  }
+
   public getRooms(startRow: number, endRow: number): Observable<Room[]> {
     if (environment.production === false) {
       if (window.console) {

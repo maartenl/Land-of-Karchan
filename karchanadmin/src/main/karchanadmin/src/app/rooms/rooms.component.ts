@@ -24,17 +24,6 @@ export class RoomsComponent extends DataSource<Room> implements OnInit {
 
   private dataStream;
 
-  columnDefs = [
-    { headerName: 'Id', field: 'id' },
-    { headerName: 'Title', field: 'title' },
-    { headerName: 'North', field: 'north' },
-    { headerName: 'South', field: 'south' },
-    { headerName: 'West', field: 'west' },
-    { headerName: 'East', field: 'east' },
-    { headerName: 'Up', field: 'up' },
-    { headerName: 'Down', field: 'down' }
-  ];
-
   constructor(
     private roomsRestService: RoomsRestService,
     private formBuilder: FormBuilder) {
@@ -66,7 +55,9 @@ export class RoomsComponent extends DataSource<Room> implements OnInit {
       west: null,
       east: null,
       up: null,
-      down: null
+      down: null,
+      owner: null,
+      area: null
     });
   }
 
@@ -80,7 +71,9 @@ export class RoomsComponent extends DataSource<Room> implements OnInit {
       west: null,
       east: null,
       up: null,
-      down: null
+      down: null,
+      owner: null,
+      area: null
     });
   }
 
@@ -139,7 +132,9 @@ export class RoomsComponent extends DataSource<Room> implements OnInit {
       west: room.west,
       east: room.east,
       up: room.up,
-      down: room.down
+      down: room.down,
+      owner: room.owner,
+      area: room.area
     });
   }
 
@@ -211,5 +206,10 @@ export class RoomsComponent extends DataSource<Room> implements OnInit {
       owner: this.room.owner as string
     };
     return saveRoom;
+  }
+
+  disownRoom() {
+    console.log('disownRoom');
+    this.form.controls['owner'].setValue(null);
   }
 }
