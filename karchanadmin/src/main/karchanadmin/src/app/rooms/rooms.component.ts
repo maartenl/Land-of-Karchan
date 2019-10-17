@@ -209,7 +209,10 @@ export class RoomsComponent extends DataSource<Room> implements OnInit {
   }
 
   disownRoom() {
-    console.log('disownRoom');
-    this.form.controls['owner'].setValue(null);
-  }
+    if (this.room === undefined || this.room === null) {
+      return;
+    }
+    this.room.owner = null;
+    this.dataStream.next(this.rooms);
+}
 }
