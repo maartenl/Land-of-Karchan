@@ -108,17 +108,24 @@ export class RoomsComponent extends DataSource<Room> implements OnInit {
     if (window.console) {
       console.log('disconnect');
     }
-    // this.subscription.unsubscribe();
   }
 
   isActive(room: Room) {
-    if (this.room === undefined) {
-      return '';
-    }
-    if (room === undefined) {
+    if (!this.isRoomSelected()) {
       return '';
     }
     return (this.room.id === room.id) ? 'table-active' : '';
+  }
+
+  setRoomById(id: number) {
+    console.log('setroombyid' + id);
+    this.roomsRestService.getRoom(id).subscribe({
+      next: (data) => {
+        console.log(data);
+        if (data !== undefined) { this.setRoom(data); }
+      }
+    });
+    return false;
   }
 
   setRoom(room: Room) {
@@ -209,10 +216,14 @@ export class RoomsComponent extends DataSource<Room> implements OnInit {
   }
 
   disownRoom() {
-    if (this.room === undefined || this.room === null) {
+    if (!this.isRoomSelected()) {
       return;
     }
     this.room.owner = null;
     this.dataStream.next(this.rooms);
-}
+  }
+
+  isRoomSelected() {
+    return this.room !== undefined && this.room !== null;
+  }
 }

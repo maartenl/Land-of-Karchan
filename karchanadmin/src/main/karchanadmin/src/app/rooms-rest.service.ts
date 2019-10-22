@@ -41,6 +41,9 @@ export class RoomsRestService {
         };
         this.rooms.push(room);
       }
+      this.rooms[0].north = 1;
+      this.rooms[1].north = 2;
+      this.rooms[1].south = 0;
     }
   }
 
@@ -59,8 +62,8 @@ export class RoomsRestService {
 
   public getRoom(id: number): Observable<Room> {
     if (environment.production === false) {
-      const room = this.rooms.find(room => room.id === id);
-      return of(room);
+      const foundRoom = this.rooms.find(room => room.id === id);
+      return of(foundRoom);
     }
     return this.http.get<Room>(this.url + '/' + id)
       .pipe(
