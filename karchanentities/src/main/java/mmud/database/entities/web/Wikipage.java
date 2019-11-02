@@ -20,9 +20,11 @@ import java.io.Serializable;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.logging.Logger;
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.Lob;
@@ -30,7 +32,9 @@ import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
+import javax.persistence.OrderBy;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
@@ -43,15 +47,19 @@ import mmud.database.RegularExpressions;
 @Entity
 @Table(name = "wikipages")
 @NamedQueries(
-{
-  @NamedQuery(name = "Wikipage.findByTitle", query = "SELECT w FROM Wikipage w WHERE w.title = :title and w.administration = false"),
-  @NamedQuery(name = "Wikipage.findByTitleAuthorized", query = "SELECT w FROM Wikipage w WHERE w.title = :title"),
-  @NamedQuery(name = "Wikipage.checkExistenceOfWikipage", query = "SELECT w FROM Wikipage w WHERE w.title = :title")
-})
+        {
+          @NamedQuery(name = "Wikipage.findByTitle", query = "SELECT w FROM Wikipage w WHERE w.title = :title and w.administration = false"),
+          @NamedQuery(name = "Wikipage.findByTitleAuthorized", query = "SELECT w FROM Wikipage w WHERE w.title = :title"),
+          @NamedQuery(name = "Wikipage.checkExistenceOfWikipage", query = "SELECT w FROM Wikipage w WHERE w.title = :title"),
+          @NamedQuery(name = "Wikipage.findFrontpage", query = "SELECT w FROM Wikipage w WHERE w.title = 'FrontPage' and w.administration = false"),
+          @NamedQuery(name = "Wikipage.findRecentEdits", query = "SELECT w FROM Wikipage w WHERE w.administration = false order by w.modifiedDate")
+        })
 public class Wikipage implements Serializable
 {
 
   private static final long serialVersionUID = 1L;
+  
+  private final static Logger LOGGER = Logger.getLogger(Wikipage.class.getName());
 
   @Id
   @Basic(optional = false)
@@ -104,17 +112,21 @@ public class Wikipage implements Serializable
   @Column(name = "comment")
   @Pattern(regexp = RegularExpressions.COMMENTS_REGEXP, message = RegularExpressions.COMMENTS_MESSAGE)
   private String comment;
-  
+
   @Column(name = "ordering")
   private Integer ordering;
-  
-  @OneToMany(mappedBy = "parentTitle")
-  private List<Wikipage> wikipageList;
+
+  @OneToMany(mappedBy = "parent", fetch = FetchType.LAZY)
+  @OrderBy("ordering ASC")
+  private List<Wikipage> children;
 
   @JoinColumn(name = "parentTitle", referencedColumnName = "title")
   @ManyToOne
-  private Wikipage parentTitle;
+  private Wikipage parent;
 
+  @Transient
+  private String htmlContent;
+  
   public Wikipage()
   {
   }
@@ -146,6 +158,7 @@ public class Wikipage implements Serializable
 
   /**
    * The owner of the wikipage, or at least the last one modifying it.
+   *
    * @return the name of a player.
    */
   public String getName()
@@ -208,26 +221,26 @@ public class Wikipage implements Serializable
     this.summary = summary;
   }
 
-  public List<Wikipage> getWikipageList()
+  public List<Wikipage> getChildren()
   {
-    return wikipageList;
+    return children;
   }
 
-  public void setWikipageList(List<Wikipage> wikipageList)
+  public void setChildren(List<Wikipage> children)
   {
-    this.wikipageList = wikipageList;
+    this.children = children;
   }
 
-  public Wikipage getParentTitle()
+  public Wikipage getParent()
   {
-    return parentTitle;
+    return parent;
   }
 
-  public void setParentTitle(Wikipage parentTitle)
+  public void setParent(Wikipage parent)
   {
-    this.parentTitle = parentTitle;
+    this.parent = parent;
   }
-  
+
   public boolean getAdministration()
   {
     return administration;
@@ -257,14 +270,14 @@ public class Wikipage implements Serializable
   {
     this.ordering = ordering;
   }
-  
+
   @Override
   public int hashCode()
   {
     int hash = 0;
     hash += (title != null ? title.hashCode() : 0);
     return hash;
-}
+  }
 
   @Override
   public boolean equals(Object object)
@@ -291,6 +304,29 @@ public class Wikipage implements Serializable
   public void increaseVersion()
   {
     version = new BigDecimal(version).add(new BigDecimal("0.1")).toPlainString();
+  }
+  
+  /**
+   * As this Wikipage does not know anything about processing a wiki format,
+   * this just returns a transient field. Formatting is done elsewhere.
+   * Simply make sure to call {@link #setHtmlContent(java.lang.String) } appropriately beforehand.
+   * @return a string
+   * @see #setHtmlContent(java.lang.String) 
+   */
+  public String getHtmlContent()
+  {
+    return htmlContent;
+  }
+
+  /**
+   * Set the appropriate HTML format of the wikipage. This sets a transient field
+   * which can then be used for displaying. This field is not stored in the database.
+   * 
+   * @param htmlContent the html content representation of the {@link #getContent() }.
+   */
+  public void setHtmlContent(String htmlContent)
+  {
+    this.htmlContent = htmlContent;
   }
   
 }

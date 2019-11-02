@@ -44,8 +44,8 @@ public class AdminBlog
   public AdminBlog(Blog blog)
   {
     id = blog.getId();
-    creation = blog.getCreation();
-    modification = blog.getModification();
+    creation = blog.getCreateDate();
+    modification = blog.getModifiedDate();
     title = blog.getTitle();
     urlTitle = blog.getUrlTitle();
     contents = blog.getContents();

@@ -43,11 +43,14 @@
     <class>mmud.database.entities.web.Blog</class>
     <class>mmud.database.entities.web.CharacterInfo</class>
     <class>mmud.database.entities.web.Family</class>
+    <class>mmud.database.entities.web.FamilyPK</class>
     <class>mmud.database.entities.web.FamilyValue</class>
+    <class>mmud.database.entities.web.Faq</class>
     <class>mmud.database.entities.web.HistoricTemplate</class>
+    <class>mmud.database.entities.web.HtmlTemplate</class>
     <class>mmud.database.entities.web.Image</class>
     <class>mmud.database.entities.web.Link</class>
-    <class>mmud.database.entities.web.Template</class>
+    <class>mmud.database.entities.web.Users</class>
     <class>mmud.database.entities.web.Wikipage</class>
     <class>mmud.database.entities.web.WikipageHistory</class>
     <exclude-unlisted-classes>true</exclude-unlisted-classes>

@@ -39,7 +39,7 @@ import javax.ws.rs.core.SecurityContext;
 import mmud.database.entities.characters.User;
 import mmud.database.entities.game.Admin;
 import mmud.database.entities.web.HistoricTemplate;
-import mmud.database.entities.web.Template;
+import mmud.database.entities.web.HtmlTemplate;
 import mmud.exceptions.MudWebException;
 import mmud.rest.services.LogBean;
 import mmud.rest.webentities.admin.AdminTemplate;
@@ -75,7 +75,7 @@ public class TemplatesBean
     LOGGER.info("edit");
     final String name = sc.getUserPrincipal().getName();
 
-    Template entity = getEntityManager().find(Template.class, id);
+    HtmlTemplate entity = getEntityManager().find(HtmlTemplate.class, id);
 
     if (entity == null)
     {
@@ -103,7 +103,7 @@ public class TemplatesBean
   public AdminTemplate find(@PathParam("id") Long id, @Context SecurityContext sc)
   {
     final String name = sc.getUserPrincipal().getName();
-    Template entity = getEntityManager().find(Template.class, id);
+    HtmlTemplate entity = getEntityManager().find(HtmlTemplate.class, id);
     if (entity == null)
     {
       throw new MudWebException(name, "Template " + id + " not found.", Response.Status.NOT_FOUND);
@@ -124,7 +124,7 @@ public class TemplatesBean
     {
       throw new MudWebException(name, "Admin " + name + " not found.", Response.Status.NOT_FOUND);
     }
-    TypedQuery<Template> templates = getEntityManager().createNamedQuery("Template.findAll", Template.class);
+    TypedQuery<HtmlTemplate> templates = getEntityManager().createNamedQuery("HtmlTemplate.findAll", HtmlTemplate.class);
     return templates.getResultList().stream().map(x -> new AdminTemplate(x)).collect(Collectors.toList());
   }
 

@@ -107,7 +107,7 @@ public class HistoricTemplate implements Serializable
     // ORM needs a default no-args constructor.
   }
 
-  public HistoricTemplate(Template entity)
+  public HistoricTemplate(HtmlTemplate entity)
   {
     this.name = entity.getName();
     this.content = entity.getContent();

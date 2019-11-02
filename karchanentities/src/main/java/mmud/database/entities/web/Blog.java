@@ -36,15 +36,23 @@ import mmud.database.entities.Ownage;
 import mmud.database.entities.game.Admin;
 
 /**
- * Contains the blogs that are visible on the central page.
+ * A blog from one of the administrators of the game. Will be visible on the
+ * central page.
+ *
  * @author maartenl
  */
 @Entity
 @Table(name = "blogs")
 @NamedQueries(
-{
-  @NamedQuery(name = "Blog.find", query = "SELECT b FROM Blog b WHERE b.owner = :user ORDER BY b.id DESC")
-})
+        {
+          @NamedQuery(name = "Blog.find", query = "SELECT b FROM Blog b WHERE b.owner = :user ORDER BY b.id DESC"),
+          @NamedQuery(name = "Blog.findAll", query = "SELECT b FROM Blog b order by b.createDate desc"),
+          @NamedQuery(name = "Blog.count", query = "SELECT count(b) FROM Blog b"),
+          @NamedQuery(name = "Blog.findById", query = "SELECT b FROM Blog b WHERE b.id = :id"),
+          @NamedQuery(name = "Blog.findByCreateDate", query = "SELECT b FROM Blog b WHERE b.createDate = :createDate"),
+          @NamedQuery(name = "Blog.findByModifiedDate", query = "SELECT b FROM Blog b WHERE b.modifiedDate = :modifiedDate"),
+          @NamedQuery(name = "Blog.findByUrlTitle", query = "SELECT b FROM Blog b WHERE b.urlTitle = :title")
+        })
 public class Blog implements Serializable, Ownage
 {
 
@@ -59,12 +67,12 @@ public class Blog implements Serializable, Ownage
   @Basic(optional = false)
   @NotNull
   @Column(name = "createDate")
-  private LocalDateTime creation;
+  private LocalDateTime createDate;
 
   @Basic(optional = false)
   @NotNull
   @Column(name = "modifiedDate")
-  private LocalDateTime modification;
+  private LocalDateTime modifiedDate;
 
   @Basic(optional = false)
   @NotNull
@@ -101,8 +109,8 @@ public class Blog implements Serializable, Ownage
   public Blog(Long id, LocalDateTime createDate, LocalDateTime modifiedDate, String title, String urlTitle, String content)
   {
     this.id = id;
-    this.creation = createDate;
-    this.modification = modifiedDate;
+    this.createDate = createDate;
+    this.modifiedDate = modifiedDate;
     this.title = title;
     this.urlTitle = urlTitle;
     this.contents = content;
@@ -118,24 +126,24 @@ public class Blog implements Serializable, Ownage
     this.id = id;
   }
 
-  public LocalDateTime getCreation()
+  public LocalDateTime getCreateDate()
   {
-    return creation;
+    return createDate;
   }
 
-  public void setCreation(LocalDateTime creation)
+  public void setCreateDate(LocalDateTime createDate)
   {
-    this.creation = creation;
+    this.createDate = createDate;
   }
 
-  public LocalDateTime getModification()
+  public LocalDateTime getModifiedDate()
   {
-    return modification;
+    return modifiedDate;
   }
 
-  public void setModification(LocalDateTime modification)
+  public void setModifiedDate(LocalDateTime modifiedDate)
   {
-    this.modification = modification;
+    this.modifiedDate = modifiedDate;
   }
 
   public String getTitle()
@@ -178,6 +186,15 @@ public class Blog implements Serializable, Ownage
     this.owner = owner;
   }
 
+  /**
+   * The name of the owner of this blog post.
+   * @return owners name (a deputy)
+   */
+  public String getName()
+  {
+    return this.owner.getName();
+  }
+  
   @Override
   public int hashCode()
   {
@@ -207,5 +224,72 @@ public class Blog implements Serializable, Ownage
   {
     return "mmud.database.entities.web.Blog[ id=" + id + " ]";
   }
-  
+
+  public String getContent()
+  {
+    contents = contents.trim();
+    if (contents.contains("gif/letters"))
+    {
+      int letterPos = contents.indexOf("gif/letters/");
+      if (letterPos != -1)
+      {
+        String letter = contents.substring(letterPos + 12, letterPos + 13);
+        int beginpos = letterPos;
+        int endpos = letterPos;
+        while (beginpos != -1)
+        {
+          if (contents.substring(beginpos, beginpos + 1).equals("<"))
+          {
+            break;
+          }
+          beginpos--;
+        }
+        while (endpos < contents.length())
+        {
+          if (contents.substring(endpos, endpos + 1).equals(">"))
+          {
+            break;
+          }
+          endpos++;
+        }
+        if (beginpos != -1 && endpos != contents.length())
+        {
+          contents = contents.replace(contents.substring(beginpos, endpos + 1), letter.toUpperCase());
+        }
+      }
+    }
+    return contents;
+  }
+
+  /**
+   * Returns HTML content, to be more specific, it capitalizes the first letter
+   * of the blogpost into a pretty image.
+   *
+   * @return capitalized blogpost
+   */
+  public String getHtmlContent()
+  {
+    String htmlContent = getContent();
+    boolean intag = false;
+    int pos = 0;
+    while (pos < htmlContent.length())
+    {
+      if (htmlContent.charAt(pos) == '<')
+      {
+        intag = true;
+      }
+      if (htmlContent.charAt(pos) == '>')
+      {
+        intag = false;
+      }
+      if (!intag && htmlContent.charAt(pos) >= 'A' && htmlContent.charAt(pos) <= 'Z')
+      {
+        char charAt = htmlContent.charAt(pos);
+        return htmlContent.substring(0, pos) + "<img alt=\"" + charAt + "\" src=\"/images/gif/letters/" + (charAt + "").toLowerCase() + ".gif\" style=\"float: left;\">" + htmlContent.substring(pos + 1);
+      }
+      pos++;
+    }
+    return htmlContent;
+  }
+
 }

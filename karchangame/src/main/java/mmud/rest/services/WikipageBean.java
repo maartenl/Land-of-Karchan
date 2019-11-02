@@ -213,7 +213,7 @@ public class WikipageBean
     wikipage.setModifiedDate(LocalDateTime.now());
     wikipage.setVersion("1.0");
     wikipage.setName(name);
-    wikipage.setParentTitle(parent);
+    wikipage.setParent(parent);
     wikipage.setAdministration(newWikipage.administration);
     wikipage.setComment(newWikipage.comment);
     wikipage.setOrdering(newWikipage.ordering);
@@ -307,7 +307,7 @@ public class WikipageBean
       wikipage.increaseVersion();
       wikipage.setComment(privateWikipage.comment);
       wikipage.setOrdering(privateWikipage.ordering);
-      wikipage.setParentTitle(parent);
+      wikipage.setParent(parent);
       logBean.writeLog(getUser(name), "Wikipage with title " + wikipage.getTitle() + " updated.");
 
     } catch (MudWebException e)

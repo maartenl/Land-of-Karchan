@@ -17,6 +17,7 @@
 package mmud.database.entities.web;
 
 import java.util.Date;
+import mmud.database.entities.web.Blog;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.testng.Assert.*;
 import org.testng.annotations.AfterClass;
@@ -63,7 +64,7 @@ public class BlogTest
   public void testGetContent()
   {
     Blog blog = new Blog();
-    blog.setContent("<p>Sorry guys. The upgrade has been postponed until further notice, perhaps indefinitely, while I look into other options.</p>");
+    blog.setContents("<p>Sorry guys. The upgrade has been postponed until further notice, perhaps indefinitely, while I look into other options.</p>");
     String expected = "<p>Sorry guys. The upgrade has been postponed until further notice, perhaps indefinitely, while I look into other options.</p>";
     String actual = blog.getContent();
     assertThat(actual).isEqualTo(expected);
@@ -76,7 +77,7 @@ public class BlogTest
   public void testGetContentWithImage()
   {
     Blog blog = new Blog();
-    blog.setContent("<p><img alt=\"S\" src=\"/images/gif/letters/s.gif\" style=\"float: left;\">orry guys. The upgrade has been postponed until further notice, perhaps indefinitely, while I look into other options.</p>");
+    blog.setContents("<p><img alt=\"S\" src=\"/images/gif/letters/s.gif\" style=\"float: left;\">orry guys. The upgrade has been postponed until further notice, perhaps indefinitely, while I look into other options.</p>");
     String expected = "<p>Sorry guys. The upgrade has been postponed until further notice, perhaps indefinitely, while I look into other options.</p>";
     String actual = blog.getContent();
     assertThat(actual).isEqualTo(expected);
@@ -90,7 +91,7 @@ public class BlogTest
   public void testGetHtmlContentWithoutImage()
   {
     Blog blog = new Blog();
-    blog.setContent("<p>Sorry guys. The upgrade has been postponed until further notice, perhaps indefinitely, while I look into other options.</p>");
+    blog.setContents("<p>Sorry guys. The upgrade has been postponed until further notice, perhaps indefinitely, while I look into other options.</p>");
     String expected = "<p><img alt=\"S\" src=\"/images/gif/letters/s.gif\" style=\"float: left;\">orry guys. The upgrade has been postponed until further notice, perhaps indefinitely, while I look into other options.</p>";
     String actual = blog.getHtmlContent();
     assertThat(actual).isEqualTo(expected);
@@ -104,7 +105,7 @@ public class BlogTest
   public void testGetHtmlContentWithImage()
   {
     Blog blog = new Blog();
-    blog.setContent("<p><img alt=\"S\" src=\"/images/gif/letters/s.gif\" style=\"float: left;\">orry guys. The upgrade has been postponed until further notice, perhaps indefinitely, while I look into other options.</p>");
+    blog.setContents("<p><img alt=\"S\" src=\"/images/gif/letters/s.gif\" style=\"float: left;\">orry guys. The upgrade has been postponed until further notice, perhaps indefinitely, while I look into other options.</p>");
     String expected = "<p><img alt=\"S\" src=\"/images/gif/letters/s.gif\" style=\"float: left;\">orry guys. The upgrade has been postponed until further notice, perhaps indefinitely, while I look into other options.</p>";
     String actual = blog.getHtmlContent();
     assertThat(actual).isEqualTo(expected);

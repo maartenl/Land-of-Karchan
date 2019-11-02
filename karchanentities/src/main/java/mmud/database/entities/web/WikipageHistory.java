@@ -129,7 +129,7 @@ public class WikipageHistory implements Serializable
     this.content = wikipage.getContent();
     this.administration = wikipage.getAdministration();
     this.comment = wikipage.getComment();
-    this.parentTitle = wikipage.getParentTitle() == null ? null : wikipage.getParentTitle().getTitle();
+    this.parentTitle = wikipage.getParent() == null ? null : wikipage.getParent().getTitle();
     this.ordering = wikipage.getOrdering();
   }
 
