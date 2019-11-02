@@ -21,6 +21,7 @@ import mmud.database.entities.characters.User;
 import mmud.database.entities.game.DisplayInterface;
 import mmud.database.entities.game.Room;
 import mmud.exceptions.MudException;
+import mmud.services.CommunicationService;
 
 /**
  * Moves the character to the room above: "up". Is the same as "go up".
@@ -42,12 +43,12 @@ public class UpCommand extends NormalCommand
         Room myRoom = aUser.getRoom();
         if (myRoom.getUp() != null)
         {
-            myRoom.sendMessageExcl(aUser, "%SNAME leave%VERB2 up.<BR>\r\n");
+            CommunicationService.getCommunicationService(myRoom).sendMessageExcl(aUser, "%SNAME leave%VERB2 up.<BR>\r\n");
             aUser.setRoom(myRoom.getUp());
-            aUser.getRoom().sendMessageExcl(aUser, "%SNAME appear%VERB2.<BR>\r\n");
+            CommunicationService.getCommunicationService(aUser.getRoom()).sendMessageExcl(aUser, "%SNAME appear%VERB2.<BR>\r\n");
         } else
         {
-            aUser.writeMessage("You cannot go up.<BR>\r\n");
+            CommunicationService.getCommunicationService(aUser).writeMessage("You cannot go up.<BR>\r\n");
         }
         return aUser.getRoom();
     }

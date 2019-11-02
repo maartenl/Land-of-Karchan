@@ -22,7 +22,7 @@ export class SystemlogComponent implements OnInit {
       (result: Systemlog[]) => { // on success
         if (result !== undefined && result.length !== 0) {
           result.forEach((value) => {
-            value.timestamp = value.timestamp.replace('[UTC]', '');
+            value.Timestamp = value.Timestamp.replace('[UTC]', '');
           });
           this.logs = result;
         }

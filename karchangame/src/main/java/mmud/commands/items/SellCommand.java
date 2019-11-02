@@ -19,10 +19,9 @@ package mmud.commands.items;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import javax.naming.InitialContext;
-import javax.naming.NamingException;
 import mmud.Constants;
 import mmud.commands.NormalCommand;
+import mmud.database.OutputFormatter;
 import mmud.database.entities.characters.Person;
 import mmud.database.entities.characters.Shopkeeper;
 import mmud.database.entities.characters.User;
@@ -31,6 +30,8 @@ import mmud.database.entities.items.Item;
 import mmud.database.enums.God;
 import mmud.exceptions.MudException;
 import mmud.rest.services.ItemBean;
+import mmud.services.CommunicationService;
+import mmud.services.PersonCommunicationService;
 
 /**
  * Sells an item to a shopkeeper. Syntax : sell [&lt;amount&gt;] &lt;item&gt; to &lt;character&gt;.
@@ -83,6 +84,7 @@ public class SellCommand extends NormalCommand
     @Override
     public DisplayInterface run(String command, User aUser) throws MudException
     {
+      PersonCommunicationService communicationService = CommunicationService.getCommunicationService(aUser);
         List<String> parsed = new ArrayList<>(Arrays.asList(parseCommand(command)));
         parsed.remove(0); // remove "sell"
         String shopkeeperName = parsed.get(parsed.size() - 1);
@@ -98,30 +100,30 @@ public class SellCommand extends NormalCommand
         }
         if (amount <= 0)
         {
-            aUser.writeMessage("That is an illegal amount.<br/>\n");
+            communicationService.writeMessage("That is an illegal amount.<br/>\n");
             return aUser.getRoom();
         }
         // find the item on ourselves
         List<Item> itemsFound = aUser.findItems(parsed);
         if (itemsFound.isEmpty())
         {
-            aUser.writeMessage("You don't have that.<br/>\n");
+            communicationService.writeMessage("You don't have that.<br/>\n");
             return aUser.getRoom();
         }
         if (itemsFound.size() < amount)
         {
-            aUser.writeMessage("You do not have that many items in your inventory.<br/>\r\n");
+            communicationService.writeMessage("You do not have that many items in your inventory.<br/>\r\n");
             return aUser.getRoom();
         }
         Person keeper = aUser.getRoom().getPerson(shopkeeperName);
         if (keeper == null)
         {
-            aUser.writeMessage("Unable to locate shopkeeper.<br/>\r\n");
+            communicationService.writeMessage("Unable to locate shopkeeper.<br/>\r\n");
             return aUser.getRoom();
         }
         if (keeper.getGod() != God.SHOPKEEPER)
         {
-            aUser.writeMessage("That's not a shopkeeper!<br/>\r\n");
+            communicationService.writeMessage("That's not a shopkeeper!<br/>\r\n");
             return aUser.getRoom();
         }
         Shopkeeper shopkeeper = (Shopkeeper) keeper;
@@ -133,25 +135,25 @@ public class SellCommand extends NormalCommand
             if (item.getCopper() <= 1)
             {
                 String message = "That item is not worth anything.";
-                aUser.getRoom().sendMessage(shopkeeper, aUser,
+                CommunicationService.getCommunicationService(aUser.getRoom()).sendMessage(shopkeeper, aUser,
                         "%SNAME say%VERB2 [to %TNAME] : " + message
                         + "<br/>\r\n");
                 continue;
             }
             if (shopkeeper.getCopper() < item.getCopper())
             {
-                aUser.writeMessage(shopkeeper.getName()
+                communicationService.writeMessage(shopkeeper.getName()
                         + " mutters something about not having enough money.<br/>\r\n");
                 break;
             }
             if (!aUser.unused(item))
             {
-                aUser.writeMessage("You are wearing or wielding this item.<BR>\r\n");
+                communicationService.writeMessage("You are wearing or wielding this item.<BR>\r\n");
                 continue;
             }
             if (!item.isSellable())
             {
-                aUser.writeMessage("You cannot sell that item.<BR>\r\n");
+                communicationService.writeMessage("You cannot sell that item.<BR>\r\n");
                 continue;
             }
             Integer moneyPaid = itemBean.sell(item, aUser, shopkeeper);
@@ -159,7 +161,7 @@ public class SellCommand extends NormalCommand
             {
                 continue;
             }
-            aUser.getRoom().sendMessage(aUser, "%SNAME sold%VERB2 " + item.getDescription() + " to " + shopkeeper.getName() + " for " + Constants.getDescriptionOfMoney(moneyPaid) + ".<br/>\r\n");
+            CommunicationService.getCommunicationService(aUser.getRoom()).sendMessage(aUser, "%SNAME sold%VERB2 " + item.getDescription() + " to " + shopkeeper.getName() + " for " + OutputFormatter.getDescriptionOfMoney(moneyPaid) + ".<br/>\r\n");
             sold = true;
             amount--;
             if (amount == 0)
@@ -170,10 +172,10 @@ public class SellCommand extends NormalCommand
         }
         if (!sold)
         {
-            aUser.writeMessage("You did not sell anything.<br/>\r\n");
+            communicationService.writeMessage("You did not sell anything.<br/>\r\n");
         } else
         {
-            aUser.writeMessage("You sold some of the items.<br/>\r\n");
+            communicationService.writeMessage("You sold some of the items.<br/>\r\n");
         }
         return aUser.getRoom();
     }

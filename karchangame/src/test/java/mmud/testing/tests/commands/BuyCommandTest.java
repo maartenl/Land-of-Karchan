@@ -35,10 +35,11 @@ import mockit.Mocked;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
-import javax.naming.NamingException;
+
 import java.io.File;
 import java.io.PrintWriter;
 import java.util.HashSet;
+import mmud.services.CommunicationService;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
@@ -84,7 +85,7 @@ public class BuyCommandTest extends MudTest
         DisplayInterface display = buyCommand.run("buy brush from karcas", karn);
         assertThat(display).isNotNull();
         assertThat(display.getBody()).isEqualTo("You are in a small room.");
-        String log = karn.getLog(0);
+        String log = CommunicationService.getCommunicationService(karn).getLog(0);
         assertThat(log).isEqualTo("The shopkeeper doesn&#39;t have that.<br />\n");
     }
 
@@ -104,7 +105,7 @@ public class BuyCommandTest extends MudTest
         DisplayInterface display = buyCommand.run("buy -2 ring from karcas", karn);
         assertThat(display).isNotNull();
         assertThat(display.getBody()).isEqualTo("You are in a small room.");
-        String log = karn.getLog(0);
+        String log = CommunicationService.getCommunicationService(karn).getLog(0);
         assertThat(log).isEqualTo("That is an illegal amount.<br />\n");
     }
 
@@ -129,7 +130,7 @@ public class BuyCommandTest extends MudTest
         DisplayInterface display = buyCommand.run("buy 3 ring from karcas", karn);
         assertThat(display).isNotNull();
         assertThat(display.getBody()).isEqualTo("You are in a small room.");
-        String log = karn.getLog(0);
+        String log = CommunicationService.getCommunicationService(karn).getLog(0);
         assertThat(log).isEqualTo("The shopkeeper doesn&#39;t have that many items in stock.<br />\r\n");
     }
 
@@ -144,7 +145,7 @@ public class BuyCommandTest extends MudTest
         DisplayInterface display = buyCommand.run("buy ring from karcas", karn);
         assertThat(display).isNotNull();
         assertThat(display.getBody()).isEqualTo("You are in a small room.");
-        String log = karn.getLog(0);
+        String log = CommunicationService.getCommunicationService(karn).getLog(0);
         assertThat(log).isEqualTo("Unable to locate shopkeeper.<br />\r\n");
     }
 
@@ -169,12 +170,12 @@ public class BuyCommandTest extends MudTest
         DisplayInterface display = buyCommand.run("buy ring from karcas", karn);
         assertThat(display).isNotNull();
         assertThat(display.getBody()).isEqualTo("You are in a small room.");
-        String log = karn.getLog(0);
+        String log = CommunicationService.getCommunicationService(karn).getLog(0);
         assertThat(log).isEqualTo("That&#39;s not a shopkeeper!<br />\r\n");
     }
 
     @Test
-    public void buyItemNotWorthAnything() throws NamingException
+    public void buyItemNotWorthAnything()
     {
         ring.getItemDefinition().setCopper(0);
         Shopkeeper karcas = new Shopkeeper();
@@ -204,12 +205,12 @@ public class BuyCommandTest extends MudTest
         DisplayInterface display = buyCommand.run("buy ring from karcas", karn);
         assertThat(display).isNotNull();
         assertThat(display.getBody()).isEqualTo("You are in a small room.");
-        String log = karn.getLog(0);
+        String log = CommunicationService.getCommunicationService(karn).getLog(0);
         assertThat(log).isEqualTo("Karcas says [to you] : That item is not worth anything.<br />\r\nYou did not buy anything.<br />\r\n");
     }
 
     @Test
-    public void buyCustomerHasNoMoney() throws NamingException
+    public void buyCustomerHasNoMoney() 
     {
         Shopkeeper karcas = new Shopkeeper();
         karcas.setName("Karcas");
@@ -238,12 +239,12 @@ public class BuyCommandTest extends MudTest
         DisplayInterface display = buyCommand.run("buy ring from karcas", karn);
         assertThat(display).isNotNull();
         assertThat(display.getBody()).isEqualTo("You are in a small room.");
-        String log = karn.getLog(0);
+        String log = CommunicationService.getCommunicationService(karn).getLog(0);
         assertThat(log).isEqualTo("You do not have enough money.<br />\r\nYou did not buy anything.<br />\r\n");
     }
 
     @Test
-    public void buyItemdefIdNegative() throws NamingException
+    public void buyItemdefIdNegative() 
     {
         ring.getItemDefinition().setId(-3);
         Shopkeeper karcas = new Shopkeeper();
@@ -274,12 +275,12 @@ public class BuyCommandTest extends MudTest
         DisplayInterface display = buyCommand.run("buy ring from karcas", karn);
         assertThat(display).isNotNull();
         assertThat(display.getBody()).isEqualTo("You are in a small room.");
-        String log = karn.getLog(0);
+        String log = CommunicationService.getCommunicationService(karn).getLog(0);
         assertThat(log).isEqualTo("You cannot buy that item.<br />\r\nYou did not buy anything.<br />\r\n");
     }
 
     @Test
-    public void buyBound() throws NamingException
+    public void buyBound()
     {
         Shopkeeper karcas = new Shopkeeper();
         karcas.setName("Karcas");
@@ -310,12 +311,12 @@ public class BuyCommandTest extends MudTest
         DisplayInterface display = buyCommand.run("buy ring from karcas", karn);
         assertThat(display).isNotNull();
         assertThat(display.getBody()).isEqualTo("You are in a small room.");
-        String log = karn.getLog(0);
+        String log = CommunicationService.getCommunicationService(karn).getLog(0);
         assertThat(log).isEqualTo("You cannot buy that item.<br />\r\nYou did not buy anything.<br />\r\n");
     }
 
     @Test
-    public void buyOk() throws NamingException
+    public void buyOk() 
     {
         Shopkeeper karcas = new Shopkeeper();
         karcas.setName("Karcas");
@@ -345,7 +346,7 @@ public class BuyCommandTest extends MudTest
         DisplayInterface display = buyCommand.run("buy ring from karcas", karn);
         assertThat(display).isNotNull();
         assertThat(display.getBody()).isEqualTo("You are in a small room.");
-        String log = karn.getLog(0);
+        String log = CommunicationService.getCommunicationService(karn).getLog(0);
         assertThat(log).isEqualTo("You buy a nice, golden, friendship ring from Karcas for 5 copper coins.<br />\r\n");
     }
 
@@ -367,7 +368,7 @@ public class BuyCommandTest extends MudTest
         ring.setItemDefinition(itemDef);
 
         room1 = new Room();
-        room1.setId(1);
+        room1.setId(1L);
         room1.setContents("You are in a small room.");
 
         karn = new User();

@@ -20,6 +20,8 @@ import mmud.database.entities.characters.User;
 import mmud.database.entities.game.DisplayInterface;
 import mmud.database.enums.Health;
 import mmud.exceptions.MudException;
+import mmud.services.CommunicationService;
+import mmud.services.PersonCommunicationService;
 
 /**
  * Sets the wimpy or displays the wimpy of the user: "wimpy".
@@ -36,10 +38,11 @@ public class WimpyCommand extends NormalCommand
     @Override
     public DisplayInterface run(String command, User aUser) throws MudException
     {
+      PersonCommunicationService communicationService = CommunicationService.getCommunicationService(aUser);
         command = command.trim();
         if (command.equalsIgnoreCase("wimpy help"))
         {
-            aUser.writeMessage("Syntax: <B>wimpy &lt;string&gt;</B><UL><LI>feeling well"
+            communicationService.writeMessage("Syntax: <B>wimpy &lt;string&gt;</B><UL><LI>feeling well"
                     + "<LI>feeling fine<LI>feeling quite nice<LI>slightly hurt"
                     + "<LI>hurt<LI>quite hurt<LI>extremely hurt<LI>terribly hurt"
                     + "<LI>feeling bad<LI>feeling very bad<LI>at death's door</UL>\r\n");
@@ -48,7 +51,7 @@ public class WimpyCommand extends NormalCommand
         }
         if (command.equalsIgnoreCase("wimpy"))
         {
-            aUser.writeMessage("Current wimpy setting: <B>"
+            communicationService.writeMessage("Current wimpy setting: <B>"
                     + (aUser.getWimpy() == null ? "not set" : aUser.getWimpy().getDescription())
                     + "</B>.<BR>\r\n");
             return aUser.getRoom();
@@ -58,10 +61,10 @@ public class WimpyCommand extends NormalCommand
         Health health = Health.get(myString);
         if (health == null)
         {
-            aUser.writeMessage("Cannot find that wimpy level.<BR>\r\n");
+            communicationService.writeMessage("Cannot find that wimpy level.<BR>\r\n");
             return aUser.getRoom();
         }
-        aUser.writeMessage("Wimpy level set.<BR>\r\n");
+        communicationService.writeMessage("Wimpy level set.<BR>\r\n");
         aUser.setWimpy(health);
         return aUser.getRoom();
     }

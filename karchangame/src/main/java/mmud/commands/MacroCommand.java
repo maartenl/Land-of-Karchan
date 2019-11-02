@@ -21,6 +21,8 @@ import mmud.database.entities.game.DisplayInterface;
 import mmud.database.entities.game.Macro;
 import mmud.database.entities.game.MacroPK;
 import mmud.exceptions.MudException;
+import mmud.services.CommunicationService;
+import mmud.services.PersonCommunicationService;
 
 /**
  * Macros :
@@ -45,6 +47,7 @@ public class MacroCommand extends NormalCommand
     @Override
     public DisplayInterface run(String command, User aUser) throws MudException
     {
+      PersonCommunicationService communicationService = CommunicationService.getCommunicationService(aUser);
         String[] myParsed = parseCommand(command, 3);
         if (myParsed.length == 1)
         {
@@ -53,10 +56,10 @@ public class MacroCommand extends NormalCommand
         {
             if (!aUser.removeMacro(myParsed[1]))
             {
-                aUser.writeMessage("Cannot remove macro [" + myParsed[1] + "]. Macro unknown.<br/>\r\n");
+                communicationService.writeMessage("Cannot remove macro [" + myParsed[1] + "]. Macro unknown.<br/>\r\n");
             return aUser.getRoom();
             }
-            aUser.writeMessage("Removed macro [" + myParsed[1] + "].<br/>\r\n");
+            communicationService.writeMessage("Removed macro [" + myParsed[1] + "].<br/>\r\n");
             return aUser.getRoom();
         }
         Macro macro = new Macro();
@@ -64,7 +67,7 @@ public class MacroCommand extends NormalCommand
         macro.setMacroPK(new MacroPK(aUser.getName(), myParsed[1]));
         macro.setContents(myParsed[2]);
         aUser.addMacro(macro);
-        aUser.writeMessage("Macro [" + myParsed[1] + "] added.<br/>\r\n");
+        communicationService.writeMessage("Macro [" + myParsed[1] + "] added.<br/>\r\n");
 
         return aUser.getRoom();
     }

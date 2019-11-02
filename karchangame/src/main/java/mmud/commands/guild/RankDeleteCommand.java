@@ -22,6 +22,8 @@ import mmud.database.entities.game.DisplayInterface;
 import mmud.database.entities.game.Guildrank;
 import mmud.exceptions.MudException;
 import mmud.rest.services.LogBean;
+import mmud.services.CommunicationService;
+import mmud.services.PersonCommunicationService;
 
 /**
  * Makes you, as guildmaster, delete a rank of the guild.
@@ -43,6 +45,7 @@ public class RankDeleteCommand extends GuildMasterCommand
   @Override
   public DisplayInterface run(String command, User aUser) throws MudException
   {
+    PersonCommunicationService communicationService = CommunicationService.getCommunicationService(aUser);
     LogBean logBean = getLogBean();
     String[] myParsed = parseCommand(command);
     String rankString = myParsed[1];
@@ -52,18 +55,18 @@ public class RankDeleteCommand extends GuildMasterCommand
       rankIndex = Integer.valueOf(rankString);
     } catch (NumberFormatException e)
     {
-      aUser.writeMessage("Ranknumber not a number.<BR>\r\n");
+      communicationService.writeMessage("Ranknumber not a number.<BR>\r\n");
       return aUser.getRoom();
     }
     Guildrank rank = aUser.getGuild().getRank(rankIndex);
     if (rank == null)
     {
-      aUser.writeMessage("Rank not found.<BR>\r\n");
+      communicationService.writeMessage("Rank not found.<BR>\r\n");
       return aUser.getRoom();
     }
     // TODO: verify that nobody is using the rank.
     aUser.getGuild().deleteGuildrank(rank);
-    aUser.writeMessage("Rank removed.<BR>\r\n");
+    communicationService.writeMessage("Rank removed.<BR>\r\n");
     logBean.writeLog(aUser, " rank removed " + rankIndex
             + " from guild " + aUser.getGuild().getName());
     return aUser.getRoom();

@@ -41,6 +41,7 @@ import mmud.scripting.Persons;
 import mmud.scripting.Rooms;
 import mmud.scripting.RunScript;
 import mmud.scripting.World;
+import mmud.services.CommunicationService;
 
 /**
  * Takes care of all the events.
@@ -223,7 +224,7 @@ public class EventsBean
         final String message = "executeIdleCleanup(): " + user.getName() + " was idle for " + user.getIdleTime() + " minutes. Deactivated.";
         LOGGER.info(message);
         logBean.writeLog(message);
-        user.getRoom().sendMessageExcl(user, "%SNAME fade%VERB2 slowly from existence.<br/>\r\n");
+        CommunicationService.getCommunicationService(user.getRoom()).sendMessageExcl(user, "%SNAME fade%VERB2 slowly from existence.<br/>\r\n");
         user.deactivate();
       }
     }

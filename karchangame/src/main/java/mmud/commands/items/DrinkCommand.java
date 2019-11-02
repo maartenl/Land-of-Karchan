@@ -25,6 +25,7 @@ import mmud.database.entities.characters.User;
 import mmud.database.entities.game.DisplayInterface;
 import mmud.database.entities.items.Item;
 import mmud.exceptions.MudException;
+import mmud.services.CommunicationService;
 
 /**
  * Drink an item: "drink beer".
@@ -47,21 +48,21 @@ public class DrinkCommand extends NormalCommand
         List<Item> itemsFound = aUser.findItems(parsed);
         if (itemsFound.isEmpty())
         {
-            aUser.writeMessage("You don't have that.<br/>\n");
+            CommunicationService.getCommunicationService(aUser).writeMessage("You don't have that.<br/>\n");
             return aUser.getRoom();
         }
         final Item result = itemsFound.get(0);
         if (!result.isDrinkable())
         {
-            aUser.writeMessage("You cannot drink that.<BR>\r\n");
+            CommunicationService.getCommunicationService(aUser).writeMessage("You cannot drink that.<BR>\r\n");
             return aUser.getRoom();
         }
         if (!aUser.unused(result))
         {
-            aUser.writeMessage("You are using that.<BR>\r\n");
+            CommunicationService.getCommunicationService(aUser).writeMessage("You are using that.<BR>\r\n");
             return aUser.getRoom();
         }
-        aUser.getRoom().sendMessage(aUser, "%SNAME drink%VERB2 "
+        CommunicationService.getCommunicationService(aUser.getRoom()).sendMessage(aUser, "%SNAME drink%VERB2 "
                 + result.getDescription() + ".<br/>\r\n");
         //TODO increase drink stats
         aUser.destroyItem(result);

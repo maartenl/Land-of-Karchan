@@ -354,7 +354,7 @@ public class CommandFactory
 
     private final String theMethodName;
 
-    private final Integer theRoom;
+    private final Long theRoom;
 
     /**
      * constructor for creating a user command for a specific room.
@@ -367,7 +367,7 @@ public class CommandFactory
      * @param aCommandId the identification number for the command
      */
     public UserCommandInfo(int aCommandId, String aCommand,
-            String aMethodName, Integer aRoom)
+            String aMethodName, Long aRoom)
     {
       theCommandId = aCommandId;
       theCommand = aCommand;
@@ -407,7 +407,7 @@ public class CommandFactory
       return theMethodName;
     }
 
-    public Integer getRoom()
+    public Long getRoom()
     {
       return theRoom;
     }
@@ -476,7 +476,7 @@ public class CommandFactory
    * valid for all rooms.
    */
   public static void addUserCommand(int aCommandId, String aCommand,
-          String aMethodName, Integer aRoom)
+          String aMethodName, Long aRoom)
   {
     UserCommandInfo info = new UserCommandInfo(aCommandId, aCommand, aMethodName, aRoom);
     CommandFactory.theUserCommandStructure.add(info);

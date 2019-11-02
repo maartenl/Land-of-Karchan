@@ -54,7 +54,7 @@ public class PrivateWikipage
     this.content = wikipage.getContent();
     this.createDate = wikipage.getCreateDate();
     this.modifiedDate = wikipage.getModifiedDate();
-    this.parentTitle = wikipage.getParentTitle() == null ? null : wikipage.getParentTitle().getTitle();
+    this.parentTitle = wikipage.getParent() == null ? null : wikipage.getParent().getTitle();
     this.version = wikipage.getVersion();
     this.administration = wikipage.getAdministration();
     this.comment = wikipage.getComment();

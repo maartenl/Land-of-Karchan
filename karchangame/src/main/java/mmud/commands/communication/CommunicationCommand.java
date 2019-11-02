@@ -21,6 +21,7 @@ import mmud.database.entities.characters.Person;
 import mmud.database.entities.characters.User;
 import mmud.database.entities.game.DisplayInterface;
 import mmud.exceptions.MudException;
+import mmud.services.CommunicationService;
 
 /**
  *
@@ -50,13 +51,13 @@ public abstract class CommunicationCommand extends TargetCommand
 //                    + " is ignoring you fully.<BR>\r\n");
 //            return true;
 //        }
-        aUser.getRoom().sendMessageExcl(aUser, aTarget, "%SNAME "
+        CommunicationService.getCommunicationService(aUser.getRoom()).sendMessageExcl(aUser, aTarget, "%SNAME "
                 + getCommType().getPlural() + " [to %TNAME] : "
                 + message + "<BR>\r\n");
-        aUser.writeMessage(aUser, aTarget, "<B>%SNAME "
+        CommunicationService.getCommunicationService(aUser).writeMessage(aUser, aTarget, "<B>%SNAME "
                 + getCommType().toString() + " [to %TNAME]</B> : "
                 + message + "<BR>\r\n");
-        aTarget.writeMessage(aUser, aTarget, "<B>%SNAME "
+        CommunicationService.getCommunicationService(aTarget).writeMessage(aUser, aTarget, "<B>%SNAME "
                 + getCommType().getPlural() + " [to %TNAME]</B> : "
                 + message + "<BR>\r\n");
         return aUser.getRoom();
@@ -70,10 +71,10 @@ public abstract class CommunicationCommand extends TargetCommand
             // "ask", ask what?
             return null;
         }
-        aUser.getRoom().sendMessageExcl(aUser, "%SNAME "
+        CommunicationService.getCommunicationService(aUser.getRoom()).sendMessageExcl(aUser, "%SNAME "
                 + getCommType().getPlural() + " : " + command
                 + "<BR>\r\n");
-        aUser.writeMessage(aUser, "<B>%SNAME " + getCommType().toString()
+        CommunicationService.getCommunicationService(aUser).writeMessage(aUser, "<B>%SNAME " + getCommType().toString()
                 + "</B> : " + command + "<BR>\r\n");
         return aUser.getRoom();
     }

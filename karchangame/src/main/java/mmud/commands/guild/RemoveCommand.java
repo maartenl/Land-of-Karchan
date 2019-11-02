@@ -22,6 +22,8 @@ import mmud.database.entities.characters.User;
 import mmud.database.entities.game.DisplayInterface;
 import mmud.exceptions.MudException;
 import mmud.rest.services.LogBean;
+import mmud.services.CommunicationService;
+import mmud.services.PersonCommunicationService;
 
 /**
  * Makes you, as guildmaster, remove a member of the guild forcibly. Command
@@ -32,51 +34,52 @@ import mmud.rest.services.LogBean;
 public class RemoveCommand extends GuildMasterCommand
 {
 
-    private static final Logger LOGGER = Logger.getLogger(RemoveCommand.class.getName());
+  private static final Logger LOGGER = Logger.getLogger(RemoveCommand.class.getName());
 
-    public RemoveCommand(String aRegExpr)
+  public RemoveCommand(String aRegExpr)
+  {
+    super(aRegExpr);
+  }
+
+  @Override
+  public DisplayInterface run(String command, User aUser) throws MudException
+  {
+
+    PersonCommunicationService communicationService = CommunicationService.getCommunicationService(aUser);
+    LogBean logBean = getLogBean();
+    String[] myParsed = parseCommand(command);
+    User guildmember = aUser.getGuild().getMember(myParsed[1]);
+    if (guildmember == null)
     {
-        super(aRegExpr);
+      communicationService.writeMessage("Cannot find that person.<BR>\r\n");
+      return aUser.getRoom();
     }
-
-    @Override
-    public DisplayInterface run(String command, User aUser) throws MudException
+    if (guildmember.getName().equals(aUser.getName()))
     {
-
-        LogBean logBean = getLogBean();
-        String[] myParsed = parseCommand(command);
-        User guildmember = aUser.getGuild().getMember(myParsed[1]);
-        if (guildmember == null)
-        {
-            aUser.writeMessage("Cannot find that person.<BR>\r\n");
-            return aUser.getRoom();
-        }
-        if (guildmember.getName().equals(aUser.getName()))
-        {
-            aUser.writeMessage("A guildmaster cannot remove him/herself from the guild.<BR>\r\n");
-            return aUser.getRoom();
-        }
-        if (!aUser.getGuild().getName().equals(guildmember.getGuild().getName()))
-        {
-            aUser.writeMessage("That person is not a member of your guild.<BR>\r\n");
-            return aUser.getRoom();
-        }
-        guildmember.setGuild(null);
-        // TODO?
-        // aUser.getGuild().decreaseAmountOfMembers();
-        logBean.writeLog(aUser, "removed " + guildmember.getName()
-                + " from guild " + aUser.getGuild().getName());
-        aUser.writeMessage("You have removed " + guildmember.getName()
-                + " from your guild.<BR>\r\n");
-        aUser.getGuild().sendMessage("<B>"
-                + guildmember.getName()
-                + "</B> has been removed from the guild.<BR>\r\n");
-        if (guildmember.isActive())
-        {
-            guildmember.writeMessage("You have been removed from the guild <I>"
-                    + aUser.getGuild().getTitle() + "</I>.<BR>\r\n");
-        }
-        return aUser.getRoom();
+      communicationService.writeMessage("A guildmaster cannot remove him/herself from the guild.<BR>\r\n");
+      return aUser.getRoom();
     }
+    if (!aUser.getGuild().getName().equals(guildmember.getGuild().getName()))
+    {
+      communicationService.writeMessage("That person is not a member of your guild.<BR>\r\n");
+      return aUser.getRoom();
+    }
+    guildmember.setGuild(null);
+    // TODO?
+    // aUser.getGuild().decreaseAmountOfMembers();
+    logBean.writeLog(aUser, "removed " + guildmember.getName()
+            + " from guild " + aUser.getGuild().getName());
+    communicationService.writeMessage("You have removed " + guildmember.getName()
+            + " from your guild.<BR>\r\n");
+    CommunicationService.getCommunicationService(aUser.getGuild()).sendMessage("<B>"
+            + guildmember.getName()
+            + "</B> has been removed from the guild.<BR>\r\n");
+    if (guildmember.isActive())
+    {
+      CommunicationService.getCommunicationService(guildmember).writeMessage("You have been removed from the guild <I>"
+              + aUser.getGuild().getTitle() + "</I>.<BR>\r\n");
+    }
+    return aUser.getRoom();
+  }
 
 }

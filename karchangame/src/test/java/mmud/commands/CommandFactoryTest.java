@@ -32,6 +32,7 @@ import java.io.File;
 import java.io.PrintWriter;
 import java.util.HashSet;
 import java.util.List;
+import mmud.services.CommunicationService;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -125,8 +126,8 @@ public class CommandFactoryTest extends MudTest
     final Room room = TestingConstants.getRoom(TestingConstants.getArea());
     karn.setRoom(room);
     marvin = TestingConstants.getMarvin(room);
-    karn.clearLog();
-    marvin.clearLog();
+    CommunicationService.getCommunicationService(karn).clearLog();
+    CommunicationService.getCommunicationService(marvin).clearLog();
     HashSet<Person> persons = new HashSet<>();
     persons.add(karn);
     persons.add(marvin);

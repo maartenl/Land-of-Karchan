@@ -95,8 +95,8 @@ public class BlogsBean extends AbstractFacade<Blog>
     Admin admin = getEntityManager().find(Admin.class, name);
     Blog entity = new Blog();
     entity.setOwner(admin);
-    entity.setCreation(LocalDateTime.now());
-    entity.setModification(entity.getCreation());
+    entity.setCreateDate(LocalDateTime.now());
+    entity.setModifiedDate(entity.getCreateDate());
     entity.setTitle(blog.title);
     entity.setUrlTitle(blog.urlTitle);
     entity.setContents(blog.contents);
@@ -126,7 +126,7 @@ public class BlogsBean extends AbstractFacade<Blog>
     }
     Admin admin = (new OwnerHelper(getEntityManager())).authorize(name, entity);
     entity.setContents(blog.contents);
-    entity.setModification(LocalDateTime.now());
+    entity.setModifiedDate(LocalDateTime.now());
     entity.setTitle(blog.title);
     entity.setUrlTitle(blog.urlTitle);
     checkValidation(name, entity);

@@ -16,13 +16,15 @@
  */
 package mmud.commands.guild;
 
-import mmud.Attributes;
+import mmud.database.Attributes;
 import mmud.commands.NormalCommand;
 import mmud.database.entities.characters.User;
 import mmud.database.entities.game.DisplayInterface;
 import mmud.database.entities.game.Guild;
 import mmud.exceptions.MudException;
 import mmud.rest.services.GuildBean;
+import mmud.services.CommunicationService;
+import mmud.services.PersonCommunicationService;
 
 /**
  * Makes you apply to a guild. There are some requirements to follow:
@@ -45,30 +47,31 @@ public class ApplyCommand extends NormalCommand
     @Override
     public DisplayInterface run(String command, User aUser) throws MudException
     {
+      PersonCommunicationService communicationService = CommunicationService.getCommunicationService(aUser);
         String[] myParsed = parseCommand(command);
         if (myParsed.length == 1)
         {
             aUser.removeAttribute(Attributes.GUILDWISH);
-            aUser.writeMessage("You have no longer applied to any guild.<BR>\r\n");
+            communicationService.writeMessage("You have no longer applied to any guild.<BR>\r\n");
             return aUser.getRoom();
         }
         GuildBean guildBean = getGuildBean();
         Guild guild = guildBean.getGuild(myParsed[1]);
         if (guild == null)
         {
-            aUser.writeMessage("Unable to find guild <I>" + myParsed[1]
+            communicationService.writeMessage("Unable to find guild <I>" + myParsed[1]
                     + "</I>.<BR>\r\n");
             return aUser.getRoom();
         }
         if (aUser.getGuild() != null)
         {
-            aUser.writeMessage("You already belong to guild <I>"
+            communicationService.writeMessage("You already belong to guild <I>"
                     + aUser.getGuild().getTitle() + "</I>.<BR>\r\n");
             return aUser.getRoom();
         }
         aUser.setAttribute(Attributes.GUILDWISH, guild.getName());
         
-        aUser.writeMessage("You have applied to guild <I>" + guild.getTitle()
+        communicationService.writeMessage("You have applied to guild <I>" + guild.getTitle()
                 + "</I>.<BR>\r\n");        
         return aUser.getRoom();
     }

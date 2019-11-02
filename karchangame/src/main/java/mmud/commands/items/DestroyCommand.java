@@ -25,6 +25,7 @@ import mmud.database.entities.characters.User;
 import mmud.database.entities.game.DisplayInterface;
 import mmud.database.entities.items.Item;
 import mmud.exceptions.MudException;
+import mmud.services.CommunicationService;
 
 /**
  * Destroys an item from inventory. "destroy apple pie". Will nicely cleanup your inventory
@@ -49,11 +50,11 @@ public class DestroyCommand extends NormalCommand
         List<Item> itemsFound = aUser.findItems(parsed);
         if (itemsFound.isEmpty())
         {
-            aUser.writeMessage("You don't have that.<br/>\n");
+            CommunicationService.getCommunicationService(aUser).writeMessage("You don't have that.<br/>\n");
             return aUser.getRoom();
         }
         final Item result = itemsFound.get(0);
-        aUser.getRoom().sendMessage(aUser, "%SNAME destroy%VERB2 "
+        CommunicationService.getCommunicationService(aUser.getRoom()).sendMessage(aUser, "%SNAME destroy%VERB2 "
 					+ result.getDescription() + ".<br/>\r\n");
         aUser.destroyItem(result);
         return aUser.getRoom();

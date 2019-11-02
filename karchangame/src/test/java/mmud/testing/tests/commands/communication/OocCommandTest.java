@@ -37,6 +37,7 @@ import java.io.PrintWriter;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
+import mmud.services.CommunicationService;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
@@ -73,7 +74,7 @@ public class OocCommandTest extends MudTest
         assertThat(heehawCommand.getRegExpr()).isEqualTo("ooc .+");
         DisplayInterface display = heehawCommand.run("ooc on", marvin);
         assertThat(display).isNotNull();
-        String log = marvin.getLog(0);
+        String log = CommunicationService.getCommunicationService(marvin).getLog(0);
         assertThat(log).isEqualTo("Your OOC channel is now turned on.<br />\r\n");
         assertThat(marvin.getOoc()).isEqualTo(true);
     }
@@ -91,7 +92,7 @@ public class OocCommandTest extends MudTest
         assertThat(heehawCommand.getRegExpr()).isEqualTo("ooc .+");
         DisplayInterface display = heehawCommand.run("ooc off", marvin);
         assertThat(display).isNotNull();
-        String log = marvin.getLog(0);
+        String log = CommunicationService.getCommunicationService(marvin).getLog(0);
         assertThat(log).isEqualTo("Your OOC channel is now turned off.<br />\r\n");
         assertThat(marvin.getOoc()).isEqualTo(false);
     }
@@ -108,7 +109,7 @@ public class OocCommandTest extends MudTest
         assertThat(heehawCommand.getRegExpr()).isEqualTo("ooc .+");
         DisplayInterface display = heehawCommand.run("ooc Hey! This doesn't work!", marvin);
         assertThat(display).isNotNull();
-        String log = marvin.getLog(0);
+        String log = CommunicationService.getCommunicationService(marvin).getLog(0);
         assertThat(log).isEqualTo("Sorry, you have your OOC channel turned off.<br />\r\n");
         assertThat(marvin.getOoc()).isEqualTo(false);
     }
@@ -135,9 +136,9 @@ public class OocCommandTest extends MudTest
         };
         DisplayInterface display = heehawCommand.run("ooc Hey! This works!", marvin);
         assertThat(display).isNotNull();
-        String log = marvin.getLog(0);
+        String log = CommunicationService.getCommunicationService(marvin).getLog(0);
         assertThat(log).isEqualTo("<span style=\"color:#4c76a2\">&gt;[OOC: <b>Marvin</b>] Hey! This works!</span><br />\r\n");
-        log = karn.getLog(0);
+        log = CommunicationService.getCommunicationService(karn).getLog(0);
         assertThat(log).isEqualTo("<span style=\"color:#4c76a2\">&gt;[OOC: <b>Marvin</b>] Hey! This works!</span><br />\r\n");
         assertThat(marvin.getOoc()).isEqualTo(true);
     }
@@ -185,8 +186,8 @@ public class OocCommandTest extends MudTest
         final Room room = TestingConstants.getRoom(TestingConstants.getArea());
         karn.setRoom(room);
         marvin = TestingConstants.getMarvin(room);
-        karn.clearLog();
-        marvin.clearLog();
+        CommunicationService.getCommunicationService(karn).clearLog();
+        CommunicationService.getCommunicationService(marvin).clearLog();
         HashSet<Person> persons = new HashSet<>();
         persons.add(karn);
         persons.add(marvin);

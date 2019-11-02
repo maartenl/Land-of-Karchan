@@ -5,7 +5,7 @@
 
   <groupId>mmud</groupId>
   <artifactId>karchangame</artifactId>
-  <version>2.0.3</version>
+  <version>2.0.4-SNAPSHOT</version>
   <packaging>war</packaging>
 
   <name>karchangame</name>
@@ -18,8 +18,9 @@
     <project.encoding>UTF-8</project.encoding>
     <project.source.version>1.8</project.source.version>
     <project.target.version>1.8</project.target.version>
-    <javaee.version>8.0</javaee.version>
+    <javaee.version>8.0.1</javaee.version>
     <jsonwebtoken.version>0.9.1</jsonwebtoken.version>
+    <karchanentities.version>1.0.0-SNAPSHOT</karchanentities.version>
     <microprofile.version>2.2</microprofile.version>
   </properties>
 
@@ -54,6 +55,11 @@
 
   <dependencies>
     <dependency>
+      <groupId>mmud</groupId>
+      <artifactId>karchanentities</artifactId>
+      <version>${karchanentities.version}</version>
+    </dependency> 
+    <dependency>
       <groupId>org.eclipse.microprofile</groupId>
       <artifactId>microprofile</artifactId>
       <version>${microprofile.version}</version>
@@ -68,7 +74,7 @@
     <dependency>
       <groupId>org.eclipse.persistence</groupId>
       <artifactId>org.eclipse.persistence.jpa</artifactId>
-      <version>2.7.3</version>
+      <version>2.7.4</version>
       <scope>provided</scope>
     </dependency>
 <!--    <dependency>
@@ -104,19 +110,9 @@
     </dependency>
     <dependency>
       <groupId>javax</groupId>
-      <artifactId>javaee-web-api</artifactId>
+      <artifactId>javaee-api</artifactId>
       <version>${javaee.version}</version>
       <scope>provided</scope>
-    </dependency>
-    <dependency>
-      <groupId>com.googlecode.owasp-java-html-sanitizer</groupId>
-      <artifactId>owasp-java-html-sanitizer</artifactId>
-      <version>20180219.1</version>
-    </dependency>
-    <dependency>
-      <groupId>commons-validator</groupId>
-      <artifactId>commons-validator</artifactId>
-      <version>1.4.0</version>
     </dependency>
     <dependency>
       <groupId>com.vaadin</groupId>

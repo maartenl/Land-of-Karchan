@@ -25,6 +25,7 @@ import mmud.database.entities.game.DisplayInterface;
 import mmud.database.entities.items.Item;
 import mmud.database.enums.Wielding;
 import mmud.exceptions.MudException;
+import mmud.services.CommunicationService;
 
 /**
  * Stops you wielding an item. Syntax: unwield from &lt;body
@@ -52,17 +53,17 @@ public class UnwieldCommand extends NormalCommand
         Wielding position = Wielding.parse(pos);
         if (position == null)
         {
-            aUser.writeMessage("Cannot wield something there.<br/>\r\n");
+            CommunicationService.getCommunicationService(aUser).writeMessage("Cannot wield something there.<br/>\r\n");
             return aUser.getRoom();
         }
         Item item = aUser.wields(position);
         if (item == null)
         {
-            aUser.writeMessage("You are not wielding anything there.<br/>\r\n");
+            CommunicationService.getCommunicationService(aUser).writeMessage("You are not wielding anything there.<br/>\r\n");
             return aUser.getRoom();
         }
         aUser.wield(null, position);
-        aUser.getRoom().sendMessage(aUser, "%SNAME unwield%VERB2 "
+        CommunicationService.getCommunicationService(aUser.getRoom()).sendMessage(aUser, "%SNAME unwield%VERB2 "
                 + item.getDescription() + " from " + position.toString()
                 + ".<br/>\r\n");
         return aUser.getRoom();

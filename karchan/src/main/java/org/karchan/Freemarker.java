@@ -32,6 +32,7 @@ import javax.persistence.EntityManagerFactory;
 import javax.persistence.PersistenceUnit;
 import javax.persistence.TypedQuery;
 import mmud.database.entities.web.HtmlTemplate;
+import no.api.freemarker.java8.Java8ObjectWrapper;
 
 /**
  *
@@ -61,7 +62,10 @@ public class Freemarker implements TemplateLoader
     // version (here 2.3.27) do you want to apply the fixes that are not 100%
     // backward-compatible. See the Configuration JavaDoc for details.
     configuration = new Configuration(Configuration.VERSION_2_3_27);
-
+    
+    // For java.time support.
+    configuration.setObjectWrapper(new Java8ObjectWrapper(Configuration.VERSION_2_3_27));
+    
     // Specify the source where the template files come from. 
     configuration.setTemplateLoader(this);
     

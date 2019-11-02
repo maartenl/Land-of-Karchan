@@ -25,6 +25,7 @@ import mmud.database.entities.characters.User;
 import mmud.database.entities.game.DisplayInterface;
 import mmud.database.entities.items.Item;
 import mmud.exceptions.MudException;
+import mmud.services.CommunicationService;
 
 /**
  * Look at stuff: "look at well". There are three different possibilities:
@@ -65,7 +66,7 @@ public class LookAtCommand extends NormalCommand
                 Person toChar = aUser.getRoom().retrievePerson(parsed.get(0));
                 if (toChar != null)
                 {
-                    aUser.getRoom().sendMessage(aUser, toChar, "%SNAME look%VERB2 at %TNAME.<br/>\r\n");
+                    CommunicationService.getCommunicationService(aUser.getRoom()).sendMessage(aUser, toChar, "%SNAME look%VERB2 at %TNAME.<br/>\r\n");
                     result = toChar;
                 }
             }
@@ -77,7 +78,7 @@ public class LookAtCommand extends NormalCommand
         {
             // we didn't find what we wanted to look at.
             result = aUser.getRoom();
-            aUser.writeMessage("You don't know what to look at.<br/>\n");
+            CommunicationService.getCommunicationService(aUser).writeMessage("You don't know what to look at.<br/>\n");
         }
         return result;
     }

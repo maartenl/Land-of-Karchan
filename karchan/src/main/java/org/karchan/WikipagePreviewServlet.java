@@ -48,7 +48,7 @@ public class WikipagePreviewServlet extends HttpServlet
     response.setContentType("text/html;charset=UTF-8");
     String content = request.getReader().lines().collect(Collectors.joining("\n"));
     LOGGER.log(Level.INFO, "Wikipage preview started with content {0}.", content);
-if (content == null)
+    if (content == null)
     {
       response.sendError(HttpServletResponse.SC_NOT_FOUND, "No content found.");
       return;

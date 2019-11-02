@@ -25,6 +25,7 @@ import mmud.database.entities.game.DisplayInterface;
 import mmud.database.entities.items.Item;
 import mmud.database.enums.Wearing;
 import mmud.exceptions.MudException;
+import mmud.services.CommunicationService;
 
 /**
  * Stop you wearing an item on you. Syntax: remove from &lt;body
@@ -52,17 +53,17 @@ public class UnwearCommand extends NormalCommand
         Wearing position = Wearing.parse(pos);
         if (position == null)
         {
-            aUser.writeMessage("Cannot wear something there.<br/>\r\n");
+            CommunicationService.getCommunicationService(aUser).writeMessage("Cannot wear something there.<br/>\r\n");
             return aUser.getRoom();
         }
         Item item = aUser.wears(position);
         if (item == null)
         {
-            aUser.writeMessage("You are not wearing anything there.<br/>\r\n");
+            CommunicationService.getCommunicationService(aUser).writeMessage("You are not wearing anything there.<br/>\r\n");
             return aUser.getRoom();
         }
         aUser.wear(null, position);
-        aUser.getRoom().sendMessage(aUser, "%SNAME remove%VERB2 "
+        CommunicationService.getCommunicationService(aUser.getRoom()).sendMessage(aUser, "%SNAME remove%VERB2 "
                 + item.getDescription() + " from " + position.toString()
                 + ".<br/>\r\n");
         return aUser.getRoom();

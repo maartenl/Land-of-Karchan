@@ -20,6 +20,7 @@ import java.util.logging.Logger;
 import mmud.database.entities.characters.User;
 import mmud.database.entities.game.DisplayInterface;
 import mmud.exceptions.MudException;
+import mmud.services.CommunicationService;
 
 /**
  * Raises your eyebrow.
@@ -40,7 +41,7 @@ public class EyebrowCommand extends NormalCommand
         String[] myParsed = parseCommand(command, 2);
         if (myParsed.length == 1)
         {
-            aUser.getRoom().sendMessage(aUser,
+            CommunicationService.getCommunicationService(aUser.getRoom()).sendMessage(aUser,
                     "%SNAME raise%VERB2 an eyebrow.<BR>\r\n");
             return aUser.getRoom();
         }

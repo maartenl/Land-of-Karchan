@@ -25,6 +25,8 @@ import mmud.database.entities.characters.User;
 import mmud.database.entities.game.DisplayInterface;
 import mmud.database.entities.items.Item;
 import mmud.exceptions.MudException;
+import mmud.services.CommunicationService;
+import mmud.services.PersonCommunicationService;
 
 /**
  * Look in an item: "look in chest". There are two possibilities.
@@ -51,7 +53,8 @@ public class LookInCommand extends NormalCommand
 
     @Override
     public DisplayInterface run(String command, User aUser) throws MudException
-    {
+    { 
+      PersonCommunicationService communicationService = CommunicationService.getCommunicationService(aUser);
         // first is find the item
         List<String> parsed = new ArrayList<>(Arrays.asList(parseCommand(command)));
         parsed.remove(0); // remove "look"
@@ -65,7 +68,7 @@ public class LookInCommand extends NormalCommand
         }
         if (itemsFound.isEmpty())
         {
-            aUser.writeMessage("No items found that match that description.<br/>\n");
+            communicationService.writeMessage("No items found that match that description.<br/>\n");
             return aUser.getRoom();
         }
         for (Item item : itemsFound)
@@ -74,7 +77,7 @@ public class LookInCommand extends NormalCommand
             {
                 if (!item.isOpen() && item.hasLid())
                 {
-                    aUser.getRoom().sendMessage(
+                    CommunicationService.getCommunicationService(aUser.getRoom()).sendMessage(
                             aUser,
                             "%SNAME attempt%VERB2 to look in "
                             + item.getDescription()
@@ -82,7 +85,7 @@ public class LookInCommand extends NormalCommand
                     return aUser.getRoom();
                 }
                 // found container! Using it!
-                aUser.getRoom().sendMessage(aUser, "%SNAME look%VERB2 in "
+                CommunicationService.getCommunicationService(aUser.getRoom()).sendMessage(aUser, "%SNAME look%VERB2 in "
                         + item.getDescription() + ".<br/>\r\n");
                 final Item finalitem = item;
                 return new DisplayInterface()
@@ -111,7 +114,7 @@ public class LookInCommand extends NormalCommand
                 };
             }
         }
-        aUser.writeMessage("That item cannot contain things.<br/>\n");
+        communicationService.writeMessage("That item cannot contain things.<br/>\n");
         return aUser.getRoom();
     }
 }

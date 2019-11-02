@@ -19,6 +19,7 @@ package mmud.commands;
 import mmud.database.entities.characters.User;
 import mmud.database.entities.game.DisplayInterface;
 import mmud.exceptions.MudException;
+import mmud.services.CommunicationService;
 
 /**
  * Awaken from sleep: "awaken".
@@ -37,11 +38,11 @@ class AwakenCommand extends NormalCommand
     {
         if (!aUser.getSleep())
         {
-            aUser.writeMessage("You already are awake.<br/>\n");
+            CommunicationService.getCommunicationService(aUser).writeMessage("You already are awake.<br/>\n");
         } else
         {
             aUser.setSleep(false);
-            aUser.getRoom().sendMessage(aUser, "%SNAME awaken%VERB2.<br/>\n");
+            CommunicationService.getCommunicationService(aUser.getRoom()).sendMessage(aUser, "%SNAME awaken%VERB2.<br/>\n");
         }
         return aUser.getRoom();
     }

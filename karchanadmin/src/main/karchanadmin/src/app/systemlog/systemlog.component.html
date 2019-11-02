@@ -1,10 +1,14 @@
 <div class="container-fluid">
   <div class="row row-content">
     <div class="col-xs-12 col-xl-6">
-      <div class="card" *ngIf="log !== undefined">
+      <div class="card sticky-top" *ngIf="log !== undefined">
         <div class="card-body">
-          <h5 class="card-title">Message</h5>
-          <p class="card-text">{{ log.message }}</p>
+          <h5 class="card-title" *ngIf="log.LogMessage !== undefined">Message</h5>
+          <h5 class="card-title" *ngIf="log.Throwable !== undefined">Exception</h5>
+          <p class="card-text" *ngIf="log.LogMessage !== undefined">{{ log.LogMessage }}</p>
+          <p class="card-text" *ngIf="log.Throwable !== undefined">{{ log.Throwable.Exception }}</p>
+          <p class="card-text" *ngIf="log.Throwable !== undefined">Stacktrace</p>
+          <p class="card-text" *ngIf="log.Throwable !== undefined">{{ log.Throwable.StackTrace }}</p>
         </div>
       </div>
     </div>
@@ -14,20 +18,21 @@
           <tr>
             <th>#</th>
             <th>loggerName</th>
-            <th>Type</th>
-            <th>Organization</th>
+            <th>level</th>
+            <th>ThreadName</th>
             <th>When</th>
             <th>Message</th>
           </tr>
         </thead>
         <tbody>
           <tr *ngFor="let log of logs">
-            <td (click)="setLog(log)">{{ log.messageID }}</td>
-            <td (click)="setLog(log)">{{ log.loggerName }}</td>
-            <td (click)="setLog(log)">{{ log.messageTypeLevel }}</td>
-            <td (click)="setLog(log)">{{ log.organizationID }}</td>
-            <td (click)="setLog(log)">{{ log.timestamp | date:'medium' }}</td>
-            <td (click)="setLog(log)">{{ log.message.substring(0,40) }}</td>
+            <td (click)="setLog(log)">{{ log.MessageID }}</td>
+            <td (click)="setLog(log)">{{ log.LoggerName }}</td>
+            <td (click)="setLog(log)">{{ log.Level }}</td>
+            <td (click)="setLog(log)">{{ log.ThreadName }}</td>
+            <td (click)="setLog(log)">{{ log.Timestamp }}</td>
+            <td (click)="setLog(log)" *ngIf="log.LogMessage !== undefined">{{ log.LogMessage.substring(0,40) }}</td>
+            <td (click)="setLog(log)" *ngIf="log.Throwable !== undefined">Exception</td>
           </tr>
         </tbody>
       </table>

@@ -21,6 +21,7 @@ import mmud.database.entities.characters.User;
 import mmud.database.entities.game.DisplayInterface;
 import mmud.exceptions.MudException;
 import mmud.exceptions.PersonNotFoundException;
+import mmud.services.CommunicationService;
 
 /**
  * Stop ignoring what someone says. Syntax: <TT>acknowledge &lt;name&gt;</TT>
@@ -50,7 +51,7 @@ class AcknowledgeCommand extends NormalCommand
 //            aUser.writeMessage("You are not ignoring " + toChar.getName() + ".<br/>,\r\n");
 //            return aUser.getRoom();
 //        }
-        aUser.getRoom().sendMessage(aUser, toChar,
+        CommunicationService.getCommunicationService(aUser.getRoom()).sendMessage(aUser, toChar,
                 "%SNAME acknowledge%VERB2 %TNAME.<br/>\r\n");
         return aUser.getRoom();
     }

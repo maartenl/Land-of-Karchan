@@ -25,6 +25,7 @@ import mmud.database.entities.game.DisplayInterface;
 import mmud.database.entities.items.Item;
 import mmud.database.enums.Wearing;
 import mmud.exceptions.MudException;
+import mmud.services.CommunicationService;
 
 /**
  * You start stripping.
@@ -46,8 +47,8 @@ public class UndressCommand extends NormalCommand
         {
             aUser.wear(null, position);
         }
-        aUser.getRoom().sendMessageExcl(aUser, "%SNAME undresses completely.<br/>\r\n");
-        aUser.writeMessage("You undress completely.<br/>\r\n");
+        CommunicationService.getCommunicationService(aUser.getRoom()).sendMessageExcl(aUser, "%SNAME undresses completely.<br/>\r\n");
+        CommunicationService.getCommunicationService(aUser).writeMessage("You undress completely.<br/>\r\n");
         return aUser.getRoom();
     }
 }

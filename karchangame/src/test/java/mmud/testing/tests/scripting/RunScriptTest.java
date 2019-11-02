@@ -75,49 +75,6 @@ public class RunScriptTest
         }
 
         @Override
-        public void sendMessage(Person aPerson, String aMessage) throws MudException
-        {
-            for (Person myChar : persons)
-            {
-                myChar.writeMessage(aPerson, aMessage);
-            }
-        }
-
-        @Override
-        public void sendMessage(Person aPerson, Person aSecondPerson,
-                String aMessage) throws MudException
-        {
-            for (Person myChar : persons)
-            {
-                myChar.writeMessage(aPerson, aSecondPerson, aMessage);
-            }
-        }
-
-        @Override
-        public void sendMessage(String aMessage)
-                throws MudException
-        {
-            for (Person myChar : persons)
-            {
-                myChar.writeMessage(aMessage);
-            }
-        }
-
-        @Override
-        public void sendMessageExcl(Person aPerson, Person aSecondPerson,
-                String aMessage) throws MudException
-        {
-            for (Person myChar : persons)
-            {
-                if (myChar != aPerson
-                        && myChar != aSecondPerson)
-                {
-                    myChar.writeMessage(aPerson, aSecondPerson, aMessage);
-                }
-            }
-        }
-
-        @Override
         public Person retrievePerson(String aName)
         {
             for (Person person : persons)
@@ -160,7 +117,7 @@ public class RunScriptTest
         marvin.setRoom(room);
 
         final Room room2 = new RoomStub();
-        room2.setId(2);
+        room2.setId(2L);
         room2.setContents("the stimulation of thin air; the intense blueness of the sky; the towering "
                 + "thunderheads of summer that ramble and flash and produce sheets of rain with "
                 + "a sudden rush of water that soon passes, leaving only a wet arroyo to dry "
@@ -175,7 +132,7 @@ public class RunScriptTest
         room2.setPicture("/images/gif/cave-ent.gif");
 
         final Room room3 = new RoomStub();
-        room3.setId(3);
+        room3.setId(3L);
         room3.setContents("you are standing in the  exuberant air on a road which leads to "
                 + "the north and south. In the north, you can see a little  village; little in "
                 + "the meaning that whatever resides there must be equally little. In the east, "
@@ -186,7 +143,7 @@ public class RunScriptTest
         room3.setTitle("The Road");
         room3.setPicture("/images/gif/road.gif");
 
-        room.setId(1);
+        room.setId(1L);
         room.setContents("You are in the middle of a cave.  Around you, stone "
                 + "walls make it impenetrable.  To the west, you can see a beautiful blue sky.  The "
                 + "cave is wet; water is running down the walls.  It is dark and dreary, a complete "

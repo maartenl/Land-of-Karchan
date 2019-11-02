@@ -19,6 +19,7 @@ package mmud.commands;
 import mmud.database.entities.characters.User;
 import mmud.database.entities.game.DisplayInterface;
 import mmud.exceptions.MudException;
+import mmud.services.CommunicationService;
 
 /**
  * Command used if none of the other commands match.
@@ -38,7 +39,7 @@ public class BogusCommand extends NormalCommand
     public DisplayInterface run(String command, User aUser)
             throws MudException
     {
-        aUser.writeMessage("I am afraid I do not understand that.<br/>\n");
+        CommunicationService.getCommunicationService(aUser).writeMessage("I am afraid I do not understand that.<br/>\n");
         return aUser.getRoom();
     }
 }

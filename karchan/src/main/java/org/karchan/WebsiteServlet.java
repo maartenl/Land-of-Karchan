@@ -55,9 +55,9 @@ public class WebsiteServlet extends HttpServlet
 
   private final static Logger LOGGER = Logger.getLogger(WebsiteServlet.class.getName());
 
-  private static final String VERSION_PARAMETER = "version";
+  private static final String VERSION_COOKIENAME = "karchanversion";
 
-  private static final String CURRENT_VERSION = "2.0.3";
+  private static final String CURRENT_VERSION = "2.0.4-SNAPSHOT";
 
   @Inject
   private SecurityContext securityContext;
@@ -94,6 +94,8 @@ public class WebsiteServlet extends HttpServlet
   {
     // Set response content type
     response.setContentType("text/html;charset=UTF-8");
+    
+    Cookies cookies = new Cookies(request, response);
 
     final String url = getUrl(request);
     PrintWriter out = response.getWriter();
@@ -102,33 +104,17 @@ public class WebsiteServlet extends HttpServlet
 
     /* Create a data-model */
     Map<String, Object> root = new HashMap<>();
-    root.put(VERSION_PARAMETER, request.getParameter(VERSION_PARAMETER) != null ? request.getParameter(VERSION_PARAMETER) : CURRENT_VERSION);
     root.put("menus", MenuFactory.getNavigationBarMenus());
     root.put("url", url);
-    if (request.getCookies() == null)
+    root.put("darkmode", cookies.contains("karchandarkmode"));
+    root.put("hideToc", cookies.contains("karchanhidetoc"));
+    root.put("version", cookies.get(VERSION_COOKIENAME).map(cookie -> cookie.getValue()).orElse(CURRENT_VERSION));
+    if (request.getParameter("logout") != null && !cookies.isEmpty())
     {
-      root.put("darkmode", false);
-      root.put("hideToc", false);
-    } else
-    {
-      root.put("darkmode", Stream.of(request.getCookies())
-              .anyMatch(cookie -> cookie.getName().equals("karchandarkmode")));
-      root.put("hideToc", Stream.of(request.getCookies())
-              .anyMatch(cookie -> cookie.getName().equals("karchanhidetoc")));
-    }
-    if (request.getParameter("logout") != null && request.getCookies() != null)
-    {
-      for (Cookie cookie : request.getCookies())
-      {
-        if (cookie.getName().equals("JREMEMBERMEID")
-                || cookie.getName().equals("karchanname")
-                || cookie.getName().equals("karchanroles")
-                || cookie.getName().equals("XSRF-TOKEN"))
-        {
-          cookie.setMaxAge(0);
-          response.addCookie(cookie);
-        }
-      }
+      cookies.remove("JREMEMBERMEID");
+      cookies.remove("karchanname");
+      cookies.remove("karchanroles");
+      cookies.remove("XSRF-TOKEN");
       root.put("user", null);
       root.put("isDeputy", false);
       root.put("isPlayer", false);

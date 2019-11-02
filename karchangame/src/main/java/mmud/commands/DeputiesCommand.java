@@ -22,6 +22,7 @@ import mmud.database.entities.characters.User;
 import mmud.database.entities.game.Admin;
 import mmud.database.entities.game.DisplayInterface;
 import mmud.exceptions.MudException;
+import mmud.services.CommunicationService;
 
 /**
  * Shows the current active deputies (may not be online in the game).
@@ -45,7 +46,7 @@ public class DeputiesCommand extends NormalCommand
         List<Admin> administrators = getAdminBean().getAdministrators();
         String deps = administrators.stream().map(Admin::getName)
                 .collect(Collectors.joining(", "));
-        aUser.writeMessage("Current deputies are " + deps + ".<br/>");
+        CommunicationService.getCommunicationService(aUser).writeMessage("Current deputies are " + deps + ".<br/>");
         return aUser.getRoom();
     }
 

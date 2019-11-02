@@ -21,6 +21,7 @@ import mmud.database.entities.characters.User;
 import mmud.database.entities.game.DisplayInterface;
 import mmud.exceptions.MudException;
 import mmud.rest.services.PersonBean;
+import mmud.services.CommunicationService;
 
 /**
  * Shows the current date in the game: "date".
@@ -41,14 +42,14 @@ public class OocCommand extends NormalCommand
         if (command.toLowerCase().equals("ooc on"))
         {
             aUser.setOoc(true);
-            aUser.writeMessage("Your OOC channel is now turned on.<br/>\r\n");
+            CommunicationService.getCommunicationService(aUser).writeMessage("Your OOC channel is now turned on.<br/>\r\n");
         } else if (command.toLowerCase().equals("ooc off"))
         {
             aUser.setOoc(false);
-            aUser.writeMessage("Your OOC channel is now turned off.<br/>\r\n");
+            CommunicationService.getCommunicationService(aUser).writeMessage("Your OOC channel is now turned off.<br/>\r\n");
         } else if (!aUser.getOoc())
         {
-            aUser.writeMessage("Sorry, you have your OOC channel turned off.<br/>\r\n");
+            CommunicationService.getCommunicationService(aUser).writeMessage("Sorry, you have your OOC channel turned off.<br/>\r\n");
         } else
         {
             PersonBean personBean = getPersonBean();

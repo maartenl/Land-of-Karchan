@@ -22,6 +22,7 @@ import java.util.GregorianCalendar;
 import mmud.database.entities.characters.User;
 import mmud.database.entities.game.DisplayInterface;
 import mmud.exceptions.MudException;
+import mmud.services.CommunicationService;
 
 /**
  * The Ribbit Command: "Rrribbit". Makes you go "Rrribbit". It's a punishment
@@ -49,18 +50,18 @@ public class RibbitCommand extends NormalCommand
     LocalDateTime tenSecondsAgo = LocalDateTime.now().plusSeconds(-10L);
     if (tenSecondsAgo.isBefore(aUser.getLastcommand()))
     {
-      aUser.writeMessage("You cannot say 'Ribbit' that fast! You will get tongue tied!<br/>\r\n");
+      CommunicationService.getCommunicationService(aUser).writeMessage("You cannot say 'Ribbit' that fast! You will get tongue tied!<br/>\r\n");
       return aUser.getRoom();
     }
-    aUser.getRoom().sendMessage(aUser, "A frog called " + aUser.getName() + " says \"Rrribbit!\""
+    CommunicationService.getCommunicationService(aUser.getRoom()).sendMessage(aUser, "A frog called " + aUser.getName() + " says \"Rrribbit!\""
             + ".<br/>\n");
     aUser.lessFrogging();
     if (aUser.getFrogging() == 0)
     {
-      aUser.getRoom().sendMessage(aUser, "A frog called " + aUser.getName() + " magically changes back to a " + aUser.getRace() + ".<br/>\n");
+      CommunicationService.getCommunicationService(aUser.getRoom()).sendMessage(aUser, "A frog called " + aUser.getName() + " magically changes back to a " + aUser.getRace() + ".<br/>\n");
     } else
     {
-      aUser.writeMessage("You feel the need to say 'Ribbit' just " + aUser.getFrogging() + " times.<br/>\r\n");
+      CommunicationService.getCommunicationService(aUser).writeMessage("You feel the need to say 'Ribbit' just " + aUser.getFrogging() + " times.<br/>\r\n");
     }
     return aUser.getRoom();
   }

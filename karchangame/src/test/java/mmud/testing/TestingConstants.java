@@ -25,6 +25,7 @@ import mmud.database.entities.game.Guild;
 import mmud.database.entities.game.Room;
 import mmud.database.enums.Sex;
 import mmud.exceptions.MudException;
+import mmud.services.CommunicationService;
 
 /**
  * Generates constants for use in testcases.
@@ -97,7 +98,7 @@ public class TestingConstants
     person.setArm("none");
     person.setLeg("none");
     person.setState("Rocking out!");
-    person.clearLog();
+    CommunicationService.getCommunicationService(person).clearLog();
     return person;
   }
 
@@ -131,7 +132,7 @@ public class TestingConstants
     person.setArm("none");
     person.setLeg("none");
     person.setState("Life, don't talk to me about life.");
-    person.clearLog();
+    CommunicationService.getCommunicationService(person).clearLog();
     return person;
   }
 
@@ -183,7 +184,7 @@ public class TestingConstants
     person.setArm("none");
     person.setLeg("none");
     person.setState("Amazing!");
-    person.clearLog();
+    CommunicationService.getCommunicationService(person).clearLog();
     return person;
   }
 

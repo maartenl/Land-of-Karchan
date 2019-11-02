@@ -19,6 +19,7 @@ package mmud.commands;
 import mmud.database.entities.characters.User;
 import mmud.database.entities.game.DisplayInterface;
 import mmud.exceptions.MudException;
+import mmud.services.CommunicationService;
 
 /**
  * Clear up your log file.
@@ -36,8 +37,8 @@ public class ClearCommand extends NormalCommand
     @Override
     public DisplayInterface run(String command, User aUser) throws MudException
     {
-        aUser.clearLog();
-        aUser.writeMessage("You cleared your mind.<br/>\r\n");
+        CommunicationService.getCommunicationService(aUser).clearLog();
+        CommunicationService.getCommunicationService(aUser).writeMessage("You cleared your mind.<br/>\r\n");
         return aUser.getRoom();
     }
 }

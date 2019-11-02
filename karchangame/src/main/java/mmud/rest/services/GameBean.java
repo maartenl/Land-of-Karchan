@@ -56,6 +56,7 @@ import mmud.Utils;
 import mmud.commands.CommandFactory;
 import mmud.commands.CommandFactory.UserCommandInfo;
 import mmud.commands.CommandRunner;
+import mmud.database.InputSanitizer;
 import mmud.database.entities.characters.Person;
 import mmud.database.entities.characters.User;
 import mmud.database.entities.game.Board;
@@ -75,6 +76,8 @@ import mmud.rest.webentities.PrivateLog;
 import mmud.rest.webentities.PrivatePerson;
 import mmud.scripting.RoomsInterface;
 import mmud.scripting.WorldInterface;
+import mmud.services.CommunicationService;
+import mmud.services.PersonCommunicationService;
 
 /**
  * Takes care of all the game-related functions.
@@ -573,6 +576,8 @@ public class GameBean implements RoomsInterface, WorldInterface
     try
     {
       person.activate();
+      final PersonCommunicationService communicationService = CommunicationService.getCommunicationService(person);
+      communicationService.createLog();
       // write logon message
       Board newsBoard = boardBean.getNewsBoard();
       StringBuilder buffer = new StringBuilder(newsBoard.getDescription());
@@ -587,14 +592,14 @@ public class GameBean implements RoomsInterface, WorldInterface
         buffer.append(newMessage.getPerson().getName());
         buffer.append("</i>");
       }
-      person.writeMessage(buffer.toString());
+      communicationService.writeMessage(buffer.toString());
       // check mail
       if (mailBean.hasNewMail(person))
       {
-        person.writeMessage("<p>You have new Mudmail!</p>\r\n");
+        communicationService.writeMessage("<p>You have new Mudmail!</p>\r\n");
       } else
       {
-        person.writeMessage("<p>You have no new Mudmail...</p>\r\n");
+        communicationService.writeMessage("<p>You have no new Mudmail...</p>\r\n");
       }
       // has guild
       if (person.getGuild() != null)
@@ -603,11 +608,11 @@ public class GameBean implements RoomsInterface, WorldInterface
         // guild logonmessage
         if (person.getGuild().getLogonmessage() != null)
         {
-          person.writeMessage(person.getGuild().getLogonmessage()
+          communicationService.writeMessage(person.getGuild().getLogonmessage()
                   + "<hr/>");
         }
         // guild alarm message
-        person.writeMessage(person.getGuild().getAlarmDescription()
+        communicationService.writeMessage(person.getGuild().getAlarmDescription()
                 + "<hr/>");
       }
       // write log "entered game."
@@ -671,7 +676,7 @@ public class GameBean implements RoomsInterface, WorldInterface
   public PrivateDisplay playGame(@PathParam(value = "name") String name, String command, @QueryParam(value = "offset") Integer offset, @QueryParam(value = "log") boolean log) throws MudException
   {
     LOGGER.entering(this.getClass().getName(), "playGame");
-    command = Utils.security(command);
+    command = InputSanitizer.security(command);
     PrivateDisplay display = null;
     User person = authenticate(name);
     try
@@ -811,7 +816,7 @@ public class GameBean implements RoomsInterface, WorldInterface
     {
       offset = 0;
     }
-    String log = person.getLog(offset);
+    String log = CommunicationService.getCommunicationService(person).getLog(offset);
     PrivateLog plog = new PrivateLog();
     plog.offset = offset;
     plog.log = log;
@@ -877,7 +882,7 @@ public class GameBean implements RoomsInterface, WorldInterface
 
     try
     {
-      person.clearLog();
+      CommunicationService.getCommunicationService(person).clearLog();
     } catch (WebApplicationException e)
     {
       //ignore
@@ -910,7 +915,7 @@ public class GameBean implements RoomsInterface, WorldInterface
     User person = authenticate(name);
     try
     {
-      person.getRoom().sendMessage(person, "%SNAME left the game.<BR>\r\n");
+      CommunicationService.getCommunicationService(person.getRoom()).sendMessage(person, "%SNAME left the game.<BR>\r\n");
       person.deactivate();
       logBean.writeLog(person, "left the game.");
     } catch (WebApplicationException e)

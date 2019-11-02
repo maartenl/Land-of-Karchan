@@ -22,6 +22,7 @@ import mmud.database.entities.characters.User;
 import mmud.database.entities.game.DisplayInterface;
 import mmud.exceptions.MudException;
 import mmud.exceptions.PersonNotFoundException;
+import mmud.services.CommunicationService;
 
 /**
  * Ignore everything someone says. Syntax: <TT>ignore &lt;name&gt;</TT>
@@ -46,7 +47,7 @@ class IgnoreCommand extends NormalCommand
             throw new PersonNotFoundException("Cannot find " + myParsed[2] + ".<br/>\r\n");
         }
         aUser.addAnnoyingUser(toChar);
-        aUser.getRoom().sendMessage(aUser, toChar,
+        CommunicationService.getCommunicationService(aUser.getRoom()).sendMessage(aUser, toChar,
                 "%SNAME start%VERB2 to fully ignore %TNAME.<br/>\r\n");
         return aUser.getRoom();
     }

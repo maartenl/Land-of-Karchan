@@ -22,6 +22,7 @@ import mmud.database.entities.characters.User;
 import mmud.database.entities.game.DisplayInterface;
 import mmud.exceptions.MudException;
 import mmud.exceptions.PersonNotFoundException;
+import mmud.services.CommunicationService;
 
 /**
  * Provides an emotional response to a person. Acceptable format is:
@@ -53,19 +54,19 @@ public class EmotionToCommand extends TargetCommand
             // agree evilly to Karn
             if (Utils.existsAdverb(command))
             {
-                aUser.writeMessage("You " + plural[0] + " " + command.toLowerCase() + " " + aTarget.getName() + ".<BR>\r\n");
-                aTarget.writeMessage(aUser.getName() + " " + plural[1] + " " + command.toLowerCase() + " you.<BR>\r\n");
-                aUser.getRoom().sendMessageExcl(aUser, aTarget, aUser.getName() + " " + plural[1] + " " + command.toLowerCase() + " " + aTarget.getName() + ".<BR>\r\n");
+                CommunicationService.getCommunicationService(aUser).writeMessage("You " + plural[0] + " " + command.toLowerCase() + " " + aTarget.getName() + ".<BR>\r\n");
+                CommunicationService.getCommunicationService(aTarget).writeMessage(aUser.getName() + " " + plural[1] + " " + command.toLowerCase() + " you.<BR>\r\n");
+                CommunicationService.getCommunicationService(aUser.getRoom()).sendMessageExcl(aUser, aTarget, aUser.getName() + " " + plural[1] + " " + command.toLowerCase() + " " + aTarget.getName() + ".<BR>\r\n");
             } else
             {
-                aUser.writeMessage("Unknown adverb found.<BR>\r\n");
+                CommunicationService.getCommunicationService(aUser).writeMessage("Unknown adverb found.<BR>\r\n");
             }
             return aUser.getRoom();
         }
         // cuddle Karn
-        aUser.writeMessage("You " + plural[0] + " " + aTarget.getName() + ".<BR>\r\n");
-        aTarget.writeMessage(aUser.getName() + " " + plural[1] + " you.<BR>\r\n");
-        aUser.getRoom().sendMessageExcl(aUser, aTarget, aUser.getName() + " " + plural[1] + " " + aTarget.getName() + ".<BR>\r\n");
+        CommunicationService.getCommunicationService(aUser).writeMessage("You " + plural[0] + " " + aTarget.getName() + ".<BR>\r\n");
+        CommunicationService.getCommunicationService(aTarget).writeMessage(aUser.getName() + " " + plural[1] + " you.<BR>\r\n");
+        CommunicationService.getCommunicationService(aUser.getRoom()).sendMessageExcl(aUser, aTarget, aUser.getName() + " " + plural[1] + " " + aTarget.getName() + ".<BR>\r\n");
         return aUser.getRoom();
     }
 

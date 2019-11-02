@@ -25,6 +25,8 @@ import mmud.database.entities.game.DisplayInterface;
 import mmud.database.entities.items.Item;
 import mmud.database.enums.Wearing;
 import mmud.exceptions.MudException;
+import mmud.services.CommunicationService;
+import mmud.services.PersonCommunicationService;
 
 /**
  * Starts you wear an item on you. Syntax: wear &lt;item&gt; on &lt;body
@@ -49,15 +51,16 @@ public class WearCommand extends NormalCommand
         // user
         String pos = parsed.get(parsed.size() - 1);
         Wearing position = Wearing.parse(pos);
+      final PersonCommunicationService communicationService = CommunicationService.getCommunicationService(aUser);
         if (position == null)
         {
-            aUser.writeMessage("Cannot wear something there.<br/>\r\n");
+            communicationService.writeMessage("Cannot wear something there.<br/>\r\n");
             return aUser.getRoom();
         }
         Item item = aUser.wears(position);
         if (item != null)
         {
-            aUser.writeMessage("You are already wearing something there.<br/>\r\n");
+            communicationService.writeMessage("You are already wearing something there.<br/>\r\n");
             return aUser.getRoom();
         }
         // find the item on ourselves
@@ -66,22 +69,22 @@ public class WearCommand extends NormalCommand
         List<Item> itemsFound = aUser.findItems(parsed);
         if (itemsFound.isEmpty())
         {
-            aUser.writeMessage("You don't have that.<br/>\n");
+            communicationService.writeMessage("You don't have that.<br/>\n");
             return aUser.getRoom();
         }
         item = itemsFound.get(0);
         if (!item.isWearable(position))
         {
-            aUser.writeMessage("You cannot wear that there.<BR>\r\n");
+            communicationService.writeMessage("You cannot wear that there.<BR>\r\n");
             return aUser.getRoom();
         }
         if (!aUser.unused(item))
         {
-            aUser.writeMessage("The item is already being used.<BR>\r\n");
+            communicationService.writeMessage("The item is already being used.<BR>\r\n");
             return aUser.getRoom();
         }
         aUser.wear(item, position);
-        aUser.getRoom().sendMessage(aUser, "%SNAME wear%VERB2 "
+        CommunicationService.getCommunicationService(aUser.getRoom()).sendMessage(aUser, "%SNAME wear%VERB2 "
                 + item.getDescription() + " " + position.toString()
                 + ".<br/>\r\n");
         return aUser.getRoom();

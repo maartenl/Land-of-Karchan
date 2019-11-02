@@ -34,6 +34,7 @@ import javax.persistence.TypedQuery;
 import mmud.database.entities.web.Blog;
 import mmud.database.entities.web.Faq;
 import mmud.database.entities.web.Wikipage;
+import org.karchan.wiki.WikiRenderer;
 
 /**
  *
@@ -146,8 +147,10 @@ public class MenuFactory
         List<Wikipage> wikipages = wikipageQuery.getResultList();
         if (wikipages.size() == 1)
         {         
-          root.put("wikipage", wikipages.get(0));
-          root.put("children", wikipages.get(0).getChildren());
+          final Wikipage wikipage = wikipages.get(0);
+          wikipage.setHtmlContent(new WikiRenderer().render(wikipage.getContent()));
+          root.put("wikipage", wikipage);
+          root.put("children", wikipage.getChildren());
         } else
         {
           LOGGER.log(Level.SEVERE, "{0} main wikipages ('FrontPage') found.", wikipages.size());
@@ -297,10 +300,12 @@ public class MenuFactory
         List<Wikipage> wikipages = wikipageQuery.getResultList();
         if (wikipages.size() == 1)
         {
-          root.put("wikipage", wikipages.get(0));
-          setName(wikipages.get(0).getTitle());
-          createBreadcrumbsFromWikipages(wikipages.get(0), this);
-          root.put("children", wikipages.get(0).getChildren());
+          final Wikipage wikipage = wikipages.get(0);
+          wikipage.setHtmlContent(new WikiRenderer().render(wikipage.getContent()));
+          root.put("wikipage", wikipage);
+          setName(wikipage.getTitle());
+          createBreadcrumbsFromWikipages(wikipage, this);
+          root.put("children", wikipage.getChildren());
         } else
         {
           LOGGER.log(Level.SEVERE, "{0} wikipages with name {1} found. (deputy={2})", new Object[]

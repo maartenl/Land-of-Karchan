@@ -25,6 +25,8 @@ import mmud.database.entities.characters.User;
 import mmud.database.entities.game.DisplayInterface;
 import mmud.database.entities.items.Item;
 import mmud.exceptions.MudException;
+import mmud.services.CommunicationService;
+import mmud.services.PersonCommunicationService;
 
 /**
  * Read stuff: "read sign". There are two different possibilities:
@@ -55,21 +57,22 @@ public class ReadCommand extends NormalCommand
             // find the item in the room
             itemsFound = aUser.getRoom().findItems(parsed);
         }
+      final PersonCommunicationService communicationService = CommunicationService.getCommunicationService(aUser);
         if (itemsFound.isEmpty())
         {
-            aUser.writeMessage("You don't know what to read.<br/>\n");
+            communicationService.writeMessage("You don't know what to read.<br/>\n");
             return aUser.getRoom();
         }
         for (Item item : itemsFound)
         {
             if (item.isReadable())
             {
-                aUser.getRoom().sendMessage(aUser, "%SNAME read%VERB2 "
+                CommunicationService.getCommunicationService(aUser.getRoom()).sendMessage(aUser, "%SNAME read%VERB2 "
                         + item.getDescription() + ".<br/>\r\n");
                 return item.getRead();
             }
         }
-        aUser.writeMessage("You cannot read that.<br/>\n");
+        communicationService.writeMessage("You cannot read that.<br/>\n");
         return aUser.getRoom();
     }
 }

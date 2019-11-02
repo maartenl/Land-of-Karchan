@@ -16,14 +16,16 @@
  */
 package mmud.commands.guild;
 
-import javax.naming.InitialContext;
-import javax.naming.NamingException;
+
+
 import mmud.commands.GuildMasterCommand;
 import mmud.database.entities.characters.Person;
 import mmud.database.entities.characters.User;
 import mmud.database.entities.game.DisplayInterface;
 import mmud.exceptions.MudException;
 import mmud.rest.services.LogBean;
+import mmud.services.CommunicationService;
+import mmud.services.PersonCommunicationService;
 
 /**
  * Makes you, as guildmaster, promote somebody else as guildmaster. There are
@@ -48,13 +50,14 @@ public class ChangeMasterCommand extends GuildMasterCommand
     @Override
     public DisplayInterface run(String command, User aUser) throws MudException
     {
+        PersonCommunicationService communicationService = CommunicationService.getCommunicationService(aUser);
         LogBean logBean = getLogBean();
         String[] myParsed = parseCommand(command);
         // TODO : casting is nasty, there must be a better way!
         Person toChar2 = aUser.getRoom().retrievePerson(myParsed[1]);
         if ((toChar2 == null) || (!(toChar2 instanceof User)))
         {
-            aUser.writeMessage("Cannot find that person.<BR>\r\n");
+            communicationService.writeMessage("Cannot find that person.<BR>\r\n");
             return aUser.getRoom();
         }
 
@@ -70,9 +73,9 @@ public class ChangeMasterCommand extends GuildMasterCommand
                 + aUser.getGuild().getName() + " in favor of "
                 + toChar.getName());
         aUser.getGuild().setBoss(toChar);
-        aUser.getGuild().sendMessage(toChar.getName()
+        CommunicationService.getCommunicationService(aUser.getGuild()).sendMessage(toChar.getName()
                 + " is now the guildmaster.<BR>\r\n");
-        toChar.writeMessage("You are now the guildmaster of <I>"
+        CommunicationService.getCommunicationService(toChar).writeMessage("You are now the guildmaster of <I>"
                 + aUser.getGuild().getTitle() + "</I>.<BR>\r\n");
         return aUser.getRoom();
     }

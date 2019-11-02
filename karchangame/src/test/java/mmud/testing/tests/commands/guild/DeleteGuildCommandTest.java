@@ -36,6 +36,7 @@ import org.testng.annotations.Test;
 import java.io.File;
 import java.io.PrintWriter;
 import java.util.HashSet;
+import mmud.services.CommunicationService;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
@@ -74,7 +75,7 @@ public class DeleteGuildCommandTest extends MudTest
     DisplayInterface display = deleteguildCommand.run("deleteguild", karn);
     assertThat(display).isNotNull();
     assertThat(display.getBody()).isEqualTo("You are in a small room.");
-    String karnLog = karn.getLog(0);
+    String karnLog = CommunicationService.getCommunicationService(karn).getLog(0);
     assertThat(karnLog).isEqualTo("You are not a member of a guild.<br />\n");
     // the important bit
     assertThat(karn.getGuild()).isNull();
@@ -108,7 +109,7 @@ public class DeleteGuildCommandTest extends MudTest
     DisplayInterface display = deleteguildCommand.run("deleteguild", karn);
     assertThat(display).isNotNull();
     assertThat(display.getBody()).isEqualTo("You are in a small room.");
-    String karnLog = karn.getLog(0);
+    String karnLog = CommunicationService.getCommunicationService(karn).getLog(0);
 
     assertThat(karnLog).isEqualTo("Guild oldguild deleted.<br />\r\n");
     // the important bit
@@ -119,7 +120,7 @@ public class DeleteGuildCommandTest extends MudTest
   public void setUpMethod() throws Exception
   {
     room1 = new Room();
-    room1.setId(1);
+    room1.setId(1L);
     room1.setContents("You are in a small room.");
 
     karn = new User();

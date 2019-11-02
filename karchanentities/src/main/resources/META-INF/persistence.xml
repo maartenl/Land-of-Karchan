@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<persistence version="2.1" xmlns="http://xmlns.jcp.org/xml/ns/persistence" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/persistence http://xmlns.jcp.org/xml/ns/persistence/persistence_2_1.xsd">
+  <persistence-unit name="karchangamePU" transaction-type="JTA">
+    <provider>org.eclipse.persistence.jpa.PersistenceProvider</provider>
+    <jta-data-source>jdbc/mmud</jta-data-source>
+    <class>mmud.database.entities.characters.SexConverter</class>
+    <class>mmud.database.entities.characters.Administrator</class>
+    <class>mmud.database.entities.characters.Bot</class>
+    <class>mmud.database.entities.characters.Mob</class>
+    <class>mmud.database.entities.characters.Person</class>
+    <class>mmud.database.entities.characters.Shopkeeper</class>
+    <class>mmud.database.entities.characters.User</class>
+    <class>mmud.database.entities.game.Admin</class>
+    <class>mmud.database.entities.game.Answer</class>
+    <class>mmud.database.entities.game.Area</class>
+    <class>mmud.database.entities.game.BanTable</class>
+    <class>mmud.database.entities.game.BannedName</class>
+    <class>mmud.database.entities.game.Board</class>
+    <class>mmud.database.entities.game.BoardMessage</class>
+    <class>mmud.database.entities.game.Charattribute</class>
+    <class>mmud.database.entities.game.Commandlog</class>
+    <class>mmud.database.entities.game.ErrorMessage</class>
+    <class>mmud.database.entities.game.Event</class>
+    <class>mmud.database.entities.game.Eventlog</class>
+    <class>mmud.database.entities.game.Guild</class>
+    <class>mmud.database.entities.game.Guildrank</class>
+    <class>mmud.database.entities.game.Help</class>
+    <class>mmud.database.entities.game.Log</class>
+    <class>mmud.database.entities.game.Macro</class>
+    <class>mmud.database.entities.game.Mail</class>
+    <class>mmud.database.entities.game.Method</class>
+    <class>mmud.database.entities.game.Room</class>
+    <class>mmud.database.entities.game.Roomattribute</class>
+    <class>mmud.database.entities.game.SillyName</class>
+    <class>mmud.database.entities.game.UnbanTable</class>
+    <class>mmud.database.entities.game.UserCommand</class>
+    <class>mmud.database.entities.game.Worldattribute</class>
+    <class>mmud.database.entities.items.Item</class>
+    <class>mmud.database.entities.items.ItemDefinition</class>
+    <class>mmud.database.entities.items.Itemattribute</class>
+    <class>mmud.database.entities.items.NormalItem</class>
+    <class>mmud.database.entities.items.ShopkeeperList</class>
+    <class>mmud.database.entities.web.Blog</class>
+    <class>mmud.database.entities.web.CharacterInfo</class>
+    <class>mmud.database.entities.web.Family</class>
+    <class>mmud.database.entities.web.FamilyPK</class>
+    <class>mmud.database.entities.web.FamilyValue</class>
+    <class>mmud.database.entities.web.Faq</class>
+    <class>mmud.database.entities.web.HistoricTemplate</class>
+    <class>mmud.database.entities.web.HtmlTemplate</class>
+    <class>mmud.database.entities.web.Image</class>
+    <class>mmud.database.entities.web.Link</class>
+    <class>mmud.database.entities.web.Users</class>
+    <class>mmud.database.entities.web.Wikipage</class>
+    <class>mmud.database.entities.web.WikipageHistory</class>
+    <exclude-unlisted-classes>true</exclude-unlisted-classes>
+    <properties>
+      <property name="javax.persistence.schema-generation.database.action" value="none"/>
+      <property name="eclipselink.cache.shared.default" value="false"/>
+      <property name="eclipselink.logging.level" value="INFO"/>
+      <!-- line below is for logging of sql, set to FINE if you need to see it-->
+      <property name="eclipselink.logging.level.sql" value="INFO"/>
+    </properties>
+  </persistence-unit>
+</persistence>

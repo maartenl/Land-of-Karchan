@@ -19,7 +19,7 @@ package mmud.rest.webentities.admin;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import javax.xml.bind.annotation.XmlRootElement;
-import mmud.database.entities.web.Template;
+import mmud.database.entities.web.HtmlTemplate;
 
 /**
  * @see {@link Template}
@@ -43,7 +43,7 @@ public class AdminTemplate
     // empty constructor, for creating a AdminTemplate from scratch.
   }
 
-  public AdminTemplate(Template template)
+  public AdminTemplate(HtmlTemplate template)
   {
     id = template.getId();
     name = template.getName();

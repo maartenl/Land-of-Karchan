@@ -21,6 +21,7 @@ import mmud.database.entities.characters.Person;
 import mmud.database.entities.characters.User;
 import mmud.database.entities.game.DisplayInterface;
 import mmud.exceptions.MudException;
+import mmud.services.CommunicationService;
 
 /**
  * Bow : "bow".
@@ -42,18 +43,18 @@ public class BowCommand extends TargetCommand
             if (Utils.existsAdverb(command))
             {
                 // bow to Marvin evilly
-                aUser.getRoom().sendMessage(aUser, aTarget,
+                CommunicationService.getCommunicationService(aUser.getRoom()).sendMessage(aUser, aTarget,
                         "%SNAME bow%VERB2 to %TNAME "
                         + command.toLowerCase()
                         + ".<BR>\r\n");
                 return aUser.getRoom();
             }
             // bow to Marvin unknownadverb
-            aUser.writeMessage("Unknown adverb found.<BR>\r\n");
+            CommunicationService.getCommunicationService(aUser).writeMessage("Unknown adverb found.<BR>\r\n");
             return aUser.getRoom();
         }
         // bow to Marvin
-        aUser.getRoom().sendMessage(aUser, aTarget, "%SNAME bow%VERB2 to %TNAME.<BR>\r\n");
+        CommunicationService.getCommunicationService(aUser.getRoom()).sendMessage(aUser, aTarget, "%SNAME bow%VERB2 to %TNAME.<BR>\r\n");
         return aUser.getRoom();
     }
 
@@ -65,16 +66,16 @@ public class BowCommand extends TargetCommand
             if (!Utils.existsAdverb(command))
             {
                 // bow unknownadverb
-                aUser.writeMessage("Unknown adverb found.<BR>\r\n");
+                CommunicationService.getCommunicationService(aUser).writeMessage("Unknown adverb found.<BR>\r\n");
                 return aUser.getRoom();
             }
             // bow evilly
-            aUser.getRoom().sendMessage(aUser, "%SNAME bow%VERB2 "
+            CommunicationService.getCommunicationService(aUser.getRoom()).sendMessage(aUser, "%SNAME bow%VERB2 "
                     + command.toLowerCase() + ".<BR>\r\n");
             return aUser.getRoom();
         }
         // bow
-        aUser.getRoom().sendMessage(aUser, "%SNAME bow%VERB2.<BR>\r\n");
+        CommunicationService.getCommunicationService(aUser.getRoom()).sendMessage(aUser, "%SNAME bow%VERB2.<BR>\r\n");
         return aUser.getRoom();
     }
 }

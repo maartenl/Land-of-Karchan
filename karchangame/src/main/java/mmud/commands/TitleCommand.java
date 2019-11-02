@@ -21,6 +21,7 @@ import mmud.database.entities.characters.Person;
 import mmud.database.entities.characters.User;
 import mmud.database.entities.game.DisplayInterface;
 import mmud.exceptions.MudException;
+import mmud.services.CommunicationService;
 
 /**
  * Change your current title : "title Ruler of the Land".
@@ -40,18 +41,18 @@ public class TitleCommand extends NormalCommand
     {
         if ("title".equalsIgnoreCase(command))
         {
-            aUser.writeMessage("Your current title is '" + aUser.getTitle()
+            CommunicationService.getCommunicationService(aUser).writeMessage("Your current title is '" + aUser.getTitle()
                     + "'.<br/>\r\n");
             return aUser.getRoom();
         }
         if ("title remove".equalsIgnoreCase(command))
         {
             aUser.setTitle(null);
-            aUser.writeMessage("You have removed your current title.<br/>\r\n");
+            CommunicationService.getCommunicationService(aUser).writeMessage("You have removed your current title.<br/>\r\n");
             return aUser.getRoom();
         }
         aUser.setTitle(command.substring(6));
-        aUser.writeMessage("Changed your title to : '" + aUser.getTitle()
+        CommunicationService.getCommunicationService(aUser).writeMessage("Changed your title to : '" + aUser.getTitle()
                 + "'.<br/>\r\n");
         return aUser.getRoom();
     }

@@ -37,6 +37,7 @@ import java.time.LocalDateTime;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.HashSet;
+import mmud.services.CommunicationService;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -73,7 +74,7 @@ public class RibbitCommandTest extends MudTest
     assertThat(ribbitCommand.getRegExpr()).isEqualTo("ribbit");
     DisplayInterface display = ribbitCommand.run("ribbit", marvin);
     assertThat(display).isNull();
-    String log = marvin.getLog(0);
+    String log = CommunicationService.getCommunicationService(marvin).getLog(0);
     assertThat(log).isEqualTo("");
   }
 
@@ -91,7 +92,7 @@ public class RibbitCommandTest extends MudTest
     assertThat(ribbitCommand.getRegExpr()).isEqualTo("ribbit");
     DisplayInterface display = ribbitCommand.run("ribbit", marvin);
     assertThat(display).isNotNull();
-    String log = marvin.getLog(0);
+    String log = CommunicationService.getCommunicationService(marvin).getLog(0);
     assertThat(log).isEqualTo("A frog called Marvin says &#34;Rrribbit!&#34;.<br />\nYou feel the need to say &#39;Ribbit&#39; just 4 times.<br />\r\n");
     assertThat(logBean.getLog()).isEqualTo("");
   }
@@ -110,7 +111,7 @@ public class RibbitCommandTest extends MudTest
     assertThat(ribbitCommand.getRegExpr()).isEqualTo("ribbit");
     DisplayInterface display = ribbitCommand.run("ribbit", marvin);
     assertThat(display).isNotNull();
-    String log = marvin.getLog(0);
+    String log = CommunicationService.getCommunicationService(marvin).getLog(0);
     assertThat(log).isEqualTo("You cannot say &#39;Ribbit&#39; that fast! You will get tongue tied!<br />\r\n");
     assertThat(logBean.getLog()).isEqualTo("");
   }
@@ -152,8 +153,8 @@ public class RibbitCommandTest extends MudTest
     final Room room = TestingConstants.getRoom(TestingConstants.getArea());
     karn.setRoom(room);
     marvin = TestingConstants.getMarvin(room);
-    karn.clearLog();
-    marvin.clearLog();
+    CommunicationService.getCommunicationService(karn).clearLog();
+    CommunicationService.getCommunicationService(marvin).clearLog();
     HashSet<Person> persons = new HashSet<>();
     persons.add(karn);
     persons.add(marvin);

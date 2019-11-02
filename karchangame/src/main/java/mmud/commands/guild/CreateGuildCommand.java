@@ -23,10 +23,11 @@ import mmud.database.entities.game.DisplayInterface;
 import mmud.database.entities.game.Guild;
 import mmud.exceptions.MudException;
 import mmud.rest.services.LogBean;
+import mmud.services.CommunicationService;
 
 /**
- * Creates a guild.
- * Command syntax something like : <TT>createguild &lt;name&gt; &lt;title&gt;</TT>
+ * Creates a guild. Command syntax something like : <TT>createguild &lt;name&gt;
+ * &lt;title&gt;</TT>
  * Requirements:
  * <ul><li>you are not in a guild right now</li>
  * <li>you are also not already the guildboss of a guild.</li></ul>
@@ -46,7 +47,7 @@ public class CreateGuildCommand extends NormalCommand
   {
     if (aUser.getGuild() != null)
     {
-      aUser.writeMessage("You are a member of a guild, and can therefore not start a new guild.<br/>\n");
+      CommunicationService.getCommunicationService(aUser).writeMessage("You are a member of a guild, and can therefore not start a new guild.<br/>\n");
       return aUser.getRoom();
     }
     LogBean logBean = getLogBean();
@@ -58,7 +59,7 @@ public class CreateGuildCommand extends NormalCommand
     guild.setName(myParsed[1]);
     guild.setTitle(myParsed[2]);
     aUser.setGuild(guild);
-    aUser.writeMessage("Guild " + myParsed[1] + " created.<br/ >\r\n");
+    CommunicationService.getCommunicationService(aUser).writeMessage("Guild " + myParsed[1] + " created.<br/ >\r\n");
     logBean.writeLog(aUser, " guild " + myParsed[1] + " created/updated");
     return aUser.getRoom();
   }

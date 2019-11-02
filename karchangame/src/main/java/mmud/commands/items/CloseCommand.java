@@ -25,6 +25,8 @@ import mmud.database.entities.characters.User;
 import mmud.database.entities.game.DisplayInterface;
 import mmud.database.entities.items.Item;
 import mmud.exceptions.MudException;
+import mmud.services.CommunicationService;
+import mmud.services.PersonCommunicationService;
 
 /**
  * Close a container: "close chest".
@@ -44,6 +46,7 @@ public class CloseCommand extends NormalCommand
     @Override
     public DisplayInterface run(String command, User aUser) throws MudException
     {
+      PersonCommunicationService communicationService = CommunicationService.getCommunicationService(aUser);
         // first is find the item
         List<String> parsed = new ArrayList<>(Arrays.asList(parseCommand(command)));
         parsed.remove(0); // remove "open"
@@ -56,7 +59,7 @@ public class CloseCommand extends NormalCommand
         }
         if (itemsFound.isEmpty())
         {
-            aUser.writeMessage("No items found that match that description.<br/>\n");
+            communicationService.writeMessage("No items found that match that description.<br/>\n");
             return aUser.getRoom();
         }
         for (Item item : itemsFound)
@@ -65,29 +68,29 @@ public class CloseCommand extends NormalCommand
             {
                 if (!item.isOpenable())
                 {
-                    aUser.writeMessage(item.getDescription()
+                    communicationService.writeMessage(item.getDescription()
                             + " cannot be closed.<BR>\r\n");
                     return aUser.getRoom();
                 }
                 if (!item.isOpen())
                 {
-                    aUser.writeMessage(item.getDescription()
+                    communicationService.writeMessage(item.getDescription()
                             + " is already closed.<BR>\r\n");
                     return aUser.getRoom();
                 }
                 if (item.isLocked())
                 {
-                    aUser.writeMessage(item.getDescription()
+                    communicationService.writeMessage(item.getDescription()
                             + " is locked.<BR>\r\n");
                     return aUser.getRoom();
                 }
                 item.close();
-                aUser.getRoom().sendMessage(aUser, "%SNAME close%VERB2 "
+                CommunicationService.getCommunicationService(aUser.getRoom()).sendMessage(aUser, "%SNAME close%VERB2 "
 					+ item.getDescription() + ".<br/>\r\n");
                 return aUser.getRoom();
             }
         }
-        aUser.writeMessage("You cannot close that.<br/>\n");
+        communicationService.writeMessage("You cannot close that.<br/>\n");
         return aUser.getRoom();
     }
 }

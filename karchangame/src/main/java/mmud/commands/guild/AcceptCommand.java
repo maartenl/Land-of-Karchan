@@ -17,12 +17,14 @@
 package mmud.commands.guild;
 
 import mmud.commands.GuildMasterCommand;
-import mmud.Attributes;
+import mmud.database.Attributes;
 import mmud.database.entities.characters.User;
 import mmud.database.entities.game.DisplayInterface;
 import mmud.exceptions.MudException;
 import mmud.rest.services.LogBean;
 import mmud.rest.services.PersonBean;
+import mmud.services.CommunicationService;
+import mmud.services.PersonCommunicationService;
 
 /**
  * Makes you, as guildmaster, accept a new member to the guild. There are some
@@ -33,55 +35,57 @@ import mmud.rest.services.PersonBean;
  * <LI>the user must not already be a member of a guild
  * </UL>
  * Command syntax something like : <TT>guildaccept &lt;username&gt;</TT>
+ *
  * @author maartenl
  */
 public class AcceptCommand extends GuildMasterCommand
 {
 
-    public AcceptCommand(String aRegExpr)
-    {
-        super(aRegExpr);
-    }
+  public AcceptCommand(String aRegExpr)
+  {
+    super(aRegExpr);
+  }
 
-    @Override
-    public DisplayInterface run(String command, User aUser) throws MudException
+  @Override
+  public DisplayInterface run(String command, User aUser) throws MudException
+  {
+    // TODO : similar to rejectcommand, refactor?
+    PersonCommunicationService communicationService = CommunicationService.getCommunicationService(aUser);
+    PersonBean personBean = getPersonBean();
+    LogBean logBean = getLogBean();
+    String[] myParsed = parseCommand(command);
+    User potentialGuildmember = personBean.getUser(myParsed[1]);
+    if (potentialGuildmember == null)
     {
-        // TODO : similar to rejectcommand, refactor?
-        PersonBean personBean = getPersonBean();
-        LogBean logBean = getLogBean();
-        String[] myParsed = parseCommand(command);
-        User potentialGuildmember = personBean.getUser(myParsed[1]);
-        if (potentialGuildmember == null)
-        {
-            aUser.writeMessage("Cannot find that person.<BR>\r\n");
-            return aUser.getRoom();
-        }
-        if (!potentialGuildmember.verifyAttribute(Attributes.GUILDWISH, aUser.getGuild().getName()))
-        {
-            aUser.writeMessage(potentialGuildmember.getName()
-                    + " does not wish to join your guild.<BR>\r\n");
-            return aUser.getRoom();
-        }
-        if (potentialGuildmember.getGuild() != null)
-        {
-            throw new MudException(
-                    "error occurred, a person is a member of a guild, yet has a guildwish parameter!");
-        }
-        potentialGuildmember.removeAttribute(Attributes.GUILDWISH);
-        potentialGuildmember.setGuild(aUser.getGuild());
-        // TODO : does this need work?
-        // aUser.getGuild().increaseAmountOfMembers();
-        logBean.writeLog(aUser, " accepted " + potentialGuildmember.getName()
-                + " into guild " + aUser.getGuild().getName());
-        aUser.writeMessage(potentialGuildmember.getName()
-                + " has joined your guild.<BR>\r\n");
-        if (potentialGuildmember.isActive())
-        {
-            potentialGuildmember.writeMessage("You have joined guild <I>"
-                    + aUser.getGuild().getTitle() + "</I>.<BR>\r\n");
-        }
-        // aUser.getGuild().increaseAmountOfMembers();
-        return aUser.getRoom();
+      communicationService.writeMessage("Cannot find that person.<BR>\r\n");
+      return aUser.getRoom();
     }
+    if (!potentialGuildmember.verifyAttribute(Attributes.GUILDWISH, aUser.getGuild().getName()))
+    {
+      communicationService.writeMessage(potentialGuildmember.getName()
+              + " does not wish to join your guild.<BR>\r\n");
+      return aUser.getRoom();
+    }
+    if (potentialGuildmember.getGuild() != null)
+    {
+      throw new MudException(
+              "error occurred, a person is a member of a guild, yet has a guildwish parameter!");
+    }
+    potentialGuildmember.removeAttribute(Attributes.GUILDWISH);
+    potentialGuildmember.setGuild(aUser.getGuild());
+    // TODO : does this need work?
+    // aUser.getGuild().increaseAmountOfMembers();
+    logBean.writeLog(aUser, " accepted " + potentialGuildmember.getName()
+            + " into guild " + aUser.getGuild().getName());
+    communicationService.writeMessage(potentialGuildmember.getName()
+            + " has joined your guild.<BR>\r\n");
+    if (potentialGuildmember.isActive())
+    {
+      CommunicationService.getCommunicationService(potentialGuildmember).writeMessage("You have joined guild <I>"
+              + aUser.getGuild().getTitle() + "</I>.<BR>\r\n");
+    }
+    // aUser.getGuild().increaseAmountOfMembers();
+    return aUser.getRoom();
+  }
 
 }

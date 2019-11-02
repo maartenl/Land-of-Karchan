@@ -1,8 +1,20 @@
 export class Systemlog {
-    loggerName: string;
-    message: string;
-    messageID: number;
-    messageTypeLevel: string;
-    organizationID: string;
-    timestamp: string;
+    Timestamp: string;
+    Level: string;
+    Version: number;
+    LoggerName: string;
+    ThreadID: string;
+    ThreadName: string;
+    TimeMillis: string;
+    LevelValue: string;
+    ClassName: string;
+    MethodName: string;
+    Throwable: ThrowableLog;
+    MessageID: string;
+    LogMessage: string;
+}
+
+export class ThrowableLog {
+    Exception: string;
+    StackTrace: string;
 }

@@ -20,6 +20,8 @@ import java.util.logging.Logger;
 import mmud.database.entities.characters.User;
 import mmud.database.entities.game.DisplayInterface;
 import mmud.exceptions.MudException;
+import mmud.services.CommunicationService;
+import mmud.services.PersonCommunicationService;
 
 /**
  * Gets or sets the condition/state of your character. For example:
@@ -42,26 +44,27 @@ public class ConditionCommand extends NormalCommand
     @Override
     public DisplayInterface run(String command, User aUser) throws MudException
     {
+      PersonCommunicationService communicationService = CommunicationService.getCommunicationService(aUser);
         String[] myParsed = parseCommand(command, 4);
         if (myParsed.length == 1)
         {
             if (aUser.getState() == null)
             {
-                aUser.writeMessage("You do not have a current condition.<br/>\r\n");
+                communicationService.writeMessage("You do not have a current condition.<br/>\r\n");
                 return aUser.getRoom();
             }
-            aUser.writeMessage("Your current condition is \"" + aUser.getState() + "\".<br/>\r\n");
+            communicationService.writeMessage("Your current condition is \"" + aUser.getState() + "\".<br/>\r\n");
             return aUser.getRoom();
         }
         if (myParsed.length == 2 && myParsed[1].equals("empty"))
         {
             aUser.setState(null);
-            aUser.writeMessage("Removed your current condition.<br/>\r\n");
+            communicationService.writeMessage("Removed your current condition.<br/>\r\n");
             return aUser.getRoom();
         }
 
         aUser.setState(command.substring("condition ".length()));
-        aUser.writeMessage("Condition set.<BR>\r\n");
+        communicationService.writeMessage("Condition set.<BR>\r\n");
         return aUser.getRoom();
     }
 }

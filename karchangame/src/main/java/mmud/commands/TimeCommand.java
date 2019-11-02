@@ -20,6 +20,7 @@ import java.util.Calendar;
 import mmud.database.entities.characters.User;
 import mmud.database.entities.game.DisplayInterface;
 import mmud.exceptions.MudException;
+import mmud.services.CommunicationService;
 
 /**
  * Displays the current time: "time".
@@ -37,7 +38,7 @@ public class TimeCommand extends NormalCommand
     public DisplayInterface run(String command, User aUser) throws MudException
     {
         Calendar myCalendar = Calendar.getInstance();
-        aUser.writeMessage("Current time is "
+        CommunicationService.getCommunicationService(aUser).writeMessage("Current time is "
                 + myCalendar.get(Calendar.HOUR_OF_DAY) + ":"
                 + +myCalendar.get(Calendar.MINUTE) + ":"
                 + +myCalendar.get(Calendar.SECOND) + ".<BR>\r\n");

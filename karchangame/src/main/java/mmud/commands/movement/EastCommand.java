@@ -21,6 +21,7 @@ import mmud.database.entities.characters.User;
 import mmud.database.entities.game.DisplayInterface;
 import mmud.database.entities.game.Room;
 import mmud.exceptions.MudException;
+import mmud.services.CommunicationService;
 
 /**
  * Proceed east: "east".
@@ -42,12 +43,12 @@ public class EastCommand extends NormalCommand
         Room myRoom = aUser.getRoom();
         if (myRoom.getEast() != null)
         {
-            myRoom.sendMessageExcl(aUser, "%SNAME leave%VERB2 east.<BR>\r\n");
+            CommunicationService.getCommunicationService(myRoom).sendMessageExcl(aUser, "%SNAME leave%VERB2 east.<BR>\r\n");
             aUser.setRoom(myRoom.getEast());
-            aUser.getRoom().sendMessageExcl(aUser, "%SNAME appear%VERB2.<BR>\r\n");
+            CommunicationService.getCommunicationService(aUser.getRoom()).sendMessageExcl(aUser, "%SNAME appear%VERB2.<BR>\r\n");
         } else
         {
-            aUser.writeMessage("You cannot go east.<BR>\r\n");
+            CommunicationService.getCommunicationService(aUser).writeMessage("You cannot go east.<BR>\r\n");
         }
         return aUser.getRoom();
     }

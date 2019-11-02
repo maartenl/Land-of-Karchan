@@ -38,6 +38,7 @@ import java.io.File;
 import java.io.PrintWriter;
 import java.util.Arrays;
 import java.util.List;
+import mmud.services.CommunicationService;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
@@ -82,7 +83,7 @@ public class DeputiesCommandTest extends MudTest
         DisplayInterface display = deputiesCommand.run("deputies", karn);
         assertThat(display).isNotNull();
         assertThat(display.getBody()).isEqualTo("You are in a small room.");
-        String log = karn.getLog(0);
+        String log = CommunicationService.getCommunicationService(karn).getLog(0);
         assertThat(log).isEqualTo("Current deputies are Karn, Midevia.<br />");
     }
 
@@ -92,7 +93,7 @@ public class DeputiesCommandTest extends MudTest
         logBean = new LogBeanStub();
 
         room1 = new Room();
-        room1.setId(1);
+        room1.setId(1L);
         room1.setContents("You are in a small room.");
 
         karnAdmin = new Admin();
