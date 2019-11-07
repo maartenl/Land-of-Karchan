@@ -16,15 +16,9 @@
  */
 package mmud.database.entities.game;
 
-import java.time.DayOfWeek;
 import java.time.LocalDateTime;
-import java.time.LocalTime;
-import java.time.temporal.ChronoUnit;
-import java.time.temporal.TemporalAdjuster;
-import java.time.temporal.TemporalUnit;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.GregorianCalendar;
+
+import mmud.database.entities.DateTimeUtilities;
 import org.eclipse.persistence.config.DescriptorCustomizer;
 import org.eclipse.persistence.descriptors.ClassDescriptor;
 import org.eclipse.persistence.expressions.Expression;
@@ -53,13 +47,8 @@ public class MessagesFilterForBoard implements DescriptorCustomizer
 //    TemporalField fieldUS = WeekFields.of(Locale.US).dayOfWeek();
 //    LocalDate lastSunday = LocalDate.now().with(fieldUS, 1);
 
-    Expression recent = eb.get("posttime").greaterThan(getLastSunday(LocalDateTime.now()));
+    Expression recent = eb.get("posttime").greaterThan(DateTimeUtilities.getLastSunday(LocalDateTime.now()));
     mapping.setSelectionCriteria(fkExp.and(activeExp).and(recent));
-  }
-
-  public static LocalDateTime getLastSunday(LocalDateTime now)
-  {
-    return now.with(DayOfWeek.SUNDAY).minus(7, ChronoUnit.DAYS).with(LocalTime.of(0, 1));
   }
 
 }

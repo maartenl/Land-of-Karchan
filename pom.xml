@@ -3,73 +3,27 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
-  <parent>
-    <artifactId>karchanparent</artifactId>
-    <groupId>mmud</groupId>
-    <version>1.0.0-SNAPSHOT</version>
-  </parent>
 
   <groupId>mmud</groupId>
-  <artifactId>karchanentities</artifactId>
+  <artifactId>karchanparent</artifactId>
   <version>1.0.0-SNAPSHOT</version>
-  <packaging>jar</packaging>
+  <packaging>pom</packaging>
 
-  <name>karchanentities</name>
+  <name>karchanparent</name>
   <url>https://www.karchan.org</url>
 
   <properties>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <project.encoding>UTF-8</project.encoding>
+    <project.source.version>1.8</project.source.version>
+    <project.target.version>1.8</project.target.version>
+    <maven.compiler.source>1.8</maven.compiler.source>
+    <maven.compiler.target>1.8</maven.compiler.target>
+    <javaee.version>8.0.1</javaee.version>
+    <microprofile.version>2.2</microprofile.version>
+    <jsonwebtoken.version>0.9.1</jsonwebtoken.version>
+    <eclipselink.version>2.5.2</eclipselink.version>
   </properties>
-
-  <dependencies>
-    <dependency>
-      <groupId>com.google.guava</groupId>
-      <artifactId>guava</artifactId>
-      <version>19.0</version>
-      <type>jar</type>
-    </dependency>
-    <dependency>
-      <groupId>com.googlecode.owasp-java-html-sanitizer</groupId>
-      <artifactId>owasp-java-html-sanitizer</artifactId>
-      <version>20180219.1</version>
-    </dependency>
-    <dependency>
-      <groupId>commons-validator</groupId>
-      <artifactId>commons-validator</artifactId>
-      <version>1.4.0</version>
-    </dependency>
-    <dependency>
-      <groupId>org.eclipse.persistence</groupId>
-      <artifactId>org.eclipse.persistence.jpa</artifactId>
-      <version>2.7.4</version>
-      <scope>provided</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.assertj</groupId>
-      <artifactId>assertj-core</artifactId>
-      <!-- use 2.9.1 for Java 7 projects -->
-      <version>3.11.1</version>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.jmockit</groupId>
-      <artifactId>jmockit</artifactId>
-      <version>1.10</version>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.testng</groupId>
-      <artifactId>testng</artifactId>
-      <version>6.8.1</version>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>javax</groupId>
-      <artifactId>javaee-api</artifactId>
-      <version>${javaee.version}</version>
-      <type>jar</type>
-      <scope>provided</scope>
-    </dependency>
-  </dependencies>
 
   <build>
     <pluginManagement><!-- lock down plugins versions to avoid using Maven defaults (may be moved to parent pom) -->
@@ -116,4 +70,16 @@
       </plugins>
     </pluginManagement>
   </build>
+  <modules>
+    <!-- other modules are not included here, as they are not that often packaged -->
+    <module>karchan</module>
+    <module>karchangame</module>
+    <module>karchanentities</module>
+<!-- these are usually not included 
+-->
+    <module>karchanadmin</module>
+    <module>karchanimages</module>
+    <module>karchanpersonal</module>
+    <module>karchanscripts</module> 
+  </modules>
 </project>

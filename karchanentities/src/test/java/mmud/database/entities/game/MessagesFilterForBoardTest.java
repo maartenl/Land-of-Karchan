@@ -18,11 +18,10 @@ package mmud.database.entities.game;
 
 import java.time.LocalDateTime;
 import java.time.Month;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.GregorianCalendar;
+
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.testng.Assert.*;
+
+import mmud.database.entities.DateTimeUtilities;
 import org.testng.annotations.Test;
 
 /**
@@ -31,7 +30,7 @@ import org.testng.annotations.Test;
  */
 public class MessagesFilterForBoardTest
 {
-  
+
   public MessagesFilterForBoardTest()
   {
   }
@@ -44,11 +43,11 @@ public class MessagesFilterForBoardTest
   public void testGetLastSundayOnASaturday()
   {
     LocalDateTime calendar = LocalDateTime.of(2019, Month.FEBRUARY, 9, 15, 5, 2);
-    LocalDateTime actual = MessagesFilterForBoard.getLastSunday(calendar);
+    LocalDateTime actual = DateTimeUtilities.getLastSunday(calendar);
     LocalDateTime expected = LocalDateTime.of(2019, Month.FEBRUARY, 3, 0, 1, 0);
     assertThat(actual).isEqualTo(expected);
   }
-  
+
   /**
    * Returns the last Sunday, of date 2019-02-09, at 15:05:02, which was a Monday.
    * Expected result: Sunday, 2019-02-10.
@@ -57,7 +56,7 @@ public class MessagesFilterForBoardTest
   public void testGetLastSundayOnAMonday()
   {
     LocalDateTime calendar = LocalDateTime.of(2019, Month.FEBRUARY, 11, 15, 5, 2);
-    LocalDateTime actual = MessagesFilterForBoard.getLastSunday(calendar);
+    LocalDateTime actual = DateTimeUtilities.getLastSunday(calendar);
     LocalDateTime expected = LocalDateTime.of(2019, Month.FEBRUARY, 10, 0, 1, 0);
     assertThat(actual).isEqualTo(expected);
   }

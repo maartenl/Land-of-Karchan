@@ -2,6 +2,11 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <artifactId>karchanparent</artifactId>
+    <groupId>mmud</groupId>
+    <version>1.0.0-SNAPSHOT</version>
+  </parent>
 
   <groupId>mmud</groupId>
   <artifactId>karchangame</artifactId>
@@ -12,16 +17,9 @@
 
   <properties>
     <endorsed.dir>${project.build.directory}/endorsed</endorsed.dir>
-    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <vaadin.version>7.5.5</vaadin.version>
     <vaadin.plugin.version>${vaadin.version}</vaadin.plugin.version>
-    <project.encoding>UTF-8</project.encoding>
-    <project.source.version>1.8</project.source.version>
-    <project.target.version>1.8</project.target.version>
-    <javaee.version>8.0.1</javaee.version>
-    <jsonwebtoken.version>0.9.1</jsonwebtoken.version>
     <karchanentities.version>1.0.0-SNAPSHOT</karchanentities.version>
-    <microprofile.version>2.2</microprofile.version>
   </properties>
 
   <repositories>
@@ -71,16 +69,16 @@
       <artifactId>jjwt</artifactId>
       <version>${jsonwebtoken.version}</version>
     </dependency>
-    <dependency>
-      <groupId>org.eclipse.persistence</groupId>
-      <artifactId>org.eclipse.persistence.jpa</artifactId>
-      <version>2.7.4</version>
-      <scope>provided</scope>
-    </dependency>
 <!--    <dependency>
       <groupId>org.eclipse.persistence</groupId>
+      <artifactId>org.eclipse.persistence.jpa</artifactId>
+      <version>{eclipselink.version}</version>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.eclipse.persistence</groupId>
       <artifactId>org.eclipse.persistence.jpa.modelgen.processor</artifactId>
-      <version>2.7.3</version>
+      <version>{eclipselink.version}</version>
       <scope>provided</scope>
     </dependency> -->
     <dependency>
