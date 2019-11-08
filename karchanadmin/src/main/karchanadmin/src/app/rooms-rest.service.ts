@@ -51,7 +51,7 @@ export class RoomsRestService {
     if (environment.production === false) {
       return of(this.rooms.length);
     }
-    return this.http.get<Room[]>(this.url)
+    return this.http.get<Room[]>(this.url + '/count')
       .pipe(
         catchError(err => {
           this.handleError(err);
@@ -82,7 +82,7 @@ export class RoomsRestService {
       const slice = this.rooms.slice(startRow, endRow);
       return of(slice);
     }
-    return this.http.get<Room[]>(this.url)
+    return this.http.get<Room[]>(this.url + '/'  + startRow + '/' + (endRow - startRow))
       .pipe(
         catchError(err => {
           this.handleError(err);
