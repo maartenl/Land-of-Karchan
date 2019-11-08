@@ -52,7 +52,7 @@ import mmud.database.RegularExpressions;
           @NamedQuery(name = "Wikipage.findByTitleAuthorized", query = "SELECT w FROM Wikipage w WHERE w.title = :title"),
           @NamedQuery(name = "Wikipage.checkExistenceOfWikipage", query = "SELECT w FROM Wikipage w WHERE w.title = :title"),
           @NamedQuery(name = "Wikipage.findFrontpage", query = "SELECT w FROM Wikipage w WHERE w.title = 'FrontPage' and w.administration = false"),
-          @NamedQuery(name = "Wikipage.findRecentEdits", query = "SELECT w FROM Wikipage w WHERE w.administration = false order by w.modifiedDate")
+          @NamedQuery(name = "Wikipage.findRecentEdits", query = "SELECT w FROM Wikipage w WHERE w.administration = false order by w.modifiedDate desc")
         })
 public class Wikipage implements Serializable
 {

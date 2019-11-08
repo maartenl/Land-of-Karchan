@@ -47,7 +47,7 @@ public class MenuFactory
 
   private final static Logger LOGGER = Logger.getLogger(MenuFactory.class.getName());
 
-  private static final int MAX_RECENT_WIKIPAGES_EDITED = 5;
+  private static final int MAX_RECENT_WIKIPAGES_EDITED = 8;
 
   private static final int MAX_LATEST_BLOGS = 5;
 
