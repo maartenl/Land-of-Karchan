@@ -1,7 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { environment } from '../environments/environment';
 import { CookieService } from 'ngx-cookie-service';
-import { PlayerService } from './player.service';
 
 @Component({
   selector: 'app-root',
@@ -14,8 +13,7 @@ export class AppComponent implements OnInit {
   darkmode: boolean;
 
   constructor(
-    private cookieService: CookieService,
-    private playerService: PlayerService) {
+    private cookieService: CookieService) {
     this.production = environment.production;
     if (window.console) {console.log('Production: ' + this.production);}
   }
@@ -27,20 +25,4 @@ export class AppComponent implements OnInit {
     }
   }
 
-  public playGame(): void {
-    this.playerService.enterGame()
-      .subscribe(
-        (result: any) => { // on success
-          if (window.location !== window.parent.location) {
-            window.parent.location.href = '/game/play.html';
-          }
-          window.location.href = '/game/play.html';
-        },
-        (err: any) => { // error
-          // console.log('error', err);
-        },
-        () => { // on completion
-        }
-      );
-  }
 }

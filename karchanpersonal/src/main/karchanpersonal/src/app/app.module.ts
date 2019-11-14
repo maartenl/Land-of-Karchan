@@ -20,6 +20,7 @@ import { GuildMemberComponent } from './guild/guild-member/guild-member.componen
 import { PlayerSettingsComponent } from './player-settings/player-settings.component';
 import { WikipagesComponent } from './wikipages/wikipages.component';
 import { PicturesComponent } from './pictures/pictures.component';
+import { PlayComponent } from './play/play.component';
 
 @NgModule({
   declarations: [
@@ -32,7 +33,8 @@ import { PicturesComponent } from './pictures/pictures.component';
     GuildMemberComponent,
     PlayerSettingsComponent,
     WikipagesComponent,
-    PicturesComponent
+    PicturesComponent,
+    PlayComponent
   ],
   imports: [
     BrowserModule,

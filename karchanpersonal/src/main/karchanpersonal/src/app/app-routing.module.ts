@@ -5,6 +5,7 @@ import { MailComponent } from './mail/mail.component';
 import { PlayerSettingsComponent } from './player-settings/player-settings.component';
 import { WikipagesComponent } from './wikipages/wikipages.component';
 import { PicturesComponent } from './pictures/pictures.component';
+import { PlayComponent } from './play/play.component';
 
 
 const routes: Routes = [
@@ -12,6 +13,7 @@ const routes: Routes = [
   { path: 'mail', component: MailComponent },
   { path: 'guild', component: GuildComponent },
   { path: 'wikipages/:title', component: WikipagesComponent },
+  { path: 'play', component: PlayComponent },
   { path: 'pictures', component: PicturesComponent }
 ];
 
