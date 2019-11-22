@@ -1,0 +1,26 @@
+{
+    "body": "in this room, guilds are created and lost. In this room, creative ideas spring to Kuri, only to die down in the ashes upon the flames it arose from. Large tables and piles of blank parchment sit upon the tables that lay pushed put against all the walls. One man stands behind a counter in the back of the room, he is a rather odd looking fellow. Several different signs and other various lists hang about the room; perhaps you should read them all before deciding your next move.<BR>\nThere is a list of <i><font color=#2a9fd6>guidelines</i></font> that you can <font color=#2a9fd6><i>read</i></font> here.",
+    "image": "",
+    "items": [
+        {
+            "adject1": "cold",
+            "adject2": "soothing",
+            "adject3": "golden",
+            "amount": 2,
+            "name": "beer"
+        }
+    ],
+    "log": {
+        "log": "<b>Logonmessage</b>\n<br />\n<img src=\"/images/gif/letters/w.gif\" alt=\"W\" />\nelcome to the Land of Karchan MUD, a land filled with mystery\nand enchantment, where weapons, magic, intelligence, and common\nsense play key roles in the realm. Where love and war can be one\nand the same. Where elves coexist peacefully with the humans, and\nmake war with the dwarves. Where the sun rises, and the moon falls.\nWhere one can change into a hero with a single swipe of his\nsword.<p></p><p>You have no new Mudmail...</p>\r\n<p>Karn here.</p>\n<p>version 2.0.1 is now live. (30 march)</p>\n<p>version 2.0.2 is now live. (29 august)</p>\n<p>new administration app can be found <a href=\"/karchanadmin-2.0.2/\" rel=\"nofollow\">here</a></p>\n<p>I am planning on moving all my stuff off of Google Docs, and putting it in the Karchan Wiki. The Karchan Wiki has a &#34;administation pages&#34; feature that\nonly deputies can access.</p>\n<p>The landing page is called <a href=\"/wiki/Administration.html\" rel=\"nofollow\">Administration</a></p>\n<hr /><hr />I am afraid I do not understand that.<br />\nYou drop a cold, soothing, golden beer.<br />\r\nYou drop a cold, soothing, golden beer.<br />\r\n",
+        "offset": 0,
+        "size": 1161
+    },
+    "persons": [
+        {
+            "name": "Jenen",
+            "race": "elf"
+        }
+    ],
+    "south": true,
+    "title": "Center of Guilds"
+}

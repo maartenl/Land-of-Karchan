@@ -25,23 +25,6 @@ export class GameComponent implements OnInit {
         });
   }
 
-  public playGame(): void {
-    this.playerService.enterGame()
-      .subscribe(
-        (result: any) => { // on success
-          if (window.location !== window.parent.location) {
-            window.parent.location.href = '/game/play.html';
-          }
-          window.location.href = '/game/play.html';
-        },
-        (err: any) => { // error
-          // console.log('error', err);
-        },
-        () => { // on completion
-        }
-      );
-  }
-
   public isLoggedIn(): boolean {
     if (this.error) {
       return false;

@@ -44,8 +44,6 @@ export class PlayerService {
 
   guildranksUrl: string;
 
-  gameUrl: string;
-
   privateUrl: string;
 
   wikipagesUrl: string;
@@ -60,7 +58,6 @@ export class PlayerService {
     private errorsService: ErrorsService) {
     this.charactersheetUrl = environment.CHARACTERSHEET_URL;
     this.familyUrl = environment.FAMILY_URL;
-    this.gameUrl = environment.GAME_URL;
     this.mailUrl = environment.MAIL_URL;
     this.hasNewMailUrl = environment.HASNEWMAIL_URL;
     this.guildUrl = environment.GUILD_URL;
@@ -138,10 +135,6 @@ export class PlayerService {
     return this.guildranksUrl.replace('[player]', this.getName());
   } private getGuildhopefulsUrl(): string {
     return this.guildhopefulsUrl.replace('[player]', this.getName());
-  }
-
-  private getGameUrl(): string {
-    return this.gameUrl.replace('[player]', this.getName());
   }
 
   private getWikipagesUrl(title?: string): string {
@@ -457,13 +450,6 @@ export class PlayerService {
           return [];
         })
       );
-  }
-
-  // game calls
-
-  public enterGame(): Observable<any> {
-    const url: string = this.getGameUrl() + 'enter';
-    return this.http.post(url, null);
   }
 
   /**

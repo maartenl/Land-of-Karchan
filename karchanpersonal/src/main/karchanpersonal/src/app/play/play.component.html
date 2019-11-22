@@ -1,1 +1,79 @@
-<p>play works!</p>
+<div class="container-fluid">
+    <script src="https://cdn.ckeditor.com/ckeditor5/11.2.0/classic/ckeditor.js"></script>
+    <div class="row">
+        <div class="col-12 col-lg-10">
+            <div class="card">
+                <div class="card-body">
+                    <h5 id="page-title" class="card-title"><img *ngIf="display.image"
+                            style="vertical-align: text-bottom;" [src]="display.image" />{{ getTitle() }}</h5>
+                    <div class="card-text" [innerHTML]="display.body">
+                    </div>
+                    <div id="karchan_body" class="card-text">
+                        <p>[
+                            <a *ngIf="display.west" href="#" (click)='goWest();'>west</a>
+                            <a *ngIf="display.east" href="#" (click)='goEast();'>east</a>
+                            <a *ngIf="display.north" href="#" (click)='goNorth();'>north</a>
+                            <a *ngIf="display.south" href="#" (click)='goSouth();'>south</a>
+                            <a *ngIf="display.up" href="#" (click)='goUp();'>up</a>
+                            <a *ngIf="display.down" href="#" (click)='goDown();'>down</a>
+                            ]</p>
+                        <p *ngIf="display.persons">
+                            <span *ngFor="let person of display.persons">
+                                {{ getVowel(person) }} {{ person.race }} called <a href="#"
+                                    (click)="lookAtPerson(person);">{{ person.name }}</a> is here.
+                            </span>
+                        </p>
+                        <p *ngIf="display.items">
+                            <span *ngFor="let item of display.items">
+                                <a href="#" (click)="lookAtItem(item);">{{ getDescription(item) }}</a>
+                                {{item.amount > 1 ? 'are' : 'is'}} here.
+                            </span>
+                        </p>
+                    </div>
+                    <div id="karchan_log" *ngIf="display.log !== undefined" [innerHTML]="display.log.log"></div>
+                    <p>&nbsp;</p>
+                    <form id="commandForm" method="post" onsubmit="play(); return false;">
+                        <input id="command" name="command" size="60" type="text" />
+                        <textarea class="form-textarea" cols="60" id="bigcommand" name="bigcommand" rows="5"
+                            style="display:none"></textarea>
+                        <input type="submit" value="Submit" />&nbsp;</form>
+                    <div id="warning" style="color: red;">&nbsp;</div>
+                </div>
+            </div>
+        </div>
+        <div class="col-12 col-lg-2">
+            <div class="card">
+                <div class="card-body">
+                    <p class="card-text">
+                        <img alt="compass" border="0" src="assets/images/compass.png" usemap="#roosmap" />
+                        <map name="roosmap">
+                            <area alt="North" coords="0,0,80,75,160,0,0,0" href="#" (click)="goNorth();" shape="poly" />
+                            <area alt="South" coords="0,151,80,75,160,151,0,151" href="#" (click)="goSouth();"
+                                shape="poly" />
+                            <area alt="West" coords="0,0,80,75,0,151,0,0" href="#" (click)="goWest();" shape="poly" />
+                            <area alt="East" coords="160,0,80,75,160,151,160,0" href="#" (click)="goEast()"
+                                shape="poly" />
+                        </map>
+                    </p>
+                    <p class="card-text">
+                        <a class="btn btn-block btn-outline-primary" href="javascript:void(0)"
+                            (click)="toggleSleep();"><span id="sleepButtonSpanId">Sleep</span></a>
+                    </p>
+                    <p class="card-text">
+                        <a class="btn btn-block btn-outline-primary" href="javascript:void(0)"
+                            (click)="toggleEntry();" title="Provide a big entry form"><span>Big
+                                talk</span></a>
+                    </p>
+                    <p class="card-text">
+                        <a class="btn btn-block btn-outline-primary" href="javascript:void(0)"
+                            (click)="clearLog();" title="Clear your log"><span>Clear</span></a>
+                    </p>
+                    <p class="card-text">
+                        <a class="btn btn-block btn-outline-primary" href=""
+                            (click)="quit();" title="Quit the game"><span>Quit</span></a>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
