@@ -41,6 +41,11 @@ export class GameService {
     return this.http.post(url, null);
   }
 
+  public quitGame(): Observable<any> {
+    const url: string = this.getGameUrl() + 'quit';
+    return this.http.get(url);
+  }
+
   public processCommand(command: string, logOffset: number, log: boolean): Observable<Display> {
     if (!environment.production) {
       return this.http.get<Display>(this.getGameUrl() + 'play.json');
