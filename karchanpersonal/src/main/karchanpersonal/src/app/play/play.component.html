@@ -34,10 +34,8 @@
                     <p>&nbsp;</p>
                     <form id="commandForm" method="post" onsubmit="play(); return false;">
                         <input id="command" name="command" size="60" type="text" />
-                        <textarea class="form-textarea" cols="60" id="bigcommand" name="bigcommand" rows="5"
-                            style="display:none"></textarea>
+                        <ckeditor [editor]="Editor" *ngIf="karchan.bigEntry" data="<p>Hello, world!</p>"></ckeditor>
                         <input type="submit" value="Submit" />&nbsp;</form>
-                    <div id="warning" style="color: red;">&nbsp;</div>
                 </div>
             </div>
         </div>

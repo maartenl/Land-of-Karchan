@@ -1,5 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
+import * as ClassicEditor from '@ckeditor/ckeditor5-build-classic';
+
 import { PlayerService } from '../player.service';
 import { GameService } from '../game.service';
 import { Display, Person, Item } from './display.model';
@@ -14,11 +16,13 @@ import { LanguageUtils } from '../language.utils';
   styleUrls: ['./play.component.css']
 })
 export class PlayComponent implements OnInit {
+  public Editor = ClassicEditor;
 
   Karchan = class {
     name: string;
     logOffset: number;
     sleep: boolean;
+    bigEntry: boolean;
   };
 
   display: Display = new Display();
@@ -28,7 +32,11 @@ export class PlayComponent implements OnInit {
   constructor(
     private gameService: GameService,
     private playerService: PlayerService,
-    private router: Router) { }
+    private router: Router) {
+    this.karchan.bigEntry = false;
+    this.karchan.sleep = false;
+    this.karchan.logOffset = 0;
+  }
 
   ngOnInit() {
     this.playGame();
@@ -190,6 +198,7 @@ export class PlayComponent implements OnInit {
 
   public toggleEntry(): boolean {
     if (window.console) { console.log('toggleEntry'); }
+    this.karchan.bigEntry = !this.karchan.bigEntry;
     // TODO MLE DO STUFF!
     return false;
   }
