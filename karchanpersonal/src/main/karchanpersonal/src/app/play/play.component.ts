@@ -1,6 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import * as ClassicEditor from '@ckeditor/ckeditor5-build-classic';
+import { ChangeEvent } from '@ckeditor/ckeditor5-angular/ckeditor.component';
+import { FormControl, FormGroup, FormBuilder } from '@angular/forms';
 
 import { PlayerService } from '../player.service';
 import { GameService } from '../game.service';
@@ -23,19 +25,30 @@ export class PlayComponent implements OnInit {
     logOffset: number;
     sleep: boolean;
     bigEntry: boolean;
+    editor: string;
   };
 
   display: Display = new Display();
 
   private karchan = new this.Karchan();
 
+  commandForm: FormGroup;
+
   constructor(
     private gameService: GameService,
     private playerService: PlayerService,
-    private router: Router) {
+    private router: Router,
+    private formBuilder: FormBuilder) {
     this.karchan.bigEntry = false;
     this.karchan.sleep = false;
     this.karchan.logOffset = 0;
+    this.createForms();
+  }
+
+  createForms() {
+    this.commandForm = this.formBuilder.group({
+      command: ''
+    });
   }
 
   ngOnInit() {
@@ -89,6 +102,23 @@ export class PlayComponent implements OnInit {
     return false;
   }
 
+  public onChange({ editor }: ChangeEvent) {
+    this.karchan.editor = editor.getData();
+  }
+
+  public play(): boolean {
+    const formModel = this.commandForm.value;
+    const command = formModel.command as string;
+    if (this.karchan.bigEntry) {
+      if (window.console) { console.log('play '  + command + ' ' + this.karchan.editor); }
+      this.processCall(command + ' ' + this.karchan.editor, true);
+      return false;
+    }
+    if (window.console) { console.log('play ' + command); }
+    this.processCall(command, true);
+    return false;
+  }
+
   public retrieveName(): string {
     return this.playerService.getName();
   }
@@ -107,6 +137,7 @@ export class PlayComponent implements OnInit {
       .subscribe(
         (result: any) => { // on success
           this.writeStuff(result);
+          this.createForms();
         },
         (err: any) => { // error
           // console.log('error', err);
@@ -199,7 +230,6 @@ export class PlayComponent implements OnInit {
   public toggleEntry(): boolean {
     if (window.console) { console.log('toggleEntry'); }
     this.karchan.bigEntry = !this.karchan.bigEntry;
-    // TODO MLE DO STUFF!
     return false;
   }
 

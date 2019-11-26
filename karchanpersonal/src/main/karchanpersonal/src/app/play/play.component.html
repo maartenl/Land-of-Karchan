@@ -32,10 +32,17 @@
                     </div>
                     <div id="karchan_log" *ngIf="display.log !== undefined" [innerHTML]="getLog()"></div>
                     <p>&nbsp;</p>
-                    <form id="commandForm" method="post" onsubmit="play(); return false;">
-                        <input id="command" name="command" size="60" type="text" />
-                        <ckeditor [editor]="Editor" *ngIf="karchan.bigEntry" data="<p>Hello, world!</p>"></ckeditor>
-                        <input type="submit" value="Submit" />&nbsp;</form>
+                    <form [formGroup]="commandForm" (ngSubmit)="play()" novalidate>
+                        <fieldset class="form-group">
+                            <input type="text" class="form-control" id="command" name="command" formControlName="command" size="60" />
+                        </fieldset>
+                        <fieldset class="form-group">
+                            <ckeditor [editor]="Editor" *ngIf="karchan.bigEntry" (change)="onChange($event)"></ckeditor>
+                        </fieldset>
+                        <fieldset class="form-group">
+                            <input type="submit" value="Submit" />
+                        </fieldset>
+                    </form>
                 </div>
             </div>
         </div>
