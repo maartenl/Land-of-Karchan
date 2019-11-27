@@ -62,24 +62,12 @@ export class BlogService {
     );
   }
 
-  private handleError(error: HttpErrorResponse) {
-    if (error.error instanceof ErrorEvent) {
-      // A client-side or network error occurred. Handle it accordingly.
-      console.error('An error occurred:', error.error.message);
-      const errormessage = new ErrorMessage();
-      errormessage.message = error.error.message;
-      errormessage.type = 'Network Error';
-      this.errorsService.addError(errormessage);
-  } else {
-      // The backend returned an unsuccessful response code.
-      // The response body may contain clues as to what went wrong,
-      const errormessage = new ErrorMessage();
-      errormessage.message = error.error.errormessage;
-      if (error.error.errormessage === undefined) {
-        errormessage.message = error.statusText;
-      }
-      errormessage.type = error.status.toString();
-      this.errorsService.addError(errormessage);
-    }
+  /**
+   * Handles error, delivers them to the errorService.
+   * @param error the error message received from the HTTP call
+   * @param ignore which states can we choose to ignore?
+   */
+  private handleError(error: HttpErrorResponse, ignore?: string[]) {
+    this.errorsService.addHttpError(error, ignore);
   }
 }
