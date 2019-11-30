@@ -23,6 +23,8 @@ import freemarker.template.TemplateException;
 import freemarker.template.TemplateNotFoundException;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.time.LocalDateTime;
+import java.time.Month;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -31,13 +33,11 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import java.util.stream.Stream;
 import javax.annotation.security.DeclareRoles;
 import javax.inject.Inject;
 import javax.security.enterprise.SecurityContext;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
-import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -132,6 +132,7 @@ public class WebsiteServlet extends HttpServlet
       root.put("isGod", securityContext.isCallerInRole(Roles.GOD));
       root.put("hasNewMail", mailChecker.checkMail(securityContext.getCallerPrincipal() != null ? securityContext.getCallerPrincipal().getName() : null));
     }
+    root.put("isChristmas", isChristmas());
     Optional<Menu> visibleMenu = MenuFactory.findVisibleMenu(url);
     if (visibleMenu.isPresent())
     {
@@ -225,6 +226,14 @@ public class WebsiteServlet extends HttpServlet
       return "/index.html";
     }
     return url.getRequestURI();
+  }
+
+  private boolean isChristmas()
+  {
+    LocalDateTime now = LocalDateTime.now();
+    LocalDateTime startOfChristmas = LocalDateTime.of(now.getYear(), Month.DECEMBER, 7, 0, 0, 0);
+    LocalDateTime endOfChristmas = LocalDateTime.of(now.getYear()+1, Month.JANUARY, 6, 0, 0, 0);
+    return now.isAfter(startOfChristmas) && now.isBefore(endOfChristmas);
   }
 
 }
