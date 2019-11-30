@@ -60,6 +60,7 @@
       <property name="eclipselink.logging.level" value="INFO"/>
       <!-- line below is for logging of sql, set to FINE if you need to see it-->
       <property name="eclipselink.logging.level.sql" value="INFO"/>
+      <property name="eclipselink.target-database" value="MySQL4"/>
     </properties>
   </persistence-unit>
 </persistence>
