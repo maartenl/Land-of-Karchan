@@ -74,8 +74,6 @@ import mmud.exceptions.MudWebException;
 import mmud.rest.webentities.PrivateDisplay;
 import mmud.rest.webentities.PrivateLog;
 import mmud.rest.webentities.PrivatePerson;
-import mmud.scripting.RoomsInterface;
-import mmud.scripting.WorldInterface;
 import mmud.services.CommunicationService;
 import mmud.services.PersonCommunicationService;
 
@@ -100,7 +98,7 @@ import mmud.services.PersonCommunicationService;
 @Stateless
 @LocalBean
 @Path("/game")
-public class GameBean implements RoomsInterface, WorldInterface
+public class GameBean
 {
 
   @EJB
@@ -327,6 +325,7 @@ public class GameBean implements RoomsInterface, WorldInterface
    * src="doc-files/Gamebean_create.png"></p> @param requestContext for headers,
    * like remote address.
    *
+   * @param requestContext for determining the remote address.
    * @param name the name of the user
    * @param pperson the data of the new character
    * @return NO_CONTENT if the game is offline for maintenance.
@@ -981,13 +980,11 @@ public class GameBean implements RoomsInterface, WorldInterface
     return result;
   }
 
-  @Override
-  public Room find(Integer id)
+  public Room find(Long id)
   {
     return getEntityManager().find(Room.class, id);
   }
 
-  @Override
   public String getAttribute(String name)
   {
     Worldattribute attribute = getEntityManager().find(Worldattribute.class, name);

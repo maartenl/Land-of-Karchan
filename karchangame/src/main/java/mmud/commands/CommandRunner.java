@@ -25,7 +25,9 @@ import javax.ejb.LocalBean;
 import javax.ejb.Stateless;
 import mmud.database.entities.characters.User;
 import mmud.database.entities.game.DisplayInterface;
+import mmud.database.entities.game.Room;
 import mmud.database.entities.game.UserCommand;
+import mmud.database.entities.items.Item;
 import mmud.exceptions.MudException;
 import mmud.rest.services.EventsBean;
 import mmud.rest.services.GameBean;
@@ -36,10 +38,13 @@ import mmud.rest.services.LogBean;
 import mmud.rest.services.PersonBean;
 import mmud.rest.services.admin.AdminBean;
 import mmud.scripting.Items;
+import mmud.scripting.ItemsInterface;
 import mmud.scripting.Persons;
 import mmud.scripting.Rooms;
+import mmud.scripting.RoomsInterface;
 import mmud.scripting.RunScript;
 import mmud.scripting.World;
+import mmud.scripting.WorldInterface;
 import mmud.services.CommunicationService;
 
 /**
@@ -114,9 +119,29 @@ public class CommandRunner
       }
       List<NormalCommand> myCol = new ArrayList<>();
       Persons persons = new Persons(personBean);
-      Rooms rooms = new Rooms(gameBean);
-      Items items = new Items(itemBean);
-      World world = new World(gameBean);
+      Rooms rooms = new Rooms(new RoomsInterface()
+      {
+        @Override
+        public Room find(Long id)
+        {
+          return gameBean.find(id);
+        }
+      });
+      Items items = new Items(new ItemsInterface()
+      {
+        @Override
+        public Item createItem(int itemdefnr)
+        {
+          return itemBean.createItem(itemdefnr);
+        }
+      });
+      World world = new World(new WorldInterface(){
+        @Override
+        public String getAttribute(String name)
+        {
+          return gameBean.getAttribute(name);
+        }
+      });
       RunScript runScript = new RunScript(persons, rooms, items, world);
       for (UserCommand myCom : userCommands)
       {

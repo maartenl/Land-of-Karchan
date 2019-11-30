@@ -31,7 +31,6 @@ import mmud.database.entities.items.Item;
 import mmud.database.entities.items.ItemDefinition;
 import mmud.database.entities.items.NormalItem;
 import mmud.exceptions.ItemException;
-import mmud.scripting.ItemsInterface;
 
 /**
  * Specific bean for the dropping, getting, selling and buying of items from
@@ -41,7 +40,7 @@ import mmud.scripting.ItemsInterface;
  */
 @Stateless
 @LocalBean
-public class ItemBean implements ItemsInterface
+public class ItemBean
 {
 
     @PersistenceContext(unitName = "karchangamePU")
@@ -288,7 +287,6 @@ public class ItemBean implements ItemsInterface
         return amount;
     }
 
-    @Override
     public Item createItem(int itemdefnr)
     {
         ItemDefinition itemDefinition = getEntityManager().find(ItemDefinition.class, itemdefnr);

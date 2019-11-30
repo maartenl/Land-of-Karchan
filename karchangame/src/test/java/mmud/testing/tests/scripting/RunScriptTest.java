@@ -183,21 +183,21 @@ public class RunScriptTest
         {
 
             @Override
-            public Room find(Integer id)
+            public Room find(Long id)
             {
                 if (id == null)
                 {
                     return null;
                 }
-                if (id == 1)
+                if (id == 1L)
                 {
                     return room;
                 }
-                if (id == 2)
+                if (id == 2L)
                 {
                     return room2;
                 }
-                if (id == 3)
+                if (id == 3L)
                 {
                     return room3;
                 }

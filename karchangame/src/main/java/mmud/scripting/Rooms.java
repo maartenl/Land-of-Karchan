@@ -38,7 +38,7 @@ public class Rooms
      * @param id the id of the room
      * @return the room or null, if not found.
      */
-    public Room find(Integer id)
+    public Room find(Long id)
     {
         final mmud.database.entities.game.Room found = proxy.find(id);
         if (found == null)

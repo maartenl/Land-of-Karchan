@@ -35,12 +35,17 @@ import mmud.database.entities.characters.Administrator;
 import mmud.database.entities.characters.User;
 import mmud.database.entities.game.Event;
 import mmud.database.entities.game.Method;
+import mmud.database.entities.game.Room;
+import mmud.database.entities.items.Item;
 import mmud.exceptions.MudWebException;
 import mmud.scripting.Items;
+import mmud.scripting.ItemsInterface;
 import mmud.scripting.Persons;
 import mmud.scripting.Rooms;
+import mmud.scripting.RoomsInterface;
 import mmud.scripting.RunScript;
 import mmud.scripting.World;
+import mmud.scripting.WorldInterface;
 import mmud.services.CommunicationService;
 
 /**
@@ -99,9 +104,30 @@ public class EventsBean
       throw new MudWebException(null, "Event was not found.", Response.Status.NOT_FOUND);
     }
     Persons persons = new Persons(personBean);
-    Rooms rooms = new Rooms(gameBean);
-    Items items = new Items(itemBean);
-    World world = new World(gameBean);
+    Rooms rooms = new Rooms(new RoomsInterface()
+    {
+      @Override
+      public Room find(Long id)
+      {
+        return gameBean.find(id);
+      }
+    });
+    Items items = new Items(new ItemsInterface()
+    {
+      @Override
+      public Item createItem(int itemdefnr)
+      {
+        return itemBean.createItem(itemdefnr);
+      }
+    });
+    World world = new World(new WorldInterface()
+    {
+      @Override
+      public String getAttribute(String name)
+      {
+        return gameBean.getAttribute(name);
+      }
+    });
     RunScript runScript = new RunScript(persons, rooms, items, world);
     Method method = event.getMethod();
     try
@@ -150,9 +176,30 @@ public class EventsBean
     query.setParameter("minute", calendar.get(Calendar.MINUTE));
     List<Event> list = query.getResultList();
     Persons persons = new Persons(personBean);
-    Rooms rooms = new Rooms(gameBean);
-    Items items = new Items(itemBean);
-    World world = new World(gameBean);
+    Rooms rooms = new Rooms(new RoomsInterface()
+    {
+      @Override
+      public Room find(Long id)
+      {
+        return gameBean.find(id);
+      }
+    });
+    Items items = new Items(new ItemsInterface()
+    {
+      @Override
+      public Item createItem(int itemdefnr)
+      {
+        return itemBean.createItem(itemdefnr);
+      }
+    });
+    World world = new World(new WorldInterface()
+    {
+      @Override
+      public String getAttribute(String name)
+      {
+        return gameBean.getAttribute(name);
+      }
+    });
     RunScript runScript = new RunScript(persons, rooms, items, world);
     for (Event event : list)
     {
