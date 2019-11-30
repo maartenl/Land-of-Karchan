@@ -30,7 +30,9 @@ import mmud.exceptions.MudWebException;
 /**
  *
  * @author maartenl
+ * @param <T>
  */
+@Deprecated
 public abstract class AbstractFacade<T>
 {
 

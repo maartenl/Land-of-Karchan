@@ -619,7 +619,7 @@ public class Room implements Serializable, DisplayInterface, ItemWrangler, Attri
       throw new ItemException("Unable to remove item from room.");
     }
   }
-  
+
   /**
    * Returns all persons in the room, can be bots or shopkeepers or normal
    * players.

@@ -22,6 +22,7 @@ import java.util.logging.Logger;
 import java.util.stream.Collectors;
 import javax.annotation.security.DeclareRoles;
 import javax.annotation.security.RolesAllowed;
+import javax.ejb.LocalBean;
 import javax.ejb.Stateless;
 import javax.json.bind.JsonbBuilder;
 import javax.persistence.EntityManager;
@@ -51,7 +52,8 @@ import mmud.rest.webentities.admin.AdminRoom;
 @RolesAllowed("deputy")
 @Stateless
 @Path("/administration/rooms")
-public class RoomsBean
+@LocalBean
+public class RoomsBean //implements AdminRestService<Long>
 {
 
   private static final Logger LOGGER = Logger.getLogger(RoomsBean.class.getName());
@@ -64,6 +66,7 @@ public class RoomsBean
           {
             "application/json"
           })
+  
   public void create(String json, @Context SecurityContext sc)
   {
     AdminRoom adminRoom = AdminRoom.fromJson(json);
@@ -121,6 +124,7 @@ public class RoomsBean
           {
             "application/json"
           })
+  
   public void edit(@PathParam("id") Long id, String json, @Context SecurityContext sc)
   {
     AdminRoom adminRoom = AdminRoom.fromJson(json);
@@ -200,6 +204,7 @@ public class RoomsBean
 
   @DELETE
   @Path("{id}")
+  
   public void remove(@PathParam("id") Long id,
           @Context SecurityContext sc
   )
@@ -221,6 +226,7 @@ public class RoomsBean
           {
             "application/json"
           })
+  
   public String find(@PathParam("id") Long id,
           @Context SecurityContext sc)
   {
@@ -238,6 +244,7 @@ public class RoomsBean
           {
             "application/json"
           })
+  
   public String findAll()
   {
     LOGGER.info("findAll");
@@ -252,6 +259,7 @@ public class RoomsBean
           {
             "application/json"
           })
+  
   public String findRange(@PathParam("offset") Integer offset,
           @PathParam("pageSize") Integer pageSize
   )
@@ -267,7 +275,8 @@ public class RoomsBean
   @GET
   @Path("count")
   @Produces("text/plain")
-  public String countREST()
+  
+  public String count()
   {
     return String.valueOf(getEntityManager().createNamedQuery("Room.countAll").getSingleResult());
   }

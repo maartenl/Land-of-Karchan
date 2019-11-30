@@ -32,12 +32,8 @@ import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
-import javax.xml.bind.annotation.XmlRootElement;
-import javax.xml.bind.annotation.XmlTransient;
 import mmud.database.entities.Ownage;
 
 /**
@@ -48,166 +44,163 @@ import mmud.database.entities.Ownage;
 @Table(name = "mm_methods")
 @NamedQueries(
         {
-            @NamedQuery(name = "Method.findAll", query = "SELECT m FROM Method m"),
-            @NamedQuery(name = "Method.findByName", query = "SELECT m FROM Method m WHERE m.name = :name"),
-            @NamedQuery(name = "Method.findByCreation", query = "SELECT m FROM Method m WHERE m.creation = :creation"),
-            @NamedQuery(name = "Method.findRange", query = "SELECT m from Method m WHERE m.name like :alphabet")
+          @NamedQuery(name = "Method.findAll", query = "SELECT m FROM Method m order by m.name"),
+          @NamedQuery(name = "Method.countAll", query = "SELECT count(m) FROM Method m"),
+          @NamedQuery(name = "Method.findByName", query = "SELECT m FROM Method m WHERE m.name = :name"),
+          @NamedQuery(name = "Method.findByCreation", query = "SELECT m FROM Method m WHERE m.creation = :creation"),
+          @NamedQuery(name = "Method.findRange", query = "SELECT m from Method m WHERE m.name like :alphabet")
         })
-@XmlRootElement
 public class Method implements Serializable, Ownage
 {
 
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "methodName")
-    private Collection<UserCommand> mmCommandsCollection;
-    private static final long serialVersionUID = 1L;
-    @Id
-    @Basic(optional = false)
-    @NotNull
-    @Size(min = 1, max = 52)
-    @Column(name = "name")
-    private String name;
-    @Basic(optional = false)
-    @NotNull
-    @Lob
-    @Size(min = 1, max = 65535)
-    @Column(name = "src")
-    private String src;
-    @Basic(optional = false)
-    @NotNull
-    @Column(name = "creation")
-    private LocalDateTime creation;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "method")
-    private Collection<Event> eventCollection;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "methodName")
-    private Collection<UserCommand> commandCollection;
-    @JoinColumn(name = "owner", referencedColumnName = "name")
-    @ManyToOne
-    private Admin owner;
+  @OneToMany(cascade = CascadeType.ALL, mappedBy = "methodName")
+  private Collection<UserCommand> mmCommandsCollection;
+  private static final long serialVersionUID = 1L;
+  @Id
+  @Basic(optional = false)
+  @NotNull
+  @Size(min = 1, max = 52)
+  @Column(name = "name")
+  private String name;
+  @Basic(optional = false)
+  @NotNull
+  @Lob
+  @Size(min = 1, max = 65535)
+  @Column(name = "src")
+  private String src;
+  @Basic(optional = false)
+  @NotNull
+  @Column(name = "creation")
+  private LocalDateTime creation;
+  @OneToMany(cascade = CascadeType.ALL, mappedBy = "method")
+  private Collection<Event> eventCollection;
+  @OneToMany(cascade = CascadeType.ALL, mappedBy = "methodName")
+  private Collection<UserCommand> commandCollection;
+  @JoinColumn(name = "owner", referencedColumnName = "name")
+  @ManyToOne
+  private Admin owner;
 
-    public Method()
-    {
-    }
+  public Method()
+  {
+  }
 
-    public Method(String name)
-    {
-        this.name = name;
-    }
+  public Method(String name)
+  {
+    this.name = name;
+  }
 
-    public Method(String name, String src, LocalDateTime creation)
-    {
-        this.name = name;
-        this.src = src;
-        this.creation = creation;
-    }
+  public Method(String name, String src, LocalDateTime creation)
+  {
+    this.name = name;
+    this.src = src;
+    this.creation = creation;
+  }
 
-    public String getName()
-    {
-        return name;
-    }
+  public String getName()
+  {
+    return name;
+  }
 
-    public void setName(String name)
-    {
-        this.name = name;
-    }
+  public void setName(String name)
+  {
+    this.name = name;
+  }
 
-    /**
-     * Get the javascript source to execute.
-     *
-     * @return
-     */
-    public String getSrc()
-    {
-        return src;
-    }
+  /**
+   * Get the javascript source to execute.
+   *
+   * @return
+   */
+  public String getSrc()
+  {
+    return src;
+  }
 
-    public void setSrc(String src)
-    {
-        this.src = src;
-    }
+  public void setSrc(String src)
+  {
+    this.src = src;
+  }
 
-    public LocalDateTime getCreation()
-    {
-        return creation;
-    }
+  public LocalDateTime getCreation()
+  {
+    return creation;
+  }
 
-    public void setCreation(LocalDateTime creation)
-    {
-        this.creation = creation;
-    }
+  public void setCreation(LocalDateTime creation)
+  {
+    this.creation = creation;
+  }
 
-    @XmlTransient
-    public Collection<Event> getEventCollection()
-    {
-        return eventCollection;
-    }
+  public Collection<Event> getEventCollection()
+  {
+    return eventCollection;
+  }
 
-    public void setEventCollection(Collection<Event> eventCollection)
-    {
-        this.eventCollection = eventCollection;
-    }
+  public void setEventCollection(Collection<Event> eventCollection)
+  {
+    this.eventCollection = eventCollection;
+  }
 
-    @XmlTransient
-    public Collection<UserCommand> getCommandCollection()
-    {
-        return commandCollection;
-    }
+  public Collection<UserCommand> getCommandCollection()
+  {
+    return commandCollection;
+  }
 
-    public void setCommandCollection(Collection<UserCommand> commandCollection)
-    {
-        this.commandCollection = commandCollection;
-    }
+  public void setCommandCollection(Collection<UserCommand> commandCollection)
+  {
+    this.commandCollection = commandCollection;
+  }
 
-    @Override
-    public Admin getOwner()
-    {
-        return owner;
-    }
+  @Override
+  public Admin getOwner()
+  {
+    return owner;
+  }
 
-    @Override
-    public void setOwner(Admin owner)
-    {
-        this.owner = owner;
-    }
+  @Override
+  public void setOwner(Admin owner)
+  {
+    this.owner = owner;
+  }
 
-    @Override
-    public int hashCode()
-    {
-        int hash = 0;
-        hash += (name != null ? name.hashCode() : 0);
-        return hash;
-    }
+  @Override
+  public int hashCode()
+  {
+    int hash = 0;
+    hash += (name != null ? name.hashCode() : 0);
+    return hash;
+  }
 
-    @Override
-    public boolean equals(Object object)
+  @Override
+  public boolean equals(Object object)
+  {
+    // TODO: Warning - this method won't work in the case the id fields are not set
+    if (!(object instanceof Method))
     {
-        // TODO: Warning - this method won't work in the case the id fields are not set
-        if (!(object instanceof Method))
-        {
-            return false;
-        }
-        Method other = (Method) object;
-        if ((this.name == null && other.name != null) || (this.name != null && !this.name.equals(other.name)))
-        {
-            return false;
-        }
-        return true;
+      return false;
     }
+    Method other = (Method) object;
+    if ((this.name == null && other.name != null) || (this.name != null && !this.name.equals(other.name)))
+    {
+      return false;
+    }
+    return true;
+  }
 
-    @Override
-    public String toString()
-    {
-        return "mmud.database.entities.game.Method[ name=" + name + " ]";
-    }
+  @Override
+  public String toString()
+  {
+    return "mmud.database.entities.game.Method[ name=" + name + " ]";
+  }
 
-    @XmlTransient
-    public Collection<UserCommand> getMmCommandsCollection()
-    {
-        return mmCommandsCollection;
-    }
+  public Collection<UserCommand> getMmCommandsCollection()
+  {
+    return mmCommandsCollection;
+  }
 
-    public void setMmCommandsCollection(Collection<UserCommand> mmCommandsCollection)
-    {
-        this.mmCommandsCollection = mmCommandsCollection;
-    }
+  public void setMmCommandsCollection(Collection<UserCommand> mmCommandsCollection)
+  {
+    this.mmCommandsCollection = mmCommandsCollection;
+  }
 
 }
