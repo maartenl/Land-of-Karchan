@@ -30,7 +30,7 @@ export class PlayComponent implements OnInit {
 
   display: Display = new Display();
 
-  private karchan = new this.Karchan();
+  karchan = new this.Karchan();
 
   commandForm: FormGroup;
 

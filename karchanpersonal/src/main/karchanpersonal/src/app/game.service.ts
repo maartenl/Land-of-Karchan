@@ -50,7 +50,7 @@ export class GameService {
     if (!environment.production) {
       return this.http.get<Display>(this.getGameUrl() + 'play.json');
     }
-    const url: string = this.getGameUrl() + 'play?offset=' + logOffset + + '&log=' + log;
+    const url: string = this.getGameUrl() + 'play?offset=' + logOffset + '&log=' + log;
     return this.http.post<Display>(url, command);
   }
 
