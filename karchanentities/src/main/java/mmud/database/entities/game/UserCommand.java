@@ -31,8 +31,6 @@ import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.Table;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import mmud.database.entities.Ownage;
@@ -45,162 +43,166 @@ import mmud.database.entities.Ownage;
 @Table(name = "mm_commands")
 @NamedQueries(
         {
-            @NamedQuery(name = "UserCommand.findAll", query = "SELECT m FROM UserCommand m"),
-            @NamedQuery(name = "UserCommand.findById", query = "SELECT m FROM UserCommand m WHERE m.id = :id"),
-            @NamedQuery(name = "UserCommand.findActive", query = "SELECT m FROM UserCommand m WHERE m.callable = 1"),
-            @NamedQuery(name = "UserCommand.findByCommand", query = "SELECT m FROM UserCommand m WHERE m.command = :command"),
-            @NamedQuery(name = "UserCommand.findByRoom", query = "SELECT m FROM UserCommand m WHERE m.room = :room"),
-            @NamedQuery(name = "UserCommand.findByCreation", query = "SELECT m FROM UserCommand m WHERE m.creation = :creation")
+          @NamedQuery(name = "UserCommand.findAll", query = "SELECT m FROM UserCommand m order by m.command"),
+          @NamedQuery(name = "UserCommand.countAll", query = "SELECT count(m) FROM UserCommand m"),
+          @NamedQuery(name = "UserCommand.findAllByOwner", query = "SELECT m FROM UserCommand m where m.owner.name = :owner order by m.command"),
+          @NamedQuery(name = "UserCommand.countAllByOwner", query = "SELECT count(m) FROM UserCommand m where m.owner.name = :owner"),
+
+          @NamedQuery(name = "UserCommand.findById", query = "SELECT m FROM UserCommand m WHERE m.id = :id"),
+          @NamedQuery(name = "UserCommand.findActive", query = "SELECT m FROM UserCommand m WHERE m.callable = 1"),
+          @NamedQuery(name = "UserCommand.findByCommand", query = "SELECT m FROM UserCommand m WHERE m.command = :command"),
+          @NamedQuery(name = "UserCommand.findByRoom", query = "SELECT m FROM UserCommand m WHERE m.room = :room"),
+          @NamedQuery(name = "UserCommand.findByCreation", query = "SELECT m FROM UserCommand m WHERE m.creation = :creation")
         })
 public class UserCommand implements Serializable, Ownage
 {
 
-    private static final long serialVersionUID = 1L;
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Basic(optional = false)
-    private Integer id;
-    @Basic(optional = true)
-    @Column(name = "callable")
-    private Boolean callable;
-    @Basic(optional = false)
-    @NotNull
-    @Size(min = 1, max = 255)
-    private String command;
-    @JoinColumn(name = "room", nullable = true, referencedColumnName = "id")
-    @ManyToOne(optional = false, fetch = FetchType.LAZY)
-    private Room room;
-    @Basic(optional = false)
-    @NotNull
-    private LocalDateTime creation;
-    @JoinColumn(name = "owner", referencedColumnName = "name")
-    @ManyToOne
-    private Admin owner;
-    @JoinColumn(name = "method_name", referencedColumnName = "name")
-    @ManyToOne(optional = false)
-    private Method methodName;
+  private static final long serialVersionUID = 1L;
+  @Id
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  @Basic(optional = false)
+  private Integer id;
+  @Basic(optional = true)
+  @Column(name = "callable")
+  private Boolean callable;
+  @Basic(optional = false)
+  @NotNull
+  @Size(min = 1, max = 255)
+  private String command;
+  @JoinColumn(name = "room", nullable = true, referencedColumnName = "id")
+  @ManyToOne(optional = false, fetch = FetchType.LAZY)
+  private Room room;
+  @Basic(optional = false)
+  @NotNull
+  private LocalDateTime creation;
+  @JoinColumn(name = "owner", referencedColumnName = "name")
+  @ManyToOne
+  private Admin owner;
+  @JoinColumn(name = "method_name", referencedColumnName = "name")
+  @ManyToOne(optional = false)
+  private Method methodName;
 
-    public UserCommand()
-    {
-    }
+  public UserCommand()
+  {
+  }
 
-    public UserCommand(Integer id)
-    {
-        this.id = id;
-    }
+  public UserCommand(Integer id)
+  {
+    this.id = id;
+  }
 
-    public UserCommand(Integer id, String command, LocalDateTime creation)
-    {
-        this.id = id;
-        this.command = command;
-        this.creation = creation;
-    }
+  public UserCommand(Integer id, String command, LocalDateTime creation)
+  {
+    this.id = id;
+    this.command = command;
+    this.creation = creation;
+  }
 
-    public Integer getId()
-    {
-        return id;
-    }
+  public Integer getId()
+  {
+    return id;
+  }
 
-    public void setId(Integer id)
-    {
-        this.id = id;
-    }
+  public void setId(Integer id)
+  {
+    this.id = id;
+  }
 
-    public Boolean getCallable()
-    {
-        return callable != null && callable;
-    }
+  public Boolean getCallable()
+  {
+    return callable != null && callable;
+  }
 
-    public void setCallable(Boolean callable)
+  public void setCallable(Boolean callable)
+  {
+    if (callable == null || callable == false)
     {
-        if (callable == null || callable == false)
-        {
-            this.callable = false;
-            return;
-        }
-        this.callable = true;
+      this.callable = false;
+      return;
     }
+    this.callable = true;
+  }
 
-    public String getCommand()
-    {
-        return command;
-    }
+  public String getCommand()
+  {
+    return command;
+  }
 
-    public void setCommand(String command)
-    {
-        this.command = command;
-    }
+  public void setCommand(String command)
+  {
+    this.command = command;
+  }
 
-    public Room getRoom()
-    {
-        return room;
-    }
+  public Room getRoom()
+  {
+    return room;
+  }
 
-    public void setRoom(Room room)
-    {
-        this.room = room;
-    }
+  public void setRoom(Room room)
+  {
+    this.room = room;
+  }
 
-    public LocalDateTime getCreation()
-    {
-        return creation;
-    }
+  public LocalDateTime getCreation()
+  {
+    return creation;
+  }
 
-    public void setCreation(LocalDateTime creation)
-    {
-        this.creation = creation;
-    }
+  public void setCreation(LocalDateTime creation)
+  {
+    this.creation = creation;
+  }
 
-    @Override
-    public Admin getOwner()
-    {
-        return owner;
-    }
+  @Override
+  public Admin getOwner()
+  {
+    return owner;
+  }
 
-    @Override
-    public void setOwner(Admin owner)
-    {
-        this.owner = owner;
-    }
+  @Override
+  public void setOwner(Admin owner)
+  {
+    this.owner = owner;
+  }
 
-    public Method getMethodName()
-    {
-        return methodName;
-    }
+  public Method getMethodName()
+  {
+    return methodName;
+  }
 
-    public void setMethodName(Method methodName)
-    {
-        this.methodName = methodName;
-    }
+  public void setMethodName(Method methodName)
+  {
+    this.methodName = methodName;
+  }
 
-    @Override
-    public int hashCode()
-    {
-        int hash = 0;
-        hash += (id != null ? id.hashCode() : 0);
-        return hash;
-    }
+  @Override
+  public int hashCode()
+  {
+    int hash = 0;
+    hash += (id != null ? id.hashCode() : 0);
+    return hash;
+  }
 
-    @Override
-    public boolean equals(Object object)
+  @Override
+  public boolean equals(Object object)
+  {
+    // TODO: Warning - this method won't work in the case the id fields are not set
+    if (!(object instanceof UserCommand))
     {
-        // TODO: Warning - this method won't work in the case the id fields are not set
-        if (!(object instanceof UserCommand))
-        {
-            return false;
-        }
-        UserCommand other = (UserCommand) object;
-        if ((this.id == null && other.id != null) || (this.id != null && !this.id.equals(other.id)))
-        {
-            return false;
-        }
-        return true;
+      return false;
     }
+    UserCommand other = (UserCommand) object;
+    if ((this.id == null && other.id != null) || (this.id != null && !this.id.equals(other.id)))
+    {
+      return false;
+    }
+    return true;
+  }
 
-    @Override
-    public String toString()
-    {
-        return "mmud.database.entities.game.MmCommands[ id=" + id + " ]";
-    }
+  @Override
+  public String toString()
+  {
+    return "mmud.database.entities.game.MmCommands[ id=" + id + " ]";
+  }
 
 }

@@ -18,6 +18,7 @@ import { RoomsComponent } from './rooms/rooms.component';
 
 import { ScrollingModule } from '@angular/cdk/scrolling';
 import { MethodsComponent } from './methods/methods.component';
+import { CommandsComponent } from './commands/commands.component';
 
 @NgModule({
   declarations: [
@@ -27,7 +28,8 @@ import { MethodsComponent } from './methods/methods.component';
     ErrorsComponent,
     SystemlogComponent,
     RoomsComponent,
-    MethodsComponent
+    MethodsComponent,
+    CommandsComponent
   ],
   imports: [
     BrowserModule,

@@ -8,7 +8,8 @@ export const environment = {
   TEMPLATES_URL: '/assets/templates.json',
   SYSTEMLOG_URL: '/assets/systemlog.json',
   ROOMS_URL: '/assets/rooms.json',
-  METHODS_URL: '/assets/methods.json'
+  METHODS_URL: '/assets/methods.json',
+  COMMANDS_URL: '/assets/commands.json'
 };
 
 /*

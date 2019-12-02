@@ -124,7 +124,6 @@ export class RoomsComponent extends DataSource<Room> implements OnInit {
     console.log('setroombyid' + id);
     this.roomsRestService.getRoom(id).subscribe({
       next: (data) => {
-        console.log(data);
         if (data !== undefined) { this.setRoom(data); }
       }
     });

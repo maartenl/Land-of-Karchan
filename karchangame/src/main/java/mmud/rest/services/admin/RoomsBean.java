@@ -211,7 +211,6 @@ public class RoomsBean //implements AdminRestService<Long>
   {
     final String name = sc.getUserPrincipal().getName();
     Room room = getEntityManager().find(Room.class, id);
-
     if (room == null)
     {
       throw new MudWebException(name, "Room " + id + " not found.", Response.Status.NOT_FOUND);

@@ -25,9 +25,6 @@ export class MyDataSource extends DataSource<Method> {
     }
     // this.subscription.add(
     collectionViewer.viewChange.subscribe(range => {
-      if (window.console) {
-        console.log(this.methods);
-      }
       if (this.methods.slice(range.start, range.end).some(x => x === undefined)) {
         if (window.console) {
           console.log('Call restservice');
@@ -70,6 +67,8 @@ export class MethodsComponent implements OnInit {
 
   methods: Method[];
 
+  private newMethod: boolean;
+
   method: Method;
 
   form: FormGroup;
@@ -101,6 +100,7 @@ export class MethodsComponent implements OnInit {
     private formBuilder: FormBuilder) {
     this.createForm();
     this.method = new Method();
+    this.newMethod = true;
     this.methodsRestService.getCount(null).subscribe({
       next: amount => {
         this.methods = Array.from<Method>({ length: amount });
@@ -116,6 +116,7 @@ export class MethodsComponent implements OnInit {
   }
 
   createForm() {
+    this.newMethod = true;
     this.form = this.formBuilder.group({
       name: '',
       src: null,
@@ -124,6 +125,7 @@ export class MethodsComponent implements OnInit {
   }
 
   resetForm() {
+    this.newMethod = true;
     this.form.reset({
       name: '',
       src: null,
@@ -132,6 +134,7 @@ export class MethodsComponent implements OnInit {
   }
 
   public cancel(): void {
+    this.newMethod = true;
     this.resetForm();
     this.method = new Method();
   }
@@ -150,7 +153,6 @@ export class MethodsComponent implements OnInit {
     console.log('setmethodbyid' + name);
     this.methodsRestService.getMethod(name).subscribe({
       next: (data) => {
-        console.log(data);
         if (data !== undefined) { this.setMethod(data); }
       }
     });
@@ -158,6 +160,7 @@ export class MethodsComponent implements OnInit {
   }
 
   setMethod(method: Method) {
+    this.newMethod = false;
     this.method = method;
     this.form.reset({
       name: method.name,
@@ -194,10 +197,30 @@ export class MethodsComponent implements OnInit {
       console.log('saveMethod' + index);
     }
     const method = this.prepareSave();
+    if (this.newMethod) {
+      this.methodsRestService.createMethod(method).subscribe(
+        (result: any) => { // on success
+          if (window.console) {
+            console.log('create the method ' + method);
+          }
+          if (method.name !== undefined) {
+            this.methods[index] = method;
+          }
+          this.methods = [...this.methods];
+          this.datasource.updateDatastream(this.methods);
+        },
+        (err: any) => { // error
+          // console.log('error', err);
+        },
+        () => { // on completion
+        }
+      );
+      return;
+    }
     this.methodsRestService.updateMethod(method).subscribe(
       (result: any) => { // on success
         if (window.console) {
-          console.log('save the method ' + method);
+          console.log('update the method ' + method);
         }
         if (method.name !== undefined) {
           this.methods[index] = method;
@@ -219,7 +242,7 @@ export class MethodsComponent implements OnInit {
     // return new `Method` object containing a combination of original blog value(s)
     // and deep copies of changed form model values
     const saveMethod: Method = {
-      name: this.method.name as string,
+      name: formModel.name as string,
       src: formModel.src as string,
       creation: this.method.creation as string,
       owner: this.method.owner as string

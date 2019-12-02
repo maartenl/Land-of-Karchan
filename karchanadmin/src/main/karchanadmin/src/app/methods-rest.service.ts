@@ -117,6 +117,9 @@ export class MethodsRestService {
           })
         );
     }
+  }
+
+  public createMethod(method: Method): any {
     // new
     if (environment.production === false) {
       this.methods.push(method);

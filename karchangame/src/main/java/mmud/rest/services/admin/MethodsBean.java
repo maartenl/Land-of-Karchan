@@ -69,7 +69,6 @@ public class MethodsBean //implements AdminRestService<String>
 
   public void create(String json, @Context SecurityContext sc)
   {
-    LOGGER.info("create");
     AdminMethod adminMethod = AdminMethod.fromJson(json);
     final String name = sc.getUserPrincipal().getName();
     Admin admin = getEntityManager().find(Admin.class, name);
@@ -79,7 +78,6 @@ public class MethodsBean //implements AdminRestService<String>
     method.setSrc(adminMethod.src);
     method.setCreation(LocalDateTime.now());
     method.setOwner(admin);
-    LOGGER.info(method.toString());
     ValidationUtils.checkValidation(name, method);
     getEntityManager().persist(method);
   }
@@ -93,7 +91,6 @@ public class MethodsBean //implements AdminRestService<String>
 
   public void edit(@PathParam("id") String id, String json, @Context SecurityContext sc)
   {
-    LOGGER.info("edit");
     AdminMethod adminMethod = AdminMethod.fromJson(json);
     final String name = sc.getUserPrincipal().getName();
     if (!id.equals(adminMethod.name))
@@ -119,6 +116,10 @@ public class MethodsBean //implements AdminRestService<String>
   {
     final String name = sc.getUserPrincipal().getName();
     final Method method = getEntityManager().find(Method.class, id);
+    if (method == null)
+    {
+      throw new MudWebException(name, "Method " + id + " not found.", Response.Status.NOT_FOUND);
+    }
     Admin admin = (new OwnerHelper(getEntityManager())).authorize(name, method);
     getEntityManager().remove(method);
   }
@@ -150,7 +151,6 @@ public class MethodsBean //implements AdminRestService<String>
           })
   public String findAll(@Context UriInfo info)
   {
-    LOGGER.info("findAll");
     String owner = info.getQueryParameters().getFirst("owner");
     List<Method> methods = null;
     if (owner == null)
@@ -204,7 +204,6 @@ public class MethodsBean //implements AdminRestService<String>
   public String count(@Context UriInfo info)
   {
     String owner = info.getQueryParameters().getFirst("owner");
-    LOGGER.info("count " + owner);
     if (owner == null)
     {
       return String.valueOf(getEntityManager().createNamedQuery("Method.countAll").getSingleResult());

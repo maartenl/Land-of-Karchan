@@ -1,0 +1,75 @@
+<div class="container-fluid">
+    <div class="row row-content">
+        <div class="col-xs-12">
+            <form>
+                <fieldset class="form-group">
+                    <input type="text" class="form-control" id="owner" name="owner" placeholder="Owner" #searchowner
+                        (keyup.enter)="updateOwner(searchowner.value)" (blur)="updateOwner(searchowner.value)">
+                </fieldset>
+            </form>
+        </div>
+    </div>
+</div>
+<div class="container-fluid">
+    <div class="row row-content">
+        <div class="col-xs-12 col-xl-6">
+            <h1>Command {{ command === undefined ? '-' : command.id }}</h1>
+            <form [formGroup]="form" (ngSubmit)="saveCommand()" novalidate>
+                <fieldset class="form-group form-check">
+                    <input type="checkbox" class="form-check-input" id="callable" name="callable" formControlName="callable">
+                    <label class="form-check-label" for="callable">Callable</label>
+                </fieldset>
+                <fieldset class="form-group">
+                    <label for="command">Command</label>
+                    <input type="text" class="form-control" id="command" name="command" formControlName="command">
+                </fieldset>
+                <fieldset class="form-group">
+                    <label for="methodName">Method name</label>
+                    <input type="text" class="form-control" id="methodName" name="methodName"
+                        formControlName="methodName">
+                </fieldset>
+                <fieldset class="form-group">
+                    <label for="room">Room</label>
+                    <input type="text" class="form-control" id="room" name="room" formControlName="room">
+                </fieldset>
+                <fieldset class="form-group">
+                    <label for="owner">Owner</label>
+                    <input readonly type="text" class="form-control" id="owner" name="owner" formControlName="owner">
+                </fieldset>
+                <div class="col-xs-12 col-sm-12 text-right">
+                    <button type="submit" [disabled]="form.pristine" class="btn btn-primary">Save</button>
+                    <button type="reset" class="btn btn-primary" (click)="cancel()">Cancel</button>
+                    <button type="button" class="btn btn-primary" (click)="deleteCommand()">Delete</button>
+                    <button type="button" class="btn btn-primary" (click)="disownCommand()">Disown</button>
+                </div>
+            </form>
+        </div>
+        <div class="col-xs-12 col-xl-6">
+            <cdk-virtual-scroll-viewport style="height: 400px;" [itemSize]="33">
+                <table class="table table-sm table-hover">
+                    <thead>
+                        <tr>
+                            <th scope="col">Id</th>
+                            <th scope="col">Command</th>
+                            <th scope="col">Method name</th>
+                            <th scope="col">Room</th>
+                            <th scope="col">Owner</th>
+                            <th scope="col">Creation</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *cdkVirtualFor="let command of datasource; templateCacheSize: 0"
+                            [ngClass]="isActive(command)" (click)="setCommand(command)">
+                            <th *ngIf="command" scope="row">{{ command.id }}</th>
+                            <td *ngIf="command">{{ command.command }}</td>
+                            <td *ngIf="command">{{ command.methodName }}</td>
+                            <td *ngIf="command">{{ command.room }}</td>
+                            <td *ngIf="command">{{ command.owner }}</td>
+                            <td *ngIf="command">{{ command.creation }}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </cdk-virtual-scroll-viewport>
+        </div>
+    </div>
+</div>
