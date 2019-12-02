@@ -1,5 +1,17 @@
 <div class="container-fluid">
     <div class="row row-content">
+        <div class="col-xs-12">
+            <form>
+                <fieldset class="form-group">
+                    <input type="text" class="form-control" id="owner" name="owner" placeholder="Owner" #searchowner
+                        (keyup.enter)="updateOwner(searchowner.value)" (blur)="updateOwner(searchowner.value)">
+                </fieldset>
+            </form>
+        </div>
+    </div>
+</div>
+<div class="container-fluid">
+    <div class="row row-content">
         <div class="col-xs-12 col-xl-6">
             <h1>Method {{ method === undefined ? '-' : method.name }}</h1>
             <form [formGroup]="form" (ngSubmit)="saveMethod()" novalidate>
@@ -34,11 +46,11 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <tr *cdkVirtualFor="let method of datasource; 
-                        templateCacheSize: 0" [ngClass]="isActive(method)" (click)="setMethod(method)">
-                            <th scope="row">{{ method.name }}</th>
-                            <td>{{ method.owner }}</td>
-                            <td>{{ method.creation }}</td>
+                        <tr *cdkVirtualFor="let method of datasource; templateCacheSize: 0" [ngClass]="isActive(method)"
+                            (click)="setMethod(method)">
+                            <th *ngIf="method" scope="row">{{ method.name }}</th>
+                            <td *ngIf="method">{{ method.owner }}</td>
+                            <td *ngIf="method">{{ method.creation }}</td>
                         </tr>
                     </tbody>
                 </table>

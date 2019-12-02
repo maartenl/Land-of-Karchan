@@ -111,6 +111,9 @@ export class RoomsComponent extends DataSource<Room> implements OnInit {
   }
 
   isActive(room: Room) {
+    if (room === undefined) {
+      return '';
+    }
     if (!this.isRoomSelected()) {
       return '';
     }

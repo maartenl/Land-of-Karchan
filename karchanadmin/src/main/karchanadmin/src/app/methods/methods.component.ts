@@ -7,12 +7,66 @@ import { CdkVirtualScrollViewport } from '@angular/cdk/scrolling';
 import { MethodsRestService } from '../methods-rest.service';
 import { Method } from './method.model';
 
+export class MyDataSource extends DataSource<Method> {
+  private dataStream;
+
+  methods: Method[];
+
+  constructor(methods: Method[], private methodsRestService: MethodsRestService, private owner: string) {
+    super();
+    this.methods = methods;
+    this.owner = null;
+    this.dataStream = new BehaviorSubject<(Method | undefined)[]>(this.methods);
+  }
+
+  connect(collectionViewer: CollectionViewer): Observable<Method[]> {
+    if (window.console) {
+      console.log('connect');
+    }
+    // this.subscription.add(
+    collectionViewer.viewChange.subscribe(range => {
+      if (window.console) {
+        console.log(this.methods);
+      }
+      if (this.methods.slice(range.start, range.end).some(x => x === undefined)) {
+        if (window.console) {
+          console.log('Call restservice');
+        }
+        this.methodsRestService.getMethods(range.start, range.end + 100, this.owner).subscribe({
+          next: (data) => {
+            this.methods.splice(range.start, data.length, ...data);
+            this.methods = [...this.methods];
+            this.dataStream.next(this.methods);
+          }
+        });
+      }
+    });
+    return this.dataStream;
+  }
+
+  disconnect(collectionViewer: CollectionViewer): void {
+    if (window.console) {
+      console.log('disconnect');
+    }
+  }
+
+  updateDatastream(methods: Method[]) {
+    this.methods = methods;
+    this.dataStream.next(methods);
+  }
+
+  setOwner(owner: string) {
+    this.owner = owner;
+  }
+
+}
+
 @Component({
   selector: 'app-methods',
   templateUrl: './methods.component.html',
   styleUrls: ['./methods.component.css']
 })
-export class MethodsComponent extends DataSource<Method> implements OnInit {
+export class MethodsComponent implements OnInit {
 
   methods: Method[];
 
@@ -20,23 +74,39 @@ export class MethodsComponent extends DataSource<Method> implements OnInit {
 
   form: FormGroup;
 
-  datasource: DataSource<Method>;
+  datasource: MyDataSource;
 
-  private dataStream;
+  SearchTerms = class {
+    owner: string;
+  };
+
+  searchTerms = new this.SearchTerms();
+
+  updateOwner(value: string) {
+    if (value.trim() === '') {
+      value = null;
+    }
+    this.searchTerms.owner = value;
+    this.methodsRestService.getCount(value).subscribe({
+      next: amount => {
+        this.methods = Array.from<Method>({ length: amount });
+        this.datasource.setOwner(value);
+        this.datasource.updateDatastream(this.methods);
+      }
+    });
+  }
 
   constructor(
     private methodsRestService: MethodsRestService,
     private formBuilder: FormBuilder) {
-    super();
     this.createForm();
     this.method = new Method();
-    this.methodsRestService.getCount().subscribe({
+    this.methodsRestService.getCount(null).subscribe({
       next: amount => {
         this.methods = Array.from<Method>({ length: amount });
-        this.dataStream = new BehaviorSubject<(Method | undefined)[]>(this.methods);
+        this.datasource = new MyDataSource(this.methods, this.methodsRestService, null);
       }
     });
-    this.datasource = this;
   }
 
   ngOnInit() {
@@ -66,35 +136,10 @@ export class MethodsComponent extends DataSource<Method> implements OnInit {
     this.method = new Method();
   }
 
-  connect(collectionViewer: CollectionViewer): Observable<Method[]> {
-    if (window.console) {
-      console.log('connect');
-    }
-    // this.subscription.add(
-    collectionViewer.viewChange.subscribe(range => {
-      if (this.methods.slice(range.start, range.end).some(x => x === undefined)) {
-        if (window.console) {
-          console.log('Call restservice');
-        }
-        this.methodsRestService.getMethods(range.start, range.end + 100).subscribe({
-          next: (data) => {
-            this.methods.splice(range.start, data.length, ...data);
-            this.methods = [...this.methods];
-            this.dataStream.next(this.methods);
-          }
-        });
-      }
-    });
-    return this.dataStream;
-  }
-
-  disconnect(collectionViewer: CollectionViewer): void {
-    if (window.console) {
-      console.log('disconnect');
-    }
-  }
-
   isActive(method: Method) {
+    if (method === undefined) {
+      return '';
+    }
     if (!this.isMethodSelected()) {
       return '';
     }
@@ -130,7 +175,7 @@ export class MethodsComponent extends DataSource<Method> implements OnInit {
         this.methods = this.methods.filter((bl) => bl === undefined || bl.name !== this.method.name);
         // this.methods.push(undefined);
         this.methods = [...this.methods];
-        this.dataStream.next(this.methods);
+        this.datasource.updateDatastream(this.methods);
       },
       (err: any) => { // error
         // console.log('error', err);
@@ -158,7 +203,7 @@ export class MethodsComponent extends DataSource<Method> implements OnInit {
           this.methods[index] = method;
         }
         this.methods = [...this.methods];
-        this.dataStream.next(this.methods);
+        this.datasource.updateDatastream(this.methods);
       },
       (err: any) => { // error
         // console.log('error', err);
@@ -187,10 +232,11 @@ export class MethodsComponent extends DataSource<Method> implements OnInit {
       return;
     }
     this.method.owner = null;
-    this.dataStream.next(this.methods);
+    this.datasource.updateDatastream(this.methods);
   }
 
   isMethodSelected() {
     return this.method !== undefined && this.method !== null;
   }
 }
+

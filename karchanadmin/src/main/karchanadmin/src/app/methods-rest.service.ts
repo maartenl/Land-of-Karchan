@@ -35,11 +35,12 @@ export class MethodsRestService {
     }
   }
 
-  public getCount(): Observable<number> {
+  public getCount(owner: string): Observable<number> {
     if (environment.production === false) {
       return of(this.methods.length);
     }
-    return this.http.get<Method[]>(this.url + '/count')
+    const localUrl = owner === null || owner === undefined ? this.url + '/count' : this.url + '/count' + '?owner=' + owner;
+    return this.http.get<Method[]>(localUrl)
       .pipe(
         catchError(err => {
           this.handleError(err);
@@ -62,7 +63,7 @@ export class MethodsRestService {
       );
   }
 
-  public getMethods(startRow: number, endRow: number): Observable<Method[]> {
+  public getMethods(startRow: number, endRow: number, owner: string): Observable<Method[]> {
     if (environment.production === false) {
       if (window.console) {
         console.log('methods-rest.service getMethods start: ' + startRow + ' end: ' + endRow);
@@ -70,7 +71,9 @@ export class MethodsRestService {
       const slice = this.methods.slice(startRow, endRow);
       return of(slice);
     }
-    return this.http.get<Method[]>(this.url + '/'  + startRow + '/' + (endRow - startRow))
+    const localUrl = owner === null || owner === undefined ? this.url + '/' + startRow + '/' + (endRow - startRow) :
+      this.url + '/' + startRow + '/' + (endRow - startRow) + '?owner=' + owner;
+    return this.http.get<Method[]>(localUrl)
       .pipe(
         catchError(err => {
           this.handleError(err);
