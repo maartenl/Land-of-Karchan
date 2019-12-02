@@ -29,8 +29,8 @@ public class AdminMethod
 {
   public String name;
   public String src;
-  private LocalDateTime creation;
-  private String owner;
+  public LocalDateTime creation;
+  public String owner;
 
   public AdminMethod()
   {

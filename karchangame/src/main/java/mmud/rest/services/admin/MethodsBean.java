@@ -38,6 +38,7 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.SecurityContext;
+import javax.ws.rs.core.UriInfo;
 import mmud.database.entities.game.Admin;
 import mmud.database.entities.game.Method;
 import mmud.exceptions.MudWebException;
@@ -147,11 +148,21 @@ public class MethodsBean //implements AdminRestService<String>
           {
             "application/json"
           })
-  public String findAll()
+  public String findAll(@Context UriInfo info)
   {
     LOGGER.info("findAll");
-    final List<Method> methods = getEntityManager().createNamedQuery("Method.findAll").getResultList();
-    List<AdminMethod> adminMethods = methods.stream().map(method -> new AdminMethod(method)).collect(Collectors.toList());
+    String owner = info.getQueryParameters().getFirst("owner");
+    List<Method> methods = null;
+    if (owner == null)
+    {
+      methods = getEntityManager().createNamedQuery("Method.findAll")
+              .getResultList();
+    } else
+    {
+      methods = getEntityManager().createNamedQuery("Method.findAllByOwner")
+              .setParameter("owner", owner)
+              .getResultList();
+    }    List<AdminMethod> adminMethods = methods.stream().map(method -> new AdminMethod(method)).collect(Collectors.toList());
     return JsonbBuilder.create().toJson(adminMethods);
   }
 
@@ -162,14 +173,26 @@ public class MethodsBean //implements AdminRestService<String>
             "application/json"
           })
 
-  public String findRange(@PathParam("offset") Integer offset,
+  public String findRange(@Context UriInfo info, @PathParam("offset") Integer offset,
           @PathParam("pageSize") Integer pageSize
   )
   {
-    final List<Method> methods = getEntityManager().createNamedQuery("Method.findAll")
-            .setMaxResults(pageSize)
-            .setFirstResult(offset)
-            .getResultList();
+    String owner = info.getQueryParameters().getFirst("owner");
+    List<Method> methods = null;
+    if (owner == null)
+    {
+      methods = getEntityManager().createNamedQuery("Method.findAll")
+              .setMaxResults(pageSize)
+              .setFirstResult(offset)
+              .getResultList();
+    } else
+    {
+      methods = getEntityManager().createNamedQuery("Method.findAllByOwner")
+              .setParameter("owner", owner)
+              .setMaxResults(pageSize)
+              .setFirstResult(offset)
+              .getResultList();
+    }
     List<AdminMethod> adminMethods = methods.stream().map(method -> new AdminMethod(method)).collect(Collectors.toList());
     return JsonbBuilder.create().toJson(adminMethods);
   }
@@ -178,9 +201,15 @@ public class MethodsBean //implements AdminRestService<String>
   @Path("count")
   @Produces("text/plain")
 
-  public String count()
+  public String count(@Context UriInfo info)
   {
-    return String.valueOf(getEntityManager().createNamedQuery("Method.countAll").getSingleResult());
+    String owner = info.getQueryParameters().getFirst("owner");
+    LOGGER.info("count " + owner);
+    if (owner == null)
+    {
+      return String.valueOf(getEntityManager().createNamedQuery("Method.countAll").getSingleResult());
+    }
+    return String.valueOf(getEntityManager().createNamedQuery("Method.countAllByOwner").setParameter("owner", owner).getSingleResult());
   }
 
   private EntityManager getEntityManager()

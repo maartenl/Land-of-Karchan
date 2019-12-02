@@ -46,6 +46,8 @@ import mmud.database.entities.Ownage;
         {
           @NamedQuery(name = "Method.findAll", query = "SELECT m FROM Method m order by m.name"),
           @NamedQuery(name = "Method.countAll", query = "SELECT count(m) FROM Method m"),
+          @NamedQuery(name = "Method.findAllByOwner", query = "SELECT m FROM Method m where m.owner.name = :owner order by m.name"),
+          @NamedQuery(name = "Method.countAllByOwner", query = "SELECT count(m) FROM Method m where m.owner.name = :owner"),
           @NamedQuery(name = "Method.findByName", query = "SELECT m FROM Method m WHERE m.name = :name"),
           @NamedQuery(name = "Method.findByCreation", query = "SELECT m FROM Method m WHERE m.creation = :creation"),
           @NamedQuery(name = "Method.findRange", query = "SELECT m from Method m WHERE m.name like :alphabet")
