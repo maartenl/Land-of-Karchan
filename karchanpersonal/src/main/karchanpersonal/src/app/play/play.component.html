@@ -33,15 +33,55 @@
                     <div id="karchan_log" *ngIf="display.log !== undefined" [innerHTML]="getLog()"></div>
                     <p>&nbsp;</p>
                     <form [formGroup]="commandForm" (ngSubmit)="play()" novalidate>
-                        <fieldset class="form-group">
-                            <input type="text" class="form-control" id="command" name="command" formControlName="command" size="60" />
-                        </fieldset>
-                        <fieldset class="form-group">
-                            <ckeditor [editor]="Editor" *ngIf="karchan.bigEntry" (change)="onChange($event)"></ckeditor>
-                        </fieldset>
-                        <fieldset class="form-group">
-                            <input type="submit" value="Submit" />
-                        </fieldset>
+                        <div class="row">
+                            <div class="col">
+                                <fieldset class="form-group">
+                                    <input type="text" class="form-control" id="command" name="command"
+                                        formControlName="command" size="60" />
+                                </fieldset>
+                            </div>
+                            <div class="col">
+                                <fieldset class="form-group">
+                                    <input type="submit" class="btn btn-outline-primary" value="Submit" />
+                                </fieldset>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col">
+                                <fieldset class="form-group">
+                                    <ckeditor [editor]="Editor" *ngIf="karchan.bigEntry" (change)="onChange($event)">
+                                    </ckeditor>
+                                </fieldset>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col">
+                                <p class="card-text">
+                                    <a class="btn btn-block btn-outline-primary" href="#" (click)="toggleSleep();">
+                                        <span *ngIf="!karchan.sleep">Sleep</span>
+                                        <span *ngIf="karchan.sleep">Awaken</span>
+                                    </a>
+                                </p>
+                            </div>
+                            <div class="col">
+                                <p class="card-text">
+                                    <a class="btn btn-block btn-outline-primary" href="#" (click)="toggleEntry();"
+                                        title="Provide a big entry form">Big talk</a>
+                                </p>
+                            </div>
+                            <div class="col">
+                                <p class="card-text">
+                                    <a class="btn btn-block btn-outline-primary" href="#" (click)="clearLog();"
+                                        title="Clear your log">Clear</a>
+                                </p>
+                            </div>
+                            <div class="col">
+                                <p class="card-text">
+                                    <a class="btn btn-block btn-outline-primary" href="#" (click)="quit();"
+                                        title="Quit the game">Quit</a>
+                                </p>
+                            </div>
+                        </div>
                     </form>
                 </div>
             </div>
@@ -59,25 +99,6 @@
                             <area alt="East" coords="160,0,80,75,160,151,160,0" href="#" (click)="goEast()"
                                 shape="poly" />
                         </map>
-                    </p>
-                    <p class="card-text">
-                        <a class="btn btn-block btn-outline-primary" href="#" (click)="toggleSleep();">
-                            <span *ngIf="!karchan.sleep">Sleep</span>
-                            <span *ngIf="karchan.sleep">Awaken</span>
-                        </a>
-                    </p>
-                    <p class="card-text">
-                        <a class="btn btn-block btn-outline-primary" href="#" (click)="toggleEntry();"
-                            title="Provide a big entry form"><span>Big
-                                talk</span></a>
-                    </p>
-                    <p class="card-text">
-                        <a class="btn btn-block btn-outline-primary" href="#" (click)="clearLog();"
-                            title="Clear your log"><span>Clear</span></a>
-                    </p>
-                    <p class="card-text">
-                        <a class="btn btn-block btn-outline-primary" href="#" (click)="quit();"
-                            title="Quit the game"><span>Quit</span></a>
                     </p>
                 </div>
             </div>

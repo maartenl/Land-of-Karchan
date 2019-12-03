@@ -1,6 +1,6 @@
 <div class="container-fluid d-none d-sm-block">
   <div class="media">
-    <a href="/"><img class="mr-3" src="assets/images/dragon.gif" alt="Dragon"></a>
+    <a href="/"><img class="mr-3" [src]="getFavicon()" alt="Dragon"></a>
     <div class="media-body">
       <h1 class="mt-0">Land of Karchan</h1>
     </div>
@@ -36,7 +36,7 @@
           <a routerLink="/play" class="nav-link" routerLinkActive="active">Play</a>
         </li>
         <li class="nav-item">
-          <a href="/game/goodbye.html?logout=true" class="nav-link" >Log out</a>
+          <a href="/game/goodbye.html?logout=true" class="nav-link">Log out</a>
         </li>
       </ul>
     </div>
