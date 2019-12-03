@@ -17,6 +17,7 @@ import { SystemlogComponent } from './systemlog/systemlog.component';
 import { RoomsComponent } from './rooms/rooms.component';
 
 import { ScrollingModule } from '@angular/cdk/scrolling';
+import { MethodsComponent } from './methods/methods.component';
 
 @NgModule({
   declarations: [
@@ -25,7 +26,8 @@ import { ScrollingModule } from '@angular/cdk/scrolling';
     TemplatesComponent,
     ErrorsComponent,
     SystemlogComponent,
-    RoomsComponent
+    RoomsComponent,
+    MethodsComponent
   ],
   imports: [
     BrowserModule,
