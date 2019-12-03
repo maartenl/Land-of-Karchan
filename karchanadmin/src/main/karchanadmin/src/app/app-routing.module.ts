@@ -11,7 +11,9 @@ const routes: Routes = [
   { path: 'blogs', component: BlogsComponent },
   { path: 'templates', component: TemplatesComponent },
   { path: 'systemlog', component: SystemlogComponent },
+  { path: 'rooms/:id', component: RoomsComponent },
   { path: 'rooms', component: RoomsComponent },
+  { path: 'methods/:name', component: MethodsComponent },
   { path: 'methods', component: MethodsComponent },
   { path: 'commands', component: CommandsComponent }
 ];

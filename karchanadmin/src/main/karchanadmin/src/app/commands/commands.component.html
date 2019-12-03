@@ -24,12 +24,12 @@
                     <input type="text" class="form-control" id="command" name="command" formControlName="command">
                 </fieldset>
                 <fieldset class="form-group">
-                    <label for="methodName">Method name</label>
+                    <label for="methodName">Method name <a *ngIf="command !== undefined && command.methodName !== undefined" href="methods/{{command.methodName}}">{{ command.methodName }}</a></label>
                     <input type="text" class="form-control" id="methodName" name="methodName"
                         formControlName="methodName">
                 </fieldset>
                 <fieldset class="form-group">
-                    <label for="room">Room</label>
+                    <label for="room">Room <a *ngIf="command !== undefined && command.room !== undefined" href="rooms/{{command.room}}">{{ command.room }}</a></label>
                     <input type="text" class="form-control" id="room" name="room" formControlName="room">
                 </fieldset>
                 <fieldset class="form-group">

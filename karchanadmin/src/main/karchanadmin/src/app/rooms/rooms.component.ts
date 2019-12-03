@@ -1,5 +1,6 @@
 import { CollectionViewer, DataSource } from '@angular/cdk/collections';
 import { BehaviorSubject, Observable, of, Subscription } from 'rxjs';
+import { Router, ActivatedRoute, ParamMap } from '@angular/router';
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { FormControl, FormGroup, FormBuilder } from '@angular/forms';
 import { CdkVirtualScrollViewport } from '@angular/cdk/scrolling';
@@ -26,6 +27,7 @@ export class RoomsComponent extends DataSource<Room> implements OnInit {
 
   constructor(
     private roomsRestService: RoomsRestService,
+    private route: ActivatedRoute,
     private formBuilder: FormBuilder) {
     super();
     this.createForm();
@@ -43,6 +45,15 @@ export class RoomsComponent extends DataSource<Room> implements OnInit {
     if (window.console) {
       console.log('ngOnInit');
     }
+    const id: string = this.route.snapshot.paramMap.get('id');
+    if (id === undefined || id === null) {
+      return;
+    }
+    const idNumber: number = Number(id);
+    if (isNaN(idNumber)) {
+      return;
+    }
+    this.setRoomById(idNumber);
   }
 
   createForm() {

@@ -1,5 +1,6 @@
 import { CollectionViewer, DataSource } from '@angular/cdk/collections';
 import { BehaviorSubject, Observable, of, Subscription } from 'rxjs';
+import { Router, ActivatedRoute, ParamMap } from '@angular/router';
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { FormControl, FormGroup, FormBuilder } from '@angular/forms';
 import { CdkVirtualScrollViewport } from '@angular/cdk/scrolling';
@@ -97,6 +98,7 @@ export class MethodsComponent implements OnInit {
 
   constructor(
     private methodsRestService: MethodsRestService,
+    private route: ActivatedRoute,
     private formBuilder: FormBuilder) {
     this.createForm();
     this.method = new Method();
@@ -113,6 +115,11 @@ export class MethodsComponent implements OnInit {
     if (window.console) {
       console.log('ngOnInit');
     }
+    const name: string = this.route.snapshot.paramMap.get('name');
+    if (name === undefined || name === null) {
+      return;
+    }
+    this.setMethodById(name);
   }
 
   createForm() {
