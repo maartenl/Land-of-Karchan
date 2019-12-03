@@ -67,7 +67,7 @@ public class WebsiteServlet extends HttpServlet
 
   @Inject
   private MenuFactory menuFactory;
-  
+
   @Inject
   private MailChecker mailChecker;
 
@@ -94,7 +94,7 @@ public class WebsiteServlet extends HttpServlet
   {
     // Set response content type
     response.setContentType("text/html;charset=UTF-8");
-    
+
     Cookies cookies = new Cookies(request, response);
 
     final String url = getUrl(request);
@@ -132,7 +132,7 @@ public class WebsiteServlet extends HttpServlet
       root.put("isGod", securityContext.isCallerInRole(Roles.GOD));
       root.put("hasNewMail", mailChecker.checkMail(securityContext.getCallerPrincipal() != null ? securityContext.getCallerPrincipal().getName() : null));
     }
-    root.put("isChristmas", isChristmas());
+    root.put("isChristmas", isChristmas(request));
     Optional<Menu> visibleMenu = MenuFactory.findVisibleMenu(url);
     if (visibleMenu.isPresent())
     {
@@ -228,11 +228,15 @@ public class WebsiteServlet extends HttpServlet
     return url.getRequestURI();
   }
 
-  private boolean isChristmas()
+  private boolean isChristmas(HttpServletRequest request)
   {
+    if (request.getParameter("christmas") != null)
+    {
+      return true;
+    }
     LocalDateTime now = LocalDateTime.now();
     LocalDateTime startOfChristmas = LocalDateTime.of(now.getYear(), Month.DECEMBER, 7, 0, 0, 0);
-    LocalDateTime endOfChristmas = LocalDateTime.of(now.getYear()+1, Month.JANUARY, 6, 0, 0, 0);
+    LocalDateTime endOfChristmas = LocalDateTime.of(now.getYear() + 1, Month.JANUARY, 6, 0, 0, 0);
     return now.isAfter(startOfChristmas) && now.isBefore(endOfChristmas);
   }
 
