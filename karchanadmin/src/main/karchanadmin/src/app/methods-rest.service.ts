@@ -10,6 +10,7 @@ import { environment } from '../environments/environment';
 import { ErrorsService } from './errors.service';
 import { Method } from './methods/method.model';
 import { ErrorMessage } from './errors/errormessage.model';
+import { Command } from './commands/command.model';
 
 @Injectable({
   providedIn: 'root'
@@ -55,6 +56,16 @@ export class MethodsRestService {
       return of(foundMethod);
     }
     return this.http.get<Method>(this.url + '/' + name)
+      .pipe(
+        catchError(err => {
+          this.handleError(err);
+          return [];
+        })
+      );
+  }
+
+  public getCommands(name: string): Observable<Command[]> {
+    return this.http.get<Method>(this.url + '/' + name + '/commands')
       .pipe(
         catchError(err => {
           this.handleError(err);

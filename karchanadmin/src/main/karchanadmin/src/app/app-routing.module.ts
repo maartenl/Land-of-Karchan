@@ -15,6 +15,7 @@ const routes: Routes = [
   { path: 'rooms', component: RoomsComponent },
   { path: 'methods/:name', component: MethodsComponent },
   { path: 'methods', component: MethodsComponent },
+  { path: 'commands/:id', component: CommandsComponent },
   { path: 'commands', component: CommandsComponent }
 ];
 

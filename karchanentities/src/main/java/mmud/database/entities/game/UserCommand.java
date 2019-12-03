@@ -47,11 +47,12 @@ import mmud.database.entities.Ownage;
           @NamedQuery(name = "UserCommand.countAll", query = "SELECT count(m) FROM UserCommand m"),
           @NamedQuery(name = "UserCommand.findAllByOwner", query = "SELECT m FROM UserCommand m where m.owner.name = :owner order by m.command"),
           @NamedQuery(name = "UserCommand.countAllByOwner", query = "SELECT count(m) FROM UserCommand m where m.owner.name = :owner"),
+          @NamedQuery(name = "UserCommand.findByMethodName", query = "SELECT m from UserCommand m where m.methodName.name = :methodname order by m.command"),
 
           @NamedQuery(name = "UserCommand.findById", query = "SELECT m FROM UserCommand m WHERE m.id = :id"),
           @NamedQuery(name = "UserCommand.findActive", query = "SELECT m FROM UserCommand m WHERE m.callable = 1"),
           @NamedQuery(name = "UserCommand.findByCommand", query = "SELECT m FROM UserCommand m WHERE m.command = :command"),
-          @NamedQuery(name = "UserCommand.findByRoom", query = "SELECT m FROM UserCommand m WHERE m.room = :room"),
+          @NamedQuery(name = "UserCommand.findByRoom", query = "SELECT m FROM UserCommand m WHERE m.room.id = :room order by m.command"),
           @NamedQuery(name = "UserCommand.findByCreation", query = "SELECT m FROM UserCommand m WHERE m.creation = :creation")
         })
 public class UserCommand implements Serializable, Ownage

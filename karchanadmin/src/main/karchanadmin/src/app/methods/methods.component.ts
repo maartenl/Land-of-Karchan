@@ -7,6 +7,7 @@ import { CdkVirtualScrollViewport } from '@angular/cdk/scrolling';
 
 import { MethodsRestService } from '../methods-rest.service';
 import { Method } from './method.model';
+import { Command } from '../commands/command.model';
 
 export class MyDataSource extends DataSource<Method> {
   private dataStream;
@@ -67,6 +68,8 @@ export class MyDataSource extends DataSource<Method> {
 export class MethodsComponent implements OnInit {
 
   methods: Method[];
+
+  commands: Command[] = [];
 
   private newMethod: boolean;
 
@@ -161,6 +164,11 @@ export class MethodsComponent implements OnInit {
     this.methodsRestService.getMethod(name).subscribe({
       next: (data) => {
         if (data !== undefined) { this.setMethod(data); }
+      }
+    });
+    this.methodsRestService.getCommands(name).subscribe({
+      next: (data) => {
+        if (data !== undefined) { this.commands = data; }
       }
     });
     return false;

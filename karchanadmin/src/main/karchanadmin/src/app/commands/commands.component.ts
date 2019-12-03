@@ -1,5 +1,6 @@
 import { CollectionViewer, DataSource } from '@angular/cdk/collections';
 import { BehaviorSubject, Observable, of, Subscription } from 'rxjs';
+import { Router, ActivatedRoute, ParamMap } from '@angular/router';
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { FormControl, FormGroup, FormBuilder } from '@angular/forms';
 import { CdkVirtualScrollViewport } from '@angular/cdk/scrolling';
@@ -95,6 +96,7 @@ export class CommandsComponent implements OnInit {
 
   constructor(
     private commandsRestService: CommandsRestService,
+    private route: ActivatedRoute,
     private formBuilder: FormBuilder) {
     this.createForm();
     this.command = new Command();
@@ -110,6 +112,11 @@ export class CommandsComponent implements OnInit {
     if (window.console) {
       console.log('ngOnInit');
     }
+    const id: string = this.route.snapshot.paramMap.get('id');
+    if (id === undefined || id === null) {
+      return;
+    }
+    this.setCommandById(id);
   }
 
   createForm() {

@@ -41,8 +41,10 @@ import javax.ws.rs.core.SecurityContext;
 import mmud.database.entities.game.Admin;
 import mmud.database.entities.game.Area;
 import mmud.database.entities.game.Room;
+import mmud.database.entities.game.UserCommand;
 import mmud.exceptions.MudWebException;
 import mmud.rest.webentities.admin.AdminRoom;
+import mmud.rest.webentities.admin.AdminUserCommand;
 
 /**
  *
@@ -236,6 +238,22 @@ public class RoomsBean //implements AdminRestService<Long>
       throw new MudWebException(name, "Room " + id + " not found.", Response.Status.NOT_FOUND);
     }
     return new AdminRoom(room).toJson();
+  }
+
+  @GET
+  @Path("{id}/commands")
+  @Produces(
+          {
+            "application/json"
+          })
+
+  public String getCommands(@PathParam("id") Long id,
+          @Context SecurityContext sc)
+  {
+    final String name = sc.getUserPrincipal().getName();
+    final List<UserCommand> userCommands = getEntityManager().createNamedQuery("UserCommand.findByRoom").setParameter("room", id).getResultList();
+    List<AdminUserCommand> adminCommands = userCommands.stream().map(command -> new AdminUserCommand(command)).collect(Collectors.toList());
+    return JsonbBuilder.create().toJson(adminCommands);
   }
 
   @GET

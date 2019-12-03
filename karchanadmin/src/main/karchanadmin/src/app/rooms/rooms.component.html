@@ -81,6 +81,20 @@
                     <button type="button" class="btn btn-primary" (click)="disownRoom()">Disown</button>
                 </div>
             </form>
+            <h2>Commands</h2>
+            <table class="table table-sm table-hover">
+                <thead>
+                    <tr>
+                        <th scope="col">Command</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let command of commands">
+                        <td>{{ command.id }}</td>
+                        <td><a href="commands/{{command.id}}">{{ command.command }}</a></td>
+                    </tr>
+                </tbody>
+            </table>
         </div>
         <div class="col-xs-12 col-xl-6">
             <cdk-virtual-scroll-viewport style="height: 400px;" [itemSize]="33">

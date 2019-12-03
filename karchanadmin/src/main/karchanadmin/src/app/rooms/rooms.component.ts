@@ -7,6 +7,7 @@ import { CdkVirtualScrollViewport } from '@angular/cdk/scrolling';
 
 import { RoomsRestService } from '../rooms-rest.service';
 import { Room } from './room.model';
+import { Command } from '../commands/command.model';
 
 @Component({
   selector: 'app-rooms',
@@ -16,6 +17,8 @@ import { Room } from './room.model';
 export class RoomsComponent extends DataSource<Room> implements OnInit {
 
   rooms: Room[];
+
+  commands: Command[] = [];
 
   room: Room;
 
@@ -136,6 +139,11 @@ export class RoomsComponent extends DataSource<Room> implements OnInit {
     this.roomsRestService.getRoom(id).subscribe({
       next: (data) => {
         if (data !== undefined) { this.setRoom(data); }
+      }
+    });
+    this.roomsRestService.getCommands(id).subscribe({
+      next: (data) => {
+        if (data !== undefined) { this.commands = data; }
       }
     });
     return false;

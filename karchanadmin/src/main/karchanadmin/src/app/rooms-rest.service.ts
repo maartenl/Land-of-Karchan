@@ -10,6 +10,7 @@ import { environment } from '../environments/environment';
 import { ErrorsService } from './errors.service';
 import { Room } from './rooms/room.model';
 import { ErrorMessage } from './errors/errormessage.model';
+import { Command } from './commands/command.model';
 
 @Injectable({
   providedIn: 'root'
@@ -73,6 +74,17 @@ export class RoomsRestService {
         })
       );
   }
+
+  public getCommands(id: number): Observable<Command[]> {
+    return this.http.get<Room>(this.url + '/' + id + '/commands')
+      .pipe(
+        catchError(err => {
+          this.handleError(err);
+          return [];
+        })
+      );
+  }
+
 
   public getRooms(startRow: number, endRow: number): Observable<Room[]> {
     if (environment.production === false) {

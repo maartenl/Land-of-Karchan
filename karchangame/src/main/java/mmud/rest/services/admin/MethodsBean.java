@@ -41,8 +41,10 @@ import javax.ws.rs.core.SecurityContext;
 import javax.ws.rs.core.UriInfo;
 import mmud.database.entities.game.Admin;
 import mmud.database.entities.game.Method;
+import mmud.database.entities.game.UserCommand;
 import mmud.exceptions.MudWebException;
 import mmud.rest.webentities.admin.AdminMethod;
+import mmud.rest.webentities.admin.AdminUserCommand;
 
 /**
  *
@@ -144,7 +146,22 @@ public class MethodsBean //implements AdminRestService<String>
   }
 
   @GET
+  @Path("{id}/commands")
+  @Produces(
+          {
+            "application/json"
+          })
 
+  public String getCommands(@PathParam("id") String id,
+          @Context SecurityContext sc)
+  {
+    final String name = sc.getUserPrincipal().getName();
+    final List<UserCommand> userCommands = getEntityManager().createNamedQuery("UserCommand.findByMethodName").setParameter("methodname", id).getResultList();
+    List<AdminUserCommand> adminCommands = userCommands.stream().map(command -> new AdminUserCommand(command)).collect(Collectors.toList());
+    return JsonbBuilder.create().toJson(adminCommands);
+  }
+  
+  @GET
   @Produces(
           {
             "application/json"
