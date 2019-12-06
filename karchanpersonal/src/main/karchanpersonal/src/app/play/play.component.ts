@@ -8,6 +8,7 @@ import { PlayerService } from '../player.service';
 import { GameService } from '../game.service';
 import { Display, Person, Item } from './display.model';
 import { LanguageUtils } from '../language.utils';
+import { StringUtils } from '../string.utils';
 
 /**
  * Actually plays teh game, instead of administration of your player character/settings/mail.
@@ -245,6 +246,10 @@ export class PlayComponent implements OnInit {
       return '';
     }
     return this.display.log.log.substr(this.display.log.offset);
+  }
+
+  public getRoomDescription(body: string): string {
+    return StringUtils.getCapitalized(body);
   }
 
 }

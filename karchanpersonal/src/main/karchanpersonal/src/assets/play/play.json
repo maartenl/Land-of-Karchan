@@ -8,6 +8,13 @@
             "adject3": "golden",
             "amount": 2,
             "name": "beer"
+        },
+        {
+            "adject1": "sharp",
+            "adject2": "iron",
+            "adject3": "",
+            "amount": 1,
+            "name": "pick"
         }
     ],
     "log": {
@@ -19,6 +26,10 @@
         {
             "name": "Jenen",
             "race": "elf"
+        },
+        {
+            "name": "Hotblack",
+            "race": "human"
         }
     ],
     "south": true,

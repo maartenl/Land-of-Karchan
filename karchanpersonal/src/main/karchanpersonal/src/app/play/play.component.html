@@ -1,12 +1,20 @@
 <div class="container-fluid">
     <script src="https://cdn.ckeditor.com/ckeditor5/11.2.0/classic/ckeditor.js"></script>
     <div class="row">
-        <div class="col-12 col-lg-10">
+        <div class="col-12">
             <div class="card">
                 <div class="card-body">
+                    <img alt="compass" src="assets/images/compass.png" class="float-right" usemap="#roosmap" />
+                    <map name="roosmap">
+                        <area alt="North" coords="0,0,80,75,160,0,0,0" href="#" (click)="goNorth();" shape="poly" />
+                        <area alt="South" coords="0,151,80,75,160,151,0,151" href="#" (click)="goSouth();"
+                            shape="poly" />
+                        <area alt="West" coords="0,0,80,75,0,151,0,0" href="#" (click)="goWest();" shape="poly" />
+                        <area alt="East" coords="160,0,80,75,160,151,160,0" href="#" (click)="goEast()" shape="poly" />
+                    </map>
                     <h5 id="page-title" class="card-title"><img *ngIf="display.image"
                             style="vertical-align: text-bottom;" [src]="display.image" />{{ getTitle() }}</h5>
-                    <div class="card-text" [innerHTML]="display.body">
+                    <div class="card-text" [innerHTML]="getRoomDescription(display.body)">
                     </div>
                     <div id="karchan_body" class="card-text">
                         <p>[
@@ -20,13 +28,13 @@
                         <p *ngIf="display.persons">
                             <span *ngFor="let person of display.persons">
                                 {{ getVowel(person) }} {{ person.race }} called <a href="#"
-                                    (click)="lookAtPerson(person);">{{ person.name }}</a> is here.
+                                    (click)="lookAtPerson(person);">{{ person.name }}</a> is here.<br />
                             </span>
                         </p>
                         <p *ngIf="display.items">
                             <span *ngFor="let item of display.items">
                                 <a href="#" (click)="lookAtItem(item);">{{ getDescription(item) }}</a>
-                                {{item.amount > 1 ? 'are' : 'is'}} here.
+                                {{item.amount > 1 ? 'are' : 'is'}} here.<br />
                             </span>
                         </p>
                     </div>
@@ -87,21 +95,6 @@
             </div>
         </div>
         <div class="col-12 col-lg-2">
-            <div class="card">
-                <div class="card-body">
-                    <p class="card-text">
-                        <img alt="compass" border="0" src="assets/images/compass.png" usemap="#roosmap" />
-                        <map name="roosmap">
-                            <area alt="North" coords="0,0,80,75,160,0,0,0" href="#" (click)="goNorth();" shape="poly" />
-                            <area alt="South" coords="0,151,80,75,160,151,0,151" href="#" (click)="goSouth();"
-                                shape="poly" />
-                            <area alt="West" coords="0,0,80,75,0,151,0,0" href="#" (click)="goWest();" shape="poly" />
-                            <area alt="East" coords="160,0,80,75,160,151,160,0" href="#" (click)="goEast()"
-                                shape="poly" />
-                        </map>
-                    </p>
-                </div>
-            </div>
         </div>
     </div>
 </div>
