@@ -38,6 +38,7 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.SecurityContext;
+import javax.ws.rs.core.UriInfo;
 import mmud.database.entities.game.Admin;
 import mmud.database.entities.game.Area;
 import mmud.database.entities.game.Room;
@@ -262,12 +263,14 @@ public class RoomsBean //implements AdminRestService<Long>
             "application/json"
           })
   
-  public String findAll()
+  public String findAll(@Context UriInfo info)
   {
     LOGGER.info("findAll");
-    final List<Room> rooms = getEntityManager().createNamedQuery("Room.findAll").getResultList();
-    List<AdminRoom> adminRooms = rooms.stream().map(room -> new AdminRoom(room)).collect(Collectors.toList());
-    return JsonbBuilder.create().toJson(adminRooms);
+    String owner = info.getQueryParameters().getFirst("owner");
+    final List<String> rooms = getEntityManager().createNativeQuery(AdminRoom.GET_QUERY)
+            .setParameter(1, owner)
+            .getResultList();    
+    return "[" + rooms.stream().collect(Collectors.joining(",")) + "]";
   }
 
   @GET
@@ -277,16 +280,17 @@ public class RoomsBean //implements AdminRestService<Long>
             "application/json"
           })
   
-  public String findRange(@PathParam("offset") Integer offset,
+  public String findRange(@Context UriInfo info, @PathParam("offset") Integer offset,
           @PathParam("pageSize") Integer pageSize
   )
   {
-    final List<Room> rooms = getEntityManager().createNamedQuery("Room.findAll")
+    String owner = info.getQueryParameters().getFirst("owner");
+    final List<String> rooms = getEntityManager().createNativeQuery(AdminRoom.GET_QUERY)
+            .setParameter(1, owner)
             .setMaxResults(pageSize)
             .setFirstResult(offset)
             .getResultList();
-    List<AdminRoom> adminRooms = rooms.stream().map(room -> new AdminRoom(room)).collect(Collectors.toList());
-    return JsonbBuilder.create().toJson(adminRooms);
+    return "[" + rooms.stream().collect(Collectors.joining(",")) + "]";
   }
 
   @GET

@@ -160,7 +160,7 @@ public class MethodsBean //implements AdminRestService<String>
     List<AdminUserCommand> adminCommands = userCommands.stream().map(command -> new AdminUserCommand(command)).collect(Collectors.toList());
     return JsonbBuilder.create().toJson(adminCommands);
   }
-  
+
   @GET
   @Produces(
           {
@@ -169,18 +169,11 @@ public class MethodsBean //implements AdminRestService<String>
   public String findAll(@Context UriInfo info)
   {
     String owner = info.getQueryParameters().getFirst("owner");
-    List<Method> methods = null;
-    if (owner == null)
-    {
-      methods = getEntityManager().createNamedQuery("Method.findAll")
-              .getResultList();
-    } else
-    {
-      methods = getEntityManager().createNamedQuery("Method.findAllByOwner")
-              .setParameter("owner", owner)
-              .getResultList();
-    }    List<AdminMethod> adminMethods = methods.stream().map(method -> new AdminMethod(method)).collect(Collectors.toList());
-    return JsonbBuilder.create().toJson(adminMethods);
+    List<String> methods = null;
+    methods = getEntityManager().createNativeQuery(AdminMethod.GET_QUERY)
+            .setParameter(1, owner)
+            .getResultList();
+    return "[" + methods.stream().collect(Collectors.joining(",")) + "]";
   }
 
   @GET
@@ -195,23 +188,13 @@ public class MethodsBean //implements AdminRestService<String>
   )
   {
     String owner = info.getQueryParameters().getFirst("owner");
-    List<Method> methods = null;
-    if (owner == null)
-    {
-      methods = getEntityManager().createNamedQuery("Method.findAll")
-              .setMaxResults(pageSize)
-              .setFirstResult(offset)
-              .getResultList();
-    } else
-    {
-      methods = getEntityManager().createNamedQuery("Method.findAllByOwner")
-              .setParameter("owner", owner)
-              .setMaxResults(pageSize)
-              .setFirstResult(offset)
-              .getResultList();
-    }
-    List<AdminMethod> adminMethods = methods.stream().map(method -> new AdminMethod(method)).collect(Collectors.toList());
-    return JsonbBuilder.create().toJson(adminMethods);
+    List<String> methods = null;
+    methods = getEntityManager().createNativeQuery(AdminMethod.GET_QUERY)
+            .setParameter(1, owner)
+            .setMaxResults(pageSize)
+            .setFirstResult(offset)
+            .getResultList();
+    return "[" + methods.stream().collect(Collectors.joining(",")) + "]";
   }
 
   @GET

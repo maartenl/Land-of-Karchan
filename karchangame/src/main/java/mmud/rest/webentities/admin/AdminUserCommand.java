@@ -28,6 +28,11 @@ import mmud.database.entities.game.UserCommand;
 public class AdminUserCommand
 {
 
+  public static String GET_QUERY = "select json_object(\"id\", id, \"command\", command,  \"methodName\", method_name, \"room\", room, \"owner\", owner, \"creation\", creation) "
+          + "from mm_commands r "
+          + "where coalesce(?, r.owner, 'nobody') = coalesce(r.owner, 'nobody') "
+          + "order by r.command";
+
   public Integer id;
   public Boolean callable;
   public String command;

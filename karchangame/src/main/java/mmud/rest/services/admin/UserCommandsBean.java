@@ -24,7 +24,6 @@ import javax.annotation.security.DeclareRoles;
 import javax.annotation.security.RolesAllowed;
 import javax.ejb.LocalBean;
 import javax.ejb.Stateless;
-import javax.json.bind.JsonbBuilder;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.ws.rs.Consumes;
@@ -203,19 +202,11 @@ public class UserCommandsBean //implements AdminRestService<String>
   public String findAll(@Context UriInfo info)
   {
     String owner = info.getQueryParameters().getFirst("owner");
-    List<UserCommand> userCommands = null;
-    if (owner == null)
-    {
-      userCommands = getEntityManager().createNamedQuery("UserCommand.findAll")
-              .getResultList();
-    } else
-    {
-      userCommands = getEntityManager().createNamedQuery("UserCommand.findAllByOwner")
-              .setParameter("owner", owner)
-              .getResultList();
-    }
-    List<AdminUserCommand> adminUserCommands = userCommands.stream().map(userCommand -> new AdminUserCommand(userCommand)).collect(Collectors.toList());
-    return JsonbBuilder.create().toJson(adminUserCommands);
+    List<String> userCommands = null;
+    userCommands = getEntityManager().createNativeQuery(AdminUserCommand.GET_QUERY)
+            .setParameter(1, owner)
+            .getResultList();
+    return "[" + userCommands.stream().collect(Collectors.joining(",")) + "]";
   }
 
   @GET
@@ -230,23 +221,13 @@ public class UserCommandsBean //implements AdminRestService<String>
   )
   {
     String owner = info.getQueryParameters().getFirst("owner");
-    List<UserCommand> userCommands = null;
-    if (owner == null)
-    {
-      userCommands = getEntityManager().createNamedQuery("UserCommand.findAll")
-              .setMaxResults(pageSize)
-              .setFirstResult(offset)
-              .getResultList();
-    } else
-    {
-      userCommands = getEntityManager().createNamedQuery("UserCommand.findAllByOwner")
-              .setParameter("owner", owner)
-              .setMaxResults(pageSize)
-              .setFirstResult(offset)
-              .getResultList();
-    }
-    List<AdminUserCommand> adminUserCommands = userCommands.stream().map(userCommand -> new AdminUserCommand(userCommand)).collect(Collectors.toList());
-    return JsonbBuilder.create().toJson(adminUserCommands);
+    List<String> userCommands = null;
+    userCommands = getEntityManager().createNativeQuery(AdminUserCommand.GET_QUERY)
+            .setParameter(1, owner)
+            .setMaxResults(pageSize)
+            .setFirstResult(offset)
+            .getResultList();
+    return "[" + userCommands.stream().collect(Collectors.joining(",")) + "]";
   }
 
   @GET
