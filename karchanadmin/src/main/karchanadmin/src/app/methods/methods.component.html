@@ -61,7 +61,7 @@
                     </thead>
                     <tbody>
                         <tr *cdkVirtualFor="let method of datasource; templateCacheSize: 0" [ngClass]="isActive(method)"
-                            (click)="setMethod(method)">
+                            (click)="setMethodById(method.name)">
                             <th *ngIf="method" scope="row">{{ method.name }}</th>
                             <td *ngIf="method">{{ method.owner }}</td>
                             <td *ngIf="method">{{ method.creation }}</td>

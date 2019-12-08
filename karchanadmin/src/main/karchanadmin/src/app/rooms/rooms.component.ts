@@ -149,7 +149,7 @@ export class RoomsComponent extends DataSource<Room> implements OnInit {
     return false;
   }
 
-  setRoom(room: Room) {
+  private setRoom(room: Room) {
     this.room = room;
     this.form.reset({
       title: room.title,

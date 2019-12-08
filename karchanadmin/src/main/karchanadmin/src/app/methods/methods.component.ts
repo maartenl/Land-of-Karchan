@@ -174,7 +174,7 @@ export class MethodsComponent implements OnInit {
     return false;
   }
 
-  setMethod(method: Method) {
+  private setMethod(method: Method) {
     this.newMethod = false;
     this.method = method;
     this.form.reset({

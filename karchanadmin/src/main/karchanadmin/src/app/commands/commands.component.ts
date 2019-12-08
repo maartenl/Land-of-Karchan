@@ -164,7 +164,7 @@ export class CommandsComponent implements OnInit {
     return false;
   }
 
-  setCommand(command: Command) {
+  private setCommand(command: Command) {
     this.command = command;
     this.form.reset({
       id: command.id,

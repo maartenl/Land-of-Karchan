@@ -110,7 +110,7 @@
                     </thead>
                     <tbody>
                         <tr *cdkVirtualFor="let room of datasource; 
-                        templateCacheSize: 0" [ngClass]="isActive(room)" (click)="setRoom(room)">
+                        templateCacheSize: 0" [ngClass]="isActive(room)" (click)="setRoomById(room.id)">
                             <th scope="row">{{ room.id }}</th>
                             <td>{{ room.title }}</td>
                             <td>{{ room.area }}</td>

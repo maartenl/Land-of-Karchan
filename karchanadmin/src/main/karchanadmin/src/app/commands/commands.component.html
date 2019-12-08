@@ -59,7 +59,7 @@
                     </thead>
                     <tbody>
                         <tr *cdkVirtualFor="let command of datasource; templateCacheSize: 0"
-                            [ngClass]="isActive(command)" (click)="setCommand(command)">
+                            [ngClass]="isActive(command)" (click)="setCommandById(command.id)">
                             <th *ngIf="command" scope="row">{{ command.id }}</th>
                             <td *ngIf="command">{{ command.command }}</td>
                             <td *ngIf="command">{{ command.methodName }}</td>
