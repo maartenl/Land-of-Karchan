@@ -2,6 +2,7 @@
   <div class="row row-content">
     <div class="col-xs-12 col-sm-12">
       <div *ngIf="isLoggedIn()" class="alert alert-primary" role="alert">
+        <img *ngIf="isChristmas()" class="mr-3" src="assets/images/sclaus.gif" alt="Santa claus">
         Welcome to Karchan, {{ getPlayer() }}!
         <span class="float-right d-none d-sm-block">
           [<a href="/?logout=true">Log out</a>]
@@ -14,6 +15,7 @@
         You have new mail!
       </div>
       <div *ngIf="!isLoggedIn()" class="alert alert-danger" role="alert">
+        <img *ngIf="isChristmas()" class="mr-3" src="assets/images/sclaus.gif" alt="Santa claus">
         You are not logged in! Please click <a target="_parent" href="/">here</a> to log in.
       </div>
     </div>

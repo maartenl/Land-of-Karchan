@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 
 import { PlayerService } from '../player.service';
 import { HasNewMail } from './newmail.model';
+import { ChristmasUtils } from '../christmas.utils';
 
 @Component({
   selector: 'app-game',
@@ -34,6 +35,10 @@ export class GameComponent implements OnInit {
 
   public getPlayer(): string {
     return this.playerService.getName();
+  }
+
+  public isChristmas(): boolean {
+    return ChristmasUtils.isChristmas();
   }
 
 }

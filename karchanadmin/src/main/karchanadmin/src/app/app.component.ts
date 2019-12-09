@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { CookieService } from 'ngx-cookie-service';
+import { ChristmasUtils } from './christmas.utils';
 
 @Component({
   selector: 'app-root',
@@ -20,18 +21,10 @@ export class AppComponent implements OnInit {
     }
   }
 
- isChristmas(currentDate: Date = new Date()): boolean {
-  // isChristmas(currentDate: Date = new Date(2019, 11, 27)): boolean {
-    const beforeChristmas = new Date(currentDate.getFullYear(), 11, 7).getTime();
-    const afterChristmas = new Date(currentDate.getFullYear() + 1, 0, 6).getTime();
-    return beforeChristmas < currentDate.getTime() && afterChristmas > currentDate.getTime();
-  }
-
   getFavicon(): string {
-    if (this.isChristmas()) {
+    if (ChristmasUtils.isChristmas()) {
       return 'assets/images/santadragon.gif';
     }
     return 'assets/images/dragon.gif';
   }
-
 }
