@@ -28,11 +28,11 @@ import mmud.database.entities.game.Room;
 public class AdminRoom
 {
 
-  public static String GET_QUERY="select json_object(\"id\", id, \"area\", area,  \"title\", title, \"owner\", owner, \"creation\", creation) "
+  public static String GET_QUERY = "select json_object(\"id\", id, \"area\", area,  \"title\", title, \"owner\", owner, \"creation\", creation) "
           + "from mm_rooms r "
           + "where coalesce(?, r.owner, 'nobody') = coalesce(r.owner, 'nobody') "
           + "order by r.id";
-  
+
   public Long id;
   public String contents;
   public String area;
@@ -44,8 +44,8 @@ public class AdminRoom
   public Long north;
   public String picture;
   public String title;
-  private LocalDateTime creation;
-  private String owner;
+  public LocalDateTime creation;
+  public String owner;
 
   public AdminRoom()
   {
@@ -89,12 +89,12 @@ public class AdminRoom
       area = room.getArea().getArea();
     }
   }
-  
+
   public String toJson()
   {
     return JsonbBuilder.create().toJson(this);
   }
-  
+
   public static AdminRoom fromJson(String json)
   {
     Jsonb jsonb = JsonbBuilder.create();

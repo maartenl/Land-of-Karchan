@@ -67,6 +67,7 @@ import org.eclipse.persistence.annotations.Customizer;
           @NamedQuery(name = "Room.findAll", query = "SELECT r FROM Room r order by r.id"),
           @NamedQuery(name = "Room.countAll", query = "SELECT count(r) FROM Room r"),
           @NamedQuery(name = "Room.findById", query = "SELECT r FROM Room r WHERE r.id = :id"),
+          @NamedQuery(name = "Room.findMaxId", query = "SELECT max(r.id) FROM Room r"),
           @NamedQuery(name = "Room.findByCreation", query = "SELECT r FROM Room r WHERE r.creation = :creation"),
           @NamedQuery(name = "Room.findByTitle", query = "SELECT r FROM Room r WHERE r.title = :title"),
           @NamedQuery(name = "Room.findByPicture", query = "SELECT r FROM Room r WHERE r.picture = :picture")

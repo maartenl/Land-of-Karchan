@@ -1,8 +1,24 @@
 <div class="container-fluid">
     <div class="row row-content">
+        <div class="col-xs-12">
+            <form>
+                <fieldset class="form-group">
+                    <input type="text" class="form-control" id="owner" name="owner" placeholder="Owner" #searchowner
+                        (keyup.enter)="updateOwner(searchowner.value)" (blur)="updateOwner(searchowner.value)">
+                </fieldset>
+            </form>
+        </div>
+    </div>
+</div>
+<div class="container-fluid">
+    <div class="row row-content">
         <div class="col-xs-12 col-xl-6">
             <h1>Room id {{ room === undefined ? '-' : room.id }}</h1>
-            <form [formGroup]="form" (ngSubmit)="saveRoom()" novalidate>
+            <form [formGroup]="form" novalidate>
+                <fieldset class="form-group">
+                    <label for="id">Id</label>
+                    <input type="number" class="form-control" id="id" name="id" formControlName="id">
+                </fieldset>
                 <fieldset class="form-group">
                     <label for="title">Title</label>
                     <input type="text" class="form-control" id="title" name="title" formControlName="title">
@@ -66,7 +82,7 @@
                 </div>
                 <fieldset class="form-group">
                     <label for="owner">Owner</label>
-                    <input readonly type="text" class="form-control" id="owner" name="owner" formControlName="owner">
+                    <input type="text" class="form-control" id="owner" name="owner" formControlName="owner">
                 </fieldset>
                 <fieldset class="form-group">
                     <label for="body">Contents</label>
@@ -75,10 +91,10 @@
                         a calligraphic picture.</small>
                 </fieldset>
                 <div class="col-xs-12 col-sm-12 text-right">
-                    <button type="submit" [disabled]="form.pristine" class="btn btn-primary">Save</button>
-                    <button type="reset" class="btn btn-primary" (click)="cancel()">Cancel</button>
-                    <button type="button" class="btn btn-primary" (click)="deleteRoom()">Delete</button>
-                    <button type="button" class="btn btn-primary" (click)="disownRoom()">Disown</button>
+                    <button type="submit" [disabled]="form.pristine" class="mx-1 btn btn-primary" (click)="updateRoom()">Update</button>
+                    <button type="submit" [disabled]="form.pristine" class="mx-1 btn btn-primary" (click)="createRoom()">Create</button>
+                    <button type="button" class="mx-1 btn btn-secondary" (click)="deleteRoom()">Delete</button>
+                    <button type="reset" class="mx-1 btn btn-secondary" (click)="cancel()">Cancel</button>
                 </div>
             </form>
             <h2>Commands</h2>
@@ -111,11 +127,11 @@
                     <tbody>
                         <tr *cdkVirtualFor="let room of datasource; 
                         templateCacheSize: 0" [ngClass]="isActive(room)" (click)="setRoomById(room.id)">
-                            <th scope="row">{{ room.id }}</th>
-                            <td>{{ room.title }}</td>
-                            <td>{{ room.area }}</td>
-                            <td>{{ room.owner }}</td>
-                            <td>{{ room.creation }}</td>
+                            <th *ngIf="room" scope="row">{{ room.id }}</th>
+                            <td *ngIf="room" >{{ room.title }}</td>
+                            <td *ngIf="room" >{{ room.area }}</td>
+                            <td *ngIf="room" >{{ room.owner }}</td>
+                            <td *ngIf="room" >{{ room.creation }}</td>
                         </tr>
                     </tbody>
                 </table>

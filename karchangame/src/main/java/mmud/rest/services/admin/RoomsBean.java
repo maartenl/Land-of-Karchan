@@ -69,19 +69,37 @@ public class RoomsBean //implements AdminRestService<Long>
           {
             "application/json"
           })
-  
-  public void create(String json, @Context SecurityContext sc)
+
+  public Long create(String json, @Context SecurityContext sc)
   {
     AdminRoom adminRoom = AdminRoom.fromJson(json);
     final String name = sc.getUserPrincipal().getName();
     Admin admin = getEntityManager().find(Admin.class, name);
 
     Room room = new Room();
+    if (adminRoom.id == null)
+    {
+      room.setId(getEntityManager().createNamedQuery("Room.findMaxId", Long.class).getSingleResult() + 1);
+    } else
+    {
+      if (getEntityManager().find(Room.class, adminRoom.id) != null)
+      {
+        throw new MudWebException(name, "Room " + adminRoom.id + " already exists.", Response.Status.FOUND);
+      }
+      room.setId(adminRoom.id);
+    }
     room.setContents(adminRoom.contents);
     if (adminRoom.area != null)
     {
       Area area = getEntityManager().find(Area.class, adminRoom.area);
+      if (area == null)
+      {
+        throw new MudWebException(name, "Area " + adminRoom.area + " not found.", Response.Status.NOT_FOUND);
+      }
       room.setArea(area);
+    } else
+    {
+      throw new MudWebException(name, "Area cannot be null.", Response.Status.BAD_REQUEST);
     }
     if (adminRoom.down != null)
     {
@@ -119,6 +137,7 @@ public class RoomsBean //implements AdminRestService<Long>
     room.setOwner(admin);
     ValidationUtils.checkValidation(name, room);
     getEntityManager().persist(room);
+    return room.getId();
   }
 
   @PUT
@@ -127,7 +146,7 @@ public class RoomsBean //implements AdminRestService<Long>
           {
             "application/json"
           })
-  
+
   public void edit(@PathParam("id") Long id, String json, @Context SecurityContext sc)
   {
     AdminRoom adminRoom = AdminRoom.fromJson(json);
@@ -202,12 +221,19 @@ public class RoomsBean //implements AdminRestService<Long>
     }
     room.setPicture(adminRoom.picture);
     room.setTitle(adminRoom.title);
+    if (adminRoom.owner == null)
+    {
+      room.setOwner(null);
+    } else
+    {
+      room.setOwner(admin);
+    }
     ValidationUtils.checkValidation(name, room);
   }
 
   @DELETE
   @Path("{id}")
-  
+
   public void remove(@PathParam("id") Long id,
           @Context SecurityContext sc
   )
@@ -228,7 +254,7 @@ public class RoomsBean //implements AdminRestService<Long>
           {
             "application/json"
           })
-  
+
   public String find(@PathParam("id") Long id,
           @Context SecurityContext sc)
   {
@@ -262,14 +288,14 @@ public class RoomsBean //implements AdminRestService<Long>
           {
             "application/json"
           })
-  
+
   public String findAll(@Context UriInfo info)
   {
     LOGGER.info("findAll");
     String owner = info.getQueryParameters().getFirst("owner");
     final List<String> rooms = getEntityManager().createNativeQuery(AdminRoom.GET_QUERY)
             .setParameter(1, owner)
-            .getResultList();    
+            .getResultList();
     return "[" + rooms.stream().collect(Collectors.joining(",")) + "]";
   }
 
@@ -279,7 +305,7 @@ public class RoomsBean //implements AdminRestService<Long>
           {
             "application/json"
           })
-  
+
   public String findRange(@Context UriInfo info, @PathParam("offset") Integer offset,
           @PathParam("pageSize") Integer pageSize
   )
@@ -296,7 +322,7 @@ public class RoomsBean //implements AdminRestService<Long>
   @GET
   @Path("count")
   @Produces("text/plain")
-  
+
   public String count()
   {
     return String.valueOf(getEntityManager().createNamedQuery("Room.countAll").getSingleResult());
