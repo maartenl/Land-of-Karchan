@@ -71,8 +71,6 @@ export class MethodsComponent implements OnInit {
 
   commands: Command[] = [];
 
-  private newMethod: boolean;
-
   method: Method;
 
   form: FormGroup;
@@ -105,7 +103,6 @@ export class MethodsComponent implements OnInit {
     private formBuilder: FormBuilder) {
     this.createForm();
     this.method = new Method();
-    this.newMethod = true;
     this.methodsRestService.getCount(null).subscribe({
       next: amount => {
         this.methods = Array.from<Method>({ length: amount });
@@ -126,7 +123,6 @@ export class MethodsComponent implements OnInit {
   }
 
   createForm() {
-    this.newMethod = true;
     this.form = this.formBuilder.group({
       name: '',
       src: null,
@@ -135,7 +131,6 @@ export class MethodsComponent implements OnInit {
   }
 
   resetForm() {
-    this.newMethod = true;
     this.form.reset({
       name: '',
       src: null,
@@ -144,7 +139,6 @@ export class MethodsComponent implements OnInit {
   }
 
   public cancel(): void {
-    this.newMethod = true;
     this.resetForm();
     this.method = new Method();
   }
@@ -175,7 +169,6 @@ export class MethodsComponent implements OnInit {
   }
 
   private setMethod(method: Method) {
-    this.newMethod = false;
     this.method = method;
     this.form.reset({
       name: method.name,
@@ -203,34 +196,37 @@ export class MethodsComponent implements OnInit {
     );
   }
 
-  public saveMethod(): void {
+  public createMethod(): void {
     if (window.console) {
-      console.log('saveMethod');
-    }
-    const index = this.methods.indexOf(this.method);
-    if (window.console) {
-      console.log('saveMethod' + index);
+      console.log('createMethod');
     }
     const method = this.prepareSave();
-    if (this.newMethod) {
-      this.methodsRestService.createMethod(method).subscribe(
-        (result: any) => { // on success
-          if (window.console) {
-            console.log('create the method ' + method);
-          }
-          if (method.name !== undefined) {
-            this.methods[index] = method;
-          }
-          this.methods = [...this.methods];
-          this.datasource.updateDatastream(this.methods);
-        },
-        (err: any) => { // error
-          // console.log('error', err);
-        },
-        () => { // on completion
+    this.methodsRestService.createMethod(method).subscribe(
+      (result: any) => { // on success
+        if (window.console) {
+          console.log('create the method ' + method);
         }
-      );
-      return;
+        this.methods.push(method);
+        this.methods = [...this.methods];
+        this.datasource.updateDatastream(this.methods);
+      },
+      (err: any) => { // error
+        // console.log('error', err);
+      },
+      () => { // on completion
+      }
+    );
+    return;
+  }
+
+  public updateMethod(): void {
+    if (window.console) {
+      console.log('updateMethod');
+    }
+    const method = this.prepareSave();
+    const index = this.methods.findIndex(mth => mth !== null && mth.name === method.name);
+    if (window.console) {
+      console.log('updateMethod' + index);
     }
     this.methodsRestService.updateMethod(method).subscribe(
       (result: any) => { // on success

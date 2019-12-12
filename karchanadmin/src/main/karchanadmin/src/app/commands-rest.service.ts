@@ -64,16 +64,17 @@ export class CommandsRestService {
   }
 
   public updateCommand(command: Command): any {
-    if (command.id !== undefined) {
-      // update
-      return this.http.put<Command[]>(this.url + '/' + command.id, command)
-        .pipe(
-          catchError(err => {
-            this.handleError(err);
-            return [];
-          })
-        );
-    }
+    // update
+    return this.http.put<Command[]>(this.url + '/' + command.id, command)
+      .pipe(
+        catchError(err => {
+          this.handleError(err);
+          return [];
+        })
+      );
+  }
+
+  public createCommand(command: Command): any {
     // new
     return this.http.post(this.url, command)
       .pipe(

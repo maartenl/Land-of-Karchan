@@ -67,6 +67,7 @@ export class MyDataSource extends DataSource<Room> {
   styleUrls: ['./rooms.component.css']
 })
 export class RoomsComponent implements OnInit {
+  @ViewChild(CdkVirtualScrollViewport, {static: true}) virtualScroll: CdkVirtualScrollViewport;
 
   rooms: Room[];
 
@@ -83,8 +84,6 @@ export class RoomsComponent implements OnInit {
   };
 
   searchTerms = new this.SearchTerms();
-
-  newRoom: boolean;
 
   updateOwner(value: string) {
     if (value.trim() === '') {
@@ -106,7 +105,6 @@ export class RoomsComponent implements OnInit {
     private formBuilder: FormBuilder) {
     this.createForm();
     this.room = new Room();
-    this.newRoom = true;
     this.roomsRestService.getCount(null).subscribe({
       next: amount => {
         this.rooms = Array.from<Room>({ length: amount });
@@ -131,7 +129,6 @@ export class RoomsComponent implements OnInit {
   }
 
   createForm() {
-    this.newRoom = true;
     this.form = this.formBuilder.group({
       id: null,
       title: '',
@@ -149,7 +146,6 @@ export class RoomsComponent implements OnInit {
   }
 
   resetForm() {
-    this.newRoom = true;
     this.form.reset({
       id: null,
       title: '',
@@ -167,7 +163,6 @@ export class RoomsComponent implements OnInit {
   }
 
   public cancel(): void {
-    this.newRoom = true;
     this.resetForm();
     this.room = new Room();
   }
@@ -263,12 +258,12 @@ export class RoomsComponent implements OnInit {
       console.log('updateRoom');
     }
     const room = this.prepareSave();
+    const index = this.rooms.findIndex(rm => rm !== null && rm.id === room.id);
     this.roomsRestService.updateRoom(room).subscribe(
       (result: any) => { // on success
         if (window.console) {
           console.log('save the room ' + room);
         }
-        const index = this.rooms.indexOf(this.room);
         if (window.console) {
           console.log('saveRoom' + index);
         }

@@ -36,25 +36,29 @@
                 <div class="form-row">
                     <div class="col">
                         <fieldset class="form-group">
-                            <label for="north">North <a href="#" *ngIf="isRoomSelected() && room.north !== null" (click)="setRoomById(room.north)">{{ room.north }}</a></label>
+                            <label for="north">North <a href="#" *ngIf="isRoomSelected() && room.north !== null"
+                                    (click)="setRoomById(room.north)">{{ room.north }}</a></label>
                             <input type="number" class="form-control" id="north" name="north" formControlName="north">
                         </fieldset>
                     </div>
                     <div class="col">
                         <fieldset class="form-group">
-                            <label for="south">South <a href="#" *ngIf="isRoomSelected() && room.south !== null" (click)="setRoomById(room.south)">{{ room.south }}</a></label>
+                            <label for="south">South <a href="#" *ngIf="isRoomSelected() && room.south !== null"
+                                    (click)="setRoomById(room.south)">{{ room.south }}</a></label>
                             <input type="number" class="form-control" id="south" name="south" formControlName="south">
                         </fieldset>
                     </div>
                     <div class="col">
                         <fieldset class="form-group">
-                            <label for="west">West <a href="#" *ngIf="isRoomSelected() && room.west !== null" (click)="setRoomById(room.west)">{{ room.west }}</a></label>
+                            <label for="west">West <a href="#" *ngIf="isRoomSelected() && room.west !== null"
+                                    (click)="setRoomById(room.west)">{{ room.west }}</a></label>
                             <input type="number" class="form-control" id="west" name="west" formControlName="west">
                         </fieldset>
                     </div>
                     <div class="col">
                         <fieldset class="form-group">
-                            <label for="east">East <a href="#" *ngIf="isRoomSelected() && room.east !== null" (click)="setRoomById(room.east)">{{ room.east }}</a></label>
+                            <label for="east">East <a href="#" *ngIf="isRoomSelected() && room.east !== null"
+                                    (click)="setRoomById(room.east)">{{ room.east }}</a></label>
                             <input type="number" class="form-control" id="east" name="east" formControlName="east">
                         </fieldset>
                     </div>
@@ -62,13 +66,15 @@
                 <div class="form-row">
                     <div class="col">
                         <fieldset class="form-group">
-                            <label for="up">Up <a href="#" *ngIf="isRoomSelected() && room.up !== null" (click)="setRoomById(room.up)">{{ room.up }}</a></label>
+                            <label for="up">Up <a href="#" *ngIf="isRoomSelected() && room.up !== null"
+                                    (click)="setRoomById(room.up)">{{ room.up }}</a></label>
                             <input type="number" class="form-control" id="up" name="up" formControlName="up">
                         </fieldset>
                     </div>
                     <div class="col">
                         <fieldset class="form-group">
-                            <label for="down">Down <a href="#" *ngIf="isRoomSelected() && room.down !== null" (click)="setRoomById(room.down)">{{ room.down }}</a></label>
+                            <label for="down">Down <a href="#" *ngIf="isRoomSelected() && room.down !== null"
+                                    (click)="setRoomById(room.down)">{{ room.down }}</a></label>
                             <input type="number" class="form-control" id="down" name="down" formControlName="down">
                         </fieldset>
                     </div>
@@ -91,8 +97,10 @@
                         a calligraphic picture.</small>
                 </fieldset>
                 <div class="col-xs-12 col-sm-12 text-right">
-                    <button type="submit" [disabled]="form.pristine" class="mx-1 btn btn-primary" (click)="updateRoom()">Update</button>
-                    <button type="submit" [disabled]="form.pristine" class="mx-1 btn btn-primary" (click)="createRoom()">Create</button>
+                    <button type="submit" [disabled]="form.pristine" class="mx-1 btn btn-primary"
+                        (click)="updateRoom()">Update</button>
+                    <button type="submit" [disabled]="form.pristine" class="mx-1 btn btn-primary"
+                        (click)="createRoom()">Create</button>
                     <button type="button" class="mx-1 btn btn-secondary" (click)="deleteRoom()">Delete</button>
                     <button type="reset" class="mx-1 btn btn-secondary" (click)="cancel()">Cancel</button>
                 </div>
@@ -128,10 +136,10 @@
                         <tr *cdkVirtualFor="let room of datasource; 
                         templateCacheSize: 0" [ngClass]="isActive(room)" (click)="setRoomById(room.id)">
                             <th *ngIf="room" scope="row">{{ room.id }}</th>
-                            <td *ngIf="room" >{{ room.title }}</td>
-                            <td *ngIf="room" >{{ room.area }}</td>
-                            <td *ngIf="room" >{{ room.owner }}</td>
-                            <td *ngIf="room" >{{ room.creation }}</td>
+                            <td *ngIf="room">{{ room.title }}</td>
+                            <td *ngIf="room">{{ room.area }}</td>
+                            <td *ngIf="room">{{ room.owner }}</td>
+                            <td *ngIf="room">{{ room.creation }}</td>
                         </tr>
                     </tbody>
                 </table>

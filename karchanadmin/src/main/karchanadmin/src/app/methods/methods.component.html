@@ -14,24 +14,24 @@
     <div class="row row-content">
         <div class="col-xs-12 col-xl-6">
             <h1>Method {{ method === undefined ? '-' : method.name }}</h1>
-            <form [formGroup]="form" (ngSubmit)="saveMethod()" novalidate>
+            <form [formGroup]="form" novalidate>
                 <fieldset class="form-group">
                     <label for="name">Name</label>
                     <input type="text" class="form-control" id="name" name="name" formControlName="name">
                 </fieldset>
                 <fieldset class="form-group">
                     <label for="owner">Owner</label>
-                    <input readonly type="text" class="form-control" id="owner" name="owner" formControlName="owner">
+                    <input type="text" class="form-control" id="owner" name="owner" formControlName="owner">
                 </fieldset>
                 <fieldset class="form-group">
                     <label for="src">Source</label>
                     <textarea class="form-control" id="src" rows="13" formControlName="src"></textarea>
                 </fieldset>
                 <div class="col-xs-12 col-sm-12 text-right">
-                    <button type="submit" [disabled]="form.pristine" class="btn btn-primary">Save</button>
-                    <button type="reset" class="btn btn-primary" (click)="cancel()">Cancel</button>
-                    <button type="button" class="btn btn-primary" (click)="deleteMethod()">Delete</button>
-                    <button type="button" class="btn btn-primary" (click)="disownMethod()">Disown</button>
+                    <button type="submit" [disabled]="form.pristine" class="mx-1 btn btn-primary" (click)="updateMethod()">Update</button>
+                    <button type="submit" [disabled]="form.pristine" class="mx-1 btn btn-primary" (click)="createMethod()">Create</button>
+                    <button type="button" class="mx-1 btn btn-secondary" (click)="deleteMethod()">Delete</button>
+                    <button type="reset" class="mx-1 btn btn-secondary" (click)="cancel()">Cancel</button>
                 </div>
             </form>
             <h2>Commands</h2>

@@ -195,15 +195,37 @@ export class CommandsComponent implements OnInit {
     );
   }
 
-  public saveCommand(): void {
+  public createCommand(): void {
     if (window.console) {
-      console.log('saveCommand');
+      console.log('createCommand');
     }
-    const index = this.commands.indexOf(this.command);
+    const command = this.prepareSave();
+    this.commandsRestService.createCommand(command).subscribe(
+      (result: any) => { // on success
+        if (window.console) {
+          console.log('save the command ' + command);
+        }
+        this.commands.push(command);
+        this.commands = [...this.commands];
+        this.datasource.updateDatastream(this.commands);
+      },
+      (err: any) => { // error
+        // console.log('error', err);
+      },
+      () => { // on completion
+      }
+    );
+  }
+
+  public updateCommand(): void {
+    if (window.console) {
+      console.log('updateCommand');
+    }
+    const command = this.prepareSave();
+    const index = this.commands.findIndex(cmd => cmd != null && cmd.id === command.id);
     if (window.console) {
       console.log('saveCommand' + index);
     }
-    const command = this.prepareSave();
     this.commandsRestService.updateCommand(command).subscribe(
       (result: any) => { // on success
         if (window.console) {
@@ -238,14 +260,6 @@ export class CommandsComponent implements OnInit {
       owner: this.command.owner as string
     };
     return saveCommand;
-  }
-
-  disownCommand() {
-    if (!this.isCommandSelected()) {
-      return;
-    }
-    this.command.owner = null;
-    this.datasource.updateDatastream(this.commands);
   }
 
   isCommandSelected() {
