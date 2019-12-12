@@ -323,9 +323,14 @@ public class RoomsBean //implements AdminRestService<Long>
   @Path("count")
   @Produces("text/plain")
 
-  public String count()
+  public String count(@Context UriInfo info)
   {
-    return String.valueOf(getEntityManager().createNamedQuery("Room.countAll").getSingleResult());
+    String owner = info.getQueryParameters().getFirst("owner");
+    if (owner == null)
+    {
+      return String.valueOf(getEntityManager().createNamedQuery("Room.countAll").getSingleResult());
+    }
+    return String.valueOf(getEntityManager().createNamedQuery("Room.countAllByOwner").setParameter("owner", owner).getSingleResult());
   }
 
   private EntityManager getEntityManager()
