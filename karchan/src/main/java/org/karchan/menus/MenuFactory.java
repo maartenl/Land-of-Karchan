@@ -88,9 +88,10 @@ public class MenuFactory
     Menu guide = new SimpleMenu("The Guide", "/help/guide.html");
     Menu techSpecs = new SimpleMenu("Tech Specs", "/help/tech_specs.html");
     Menu source = new SimpleMenu("Source", "/help/source.html");
+    Menu serverMetrics = new SimpleMenu("Server metrics", "/help/metrics.html");
     Menu security = new SimpleMenu("Security", "/help/security.html");
     Menu darkmode = new SimpleMenu("Darkmode", "/help/darkmode.html");
-    add(status, guide, techSpecs, source, security, darkmode);
+    add(status, guide, techSpecs, serverMetrics, source, security, darkmode);
     Menu faq = new Menu("FAQ", "/help/faq.html")
     {
       @Override
@@ -129,7 +130,7 @@ public class MenuFactory
     add(who, theLaw);
 
     Menu help = new SimpleMenu("Help", "/help/index.html",
-            Arrays.asList(status, guide, techSpecs, source, security, darkmode, faq));
+            Arrays.asList(status, guide, techSpecs, serverMetrics, source, security, darkmode, faq));
     add(help);
 
     Menu links = new SimpleMenu("Links", "/links.html");
