@@ -277,7 +277,7 @@ public class User extends Person
       this.newpassword = newpassword;
       return;
     }
-    RegularExpressions.checkRegexp(PASSWORD_REGEXP, newpassword);
+    RegularExpressions.checkRegexp(PASSWORD_REGEXP, newpassword, "A password should be at least 5 characters long.");
     this.newpassword = new HexEncoder(128).encrypt(newpassword, Hash.SHA_512);
   }
 

@@ -42,18 +42,25 @@ public class RegularExpressions
    *
    * @param regexp the regular expression
    * @param value the value to verify
+   * @param message a message to display if the regular expression does not
+   * check out. May be null, in which case the message becomes something generic
+   * like "value x should match regexp y.
    * @throws RegularExpressionException a checked exception indicating failure.
    */
-  public static void checkRegexp(String regexp, String value) throws RegularExpressionException
+  public static void checkRegexp(String regexp, String value, String message) throws RegularExpressionException
   {
     Pattern p = Pattern.compile(regexp);
     Matcher m = p.matcher(value);
     if (!m.matches())
     {
-      throw new RegularExpressionException("value " + value + " should match regexp " + regexp);
+      if (message == null)
+      {
+        message = "value " + value + " should match regexp " + regexp;
+      }
+      throw new RegularExpressionException(message);
     }
   }
-  
+
   public static boolean regExpTest(String regexp, String matches)
   {
     Pattern p = Pattern.compile(regexp);

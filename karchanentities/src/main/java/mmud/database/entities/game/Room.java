@@ -82,7 +82,7 @@ public class Room implements Serializable, DisplayInterface, ItemWrangler, Attri
   /**
    * The first room that new characters appear in.
    */
-  public static final Integer STARTERS_ROOM = 1;
+  public static final long STARTERS_ROOM = 1L;
   private static final long serialVersionUID = 1L;
   @Id
   @Basic(optional = false)

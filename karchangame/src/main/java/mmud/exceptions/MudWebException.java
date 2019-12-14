@@ -105,7 +105,7 @@ public class MudWebException extends MudException
     super(e);
     this.name = name;
     this.status = status;
-    this.friendlyMessage = null;
+    this.friendlyMessage = e.getMessage();
   }
 
   /**
@@ -119,7 +119,7 @@ public class MudWebException extends MudException
     super(e);
     this.name = null;
     this.status = status;
-    this.friendlyMessage = null;
+    this.friendlyMessage = e.getMessage();
   }
 
   String getName()
