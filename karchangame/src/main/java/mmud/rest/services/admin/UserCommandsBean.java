@@ -201,10 +201,8 @@ public class UserCommandsBean //implements AdminRestService<String>
           })
   public String findAll(@Context UriInfo info)
   {
-    String owner = info.getQueryParameters().getFirst("owner");
     List<String> userCommands = null;
     userCommands = getEntityManager().createNativeQuery(AdminUserCommand.GET_QUERY)
-            .setParameter(1, owner)
             .getResultList();
     return "[" + userCommands.stream().collect(Collectors.joining(",")) + "]";
   }
@@ -220,10 +218,8 @@ public class UserCommandsBean //implements AdminRestService<String>
           @PathParam("pageSize") Integer pageSize
   )
   {
-    String owner = info.getQueryParameters().getFirst("owner");
     List<String> userCommands = null;
     userCommands = getEntityManager().createNativeQuery(AdminUserCommand.GET_QUERY)
-            .setParameter(1, owner)
             .setMaxResults(pageSize)
             .setFirstResult(offset)
             .getResultList();
@@ -236,12 +232,7 @@ public class UserCommandsBean //implements AdminRestService<String>
 
   public String count(@Context UriInfo info)
   {
-    String owner = info.getQueryParameters().getFirst("owner");
-    if (owner == null)
-    {
-      return String.valueOf(getEntityManager().createNamedQuery("UserCommand.countAll").getSingleResult());
-    }
-    return String.valueOf(getEntityManager().createNamedQuery("UserCommand.countAllByOwner").setParameter("owner", owner).getSingleResult());
+    return String.valueOf(getEntityManager().createNamedQuery("UserCommand.countAll").getSingleResult());
   }
 
   private EntityManager getEntityManager()

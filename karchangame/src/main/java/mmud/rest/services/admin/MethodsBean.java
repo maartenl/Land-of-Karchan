@@ -168,10 +168,8 @@ public class MethodsBean //implements AdminRestService<String>
           })
   public String findAll(@Context UriInfo info)
   {
-    String owner = info.getQueryParameters().getFirst("owner");
     List<String> methods = null;
     methods = getEntityManager().createNativeQuery(AdminMethod.GET_QUERY)
-            .setParameter(1, owner)
             .getResultList();
     return "[" + methods.stream().collect(Collectors.joining(",")) + "]";
   }
@@ -187,10 +185,8 @@ public class MethodsBean //implements AdminRestService<String>
           @PathParam("pageSize") Integer pageSize
   )
   {
-    String owner = info.getQueryParameters().getFirst("owner");
     List<String> methods = null;
     methods = getEntityManager().createNativeQuery(AdminMethod.GET_QUERY)
-            .setParameter(1, owner)
             .setMaxResults(pageSize)
             .setFirstResult(offset)
             .getResultList();
@@ -203,12 +199,7 @@ public class MethodsBean //implements AdminRestService<String>
 
   public String count(@Context UriInfo info)
   {
-    String owner = info.getQueryParameters().getFirst("owner");
-    if (owner == null)
-    {
-      return String.valueOf(getEntityManager().createNamedQuery("Method.countAll").getSingleResult());
-    }
-    return String.valueOf(getEntityManager().createNamedQuery("Method.countAllByOwner").setParameter("owner", owner).getSingleResult());
+    return String.valueOf(getEntityManager().createNamedQuery("Method.countAll").getSingleResult());
   }
 
   private EntityManager getEntityManager()

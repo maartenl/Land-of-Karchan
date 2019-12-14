@@ -25,15 +25,42 @@ export class RoomsComponent implements OnInit {
 
   SearchTerms = class {
     owner: string;
+    title: string;
+    contents: string;
+    area: string;
   };
 
   searchTerms = new this.SearchTerms();
 
-  updateOwner(value: string) {
+  updateOwnerSearch(value: string) {
     if (value.trim() === '') {
       value = null;
     }
     this.searchTerms.owner = value;
+    this.getRooms();
+  }
+
+  updateTitleSearch(value: string) {
+    if (value.trim() === '') {
+      value = null;
+    }
+    this.searchTerms.title = value;
+    this.getRooms();
+  }
+
+  updateDescriptionSearch(value: string) {
+    if (value.trim() === '') {
+      value = null;
+    }
+    this.searchTerms.contents = value;
+    this.getRooms();
+  }
+
+  updateAreaSearch(value: string) {
+    if (value.trim() === '') {
+      value = null;
+    }
+    this.searchTerms.area = value;
     this.getRooms();
   }
 
@@ -241,12 +268,18 @@ export class RoomsComponent implements OnInit {
   }
 
   private getRooms() {
-    this.roomsRestService.getRooms().subscribe({
+    this.roomsRestService.getRooms(this.searchTerms.contents).subscribe({
       next: data => {
         const ownerFilter = room => this.searchTerms.owner === undefined ||
           this.searchTerms.owner === null ||
           this.searchTerms.owner === room.owner;
-        this.rooms = data.filter(ownerFilter);
+        const titleFilter = room => this.searchTerms.title === undefined ||
+          this.searchTerms.title === null ||
+          room.title.includes(this.searchTerms.title);
+        const areaFilter = room => this.searchTerms.area === undefined ||
+          this.searchTerms.area === null ||
+          room.area === this.searchTerms.area;
+        this.rooms = data.filter(ownerFilter).filter(titleFilter).filter(areaFilter);
       }
     });
   }

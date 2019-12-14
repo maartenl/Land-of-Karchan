@@ -55,11 +55,12 @@ export class RoomsRestService {
       );
   }
 
-  public getRooms(): Observable<Room[]> {
+  public getRooms(descriptionSearch: string): Observable<Room[]> {
     if (this.cache$) {
       return this.cache$;
     }
-    this.cache$ = this.http.get<Room[]>(this.url)
+    const localUrl = descriptionSearch === undefined ? this.url : this.url + '?description=' + descriptionSearch;
+    this.cache$ = this.http.get<Room[]>(localUrl)
       .pipe(
         publishReplay(1),
         refCount(),

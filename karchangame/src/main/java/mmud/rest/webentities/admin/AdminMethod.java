@@ -29,7 +29,6 @@ public class AdminMethod
 {
   public static String GET_QUERY = "select json_object(\"name\", name, \"owner\", owner, \"creation\", creation) "
           + "from mm_methods r "
-          + "where coalesce(?, r.owner, 'nobody') = coalesce(r.owner, 'nobody') "
           + "order by r.name";
 
   public String name;

@@ -3,8 +3,26 @@
         <div class="col-xs-12">
             <form>
                 <fieldset class="form-group">
-                    <input type="text" class="form-control" id="owner" name="owner" placeholder="Owner" #searchowner
-                        (keyup.enter)="updateOwner(searchowner.value)" (blur)="updateOwner(searchowner.value)">
+                    <input type="text" class="form-control" id="ownerSearch" name="ownerSearch" placeholder="Owner"
+                        #searchowner (keyup.enter)="updateOwnerSearch(searchowner.value)"
+                        (blur)="updateOwnerSearch(searchowner.value)">
+                </fieldset>
+                <fieldset class="form-group">
+                    <input type="text" class="form-control" id="titleSearch" name="titleSearch" placeholder="Title"
+                        #searchtitle (keyup.enter)="updateTitleSearch(searchtitle.value)"
+                        (blur)="updateTitleSearch(searchtitle.value)">
+                </fieldset>
+                <fieldset class="form-group">
+                    <input type="text" class="form-control" id="descriptionSearch" name="descriptionSearch"
+                        placeholder="Contents" #searchdescription
+                        (keyup.enter)="updateDescriptionSearch(searchdescription.value)"
+                        (blur)="updateDescriptionSearch(searchdescription.value)">
+                </fieldset>
+                <fieldset class="form-group">
+                    <input type="text" class="form-control" id="areaSearch" name="areaSearch"
+                        placeholder="Area" #searcharea
+                        (keyup.enter)="updateAreaSearch(searcharea.value)"
+                        (blur)="updateAreaSearch(searcharea.value)">
                 </fieldset>
             </form>
         </div>

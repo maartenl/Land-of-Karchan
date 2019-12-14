@@ -292,10 +292,22 @@ public class RoomsBean //implements AdminRestService<Long>
   public String findAll(@Context UriInfo info)
   {
     LOGGER.info("findAll");
-    String owner = info.getQueryParameters().getFirst("owner");
-    final List<String> rooms = getEntityManager().createNativeQuery(AdminRoom.GET_QUERY)
-            .setParameter(1, owner)
-            .getResultList();
+    String description = info.getQueryParameters().getFirst("description");
+    if ("null".equals(description))
+    {
+      description = null;
+    }
+    final List<String> rooms;
+    if (description == null)
+    {
+      rooms = getEntityManager().createNativeQuery(AdminRoom.GET_QUERY)
+              .getResultList();
+    } else
+    {
+      rooms = getEntityManager().createNativeQuery(AdminRoom.GET_SEARCH_QUERY)
+              .setParameter(1, "%" + description + "%")
+              .getResultList();
+    }
     return "[" + rooms.stream().collect(Collectors.joining(",")) + "]";
   }
 
@@ -310,12 +322,26 @@ public class RoomsBean //implements AdminRestService<Long>
           @PathParam("pageSize") Integer pageSize
   )
   {
-    String owner = info.getQueryParameters().getFirst("owner");
-    final List<String> rooms = getEntityManager().createNativeQuery(AdminRoom.GET_QUERY)
-            .setParameter(1, owner)
-            .setMaxResults(pageSize)
-            .setFirstResult(offset)
-            .getResultList();
+    String description = info.getQueryParameters().getFirst("description");
+    if ("null".equals(description))
+    {
+      description = null;
+    }
+    final List<String> rooms;
+    if (description == null)
+    {
+      rooms = getEntityManager().createNativeQuery(AdminRoom.GET_QUERY)
+              .setMaxResults(pageSize)
+              .setFirstResult(offset)
+              .getResultList();
+    } else
+    {
+      rooms = getEntityManager().createNativeQuery(AdminRoom.GET_SEARCH_QUERY)
+              .setParameter(1, "%" + description + "%")
+              .setMaxResults(pageSize)
+              .setFirstResult(offset)
+              .getResultList();
+    }
     return "[" + rooms.stream().collect(Collectors.joining(",")) + "]";
   }
 
@@ -325,12 +351,16 @@ public class RoomsBean //implements AdminRestService<Long>
 
   public String count(@Context UriInfo info)
   {
-    String owner = info.getQueryParameters().getFirst("owner");
-    if (owner == null)
+    String description = info.getQueryParameters().getFirst("description");
+    if ("null".equals(description))
+    {
+      description = null;
+    }
+    if (description == null)
     {
       return String.valueOf(getEntityManager().createNamedQuery("Room.countAll").getSingleResult());
     }
-    return String.valueOf(getEntityManager().createNamedQuery("Room.countAllByOwner").setParameter("owner", owner).getSingleResult());
+    return String.valueOf(getEntityManager().createNamedQuery("Room.countAllByDescription").setParameter("description", "%" + description + "%").getSingleResult());
   }
 
   private EntityManager getEntityManager()
