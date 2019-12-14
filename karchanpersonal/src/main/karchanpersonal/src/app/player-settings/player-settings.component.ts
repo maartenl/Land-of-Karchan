@@ -129,9 +129,9 @@ export class PlayerSettingsComponent implements OnInit {
       this.playerService.deleteCharacter().subscribe(
         (result: any) => { // on success
           if (window.location !== window.parent.location) {
-            window.parent.location.href = '/game/goodbye.html?logout=true';
+            window.parent.location.href = '/index.html?logout=true';
           }
-          window.location.href = '/game/goodbye.html?logout=true';
+          window.location.href = '/index.html?logout=true';
         }
       );
     }
