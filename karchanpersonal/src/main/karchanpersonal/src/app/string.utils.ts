@@ -10,6 +10,9 @@ export class StringUtils {
     }
 
     public static getCapitalized(content: string): string {
+        if (content === undefined || content === null) {
+            return content;
+        }
         let inTag = false;
         let pos = 0;
         while (pos < content.length) {
