@@ -31,11 +31,7 @@ export class CommandsComponent implements OnInit {
       value = null;
     }
     this.searchTerms.owner = value;
-    this.commandsRestService.getCommands().subscribe({
-      next: data => {
-        this.commands = data;
-      }
-    });
+    this.getCommands();
   }
 
   constructor(
@@ -44,11 +40,19 @@ export class CommandsComponent implements OnInit {
     private formBuilder: FormBuilder) {
     this.createForm();
     this.command = new Command();
-    this.commandsRestService.getCommands().subscribe({
-      next: data => {
-        this.commands = data;
-      }
-    });
+    this.getCommands();
+  }
+
+  private getCommands() {
+    this.commandsRestService.getCommands()
+      .subscribe({
+        next: data => {
+          const ownerFilter = command => this.searchTerms.owner === undefined ||
+            this.searchTerms.owner === null ||
+            this.searchTerms.owner === command.owner;
+          this.commands = data.filter(ownerFilter);
+        }
+      });
   }
 
   ngOnInit() {
@@ -207,11 +211,7 @@ export class CommandsComponent implements OnInit {
 
   refresh() {
     this.commandsRestService.clearCache();
-    this.commandsRestService.getCommands().subscribe({
-      next: data => {
-        this.commands = data;
-      }
-    });
+    this.getCommands();
   }
 }
 

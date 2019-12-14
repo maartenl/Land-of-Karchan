@@ -34,11 +34,7 @@ export class RoomsComponent implements OnInit {
       value = null;
     }
     this.searchTerms.owner = value;
-    this.roomsRestService.getRooms().subscribe({
-      next: data => {
-        this.rooms = data;
-      }
-    });
+    this.getRooms();
   }
 
   constructor(
@@ -47,11 +43,7 @@ export class RoomsComponent implements OnInit {
     private formBuilder: FormBuilder) {
     this.createForm();
     this.room = new Room();
-    this.roomsRestService.getRooms().subscribe({
-      next: data => {
-        this.rooms = data;
-      }
-    });
+    this.getRooms();
   }
 
   ngOnInit() {
@@ -245,9 +237,16 @@ export class RoomsComponent implements OnInit {
 
   refresh() {
     this.roomsRestService.clearCache();
+    this.getRooms();
+  }
+
+  private getRooms() {
     this.roomsRestService.getRooms().subscribe({
       next: data => {
-        this.rooms = data;
+        const ownerFilter = room => this.searchTerms.owner === undefined ||
+          this.searchTerms.owner === null ||
+          this.searchTerms.owner === room.owner;
+        this.rooms = data.filter(ownerFilter);
       }
     });
   }

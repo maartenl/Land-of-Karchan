@@ -35,11 +35,7 @@ export class MethodsComponent implements OnInit {
       value = null;
     }
     this.searchTerms.owner = value;
-    this.methodsRestService.getMethods().subscribe({
-      next: data => {
-        this.methods = data;
-      }
-    });
+    this.getMethods();
   }
 
   constructor(
@@ -48,11 +44,7 @@ export class MethodsComponent implements OnInit {
     private formBuilder: FormBuilder) {
     this.createForm();
     this.method = new Method();
-    this.methodsRestService.getMethods().subscribe({
-      next: data => {
-        this.methods = data;
-      }
-    });
+    this.getMethods();
   }
 
   ngOnInit() {
@@ -214,9 +206,16 @@ export class MethodsComponent implements OnInit {
 
   refresh() {
     this.methodsRestService.clearCache();
+    this.getMethods();
+  }
+
+  private getMethods() {
     this.methodsRestService.getMethods().subscribe({
       next: data => {
-        this.methods = data;
+        const ownerFilter = method => this.searchTerms.owner === undefined ||
+          this.searchTerms.owner === null ||
+          this.searchTerms.owner === method.owner;
+        this.methods = data.filter(ownerFilter);
       }
     });
   }
