@@ -38,6 +38,7 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.SecurityContext;
+import javax.ws.rs.core.UriInfo;
 import mmud.database.entities.game.Admin;
 import mmud.database.entities.game.Area;
 import mmud.database.entities.game.Room;
@@ -68,19 +69,37 @@ public class RoomsBean //implements AdminRestService<Long>
           {
             "application/json"
           })
-  
-  public void create(String json, @Context SecurityContext sc)
+
+  public Long create(String json, @Context SecurityContext sc)
   {
     AdminRoom adminRoom = AdminRoom.fromJson(json);
     final String name = sc.getUserPrincipal().getName();
     Admin admin = getEntityManager().find(Admin.class, name);
 
     Room room = new Room();
+    if (adminRoom.id == null)
+    {
+      room.setId(getEntityManager().createNamedQuery("Room.findMaxId", Long.class).getSingleResult() + 1);
+    } else
+    {
+      if (getEntityManager().find(Room.class, adminRoom.id) != null)
+      {
+        throw new MudWebException(name, "Room " + adminRoom.id + " already exists.", Response.Status.FOUND);
+      }
+      room.setId(adminRoom.id);
+    }
     room.setContents(adminRoom.contents);
     if (adminRoom.area != null)
     {
       Area area = getEntityManager().find(Area.class, adminRoom.area);
+      if (area == null)
+      {
+        throw new MudWebException(name, "Area " + adminRoom.area + " not found.", Response.Status.NOT_FOUND);
+      }
       room.setArea(area);
+    } else
+    {
+      throw new MudWebException(name, "Area cannot be null.", Response.Status.BAD_REQUEST);
     }
     if (adminRoom.down != null)
     {
@@ -118,6 +137,7 @@ public class RoomsBean //implements AdminRestService<Long>
     room.setOwner(admin);
     ValidationUtils.checkValidation(name, room);
     getEntityManager().persist(room);
+    return room.getId();
   }
 
   @PUT
@@ -126,7 +146,7 @@ public class RoomsBean //implements AdminRestService<Long>
           {
             "application/json"
           })
-  
+
   public void edit(@PathParam("id") Long id, String json, @Context SecurityContext sc)
   {
     AdminRoom adminRoom = AdminRoom.fromJson(json);
@@ -201,12 +221,19 @@ public class RoomsBean //implements AdminRestService<Long>
     }
     room.setPicture(adminRoom.picture);
     room.setTitle(adminRoom.title);
+    if (adminRoom.owner == null)
+    {
+      room.setOwner(null);
+    } else
+    {
+      room.setOwner(admin);
+    }
     ValidationUtils.checkValidation(name, room);
   }
 
   @DELETE
   @Path("{id}")
-  
+
   public void remove(@PathParam("id") Long id,
           @Context SecurityContext sc
   )
@@ -227,7 +254,7 @@ public class RoomsBean //implements AdminRestService<Long>
           {
             "application/json"
           })
-  
+
   public String find(@PathParam("id") Long id,
           @Context SecurityContext sc)
   {
@@ -261,13 +288,27 @@ public class RoomsBean //implements AdminRestService<Long>
           {
             "application/json"
           })
-  
-  public String findAll()
+
+  public String findAll(@Context UriInfo info)
   {
     LOGGER.info("findAll");
-    final List<Room> rooms = getEntityManager().createNamedQuery("Room.findAll").getResultList();
-    List<AdminRoom> adminRooms = rooms.stream().map(room -> new AdminRoom(room)).collect(Collectors.toList());
-    return JsonbBuilder.create().toJson(adminRooms);
+    String description = info.getQueryParameters().getFirst("description");
+    if ("null".equals(description))
+    {
+      description = null;
+    }
+    final List<String> rooms;
+    if (description == null)
+    {
+      rooms = getEntityManager().createNativeQuery(AdminRoom.GET_QUERY)
+              .getResultList();
+    } else
+    {
+      rooms = getEntityManager().createNativeQuery(AdminRoom.GET_SEARCH_QUERY)
+              .setParameter(1, "%" + description + "%")
+              .getResultList();
+    }
+    return "[" + rooms.stream().collect(Collectors.joining(",")) + "]";
   }
 
   @GET
@@ -276,26 +317,50 @@ public class RoomsBean //implements AdminRestService<Long>
           {
             "application/json"
           })
-  
-  public String findRange(@PathParam("offset") Integer offset,
+
+  public String findRange(@Context UriInfo info, @PathParam("offset") Integer offset,
           @PathParam("pageSize") Integer pageSize
   )
   {
-    final List<Room> rooms = getEntityManager().createNamedQuery("Room.findAll")
-            .setMaxResults(pageSize)
-            .setFirstResult(offset)
-            .getResultList();
-    List<AdminRoom> adminRooms = rooms.stream().map(room -> new AdminRoom(room)).collect(Collectors.toList());
-    return JsonbBuilder.create().toJson(adminRooms);
+    String description = info.getQueryParameters().getFirst("description");
+    if ("null".equals(description))
+    {
+      description = null;
+    }
+    final List<String> rooms;
+    if (description == null)
+    {
+      rooms = getEntityManager().createNativeQuery(AdminRoom.GET_QUERY)
+              .setMaxResults(pageSize)
+              .setFirstResult(offset)
+              .getResultList();
+    } else
+    {
+      rooms = getEntityManager().createNativeQuery(AdminRoom.GET_SEARCH_QUERY)
+              .setParameter(1, "%" + description + "%")
+              .setMaxResults(pageSize)
+              .setFirstResult(offset)
+              .getResultList();
+    }
+    return "[" + rooms.stream().collect(Collectors.joining(",")) + "]";
   }
 
   @GET
   @Path("count")
   @Produces("text/plain")
-  
-  public String count()
+
+  public String count(@Context UriInfo info)
   {
-    return String.valueOf(getEntityManager().createNamedQuery("Room.countAll").getSingleResult());
+    String description = info.getQueryParameters().getFirst("description");
+    if ("null".equals(description))
+    {
+      description = null;
+    }
+    if (description == null)
+    {
+      return String.valueOf(getEntityManager().createNamedQuery("Room.countAll").getSingleResult());
+    }
+    return String.valueOf(getEntityManager().createNamedQuery("Room.countAllByDescription").setParameter("description", "%" + description + "%").getSingleResult());
   }
 
   private EntityManager getEntityManager()

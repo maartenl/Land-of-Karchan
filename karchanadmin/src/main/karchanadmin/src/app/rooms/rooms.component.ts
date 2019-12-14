@@ -3,7 +3,6 @@ import { BehaviorSubject, Observable, of, Subscription } from 'rxjs';
 import { Router, ActivatedRoute, ParamMap } from '@angular/router';
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { FormControl, FormGroup, FormBuilder } from '@angular/forms';
-import { CdkVirtualScrollViewport } from '@angular/cdk/scrolling';
 
 import { RoomsRestService } from '../rooms-rest.service';
 import { Room } from './room.model';
@@ -14,7 +13,7 @@ import { Command } from '../commands/command.model';
   templateUrl: './rooms.component.html',
   styleUrls: ['./rooms.component.css']
 })
-export class RoomsComponent extends DataSource<Room> implements OnInit {
+export class RoomsComponent implements OnInit {
 
   rooms: Room[];
 
@@ -24,24 +23,54 @@ export class RoomsComponent extends DataSource<Room> implements OnInit {
 
   form: FormGroup;
 
-  datasource: DataSource<Room>;
+  SearchTerms = class {
+    owner: string;
+    title: string;
+    contents: string;
+    area: string;
+  };
 
-  private dataStream;
+  searchTerms = new this.SearchTerms();
+
+  updateOwnerSearch(value: string) {
+    if (value.trim() === '') {
+      value = null;
+    }
+    this.searchTerms.owner = value;
+    this.getRooms();
+  }
+
+  updateTitleSearch(value: string) {
+    if (value.trim() === '') {
+      value = null;
+    }
+    this.searchTerms.title = value;
+    this.getRooms();
+  }
+
+  updateDescriptionSearch(value: string) {
+    if (value.trim() === '') {
+      value = null;
+    }
+    this.searchTerms.contents = value;
+    this.getRooms();
+  }
+
+  updateAreaSearch(value: string) {
+    if (value.trim() === '') {
+      value = null;
+    }
+    this.searchTerms.area = value;
+    this.getRooms();
+  }
 
   constructor(
     private roomsRestService: RoomsRestService,
     private route: ActivatedRoute,
     private formBuilder: FormBuilder) {
-    super();
     this.createForm();
     this.room = new Room();
-    this.roomsRestService.getCount().subscribe({
-      next: amount => {
-        this.rooms = Array.from<Room>({ length: amount });
-        this.dataStream = new BehaviorSubject<(Room | undefined)[]>(this.rooms);
-      }
-    });
-    this.datasource = this;
+    this.getRooms();
   }
 
   ngOnInit() {
@@ -61,6 +90,7 @@ export class RoomsComponent extends DataSource<Room> implements OnInit {
 
   createForm() {
     this.form = this.formBuilder.group({
+      id: null,
       title: '',
       picture: null,
       contents: null,
@@ -77,6 +107,7 @@ export class RoomsComponent extends DataSource<Room> implements OnInit {
 
   resetForm() {
     this.form.reset({
+      id: null,
       title: '',
       picture: null,
       contents: null,
@@ -94,34 +125,6 @@ export class RoomsComponent extends DataSource<Room> implements OnInit {
   public cancel(): void {
     this.resetForm();
     this.room = new Room();
-  }
-
-  connect(collectionViewer: CollectionViewer): Observable<Room[]> {
-    if (window.console) {
-      console.log('connect');
-    }
-    // this.subscription.add(
-    collectionViewer.viewChange.subscribe(range => {
-      if (this.rooms.slice(range.start, range.end).some(x => x === undefined)) {
-        if (window.console) {
-          console.log('Call restservice');
-        }
-        this.roomsRestService.getRooms(range.start, range.end + 100).subscribe({
-          next: (data) => {
-            this.rooms.splice(range.start, data.length, ...data);
-            this.rooms = [...this.rooms];
-            this.dataStream.next(this.rooms);
-          }
-        });
-      }
-    });
-    return this.dataStream;
-  }
-
-  disconnect(collectionViewer: CollectionViewer): void {
-    if (window.console) {
-      console.log('disconnect');
-    }
   }
 
   isActive(room: Room) {
@@ -149,9 +152,10 @@ export class RoomsComponent extends DataSource<Room> implements OnInit {
     return false;
   }
 
-  setRoom(room: Room) {
+  private setRoom(room: Room) {
     this.room = room;
     this.form.reset({
+      id: room.id,
       title: room.title,
       picture: room.picture,
       contents: room.contents,
@@ -173,9 +177,7 @@ export class RoomsComponent extends DataSource<Room> implements OnInit {
     this.roomsRestService.deleteRoom(this.room).subscribe(
       (result: any) => { // on success
         this.rooms = this.rooms.filter((bl) => bl === undefined || bl.id !== this.room.id);
-        // this.rooms.push(undefined);
         this.rooms = [...this.rooms];
-        this.dataStream.next(this.rooms);
       },
       (err: any) => { // error
         // console.log('error', err);
@@ -185,25 +187,45 @@ export class RoomsComponent extends DataSource<Room> implements OnInit {
     );
   }
 
-  public saveRoom(): void {
+  public createRoom(): void {
     if (window.console) {
-      console.log('saveRoom');
-    }
-    const index = this.rooms.indexOf(this.room);
-    if (window.console) {
-      console.log('saveRoom' + index);
+      console.log('createRoom');
     }
     const room = this.prepareSave();
+    this.roomsRestService.createRoom(room).subscribe(
+      (result: number) => { // on success
+        if (window.console) {
+          console.log('create the room ' + room);
+        }
+        this.rooms.push(room);
+        this.rooms = [...this.rooms];
+        this.setRoomById(result);
+      },
+      (err: any) => { // error
+        // console.log('error', err);
+      },
+      () => { // on completion
+      }
+    );
+    return;
+  }
+
+  public updateRoom(): void {
+    if (window.console) {
+      console.log('updateRoom');
+    }
+    const room = this.prepareSave();
+    const index = this.rooms.findIndex(rm => rm !== null && rm.id === room.id);
     this.roomsRestService.updateRoom(room).subscribe(
       (result: any) => { // on success
         if (window.console) {
           console.log('save the room ' + room);
         }
-        if (room.id !== undefined) {
-          this.rooms[index] = room;
+        if (window.console) {
+          console.log('saveRoom' + index);
         }
+        this.rooms[index] = room;
         this.rooms = [...this.rooms];
-        this.dataStream.next(this.rooms);
       },
       (err: any) => { // error
         // console.log('error', err);
@@ -236,15 +258,29 @@ export class RoomsComponent extends DataSource<Room> implements OnInit {
     return saveRoom;
   }
 
-  disownRoom() {
-    if (!this.isRoomSelected()) {
-      return;
-    }
-    this.room.owner = null;
-    this.dataStream.next(this.rooms);
-  }
-
   isRoomSelected() {
     return this.room !== undefined && this.room !== null;
+  }
+
+  refresh() {
+    this.roomsRestService.clearCache();
+    this.getRooms();
+  }
+
+  private getRooms() {
+    this.roomsRestService.getRooms(this.searchTerms.contents).subscribe({
+      next: data => {
+        const ownerFilter = room => this.searchTerms.owner === undefined ||
+          this.searchTerms.owner === null ||
+          this.searchTerms.owner === room.owner;
+        const titleFilter = room => this.searchTerms.title === undefined ||
+          this.searchTerms.title === null ||
+          room.title.includes(this.searchTerms.title);
+        const areaFilter = room => this.searchTerms.area === undefined ||
+          this.searchTerms.area === null ||
+          room.area === this.searchTerms.area;
+        this.rooms = data.filter(ownerFilter).filter(titleFilter).filter(areaFilter);
+      }
+    });
   }
 }

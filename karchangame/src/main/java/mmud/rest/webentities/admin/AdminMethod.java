@@ -27,6 +27,10 @@ import mmud.database.entities.game.Method;
  */
 public class AdminMethod
 {
+  public static String GET_QUERY = "select json_object(\"name\", name, \"owner\", owner, \"creation\", creation) "
+          + "from mm_methods r "
+          + "order by r.name";
+
   public String name;
   public String src;
   public LocalDateTime creation;

@@ -1,8 +1,42 @@
 <div class="container-fluid">
     <div class="row row-content">
+        <div class="col-xs-12">
+            <form>
+                <fieldset class="form-group">
+                    <input type="text" class="form-control" id="ownerSearch" name="ownerSearch" placeholder="Owner"
+                        #searchowner (keyup.enter)="updateOwnerSearch(searchowner.value)"
+                        (blur)="updateOwnerSearch(searchowner.value)">
+                </fieldset>
+                <fieldset class="form-group">
+                    <input type="text" class="form-control" id="titleSearch" name="titleSearch" placeholder="Title"
+                        #searchtitle (keyup.enter)="updateTitleSearch(searchtitle.value)"
+                        (blur)="updateTitleSearch(searchtitle.value)">
+                </fieldset>
+                <fieldset class="form-group">
+                    <input type="text" class="form-control" id="descriptionSearch" name="descriptionSearch"
+                        placeholder="Contents" #searchdescription
+                        (keyup.enter)="updateDescriptionSearch(searchdescription.value)"
+                        (blur)="updateDescriptionSearch(searchdescription.value)">
+                </fieldset>
+                <fieldset class="form-group">
+                    <input type="text" class="form-control" id="areaSearch" name="areaSearch"
+                        placeholder="Area" #searcharea
+                        (keyup.enter)="updateAreaSearch(searcharea.value)"
+                        (blur)="updateAreaSearch(searcharea.value)">
+                </fieldset>
+            </form>
+        </div>
+    </div>
+</div>
+<div class="container-fluid">
+    <div class="row row-content">
         <div class="col-xs-12 col-xl-6">
             <h1>Room id {{ room === undefined ? '-' : room.id }}</h1>
-            <form [formGroup]="form" (ngSubmit)="saveRoom()" novalidate>
+            <form [formGroup]="form" novalidate>
+                <fieldset class="form-group">
+                    <label for="id">Id</label>
+                    <input type="number" class="form-control" id="id" name="id" formControlName="id">
+                </fieldset>
                 <fieldset class="form-group">
                     <label for="title">Title</label>
                     <input type="text" class="form-control" id="title" name="title" formControlName="title">
@@ -20,25 +54,29 @@
                 <div class="form-row">
                     <div class="col">
                         <fieldset class="form-group">
-                            <label for="north">North <a href="#" *ngIf="isRoomSelected() && room.north !== null" (click)="setRoomById(room.north)">{{ room.north }}</a></label>
+                            <label for="north">North <a href="#" *ngIf="isRoomSelected() && room.north !== null"
+                                    (click)="setRoomById(room.north)">{{ room.north }}</a></label>
                             <input type="number" class="form-control" id="north" name="north" formControlName="north">
                         </fieldset>
                     </div>
                     <div class="col">
                         <fieldset class="form-group">
-                            <label for="south">South <a href="#" *ngIf="isRoomSelected() && room.south !== null" (click)="setRoomById(room.south)">{{ room.south }}</a></label>
+                            <label for="south">South <a href="#" *ngIf="isRoomSelected() && room.south !== null"
+                                    (click)="setRoomById(room.south)">{{ room.south }}</a></label>
                             <input type="number" class="form-control" id="south" name="south" formControlName="south">
                         </fieldset>
                     </div>
                     <div class="col">
                         <fieldset class="form-group">
-                            <label for="west">West <a href="#" *ngIf="isRoomSelected() && room.west !== null" (click)="setRoomById(room.west)">{{ room.west }}</a></label>
+                            <label for="west">West <a href="#" *ngIf="isRoomSelected() && room.west !== null"
+                                    (click)="setRoomById(room.west)">{{ room.west }}</a></label>
                             <input type="number" class="form-control" id="west" name="west" formControlName="west">
                         </fieldset>
                     </div>
                     <div class="col">
                         <fieldset class="form-group">
-                            <label for="east">East <a href="#" *ngIf="isRoomSelected() && room.east !== null" (click)="setRoomById(room.east)">{{ room.east }}</a></label>
+                            <label for="east">East <a href="#" *ngIf="isRoomSelected() && room.east !== null"
+                                    (click)="setRoomById(room.east)">{{ room.east }}</a></label>
                             <input type="number" class="form-control" id="east" name="east" formControlName="east">
                         </fieldset>
                     </div>
@@ -46,13 +84,15 @@
                 <div class="form-row">
                     <div class="col">
                         <fieldset class="form-group">
-                            <label for="up">Up <a href="#" *ngIf="isRoomSelected() && room.up !== null" (click)="setRoomById(room.up)">{{ room.up }}</a></label>
+                            <label for="up">Up <a href="#" *ngIf="isRoomSelected() && room.up !== null"
+                                    (click)="setRoomById(room.up)">{{ room.up }}</a></label>
                             <input type="number" class="form-control" id="up" name="up" formControlName="up">
                         </fieldset>
                     </div>
                     <div class="col">
                         <fieldset class="form-group">
-                            <label for="down">Down <a href="#" *ngIf="isRoomSelected() && room.down !== null" (click)="setRoomById(room.down)">{{ room.down }}</a></label>
+                            <label for="down">Down <a href="#" *ngIf="isRoomSelected() && room.down !== null"
+                                    (click)="setRoomById(room.down)">{{ room.down }}</a></label>
                             <input type="number" class="form-control" id="down" name="down" formControlName="down">
                         </fieldset>
                     </div>
@@ -66,7 +106,7 @@
                 </div>
                 <fieldset class="form-group">
                     <label for="owner">Owner</label>
-                    <input readonly type="text" class="form-control" id="owner" name="owner" formControlName="owner">
+                    <input type="text" class="form-control" id="owner" name="owner" formControlName="owner">
                 </fieldset>
                 <fieldset class="form-group">
                     <label for="body">Contents</label>
@@ -75,10 +115,12 @@
                         a calligraphic picture.</small>
                 </fieldset>
                 <div class="col-xs-12 col-sm-12 text-right">
-                    <button type="submit" [disabled]="form.pristine" class="btn btn-primary">Save</button>
-                    <button type="reset" class="btn btn-primary" (click)="cancel()">Cancel</button>
-                    <button type="button" class="btn btn-primary" (click)="deleteRoom()">Delete</button>
-                    <button type="button" class="btn btn-primary" (click)="disownRoom()">Disown</button>
+                    <button type="submit" [disabled]="form.pristine" class="mx-1 btn btn-primary"
+                        (click)="updateRoom()">Update</button>
+                    <button type="submit" [disabled]="form.pristine" class="mx-1 btn btn-primary"
+                        (click)="createRoom()">Create</button>
+                    <button type="button" class="mx-1 btn btn-secondary" (click)="deleteRoom()">Delete</button>
+                    <button type="reset" class="mx-1 btn btn-secondary" (click)="cancel()">Cancel</button>
                 </div>
             </form>
             <h2>Commands</h2>
@@ -91,12 +133,13 @@
                 <tbody>
                     <tr *ngFor="let command of commands">
                         <td>{{ command.id }}</td>
-                        <td><a href="commands/{{command.id}}">{{ command.command }}</a></td>
+                        <td><a [routerLink]="['/commands', command.id]">{{ command.command }}</a></td>
                     </tr>
                 </tbody>
             </table>
         </div>
         <div class="col-xs-12 col-xl-6">
+            <button type="button" class="mx-1 btn btn-secondary" (click)="refresh()">Refresh</button>
             <cdk-virtual-scroll-viewport style="height: 400px;" [itemSize]="33">
                 <table class="table table-sm table-hover">
                     <thead>
@@ -109,13 +152,13 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <tr *cdkVirtualFor="let room of datasource; 
-                        templateCacheSize: 0" [ngClass]="isActive(room)" (click)="setRoom(room)">
-                            <th scope="row">{{ room.id }}</th>
-                            <td>{{ room.title }}</td>
-                            <td>{{ room.area }}</td>
-                            <td>{{ room.owner }}</td>
-                            <td>{{ room.creation }}</td>
+                        <tr *cdkVirtualFor="let room of rooms; 
+                        templateCacheSize: 0" [ngClass]="isActive(room)" (click)="setRoomById(room.id)">
+                            <th *ngIf="room" scope="row">{{ room.id }}</th>
+                            <td *ngIf="room">{{ room.title }}</td>
+                            <td *ngIf="room">{{ room.area }}</td>
+                            <td *ngIf="room">{{ room.owner }}</td>
+                            <td *ngIf="room">{{ room.creation }}</td>
                         </tr>
                     </tbody>
                 </table>

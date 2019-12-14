@@ -45,8 +45,6 @@ import mmud.database.entities.Ownage;
         {
           @NamedQuery(name = "UserCommand.findAll", query = "SELECT m FROM UserCommand m order by m.command"),
           @NamedQuery(name = "UserCommand.countAll", query = "SELECT count(m) FROM UserCommand m"),
-          @NamedQuery(name = "UserCommand.findAllByOwner", query = "SELECT m FROM UserCommand m where m.owner.name = :owner order by m.command"),
-          @NamedQuery(name = "UserCommand.countAllByOwner", query = "SELECT count(m) FROM UserCommand m where m.owner.name = :owner"),
           @NamedQuery(name = "UserCommand.findByMethodName", query = "SELECT m from UserCommand m where m.methodName.name = :methodname order by m.command"),
 
           @NamedQuery(name = "UserCommand.findById", query = "SELECT m FROM UserCommand m WHERE m.id = :id"),

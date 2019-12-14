@@ -1,9 +1,9 @@
 import { Observable, of, from } from 'rxjs';
+import { catchError, publishReplay, refCount } from 'rxjs/operators';
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { HttpErrorResponse } from '@angular/common/http';
 
-import { catchError, map, tap } from 'rxjs/operators';
 
 import { environment } from '../environments/environment';
 
@@ -18,41 +18,15 @@ import { Command } from './commands/command.model';
 export class RoomsRestService {
   url: string;
 
-  rooms = new Array<Room>();
+  cache$: Observable<Room[]>;
 
   constructor(private http: HttpClient, private errorsService: ErrorsService) {
     this.url = environment.ROOMS_URL;
-    if (environment.production === false) {
-      if (window.console) { console.log('rooms-rest.service constructor'); }
-      for (let i = 0; i < 7000; i++) {
-        const room: Room = {
-          id: i,
-          west: 4,
-          east: 6,
-          north: null,
-          south: null,
-          up: null,
-          down: null,
-          owner: 'Karn',
-          contents: 'You are in a dark room',
-          area: 'Main',
-          creation: new Date() + '',
-          picture: '/picture.jpg',
-          title: 'A dark room'
-        };
-        this.rooms.push(room);
-      }
-      this.rooms[0].north = 1;
-      this.rooms[1].north = 2;
-      this.rooms[1].south = 0;
-    }
   }
 
-  public getCount(): Observable<number> {
-    if (environment.production === false) {
-      return of(this.rooms.length);
-    }
-    return this.http.get<Room[]>(this.url + '/count')
+  public getCount(owner: string): Observable<number> {
+    const localUrl = owner === null || owner === undefined ? this.url + '/count' : this.url + '/count' + '?owner=' + owner;
+    return this.http.get<Room[]>(localUrl)
       .pipe(
         catchError(err => {
           this.handleError(err);
@@ -62,10 +36,6 @@ export class RoomsRestService {
   }
 
   public getRoom(id: number): Observable<Room> {
-    if (environment.production === false) {
-      const foundRoom = this.rooms.find(room => room.id === id);
-      return of(foundRoom);
-    }
     return this.http.get<Room>(this.url + '/' + id)
       .pipe(
         catchError(err => {
@@ -85,32 +55,28 @@ export class RoomsRestService {
       );
   }
 
-
-  public getRooms(startRow: number, endRow: number): Observable<Room[]> {
-    if (environment.production === false) {
-      if (window.console) {
-        console.log('rooms-rest.service getRooms start: ' + startRow + ' end: ' + endRow);
-      }
-      const slice = this.rooms.slice(startRow, endRow);
-      return of(slice);
+  public getRooms(descriptionSearch: string): Observable<Room[]> {
+    if (this.cache$) {
+      return this.cache$;
     }
-    return this.http.get<Room[]>(this.url + '/'  + startRow + '/' + (endRow - startRow))
+    const localUrl = descriptionSearch === undefined ? this.url : this.url + '?description=' + descriptionSearch;
+    this.cache$ = this.http.get<Room[]>(localUrl)
       .pipe(
+        publishReplay(1),
+        refCount(),
         catchError(err => {
           this.handleError(err);
           return [];
         })
       );
+    return this.cache$;
+  }
+
+  public clearCache() {
+    this.cache$ = undefined;
   }
 
   public deleteRoom(room: Room): Observable<any> {
-    if (environment.production === false) {
-      const index = this.rooms.findIndex(lroom => lroom.id === room.id);
-      if (index !== -1) {
-        this.rooms.splice(index, 1);
-      }
-      return of(room);
-    }
     return this.http.delete(this.url + '/' + room.id)
       .pipe(
         catchError(err => {
@@ -121,28 +87,19 @@ export class RoomsRestService {
   }
 
   public updateRoom(room: Room): any {
-    if (room.id !== undefined) {
-      if (environment.production === false) {
-        const index = this.rooms.findIndex(lroom => lroom.id === room.id);
-        if (index !== -1) {
-          this.rooms[index] = room;
-        }
-        return of(room);
-      }
-      // update
-      return this.http.put<Room[]>(this.url + '/' + room.id, room)
-        .pipe(
-          catchError(err => {
-            this.handleError(err);
-            return [];
-          })
-        );
-    }
+    // update
+    return this.http.put<Room[]>(this.url + '/' + room.id, room)
+      .pipe(
+        catchError(err => {
+          this.handleError(err);
+          return [];
+        })
+      );
+
+  }
+
+  public createRoom(room: Room): any {
     // new
-    if (environment.production === false) {
-      this.rooms.push(room);
-      return of(room);
-    }
     return this.http.post(this.url, room)
       .pipe(
         catchError(err => {

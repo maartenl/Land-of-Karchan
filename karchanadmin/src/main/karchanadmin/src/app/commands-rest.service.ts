@@ -1,9 +1,8 @@
 import { Observable, of, from } from 'rxjs';
+import { catchError, publishReplay, refCount } from 'rxjs/operators';
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { HttpErrorResponse } from '@angular/common/http';
-
-import { catchError, map, tap } from 'rxjs/operators';
 
 import { environment } from '../environments/environment';
 
@@ -15,6 +14,8 @@ import { Command } from './commands/command.model';
 })
 export class CommandsRestService {
   url: string;
+
+  cache$: Observable<Command[]>;
 
   constructor(private http: HttpClient, private errorsService: ErrorsService) {
     this.url = environment.COMMANDS_URL;
@@ -41,16 +42,24 @@ export class CommandsRestService {
       );
   }
 
-  public getCommands(startRow: number, endRow: number, owner: string): Observable<Command[]> {
-    const localUrl = owner === null || owner === undefined ? this.url + '/' + startRow + '/' + (endRow - startRow) :
-      this.url + '/' + startRow + '/' + (endRow - startRow) + '?owner=' + owner;
-    return this.http.get<Command[]>(localUrl)
+  public getCommands(): Observable<Command[]> {
+    if (this.cache$) {
+      return this.cache$;
+    }
+    this.cache$ = this.http.get<Command[]>(this.url)
       .pipe(
+        publishReplay(1),
+        refCount(),
         catchError(err => {
           this.handleError(err);
           return [];
         })
       );
+    return this.cache$;
+  }
+
+  public clearCache() {
+    this.cache$ = undefined;
   }
 
   public deleteCommand(command: Command): Observable<any> {
@@ -64,16 +73,17 @@ export class CommandsRestService {
   }
 
   public updateCommand(command: Command): any {
-    if (command.id !== undefined) {
-      // update
-      return this.http.put<Command[]>(this.url + '/' + command.id, command)
-        .pipe(
-          catchError(err => {
-            this.handleError(err);
-            return [];
-          })
-        );
-    }
+    // update
+    return this.http.put<Command[]>(this.url + '/' + command.id, command)
+      .pipe(
+        catchError(err => {
+          this.handleError(err);
+          return [];
+        })
+      );
+  }
+
+  public createCommand(command: Command): any {
     // new
     return this.http.post(this.url, command)
       .pipe(

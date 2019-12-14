@@ -9,57 +9,6 @@ import { MethodsRestService } from '../methods-rest.service';
 import { Method } from './method.model';
 import { Command } from '../commands/command.model';
 
-export class MyDataSource extends DataSource<Method> {
-  private dataStream;
-
-  methods: Method[];
-
-  constructor(methods: Method[], private methodsRestService: MethodsRestService, private owner: string) {
-    super();
-    this.methods = methods;
-    this.owner = null;
-    this.dataStream = new BehaviorSubject<(Method | undefined)[]>(this.methods);
-  }
-
-  connect(collectionViewer: CollectionViewer): Observable<Method[]> {
-    if (window.console) {
-      console.log('connect');
-    }
-    // this.subscription.add(
-    collectionViewer.viewChange.subscribe(range => {
-      if (this.methods.slice(range.start, range.end).some(x => x === undefined)) {
-        if (window.console) {
-          console.log('Call restservice');
-        }
-        this.methodsRestService.getMethods(range.start, range.end + 100, this.owner).subscribe({
-          next: (data) => {
-            this.methods.splice(range.start, data.length, ...data);
-            this.methods = [...this.methods];
-            this.dataStream.next(this.methods);
-          }
-        });
-      }
-    });
-    return this.dataStream;
-  }
-
-  disconnect(collectionViewer: CollectionViewer): void {
-    if (window.console) {
-      console.log('disconnect');
-    }
-  }
-
-  updateDatastream(methods: Method[]) {
-    this.methods = methods;
-    this.dataStream.next(methods);
-  }
-
-  setOwner(owner: string) {
-    this.owner = owner;
-  }
-
-}
-
 @Component({
   selector: 'app-methods',
   templateUrl: './methods.component.html',
@@ -71,13 +20,9 @@ export class MethodsComponent implements OnInit {
 
   commands: Command[] = [];
 
-  private newMethod: boolean;
-
   method: Method;
 
   form: FormGroup;
-
-  datasource: MyDataSource;
 
   SearchTerms = class {
     owner: string;
@@ -90,13 +35,7 @@ export class MethodsComponent implements OnInit {
       value = null;
     }
     this.searchTerms.owner = value;
-    this.methodsRestService.getCount(value).subscribe({
-      next: amount => {
-        this.methods = Array.from<Method>({ length: amount });
-        this.datasource.setOwner(value);
-        this.datasource.updateDatastream(this.methods);
-      }
-    });
+    this.getMethods();
   }
 
   constructor(
@@ -105,13 +44,7 @@ export class MethodsComponent implements OnInit {
     private formBuilder: FormBuilder) {
     this.createForm();
     this.method = new Method();
-    this.newMethod = true;
-    this.methodsRestService.getCount(null).subscribe({
-      next: amount => {
-        this.methods = Array.from<Method>({ length: amount });
-        this.datasource = new MyDataSource(this.methods, this.methodsRestService, null);
-      }
-    });
+    this.getMethods();
   }
 
   ngOnInit() {
@@ -126,7 +59,6 @@ export class MethodsComponent implements OnInit {
   }
 
   createForm() {
-    this.newMethod = true;
     this.form = this.formBuilder.group({
       name: '',
       src: null,
@@ -135,7 +67,6 @@ export class MethodsComponent implements OnInit {
   }
 
   resetForm() {
-    this.newMethod = true;
     this.form.reset({
       name: '',
       src: null,
@@ -144,7 +75,6 @@ export class MethodsComponent implements OnInit {
   }
 
   public cancel(): void {
-    this.newMethod = true;
     this.resetForm();
     this.method = new Method();
   }
@@ -174,8 +104,7 @@ export class MethodsComponent implements OnInit {
     return false;
   }
 
-  setMethod(method: Method) {
-    this.newMethod = false;
+  private setMethod(method: Method) {
     this.method = method;
     this.form.reset({
       name: method.name,
@@ -191,9 +120,7 @@ export class MethodsComponent implements OnInit {
     this.methodsRestService.deleteMethod(this.method).subscribe(
       (result: any) => { // on success
         this.methods = this.methods.filter((bl) => bl === undefined || bl.name !== this.method.name);
-        // this.methods.push(undefined);
         this.methods = [...this.methods];
-        this.datasource.updateDatastream(this.methods);
       },
       (err: any) => { // error
         // console.log('error', err);
@@ -203,34 +130,36 @@ export class MethodsComponent implements OnInit {
     );
   }
 
-  public saveMethod(): void {
+  public createMethod(): void {
     if (window.console) {
-      console.log('saveMethod');
-    }
-    const index = this.methods.indexOf(this.method);
-    if (window.console) {
-      console.log('saveMethod' + index);
+      console.log('createMethod');
     }
     const method = this.prepareSave();
-    if (this.newMethod) {
-      this.methodsRestService.createMethod(method).subscribe(
-        (result: any) => { // on success
-          if (window.console) {
-            console.log('create the method ' + method);
-          }
-          if (method.name !== undefined) {
-            this.methods[index] = method;
-          }
-          this.methods = [...this.methods];
-          this.datasource.updateDatastream(this.methods);
-        },
-        (err: any) => { // error
-          // console.log('error', err);
-        },
-        () => { // on completion
+    this.methodsRestService.createMethod(method).subscribe(
+      (result: any) => { // on success
+        if (window.console) {
+          console.log('create the method ' + method);
         }
-      );
-      return;
+        this.methods.push(method);
+        this.methods = [...this.methods];
+      },
+      (err: any) => { // error
+        // console.log('error', err);
+      },
+      () => { // on completion
+      }
+    );
+    return;
+  }
+
+  public updateMethod(): void {
+    if (window.console) {
+      console.log('updateMethod');
+    }
+    const method = this.prepareSave();
+    const index = this.methods.findIndex(mth => mth !== null && mth.name === method.name);
+    if (window.console) {
+      console.log('updateMethod' + index);
     }
     this.methodsRestService.updateMethod(method).subscribe(
       (result: any) => { // on success
@@ -241,7 +170,6 @@ export class MethodsComponent implements OnInit {
           this.methods[index] = method;
         }
         this.methods = [...this.methods];
-        this.datasource.updateDatastream(this.methods);
       },
       (err: any) => { // error
         // console.log('error', err);
@@ -270,11 +198,26 @@ export class MethodsComponent implements OnInit {
       return;
     }
     this.method.owner = null;
-    this.datasource.updateDatastream(this.methods);
   }
 
   isMethodSelected() {
     return this.method !== undefined && this.method !== null;
+  }
+
+  refresh() {
+    this.methodsRestService.clearCache();
+    this.getMethods();
+  }
+
+  private getMethods() {
+    this.methodsRestService.getMethods().subscribe({
+      next: data => {
+        const ownerFilter = method => this.searchTerms.owner === undefined ||
+          this.searchTerms.owner === null ||
+          this.searchTerms.owner === method.owner;
+        this.methods = data.filter(ownerFilter);
+      }
+    });
   }
 }
 
