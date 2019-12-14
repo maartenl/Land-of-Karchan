@@ -28,8 +28,10 @@
                     <textarea class="form-control" id="src" rows="13" formControlName="src"></textarea>
                 </fieldset>
                 <div class="col-xs-12 col-sm-12 text-right">
-                    <button type="submit" [disabled]="form.pristine" class="mx-1 btn btn-primary" (click)="updateMethod()">Update</button>
-                    <button type="submit" [disabled]="form.pristine" class="mx-1 btn btn-primary" (click)="createMethod()">Create</button>
+                    <button type="submit" [disabled]="form.pristine" class="mx-1 btn btn-primary"
+                        (click)="updateMethod()">Update</button>
+                    <button type="submit" [disabled]="form.pristine" class="mx-1 btn btn-primary"
+                        (click)="createMethod()">Create</button>
                     <button type="button" class="mx-1 btn btn-secondary" (click)="deleteMethod()">Delete</button>
                     <button type="reset" class="mx-1 btn btn-secondary" (click)="cancel()">Cancel</button>
                 </div>
@@ -44,12 +46,13 @@
                 <tbody>
                     <tr *ngFor="let command of commands">
                         <td>{{ command.id }}</td>
-                        <td><a href="commands/{{command.id}}">{{ command.command }}</a></td>
+                        <td><a [routerLink]="['/commands', command.id]">{{ command.command }}</a></td>
                     </tr>
                 </tbody>
             </table>
         </div>
         <div class="col-xs-12 col-xl-6">
+            <button type="button" class="mx-1 btn btn-secondary" (click)="refresh()">Refresh</button>
             <cdk-virtual-scroll-viewport style="height: 400px;" [itemSize]="33">
                 <table class="table table-sm table-hover">
                     <thead>
@@ -60,7 +63,7 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <tr *cdkVirtualFor="let method of datasource; templateCacheSize: 0" [ngClass]="isActive(method)"
+                        <tr *cdkVirtualFor="let method of methods; templateCacheSize: 0" [ngClass]="isActive(method)"
                             (click)="setMethodById(method.name)">
                             <th *ngIf="method" scope="row">{{ method.name }}</th>
                             <td *ngIf="method">{{ method.owner }}</td>

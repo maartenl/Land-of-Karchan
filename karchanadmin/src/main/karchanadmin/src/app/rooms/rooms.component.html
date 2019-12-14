@@ -115,12 +115,13 @@
                 <tbody>
                     <tr *ngFor="let command of commands">
                         <td>{{ command.id }}</td>
-                        <td><a href="commands/{{command.id}}">{{ command.command }}</a></td>
+                        <td><a [routerLink]="['/commands', command.id]">{{ command.command }}</a></td>
                     </tr>
                 </tbody>
             </table>
         </div>
         <div class="col-xs-12 col-xl-6">
+            <button type="button" class="mx-1 btn btn-secondary" (click)="refresh()">Refresh</button>
             <cdk-virtual-scroll-viewport style="height: 400px;" [itemSize]="33">
                 <table class="table table-sm table-hover">
                     <thead>
@@ -133,7 +134,7 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <tr *cdkVirtualFor="let room of datasource; 
+                        <tr *cdkVirtualFor="let room of rooms; 
                         templateCacheSize: 0" [ngClass]="isActive(room)" (click)="setRoomById(room.id)">
                             <th *ngIf="room" scope="row">{{ room.id }}</th>
                             <td *ngIf="room">{{ room.title }}</td>

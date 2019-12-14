@@ -3,63 +3,10 @@ import { BehaviorSubject, Observable, of, Subscription } from 'rxjs';
 import { Router, ActivatedRoute, ParamMap } from '@angular/router';
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { FormControl, FormGroup, FormBuilder } from '@angular/forms';
-import { CdkVirtualScrollViewport } from '@angular/cdk/scrolling';
 
 import { RoomsRestService } from '../rooms-rest.service';
 import { Room } from './room.model';
 import { Command } from '../commands/command.model';
-
-
-export class MyDataSource extends DataSource<Room> {
-  private dataStream;
-
-  rooms: Room[];
-
-  constructor(rooms: Room[], private roomsRestService: RoomsRestService, private owner: string) {
-    super();
-    this.rooms = rooms;
-    this.owner = null;
-    this.dataStream = new BehaviorSubject<(Room | undefined)[]>(this.rooms);
-  }
-
-  connect(collectionViewer: CollectionViewer): Observable<Room[]> {
-    if (window.console) {
-      console.log('connect');
-    }
-    // this.subscription.add(
-    collectionViewer.viewChange.subscribe(range => {
-      if (this.rooms.slice(range.start, range.end).some(x => x === undefined)) {
-        if (window.console) {
-          console.log('Call restservice');
-        }
-        this.roomsRestService.getRooms(range.start, range.end + 100, this.owner).subscribe({
-          next: (data) => {
-            this.rooms.splice(range.start, data.length, ...data);
-            this.rooms = [...this.rooms];
-            this.dataStream.next(this.rooms);
-          }
-        });
-      }
-    });
-    return this.dataStream;
-  }
-
-  disconnect(collectionViewer: CollectionViewer): void {
-    if (window.console) {
-      console.log('disconnect');
-    }
-  }
-
-  updateDatastream(rooms: Room[]) {
-    this.rooms = rooms;
-    this.dataStream.next(rooms);
-  }
-
-  setOwner(owner: string) {
-    this.owner = owner;
-  }
-
-}
 
 @Component({
   selector: 'app-rooms',
@@ -67,7 +14,6 @@ export class MyDataSource extends DataSource<Room> {
   styleUrls: ['./rooms.component.css']
 })
 export class RoomsComponent implements OnInit {
-  @ViewChild(CdkVirtualScrollViewport, {static: true}) virtualScroll: CdkVirtualScrollViewport;
 
   rooms: Room[];
 
@@ -76,8 +22,6 @@ export class RoomsComponent implements OnInit {
   room: Room;
 
   form: FormGroup;
-
-  datasource: MyDataSource;
 
   SearchTerms = class {
     owner: string;
@@ -90,11 +34,9 @@ export class RoomsComponent implements OnInit {
       value = null;
     }
     this.searchTerms.owner = value;
-    this.roomsRestService.getCount(value).subscribe({
-      next: amount => {
-        this.rooms = Array.from<Room>({ length: amount });
-        this.datasource.setOwner(value);
-        this.datasource.updateDatastream(this.rooms);
+    this.roomsRestService.getRooms().subscribe({
+      next: data => {
+        this.rooms = data;
       }
     });
   }
@@ -105,10 +47,9 @@ export class RoomsComponent implements OnInit {
     private formBuilder: FormBuilder) {
     this.createForm();
     this.room = new Room();
-    this.roomsRestService.getCount(null).subscribe({
-      next: amount => {
-        this.rooms = Array.from<Room>({ length: amount });
-        this.datasource = new MyDataSource(this.rooms, this.roomsRestService, null);
+    this.roomsRestService.getRooms().subscribe({
+      next: data => {
+        this.rooms = data;
       }
     });
   }
@@ -217,9 +158,7 @@ export class RoomsComponent implements OnInit {
     this.roomsRestService.deleteRoom(this.room).subscribe(
       (result: any) => { // on success
         this.rooms = this.rooms.filter((bl) => bl === undefined || bl.id !== this.room.id);
-        // this.rooms.push(undefined);
         this.rooms = [...this.rooms];
-        this.datasource.updateDatastream(this.rooms);
       },
       (err: any) => { // error
         // console.log('error', err);
@@ -241,7 +180,6 @@ export class RoomsComponent implements OnInit {
         }
         this.rooms.push(room);
         this.rooms = [...this.rooms];
-        this.datasource.updateDatastream(this.rooms);
         this.setRoomById(result);
       },
       (err: any) => { // error
@@ -269,7 +207,6 @@ export class RoomsComponent implements OnInit {
         }
         this.rooms[index] = room;
         this.rooms = [...this.rooms];
-        this.datasource.updateDatastream(this.rooms);
       },
       (err: any) => { // error
         // console.log('error', err);
@@ -304,5 +241,14 @@ export class RoomsComponent implements OnInit {
 
   isRoomSelected() {
     return this.room !== undefined && this.room !== null;
+  }
+
+  refresh() {
+    this.roomsRestService.clearCache();
+    this.roomsRestService.getRooms().subscribe({
+      next: data => {
+        this.rooms = data;
+      }
+    });
   }
 }
