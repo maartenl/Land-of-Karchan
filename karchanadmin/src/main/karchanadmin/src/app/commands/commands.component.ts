@@ -22,15 +22,24 @@ export class CommandsComponent implements OnInit {
 
   SearchTerms = class {
     owner: string;
+    methodName: string;
   };
 
   searchTerms = new this.SearchTerms();
 
-  updateOwner(value: string) {
+  updateOwnerSearch(value: string) {
     if (value.trim() === '') {
       value = null;
     }
     this.searchTerms.owner = value;
+    this.getCommands();
+  }
+
+  updateMethodNameSearch(value: string) {
+    if (value.trim() === '') {
+      value = null;
+    }
+    this.searchTerms.methodName = value;
     this.getCommands();
   }
 
@@ -50,7 +59,10 @@ export class CommandsComponent implements OnInit {
           const ownerFilter = command => this.searchTerms.owner === undefined ||
             this.searchTerms.owner === null ||
             this.searchTerms.owner === command.owner;
-          this.commands = data.filter(ownerFilter);
+          const methodNameFilter = command => this.searchTerms.methodName === undefined ||
+            this.searchTerms.methodName === null ||
+            command.methodName.includes(this.searchTerms.methodName);
+          this.commands = data.filter(ownerFilter).filter(methodNameFilter);
         }
       });
   }
@@ -212,6 +224,33 @@ export class CommandsComponent implements OnInit {
   refresh() {
     this.commandsRestService.clearCache();
     this.getCommands();
+  }
+
+  sortById() {
+    if (window.console) {
+      console.log('sortById');
+    }
+    this.commands = this.commands.sort((a, b) => a.id - b.id);
+    this.commands = [...this.commands];
+    return false;
+  }
+
+  sortByCommand() {
+    if (window.console) {
+      console.log('sortByCommand');
+    }
+    this.commands = this.commands.sort((a, b) => a.command.localeCompare(b.command));
+    this.commands = [...this.commands];
+    return false;
+  }
+
+  sortByMethodName() {
+    if (window.console) {
+      console.log('sortByMethodName');
+    }
+    this.commands = this.commands.sort((a, b) => a.methodName.localeCompare(b.methodName));
+    this.commands = [...this.commands];
+    return false;
   }
 }
 

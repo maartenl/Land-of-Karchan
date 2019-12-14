@@ -3,10 +3,14 @@
         <div class="col-xs-12">
             <form>
                 <fieldset class="form-group">
-                    <input type="text" class="form-control" id="owner" name="owner" placeholder="Owner" #searchowner
-                        (keyup.enter)="updateOwner(searchowner.value)" (blur)="updateOwner(searchowner.value)">
+                    <input type="text" class="form-control" id="ownerSearch" name="ownerSearch" placeholder="Owner" #searchowner
+                        (keyup.enter)="updateOwnerSearch(searchowner.value)" (blur)="updateOwnerSearch(searchowner.value)">
                 </fieldset>
-            </form>
+                <fieldset class="form-group">
+                        <input type="text" class="form-control" id="methodNameSearch" name="methodNameSearch" placeholder="MethodName" #searchmethodname
+                            (keyup.enter)="updateMethodNameSearch(searchmethodname.value)" (blur)="updateMethodNameSearch(searchmethodname.value)">
+                    </fieldset>
+                </form>
         </div>
     </div>
 </div>
@@ -56,9 +60,9 @@
                 <table class="table table-sm table-hover">
                     <thead>
                         <tr>
-                            <th scope="col">Id</th>
-                            <th scope="col">Command</th>
-                            <th scope="col">Method name</th>
+                            <th scope="col"><a href="#" (click)="sortById()">Id</a></th>
+                            <th scope="col"><a href="#" (click)="sortByCommand()">Command</a></th>
+                            <th scope="col"><a href="#" (click)="sortByMethodName()">Method name</a></th>
                             <th scope="col">Room</th>
                             <th scope="col">Owner</th>
                             <th scope="col">Creation</th>
