@@ -54,28 +54,28 @@
                 <div class="form-row">
                     <div class="col">
                         <fieldset class="form-group">
-                            <label for="north">North <a href="#" *ngIf="isRoomSelected() && room.north !== null"
+                            <label for="north">North <a href="#" *ngIf="isSelected() && room.north !== null"
                                     (click)="setRoomById(room.north)">{{ room.north }}</a></label>
                             <input type="number" class="form-control" id="north" name="north" formControlName="north">
                         </fieldset>
                     </div>
                     <div class="col">
                         <fieldset class="form-group">
-                            <label for="south">South <a href="#" *ngIf="isRoomSelected() && room.south !== null"
+                            <label for="south">South <a href="#" *ngIf="isSelected() && room.south !== null"
                                     (click)="setRoomById(room.south)">{{ room.south }}</a></label>
                             <input type="number" class="form-control" id="south" name="south" formControlName="south">
                         </fieldset>
                     </div>
                     <div class="col">
                         <fieldset class="form-group">
-                            <label for="west">West <a href="#" *ngIf="isRoomSelected() && room.west !== null"
+                            <label for="west">West <a href="#" *ngIf="isSelected() && room.west !== null"
                                     (click)="setRoomById(room.west)">{{ room.west }}</a></label>
                             <input type="number" class="form-control" id="west" name="west" formControlName="west">
                         </fieldset>
                     </div>
                     <div class="col">
                         <fieldset class="form-group">
-                            <label for="east">East <a href="#" *ngIf="isRoomSelected() && room.east !== null"
+                            <label for="east">East <a href="#" *ngIf="isSelected() && room.east !== null"
                                     (click)="setRoomById(room.east)">{{ room.east }}</a></label>
                             <input type="number" class="form-control" id="east" name="east" formControlName="east">
                         </fieldset>
@@ -84,14 +84,14 @@
                 <div class="form-row">
                     <div class="col">
                         <fieldset class="form-group">
-                            <label for="up">Up <a href="#" *ngIf="isRoomSelected() && room.up !== null"
+                            <label for="up">Up <a href="#" *ngIf="isSelected() && room.up !== null"
                                     (click)="setRoomById(room.up)">{{ room.up }}</a></label>
                             <input type="number" class="form-control" id="up" name="up" formControlName="up">
                         </fieldset>
                     </div>
                     <div class="col">
                         <fieldset class="form-group">
-                            <label for="down">Down <a href="#" *ngIf="isRoomSelected() && room.down !== null"
+                            <label for="down">Down <a href="#" *ngIf="isSelected() && room.down !== null"
                                     (click)="setRoomById(room.down)">{{ room.down }}</a></label>
                             <input type="number" class="form-control" id="down" name="down" formControlName="down">
                         </fieldset>
@@ -152,7 +152,7 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <tr *cdkVirtualFor="let room of rooms; 
+                        <tr *cdkVirtualFor="let room of items; 
                         templateCacheSize: 0" [ngClass]="isActive(room)" (click)="setRoomById(room.id)">
                             <th *ngIf="room" scope="row">{{ room.id }}</th>
                             <td *ngIf="room">{{ room.title }}</td>

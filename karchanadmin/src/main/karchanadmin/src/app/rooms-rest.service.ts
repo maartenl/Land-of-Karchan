@@ -1,5 +1,5 @@
 import { Observable, of, from } from 'rxjs';
-import { catchError, publishReplay, refCount } from 'rxjs/operators';
+import { catchError, publishReplay, refCount, map } from 'rxjs/operators';
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { HttpErrorResponse } from '@angular/common/http';
@@ -7,6 +7,7 @@ import { HttpErrorResponse } from '@angular/common/http';
 
 import { environment } from '../environments/environment';
 
+import { AdminRestService } from './admin/admin-rest.service';
 import { ErrorsService } from './errors.service';
 import { Room } from './rooms/room.model';
 import { ErrorMessage } from './errors/errormessage.model';
@@ -15,7 +16,7 @@ import { Command } from './commands/command.model';
 @Injectable({
   providedIn: 'root'
 })
-export class RoomsRestService {
+export class RoomsRestService implements AdminRestService<Room, number> {
   url: string;
 
   cache$: Observable<Room[]>;
@@ -24,20 +25,10 @@ export class RoomsRestService {
     this.url = environment.ROOMS_URL;
   }
 
-  public getCount(owner: string): Observable<number> {
-    const localUrl = owner === null || owner === undefined ? this.url + '/count' : this.url + '/count' + '?owner=' + owner;
-    return this.http.get<Room[]>(localUrl)
-      .pipe(
-        catchError(err => {
-          this.handleError(err);
-          return [];
-        })
-      );
-  }
-
-  public getRoom(id: number): Observable<Room> {
+  public get(id: number): Observable<Room> {
     return this.http.get<Room>(this.url + '/' + id)
       .pipe(
+        map(item => new Room(item)),
         catchError(err => {
           this.handleError(err);
           return [];
@@ -55,13 +46,18 @@ export class RoomsRestService {
       );
   }
 
-  public getRooms(descriptionSearch: string): Observable<Room[]> {
+  public getAll(descriptionSearch: string): Observable<Room[]> {
     if (this.cache$) {
       return this.cache$;
     }
     const localUrl = descriptionSearch === undefined ? this.url : this.url + '?description=' + descriptionSearch;
     this.cache$ = this.http.get<Room[]>(localUrl)
       .pipe(
+        map(items => {
+          const newItems = new Array<Room>();
+          items.forEach(item => newItems.push(new Room(item)));
+          return newItems;
+        }),
         publishReplay(1),
         refCount(),
         catchError(err => {
@@ -76,7 +72,7 @@ export class RoomsRestService {
     this.cache$ = undefined;
   }
 
-  public deleteRoom(room: Room): Observable<any> {
+  public delete(room: Room): Observable<any> {
     return this.http.delete(this.url + '/' + room.id)
       .pipe(
         catchError(err => {
@@ -86,7 +82,7 @@ export class RoomsRestService {
       );
   }
 
-  public updateRoom(room: Room): any {
+  public update(room: Room): any {
     // update
     return this.http.put<Room[]>(this.url + '/' + room.id, room)
       .pipe(
@@ -98,7 +94,7 @@ export class RoomsRestService {
 
   }
 
-  public createRoom(room: Room): any {
+  public create(room: Room): any {
     // new
     return this.http.post(this.url, room)
       .pipe(
