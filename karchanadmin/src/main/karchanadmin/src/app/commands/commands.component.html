@@ -17,7 +17,7 @@
 <div class="container-fluid">
     <div class="row row-content">
         <div class="col-xs-12 col-xl-6">
-            <h1>Command {{ command === undefined ? '-' : command.id }}</h1>
+            <h1>Command {{ item === undefined ? '-' : item.id }}</h1>
             <form [formGroup]="form" novalidate>
                 <fieldset class="form-group form-check">
                     <input type="checkbox" class="form-check-input" id="callable" name="callable"
@@ -30,14 +30,14 @@
                 </fieldset>
                 <fieldset class="form-group">
                     <label for="methodName">Method name <a
-                            *ngIf="command !== undefined && command.methodName !== undefined"
-                            [routerLink]="['/methods', command.methodName]">{{ command.methodName }}</a></label>
+                            *ngIf="item !== undefined && item.methodName !== undefined"
+                            [routerLink]="['/methods', item.methodName]">{{ item.methodName }}</a></label>
                     <input type="text" class="form-control" id="methodName" name="methodName"
                         formControlName="methodName">
                 </fieldset>
                 <fieldset class="form-group">
-                    <label for="room">Room <a *ngIf="command !== undefined && command.room !== undefined"
-                        [routerLink]="['/rooms', command.room]">{{ command.room }}</a></label>
+                    <label for="room">Room <a *ngIf="item !== undefined && item.room !== undefined"
+                        [routerLink]="['/rooms', item.room]">{{ item.room }}</a></label>
                     <input type="number" class="form-control" id="room" name="room" formControlName="room">
                 </fieldset>
                 <fieldset class="form-group">
@@ -46,10 +46,10 @@
                 </fieldset>
                 <div class="col-xs-12 col-sm-12 text-right">
                     <button type="submit" [disabled]="form.pristine" class="mx-1 btn btn-primary"
-                        (click)="updateCommand()">Update</button>
+                        (click)="updateItem()">Update</button>
                     <button type="submit" [disabled]="form.pristine" class="mx-1 btn btn-primary"
-                        (click)="createCommand()">Create</button>
-                    <button type="button" class="mx-1 btn btn-secondary" (click)="deleteCommand()">Delete</button>
+                        (click)="createItem()">Create</button>
+                    <button type="button" class="mx-1 btn btn-secondary" (click)="deleteItem()">Delete</button>
                     <button type="reset" class="mx-1 btn btn-secondary" (click)="cancel()">Cancel</button>
                 </div>
             </form>
@@ -69,8 +69,8 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <tr *cdkVirtualFor="let command of commands; templateCacheSize: 0" [ngClass]="isActive(command)"
-                            (click)="setCommandById(command.id)">
+                        <tr *cdkVirtualFor="let command of items; templateCacheSize: 0" [ngClass]="isActive(command)"
+                            (click)="setItemById(command.id)">
                             <th *ngIf="command" scope="row">{{ command.id }}</th>
                             <td *ngIf="command">{{ command.command }}</td>
                             <td *ngIf="command">{{ command.methodName }}</td>

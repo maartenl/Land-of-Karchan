@@ -6,7 +6,7 @@ import { Observable } from 'rxjs';
  */
 export interface AdminRestService<T, U> {
 
-  get(id: number): Observable<T>;
+  get(id: U): Observable<T>;
 
   getAll(descriptionSearch: string): Observable<T[]>;
 

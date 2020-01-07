@@ -8,19 +8,16 @@ import { CdkVirtualScrollViewport } from '@angular/cdk/scrolling';
 import { MethodsRestService } from '../methods-rest.service';
 import { Method } from './method.model';
 import { Command } from '../commands/command.model';
+import { AdminComponent } from '../admin/admin.component';
 
 @Component({
   selector: 'app-methods',
   templateUrl: './methods.component.html',
   styleUrls: ['./methods.component.css']
 })
-export class MethodsComponent implements OnInit {
-
-  methods: Method[];
+export class MethodsComponent extends AdminComponent<Method, string> implements OnInit {
 
   commands: Command[] = [];
-
-  method: Method;
 
   form: FormGroup;
 
@@ -35,16 +32,17 @@ export class MethodsComponent implements OnInit {
       value = null;
     }
     this.searchTerms.owner = value;
-    this.getMethods();
+    this.getItems();
   }
 
   constructor(
     private methodsRestService: MethodsRestService,
     private route: ActivatedRoute,
     private formBuilder: FormBuilder) {
-    this.createForm();
-    this.method = new Method();
-    this.getMethods();
+    super();
+    this.setForm();
+    this.item = this.makeItem();
+    this.getItems();
   }
 
   ngOnInit() {
@@ -55,45 +53,33 @@ export class MethodsComponent implements OnInit {
     if (name === undefined || name === null) {
       return;
     }
-    this.setMethodById(name);
+    this.setItemById(name);
   }
 
-  createForm() {
-    this.form = this.formBuilder.group({
+  getRestService(): MethodsRestService {
+    return this.methodsRestService;
+  }
+
+  setForm(item?: Method) {
+    const object = item === undefined ? {
       name: '',
       src: null,
       owner: null
-    });
-  }
-
-  resetForm() {
-    this.form.reset({
-      name: '',
-      src: null,
-      owner: null
-    });
-  }
-
-  public cancel(): void {
-    this.resetForm();
-    this.method = new Method();
-  }
-
-  isActive(method: Method) {
-    if (method === undefined) {
-      return '';
+    } : item;
+    if (this.form === undefined) {
+      this.form = this.formBuilder.group(object);
+    } else {
+      this.form.reset(object);
     }
-    if (!this.isMethodSelected()) {
-      return '';
-    }
-    return (this.method.name === method.name) ? 'table-active' : '';
   }
 
-  setMethodById(name: string) {
-    console.log('setmethodbyid' + name);
-    this.methodsRestService.getMethod(name).subscribe({
+  setItemById(name: string) {
+    this.methodsRestService.get(name).subscribe({
       next: (data) => {
-        if (data !== undefined) { this.setMethod(data); }
+        if (data !== undefined) {
+          this.item = data;
+          this.setForm(data);
+        }
       }
     });
     this.methodsRestService.getCommands(name).subscribe({
@@ -104,120 +90,34 @@ export class MethodsComponent implements OnInit {
     return false;
   }
 
-  private setMethod(method: Method) {
-    this.method = method;
-    this.form.reset({
-      name: method.name,
-      owner: method.owner,
-      src: method.src
-    });
-  }
-
-  public deleteMethod(): void {
-    if (window.console) {
-      console.log('deleteMethod ' + this.method.name);
-    }
-    this.methodsRestService.deleteMethod(this.method).subscribe(
-      (result: any) => { // on success
-        this.methods = this.methods.filter((bl) => bl === undefined || bl.name !== this.method.name);
-        this.methods = [...this.methods];
-      },
-      (err: any) => { // error
-        // console.log('error', err);
-      },
-      () => { // on completion
-      }
-    );
-  }
-
-  public createMethod(): void {
-    if (window.console) {
-      console.log('createMethod');
-    }
-    const method = this.prepareSave();
-    this.methodsRestService.createMethod(method).subscribe(
-      (result: any) => { // on success
-        if (window.console) {
-          console.log('create the method ' + method);
-        }
-        this.methods.push(method);
-        this.methods = [...this.methods];
-      },
-      (err: any) => { // error
-        // console.log('error', err);
-      },
-      () => { // on completion
-      }
-    );
-    return;
-  }
-
-  public updateMethod(): void {
-    if (window.console) {
-      console.log('updateMethod');
-    }
-    const method = this.prepareSave();
-    const index = this.methods.findIndex(mth => mth !== null && mth.name === method.name);
-    if (window.console) {
-      console.log('updateMethod' + index);
-    }
-    this.methodsRestService.updateMethod(method).subscribe(
-      (result: any) => { // on success
-        if (window.console) {
-          console.log('update the method ' + method);
-        }
-        if (method.name !== undefined) {
-          this.methods[index] = method;
-        }
-        this.methods = [...this.methods];
-      },
-      (err: any) => { // error
-        // console.log('error', err);
-      },
-      () => { // on completion
-      }
-    );
-  }
-
-  prepareSave(): Method {
+  getForm(): Method {
     const formModel = this.form.value;
 
     // return new `Method` object containing a combination of original blog value(s)
     // and deep copies of changed form model values
-    const saveMethod: Method = {
+    const saveMethod: Method = new Method({
       name: formModel.name as string,
       src: formModel.src as string,
-      creation: this.method.creation as string,
-      owner: this.method.owner as string
-    };
+      creation: this.item.creation as string,
+      owner: this.item.owner as string
+    });
     return saveMethod;
   }
 
-  disownMethod() {
-    if (!this.isMethodSelected()) {
-      return;
-    }
-    this.method.owner = null;
-  }
-
-  isMethodSelected() {
-    return this.method !== undefined && this.method !== null;
-  }
-
-  refresh() {
-    this.methodsRestService.clearCache();
-    this.getMethods();
-  }
-
-  private getMethods() {
-    this.methodsRestService.getMethods().subscribe({
+  getItems() {
+    this.methodsRestService.getAll().subscribe({
       next: data => {
         const ownerFilter = method => this.searchTerms.owner === undefined ||
           this.searchTerms.owner === null ||
           this.searchTerms.owner === method.owner;
-        this.methods = data.filter(ownerFilter);
+        this.items = data.filter(ownerFilter);
       }
     });
   }
+
+  makeItem(): Method {
+    return new Method();
+  }
+
 }
 

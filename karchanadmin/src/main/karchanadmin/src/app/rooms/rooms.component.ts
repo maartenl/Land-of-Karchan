@@ -109,7 +109,9 @@ export class RoomsComponent extends AdminComponent<Room, number> implements OnIn
     } : item;
     if (this.form === undefined) {
       this.form = this.formBuilder.group(object);
-    } else { this.form.reset(object); }
+    } else {
+      this.form.reset(object);
+    }
   }
 
   getRestService(): RoomsRestService {

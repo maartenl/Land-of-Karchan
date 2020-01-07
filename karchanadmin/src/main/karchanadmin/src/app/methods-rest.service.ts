@@ -1,5 +1,5 @@
 import { Observable, of, from } from 'rxjs';
-import { catchError, publishReplay, refCount } from 'rxjs/operators';
+import { catchError, publishReplay, refCount, map } from 'rxjs/operators';
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { HttpErrorResponse } from '@angular/common/http';
@@ -9,11 +9,12 @@ import { environment } from '../environments/environment';
 import { ErrorsService } from './errors.service';
 import { Method } from './methods/method.model';
 import { Command } from './commands/command.model';
+import { AdminRestService } from './admin/admin-rest.service';
 
 @Injectable({
   providedIn: 'root'
 })
-export class MethodsRestService {
+export class MethodsRestService implements AdminRestService<Method, string> {
   url: string;
 
   cache$: Observable<Method[]>;
@@ -22,9 +23,10 @@ export class MethodsRestService {
     this.url = environment.METHODS_URL;
   }
 
-  public getMethod(name: string): Observable<Method> {
+  public get(name: string): Observable<Method> {
     return this.http.get<Method>(this.url + '/' + name)
       .pipe(
+        map(item => new Method(item)),
         catchError(err => {
           this.handleError(err);
           return [];
@@ -46,12 +48,17 @@ export class MethodsRestService {
     this.cache$ = undefined;
   }
 
-  public getMethods(): Observable<Method[]> {
+  public getAll(): Observable<Method[]> {
     if (this.cache$) {
       return this.cache$;
     }
     this.cache$ = this.http.get<Method[]>(this.url)
       .pipe(
+        map(items => {
+          const newItems = new Array<Method>();
+          items.forEach(item => newItems.push(new Method(item)));
+          return newItems;
+        }),
         publishReplay(1),
         refCount(),
         catchError(err => {
@@ -62,7 +69,7 @@ export class MethodsRestService {
     return this.cache$;
   }
 
-  public deleteMethod(method: Method): Observable<any> {
+  public delete(method: Method): Observable<any> {
     return this.http.delete(this.url + '/' + method.name)
       .pipe(
         catchError(err => {
@@ -72,7 +79,7 @@ export class MethodsRestService {
       );
   }
 
-  public updateMethod(method: Method): any {
+  public update(method: Method): any {
     if (method.name !== undefined) {
       // update
       return this.http.put<Method[]>(this.url + '/' + method.name, method)
@@ -85,7 +92,7 @@ export class MethodsRestService {
     }
   }
 
-  public createMethod(method: Method): any {
+  public create(method: Method): any {
     // new
     return this.http.post(this.url, method)
       .pipe(

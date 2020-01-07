@@ -13,7 +13,7 @@
 <div class="container-fluid">
     <div class="row row-content">
         <div class="col-xs-12 col-xl-6">
-            <h1>Method {{ method === undefined ? '-' : method.name }}</h1>
+            <h1>Method {{ item === undefined ? '-' : item.name }}</h1>
             <form [formGroup]="form" novalidate>
                 <fieldset class="form-group">
                     <label for="name">Name</label>
@@ -29,10 +29,10 @@
                 </fieldset>
                 <div class="col-xs-12 col-sm-12 text-right">
                     <button type="submit" [disabled]="form.pristine" class="mx-1 btn btn-primary"
-                        (click)="updateMethod()">Update</button>
+                        (click)="updateItem()">Update</button>
                     <button type="submit" [disabled]="form.pristine" class="mx-1 btn btn-primary"
-                        (click)="createMethod()">Create</button>
-                    <button type="button" class="mx-1 btn btn-secondary" (click)="deleteMethod()">Delete</button>
+                        (click)="createItem()">Create</button>
+                    <button type="button" class="mx-1 btn btn-secondary" (click)="deleteItem()">Delete</button>
                     <button type="reset" class="mx-1 btn btn-secondary" (click)="cancel()">Cancel</button>
                 </div>
             </form>
@@ -63,8 +63,8 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <tr *cdkVirtualFor="let method of methods; templateCacheSize: 0" [ngClass]="isActive(method)"
-                            (click)="setMethodById(method.name)">
+                        <tr *cdkVirtualFor="let method of items; templateCacheSize: 0" [ngClass]="isActive(method)"
+                            (click)="setItemById(method.name)">
                             <th *ngIf="method" scope="row">{{ method.name }}</th>
                             <td *ngIf="method">{{ method.owner }}</td>
                             <td *ngIf="method">{{ method.creation }}</td>

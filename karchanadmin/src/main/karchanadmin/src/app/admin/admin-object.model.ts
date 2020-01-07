@@ -1,4 +1,4 @@
 export interface AdminObject<T> {
     getIdentifier(): T;
-    setIdentifier(T): void;
+    setIdentifier(t: T): void;
 }

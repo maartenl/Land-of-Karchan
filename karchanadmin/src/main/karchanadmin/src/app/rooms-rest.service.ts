@@ -1,16 +1,14 @@
-import { Observable, of, from } from 'rxjs';
+import { Observable, of } from 'rxjs';
 import { catchError, publishReplay, refCount, map } from 'rxjs/operators';
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { HttpErrorResponse } from '@angular/common/http';
-
 
 import { environment } from '../environments/environment';
 
 import { AdminRestService } from './admin/admin-rest.service';
 import { ErrorsService } from './errors.service';
 import { Room } from './rooms/room.model';
-import { ErrorMessage } from './errors/errormessage.model';
 import { Command } from './commands/command.model';
 
 @Injectable({
@@ -26,6 +24,11 @@ export class RoomsRestService implements AdminRestService<Room, number> {
   }
 
   public get(id: number): Observable<Room> {
+    if (!environment.production) {
+      return this.getAll(null).pipe(
+        map(x => x.filter(item => item.getIdentifier() === id)[0])
+      );
+    }
     return this.http.get<Room>(this.url + '/' + id)
       .pipe(
         map(item => new Room(item)),
@@ -37,6 +40,9 @@ export class RoomsRestService implements AdminRestService<Room, number> {
   }
 
   public getCommands(id: number): Observable<Command[]> {
+    if (!environment.production) {
+      return of(Command[0]);
+    }
     return this.http.get<Room>(this.url + '/' + id + '/commands')
       .pipe(
         catchError(err => {

@@ -6,17 +6,14 @@ import { FormControl, FormGroup, FormBuilder } from '@angular/forms';
 
 import { CommandsRestService } from '../commands-rest.service';
 import { Command } from './command.model';
+import { AdminComponent } from '../admin/admin.component';
 
 @Component({
   selector: 'app-commands',
   templateUrl: './commands.component.html',
   styleUrls: ['./commands.component.css']
 })
-export class CommandsComponent implements OnInit {
-
-  commands: Command[];
-
-  command: Command;
+export class CommandsComponent extends AdminComponent<Command, number> implements OnInit {
 
   form: FormGroup;
 
@@ -32,7 +29,7 @@ export class CommandsComponent implements OnInit {
       value = null;
     }
     this.searchTerms.owner = value;
-    this.getCommands();
+    this.getItems();
   }
 
   updateMethodNameSearch(value: string) {
@@ -40,20 +37,21 @@ export class CommandsComponent implements OnInit {
       value = null;
     }
     this.searchTerms.methodName = value;
-    this.getCommands();
+    this.getItems();
   }
 
   constructor(
     private commandsRestService: CommandsRestService,
     private route: ActivatedRoute,
     private formBuilder: FormBuilder) {
-    this.createForm();
-    this.command = new Command();
-    this.getCommands();
+    super();
+    this.setForm();
+    this.makeItem();
+    this.getItems();
   }
 
-  private getCommands() {
-    this.commandsRestService.getCommands()
+  getItems() {
+    this.commandsRestService.getAll()
       .subscribe({
         next: data => {
           const ownerFilter = command => this.searchTerms.owner === undefined ||
@@ -62,7 +60,7 @@ export class CommandsComponent implements OnInit {
           const methodNameFilter = command => this.searchTerms.methodName === undefined ||
             this.searchTerms.methodName === null ||
             command.methodName.includes(this.searchTerms.methodName);
-          this.commands = data.filter(ownerFilter).filter(methodNameFilter);
+          this.items = data.filter(ownerFilter).filter(methodNameFilter);
         }
       });
   }
@@ -75,47 +73,31 @@ export class CommandsComponent implements OnInit {
     if (id === undefined || id === null) {
       return;
     }
-    this.setCommandById(id);
+    const idNumber: number = Number(id);
+    if (isNaN(idNumber)) {
+      return;
+    }
+    this.setItemById(idNumber);
   }
 
-  createForm() {
-    this.form = this.formBuilder.group({
+
+  setForm(item?: Command) {
+    const object = item === undefined ? {
       callable: true,
       command: '',
       methodName: '',
       room: null,
       owner: null
-    });
-  }
-
-  resetForm() {
-    this.form.reset({
-      callable: true,
-      command: '',
-      methodName: '',
-      room: null,
-      owner: null
-    });
-  }
-
-  public cancel(): void {
-    this.resetForm();
-    this.command = new Command();
-  }
-
-  isActive(command: Command) {
-    if (command === undefined) {
-      return '';
+    } : item;
+    if (this.form === undefined) {
+      this.form = this.formBuilder.group(object);
+    } else {
+      this.form.reset(object);
     }
-    if (!this.isCommandSelected()) {
-      return '';
-    }
-    return (this.command.id === command.id) ? 'table-active' : '';
   }
 
-  setCommandById(id: string) {
-    console.log('setcommandbyid' + id);
-    this.commandsRestService.getCommand(id).subscribe({
+  setItemById(id: number) {
+    this.commandsRestService.get(id).subscribe({
       next: (data) => {
         if (data !== undefined) { this.setCommand(data); }
       }
@@ -124,7 +106,7 @@ export class CommandsComponent implements OnInit {
   }
 
   private setCommand(command: Command) {
-    this.command = command;
+    this.item = command;
     this.form.reset({
       id: command.id,
       callable: command.callable,
@@ -135,103 +117,40 @@ export class CommandsComponent implements OnInit {
     });
   }
 
-  public deleteCommand(): void {
-    if (window.console) {
-      console.log('deleteCommand ' + this.command.id);
-    }
-    this.commandsRestService.deleteCommand(this.command).subscribe(
-      (result: any) => { // on success
-        this.commands = this.commands.filter((bl) => bl === undefined || bl.id !== this.command.id);
-        this.commands = [...this.commands];
-      },
-      (err: any) => { // error
-        // console.log('error', err);
-      },
-      () => { // on completion
-      }
-    );
-  }
-
-  public createCommand(): void {
-    if (window.console) {
-      console.log('createCommand');
-    }
-    const command = this.prepareSave();
-    this.commandsRestService.createCommand(command).subscribe(
-      (result: any) => { // on success
-        if (window.console) {
-          console.log('save the command ' + command);
-        }
-        this.commands.push(command);
-        this.commands = [...this.commands];
-      },
-      (err: any) => { // error
-        // console.log('error', err);
-      },
-      () => { // on completion
-      }
-    );
-  }
-
-  public updateCommand(): void {
-    if (window.console) {
-      console.log('updateCommand');
-    }
-    const command = this.prepareSave();
-    const index = this.commands.findIndex(cmd => cmd != null && cmd.id === command.id);
-    if (window.console) {
-      console.log('saveCommand' + index);
-    }
-    this.commandsRestService.updateCommand(command).subscribe(
-      (result: any) => { // on success
-        if (window.console) {
-          console.log('save the command ' + command);
-        }
-        if (command.id !== undefined) {
-          this.commands[index] = command;
-        }
-        this.commands = [...this.commands];
-      },
-      (err: any) => { // error
-        // console.log('error', err);
-      },
-      () => { // on completion
-      }
-    );
-  }
-
-  prepareSave(): Command {
+  getForm(): Command {
     const formModel = this.form.value;
 
     // return new `Command` object containing a combination of original blog value(s)
     // and deep copies of changed form model values
-    const saveCommand: Command = {
-      id: this.command.id,
+    const id = this.item === undefined ? null : this.item.id;
+    const creation = this.item === undefined ? null : this.item.creation;
+    const owner = this.item === undefined ? null : this.item.owner;
+    const saveCommand: Command = new Command({
+      id,
       callable: formModel.callable as boolean,
       command: formModel.command as string,
       room: formModel.room as number,
       methodName: formModel.methodName as string,
-      creation: this.command.creation as string,
-      owner: this.command.owner as string
-    };
+      creation,
+      owner
+    });
     return saveCommand;
   }
 
-  isCommandSelected() {
-    return this.command !== undefined && this.command !== null;
+  getRestService(): CommandsRestService {
+    return this.commandsRestService;
   }
-
-  refresh() {
-    this.commandsRestService.clearCache();
-    this.getCommands();
+  
+  makeItem(): Command {
+    return new Command();
   }
 
   sortById() {
     if (window.console) {
       console.log('sortById');
     }
-    this.commands = this.commands.sort((a, b) => a.id - b.id);
-    this.commands = [...this.commands];
+    this.items = this.items.sort((a, b) => a.id - b.id);
+    this.items = [...this.items];
     return false;
   }
 
@@ -239,8 +158,8 @@ export class CommandsComponent implements OnInit {
     if (window.console) {
       console.log('sortByCommand');
     }
-    this.commands = this.commands.sort((a, b) => a.command.localeCompare(b.command));
-    this.commands = [...this.commands];
+    this.items = this.items.sort((a, b) => a.command.localeCompare(b.command));
+    this.items = [...this.items];
     return false;
   }
 
@@ -248,8 +167,8 @@ export class CommandsComponent implements OnInit {
     if (window.console) {
       console.log('sortByMethodName');
     }
-    this.commands = this.commands.sort((a, b) => a.methodName.localeCompare(b.methodName));
-    this.commands = [...this.commands];
+    this.items = this.items.sort((a, b) => a.methodName.localeCompare(b.methodName));
+    this.items = [...this.items];
     return false;
   }
 }
