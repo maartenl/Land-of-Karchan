@@ -4,9 +4,10 @@ import {
   FormsModule,
   ReactiveFormsModule
 } from '@angular/forms';
-
 import { CookieService } from 'ngx-cookie-service';
 import { HttpClientModule } from '@angular/common/http';
+
+import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -19,6 +20,7 @@ import { RoomsComponent } from './rooms/rooms.component';
 import { ScrollingModule } from '@angular/cdk/scrolling';
 import { MethodsComponent } from './methods/methods.component';
 import { CommandsComponent } from './commands/commands.component';
+import { ToastComponent } from './toast/toast.component';
 
 @NgModule({
   declarations: [
@@ -29,7 +31,8 @@ import { CommandsComponent } from './commands/commands.component';
     SystemlogComponent,
     RoomsComponent,
     MethodsComponent,
-    CommandsComponent
+    CommandsComponent,
+    ToastComponent
   ],
   imports: [
     BrowserModule,
@@ -37,7 +40,8 @@ import { CommandsComponent } from './commands/commands.component';
     ReactiveFormsModule,
     AppRoutingModule,
     HttpClientModule,
-    ScrollingModule
+    ScrollingModule,
+    NgbModule
   ],
   providers: [CookieService],
   bootstrap: [AppComponent]

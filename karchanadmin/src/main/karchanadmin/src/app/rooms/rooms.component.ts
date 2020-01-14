@@ -6,6 +6,7 @@ import { AdminComponent } from '../admin/admin.component'
 import { RoomsRestService } from '../rooms-rest.service';
 import { Room } from './room.model';
 import { Command } from '../commands/command.model';
+import { ToastService } from '../toast.service';
 
 @Component({
   selector: 'app-rooms',
@@ -70,7 +71,8 @@ export class RoomsComponent extends AdminComponent<Room, number> implements OnIn
   constructor(
     private roomsRestService: RoomsRestService,
     private route: ActivatedRoute,
-    private formBuilder: FormBuilder) {
+    private formBuilder: FormBuilder,
+    private toastService: ToastService) {
     super();
     this.setForm();
     this.item = this.makeItem();
@@ -173,6 +175,12 @@ export class RoomsComponent extends AdminComponent<Room, number> implements OnIn
           this.searchTerms.area === null ||
           room.area === this.searchTerms.area;
         this.items = data.filter(ownerFilter).filter(titleFilter).filter(areaFilter);
+        this.toastService.show('Rooms are loaded.', {
+          delay: 0,
+          autohide: false,
+          headertext: 'Done.',
+          classname: 'mytoast'
+        });
       }
     });
   }

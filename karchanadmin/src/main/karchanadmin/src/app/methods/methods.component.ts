@@ -9,6 +9,7 @@ import { MethodsRestService } from '../methods-rest.service';
 import { Method } from './method.model';
 import { Command } from '../commands/command.model';
 import { AdminComponent } from '../admin/admin.component';
+import { ToastService } from '../toast.service';
 
 @Component({
   selector: 'app-methods',
@@ -38,7 +39,9 @@ export class MethodsComponent extends AdminComponent<Method, string> implements 
   constructor(
     private methodsRestService: MethodsRestService,
     private route: ActivatedRoute,
-    private formBuilder: FormBuilder) {
+    private formBuilder: FormBuilder,
+    private toastService: ToastService
+  ) {
     super();
     this.setForm();
     this.item = this.makeItem();

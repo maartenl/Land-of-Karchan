@@ -10,6 +10,7 @@ import { AdminRestService } from './admin/admin-rest.service';
 import { ErrorsService } from './errors.service';
 import { Room } from './rooms/room.model';
 import { Command } from './commands/command.model';
+import { ToastService } from './toast.service';
 
 @Injectable({
   providedIn: 'root'
@@ -19,7 +20,10 @@ export class RoomsRestService implements AdminRestService<Room, number> {
 
   cache$: Observable<Room[]>;
 
-  constructor(private http: HttpClient, private errorsService: ErrorsService) {
+  constructor(
+    private http: HttpClient,
+    private errorsService: ErrorsService,
+    private toastService: ToastService) {
     this.url = environment.ROOMS_URL;
   }
 
@@ -57,6 +61,13 @@ export class RoomsRestService implements AdminRestService<Room, number> {
       return this.cache$;
     }
     const localUrl = descriptionSearch === undefined ? this.url : this.url + '?description=' + descriptionSearch;
+    this.toastService.show('Getting rooms and other things that we really need', {
+      delay: 0,
+      autohide: false,
+      headertext: 'Loading...',
+      classname: 'mytoast'
+    });
+
     this.cache$ = this.http.get<Room[]>(localUrl)
       .pipe(
         map(items => {

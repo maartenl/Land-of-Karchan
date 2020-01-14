@@ -140,7 +140,7 @@ export class CommandsComponent extends AdminComponent<Command, number> implement
   getRestService(): CommandsRestService {
     return this.commandsRestService;
   }
-  
+
   makeItem(): Command {
     return new Command();
   }
