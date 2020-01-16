@@ -30,4 +30,8 @@ export class Command implements AdminObject<number> {
         this.id = id;
     }
 
+    getType(): string {
+        return 'Command';
+    }
+
 }

@@ -41,4 +41,8 @@ export class Room implements AdminObject<number> {
     setIdentifier(id: number): void {
         this.id = id;
     }
+
+    getType(): string {
+        return 'Room';
+    }
 }

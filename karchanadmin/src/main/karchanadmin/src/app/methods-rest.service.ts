@@ -10,6 +10,7 @@ import { ErrorsService } from './errors.service';
 import { Method } from './methods/method.model';
 import { Command } from './commands/command.model';
 import { AdminRestService } from './admin/admin-rest.service';
+import { ToastService } from './toast.service';
 
 @Injectable({
   providedIn: 'root'
@@ -19,7 +20,10 @@ export class MethodsRestService implements AdminRestService<Method, string> {
 
   cache$: Observable<Method[]>;
 
-  constructor(private http: HttpClient, private errorsService: ErrorsService) {
+  constructor(
+    private http: HttpClient,
+    private errorsService: ErrorsService,
+    private toastService: ToastService) {
     this.url = environment.METHODS_URL;
   }
 
@@ -52,6 +56,11 @@ export class MethodsRestService implements AdminRestService<Method, string> {
     if (this.cache$) {
       return this.cache$;
     }
+    this.toastService.show('Retrieving all methods.', {
+      delay: 5000,
+      autohide: true,
+      headertext: 'Loading...'
+    });
     this.cache$ = this.http.get<Method[]>(this.url)
       .pipe(
         map(items => {

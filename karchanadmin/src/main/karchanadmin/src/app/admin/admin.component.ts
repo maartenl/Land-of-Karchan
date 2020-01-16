@@ -1,5 +1,6 @@
 import { AdminObject } from './admin-object.model';
 import { AdminRestService } from './admin-rest.service';
+import { ToastService } from '../toast.service';
 
 /**
  * The idea here is to contain common functionality in this class,
@@ -19,6 +20,8 @@ export abstract class AdminComponent<T extends AdminObject<U>, U> {
   abstract makeItem(): T;
 
   abstract getItems(): void;
+
+  abstract getToastService(): ToastService;
 
   public cancel(): void {
     this.setForm();
@@ -54,6 +57,11 @@ export abstract class AdminComponent<T extends AdminObject<U>, U> {
           .filter((bl) => bl === undefined ||
             bl.getIdentifier() !== this.item.getIdentifier());
         this.items = [...this.items];
+        this.getToastService().show(this.item.getType() + ' ' + this.item.getIdentifier() + ' successfully deleted.', {
+          delay: 3000,
+          autohide: true,
+          headertext: 'Deleted...'
+        });
       },
       (err: any) => { // error
         // console.log('error', err);
@@ -76,6 +84,11 @@ export abstract class AdminComponent<T extends AdminObject<U>, U> {
         this.items.push(itemFromForm);
         this.items = [...this.items];
         this.setItemById(result);
+        this.getToastService().show(this.item.getType() + ' ' + this.item.getIdentifier() + ' successfully created.', {
+          delay: 3000,
+          autohide: true,
+          headertext: 'Created...'
+        });
       },
       (err: any) => { // error
         // console.log('error', err);
@@ -93,6 +106,11 @@ export abstract class AdminComponent<T extends AdminObject<U>, U> {
       (result: any) => { // on success
         this.items[index] = itemFromForm;
         this.items = [...this.items];
+        this.getToastService().show(this.item.getType() + ' ' + this.item.getIdentifier() + ' successfully updated.', {
+          delay: 3000,
+          autohide: true,
+          headertext: 'Updated...'
+        });
       },
       (err: any) => { // error
         // console.log('error', err);

@@ -63,6 +63,10 @@ export class MethodsComponent extends AdminComponent<Method, string> implements 
     return this.methodsRestService;
   }
 
+  getToastService(): ToastService {
+    return this.toastService;
+  }
+
   setForm(item?: Method) {
     const object = item === undefined ? {
       name: '',

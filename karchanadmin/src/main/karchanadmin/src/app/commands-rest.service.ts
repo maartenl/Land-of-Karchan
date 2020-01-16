@@ -9,6 +9,7 @@ import { environment } from '../environments/environment';
 import { ErrorsService } from './errors.service';
 import { Command } from './commands/command.model';
 import { AdminRestService } from './admin/admin-rest.service';
+import { ToastService } from './toast.service';
 
 @Injectable({
   providedIn: 'root'
@@ -18,7 +19,10 @@ export class CommandsRestService implements AdminRestService<Command, number>{
 
   cache$: Observable<Command[]>;
 
-  constructor(private http: HttpClient, private errorsService: ErrorsService) {
+  constructor(
+    private http: HttpClient,
+    private errorsService: ErrorsService,
+    private toastService: ToastService) {
     this.url = environment.COMMANDS_URL;
   }
 
@@ -37,6 +41,11 @@ export class CommandsRestService implements AdminRestService<Command, number>{
     if (this.cache$) {
       return this.cache$;
     }
+    this.toastService.show('Retrieving all commands.', {
+      delay: 5000,
+      autohide: true,
+      headertext: 'Loading...'
+    });
     this.cache$ = this.http.get<Command[]>(this.url)
       .pipe(
         map(items => {

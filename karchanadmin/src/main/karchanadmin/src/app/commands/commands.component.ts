@@ -7,6 +7,7 @@ import { FormControl, FormGroup, FormBuilder } from '@angular/forms';
 import { CommandsRestService } from '../commands-rest.service';
 import { Command } from './command.model';
 import { AdminComponent } from '../admin/admin.component';
+import { ToastService } from '../toast.service';
 
 @Component({
   selector: 'app-commands',
@@ -43,7 +44,8 @@ export class CommandsComponent extends AdminComponent<Command, number> implement
   constructor(
     private commandsRestService: CommandsRestService,
     private route: ActivatedRoute,
-    private formBuilder: FormBuilder) {
+    private formBuilder: FormBuilder,
+    private toastService: ToastService) {
     super();
     this.setForm();
     this.makeItem();
@@ -139,6 +141,10 @@ export class CommandsComponent extends AdminComponent<Command, number> implement
 
   getRestService(): CommandsRestService {
     return this.commandsRestService;
+  }
+
+  getToastService(): ToastService {
+    return this.toastService;
   }
 
   makeItem(): Command {

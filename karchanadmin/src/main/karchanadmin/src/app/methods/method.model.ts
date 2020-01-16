@@ -23,4 +23,8 @@ export class Method implements AdminObject<string> {
     setIdentifier(name: string): void {
         this.name = name;
     }
+
+    getType(): string {
+        return 'Method';
+    }
 }

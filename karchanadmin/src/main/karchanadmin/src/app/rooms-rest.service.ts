@@ -61,11 +61,10 @@ export class RoomsRestService implements AdminRestService<Room, number> {
       return this.cache$;
     }
     const localUrl = descriptionSearch === undefined ? this.url : this.url + '?description=' + descriptionSearch;
-    this.toastService.show('Getting rooms and other things that we really need', {
-      delay: 0,
-      autohide: false,
-      headertext: 'Loading...',
-      classname: 'mytoast'
+    this.toastService.show('Retrieving all rooms.', {
+      delay: 5000,
+      autohide: true,
+      headertext: 'Loading...'
     });
 
     this.cache$ = this.http.get<Room[]>(localUrl)

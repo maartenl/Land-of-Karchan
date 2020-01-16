@@ -120,6 +120,10 @@ export class RoomsComponent extends AdminComponent<Room, number> implements OnIn
     return this.roomsRestService;
   }
 
+  getToastService(): ToastService {
+    return this.toastService;
+  }
+
   setItemById(id: number) {
     console.log('setitembyid' + id);
     this.roomsRestService.get(id).subscribe({
@@ -175,12 +179,6 @@ export class RoomsComponent extends AdminComponent<Room, number> implements OnIn
           this.searchTerms.area === null ||
           room.area === this.searchTerms.area;
         this.items = data.filter(ownerFilter).filter(titleFilter).filter(areaFilter);
-        this.toastService.show('Rooms are loaded.', {
-          delay: 0,
-          autohide: false,
-          headertext: 'Done.',
-          classname: 'mytoast'
-        });
       }
     });
   }
