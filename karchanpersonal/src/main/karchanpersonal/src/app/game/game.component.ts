@@ -3,6 +3,7 @@ import { Component, OnInit } from '@angular/core';
 import { PlayerService } from '../player.service';
 import { HasNewMail } from './newmail.model';
 import { ChristmasUtils } from '../christmas.utils';
+import { ToastService } from '../toast.service';
 
 @Component({
   selector: 'app-game',
@@ -10,7 +11,9 @@ import { ChristmasUtils } from '../christmas.utils';
   styleUrls: ['./game.component.css']
 })
 export class GameComponent implements OnInit {
-  constructor(private playerService: PlayerService) { }
+  constructor(
+    private playerService: PlayerService,
+    private toastService: ToastService) { }
 
   hasNewMail: boolean;
 
@@ -20,6 +23,13 @@ export class GameComponent implements OnInit {
     this.playerService.hasNewMail()
       .subscribe((result: HasNewMail) => { // on success
         this.hasNewMail = result.hasMail;
+        if (this.hasNewMail) {
+          this.toastService.show('You have new mail.', {
+            delay: 5000,
+            autohide: true,
+            headertext: 'Message'
+          });
+        }
       },
         (err: any) => { // error
           this.error = true;

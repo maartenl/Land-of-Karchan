@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpErrorResponse } from '@angular/common/http';
 
+import { ToastService } from './toast.service';
 import { ErrorMessage } from './errors/errormessage.model';
 
 @Injectable({
@@ -9,17 +10,20 @@ import { ErrorMessage } from './errors/errormessage.model';
 export class ErrorsService {
   private listener: (error: ErrorMessage) => void;
 
-  constructor() { }
+  constructor(private toastService: ToastService) { }
 
   public setListener(listener: (error: ErrorMessage) => void): void {
     this.listener = listener;
   }
 
   public addError(error: ErrorMessage): void {
-    if (this.listener === undefined) {
-      return;
-    }
-    this.listener(error);
+    this.toastService.show(error.message, {
+      delay: 0,
+      autohide: false,
+      headertext: error.type,
+      classname: 'bg-danger text-light'
+    });
+
   }
 
   /**

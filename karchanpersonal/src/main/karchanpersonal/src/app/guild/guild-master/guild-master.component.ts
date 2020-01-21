@@ -3,6 +3,7 @@ import { FormControl, FormGroup, FormBuilder } from '@angular/forms';
 
 import { Guild, GuildHopefuls, GuildHopeful, GuildRanks, GuildRank, GuildMembers, GuildMember } from '../guild.model';
 import { PlayerService } from '../../player.service';
+import { ToastService } from 'src/app/toast.service';
 
 @Component({
   selector: 'app-guild-master',
@@ -20,8 +21,10 @@ export class GuildMasterComponent implements OnInit {
   memberForm: FormGroup;
   rankForm: FormGroup;
 
-  constructor(private playerService: PlayerService,
-    private formBuilder: FormBuilder) {
+  constructor(
+    private playerService: PlayerService,
+    private formBuilder: FormBuilder,
+    private toastService: ToastService) {
   }
 
   ngOnInit() {
@@ -52,7 +55,7 @@ export class GuildMasterComponent implements OnInit {
     if (this.guildMembers === undefined) {
       this.playerService.getGuildmembers().subscribe((result: GuildMember[]) => {
         those.guildMembers = new GuildMembers(result);
-        });
+      });
     }
   }
 
@@ -136,15 +139,36 @@ export class GuildMasterComponent implements OnInit {
   }
 
   deleteRank(rank: GuildRank) {
-    this.playerService.deleteRank(rank).subscribe((result: any) => { this.guildRanks.delete(rank); });
+    this.playerService.deleteRank(rank).subscribe((result: any) => {
+      this.guildRanks.delete(rank);
+      this.toastService.show('Rank successfully deleted.', {
+        delay: 3000,
+        autohide: true,
+        headertext: 'Deleted...'
+      });
+    });
   }
 
   deleteMember(member: GuildMember) {
-    this.playerService.deleteMember(member).subscribe((result: any) => { this.guildMembers.delete(member); });
+    this.playerService.deleteMember(member).subscribe((result: any) => {
+      this.guildMembers.delete(member);
+      this.toastService.show('Member successfully deleted.', {
+        delay: 3000,
+        autohide: true,
+        headertext: 'Deleted...'
+      });
+    });
   }
 
   deleteHopeful(hopeful: GuildHopeful) {
-    this.playerService.deleteHopeful(hopeful).subscribe((result: any) => { this.guildHopefuls.delete(hopeful); });
+    this.playerService.deleteHopeful(hopeful).subscribe((result: any) => {
+      this.guildHopefuls.delete(hopeful);
+      this.toastService.show('Hopeful successfully deleted.', {
+        delay: 3000,
+        autohide: true,
+        headertext: 'Deleted...'
+      });
+    });
   }
 
   public selectMember(member: GuildMember): void {
@@ -156,7 +180,14 @@ export class GuildMasterComponent implements OnInit {
     const currentMember: GuildMember = this.guildMembers.currentMember;
     const newMember: GuildMember = this.prepareSaveMember();
     this.playerService.updateGuildmember(newMember).subscribe(
-      (result: any) => { currentMember.guildrank = newMember.guildrank; }
+      (result: any) => {
+        currentMember.guildrank = newMember.guildrank;
+        this.toastService.show('Member updated.', {
+          delay: 3000,
+          autohide: true,
+          headertext: 'Updated...'
+        });
+      }
     );
   }
 
@@ -193,12 +224,26 @@ export class GuildMasterComponent implements OnInit {
     if (oldRank === undefined) {
       // new rank!
       this.playerService.createGuildrank(newRank).subscribe(
-        (result: any) => { this.guildRanks.ranks.push(newRank); }
+        (result: any) => {
+          this.guildRanks.ranks.push(newRank);
+          this.toastService.show('Rank successfully added.', {
+            delay: 3000,
+            autohide: true,
+            headertext: 'Added...'
+          });
+        }
       );
     } else {
       // old rank changed!
       this.playerService.updateGuildrank(newRank).subscribe(
-        (result: any) => { oldRank.title = newRank.title; }
+        (result: any) => {
+          oldRank.title = newRank.title;
+          this.toastService.show('Rank successfully updated.', {
+            delay: 3000,
+            autohide: true,
+            headertext: 'Updated...'
+          });
+        }
       );
     }
   }

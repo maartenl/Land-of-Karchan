@@ -7,6 +7,8 @@ import {
 import { HttpClientModule } from '@angular/common/http';
 import { CKEditorModule } from '@ckeditor/ckeditor5-angular';
 
+import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
+
 import { CookieService } from 'ngx-cookie-service';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -23,6 +25,7 @@ import { PlayerSettingsComponent } from './player-settings/player-settings.compo
 import { WikipagesComponent } from './wikipages/wikipages.component';
 import { PicturesComponent } from './pictures/pictures.component';
 import { PlayComponent } from './play/play.component';
+import { ToastComponent } from './toast/toast.component';
 
 @NgModule({
   declarations: [
@@ -36,7 +39,8 @@ import { PlayComponent } from './play/play.component';
     PlayerSettingsComponent,
     WikipagesComponent,
     PicturesComponent,
-    PlayComponent
+    PlayComponent,
+    ToastComponent
   ],
   imports: [
     BrowserModule,
@@ -44,7 +48,8 @@ import { PlayComponent } from './play/play.component';
     FormsModule,
     ReactiveFormsModule,
     HttpClientModule,
-    CKEditorModule
+    CKEditorModule,
+    NgbModule
   ],
   providers: [
     PlayerService,

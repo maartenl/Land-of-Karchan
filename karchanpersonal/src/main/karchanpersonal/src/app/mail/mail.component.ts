@@ -3,6 +3,7 @@ import { FormControl, FormGroup, FormBuilder } from '@angular/forms';
 
 import { Mail, MailList } from './mail.model';
 import { PlayerService } from '../player.service';
+import { ToastService } from '../toast.service';
 
 @Component({
   selector: 'app-mail',
@@ -31,8 +32,10 @@ export class MailComponent implements OnInit {
 
   mailForm: FormGroup;
 
-  constructor(private playerService: PlayerService,
-              private formBuilder: FormBuilder) {
+  constructor(
+    private playerService: PlayerService,
+    private formBuilder: FormBuilder,
+    private toastService: ToastService) {
     this.mails = new MailList();
     this.mail = new Mail();
     this.createForm();
@@ -91,6 +94,11 @@ export class MailComponent implements OnInit {
       this.playerService.sendMail(newMail).subscribe(
         (result: any) => { // on success
           this.resetForm();
+          this.toastService.show('New mail sent.', {
+            delay: 3000,
+            autohide: true,
+            headertext: 'Success...'
+          });
         },
         (err: any) => { // error
           // console.log('error', err);
@@ -105,6 +113,11 @@ export class MailComponent implements OnInit {
     this.playerService.deleteMail(mail).subscribe(
       (result: any) => { // on success
         this.mails.delete(mail);
+        this.toastService.show('Mail deleted.', {
+          delay: 3000,
+          autohide: true,
+          headertext: 'Deleted...'
+        });
       },
       (err: any) => { // error
         // console.log('error', err);

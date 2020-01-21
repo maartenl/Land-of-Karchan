@@ -4,6 +4,7 @@ import { FormControl, FormGroup, FormBuilder } from '@angular/forms';
 import { Player } from './player.model';
 import { Family } from './family.model';
 import { PlayerService } from '../player.service';
+import { ToastService } from '../toast.service';
 
 @Component({
   selector: 'app-player-settings',
@@ -20,8 +21,10 @@ export class PlayerSettingsComponent implements OnInit {
 
   familyForm: FormGroup;
 
-  constructor(private playerService: PlayerService,
-              private formBuilder: FormBuilder) {
+  constructor(
+    private playerService: PlayerService,
+    private formBuilder: FormBuilder,
+    private toastService: ToastService) {
     this.player = new Player(); // dummy player
     this.createForms();
   }
@@ -152,6 +155,11 @@ export class PlayerSettingsComponent implements OnInit {
         if (index > -1) {
           this.player.familyvalues.splice(index, 1);
         }
+        this.toastService.show('Family entry successfully deleted.', {
+          delay: 3000,
+          autohide: true,
+          headertext: 'Deleted...'
+        });
       }
     );
   }
@@ -160,12 +168,23 @@ export class PlayerSettingsComponent implements OnInit {
     this.playerService.updateFamily(family).subscribe(
       (result: any) => { // on success
         const length = this.player.familyvalues.push(family);
+        this.toastService.show('Family entry successfully added.', {
+          delay: 3000,
+          autohide: true,
+          headertext: 'Added...'
+        });
       }
     );
   }
 
   update(family: Family) {
-    this.playerService.updateFamily(family).subscribe();
+    this.playerService.updateFamily(family).subscribe((result: any) => {
+      this.toastService.show('Family entry successfully updated.', {
+        delay: 3000,
+        autohide: true,
+        headertext: 'Updated...'
+      });
+    });
   }
 
   public getAllPossibleFamilyValues(): string[] {

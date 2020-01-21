@@ -3,6 +3,7 @@ import { PlayerService } from '../player.service';
 import { Picture } from './picture.model';
 import { FormControl, FormGroup, FormBuilder } from '@angular/forms';
 import { environment } from 'src/environments/environment';
+import { ToastService } from '../toast.service';
 
 @Component({
   selector: 'app-pictures',
@@ -21,7 +22,8 @@ export class PicturesComponent implements OnInit {
 
   constructor(
     private playerService: PlayerService,
-    private formBuilder: FormBuilder) {
+    private formBuilder: FormBuilder,
+    private toastService: ToastService) {
     this.createForm();
   }
 
@@ -30,14 +32,14 @@ export class PicturesComponent implements OnInit {
     // retrieve all pictures
     this.playerService.getPictures().subscribe({
       next:
-      (result: Picture[]) => { // on success
-        if (result !== undefined && result.length !== 0) {
-          result.forEach(value => {
-            value.createDate = value.createDate.replace('[UTC]', '');
-          });
-          this.pictures = result;
+        (result: Picture[]) => { // on success
+          if (result !== undefined && result.length !== 0) {
+            result.forEach(value => {
+              value.createDate = value.createDate.replace('[UTC]', '');
+            });
+            this.pictures = result;
+          }
         }
-      }
     });
   }
 
@@ -56,7 +58,14 @@ export class PicturesComponent implements OnInit {
   save() {
     const newPicture = this.prepareSavePicture();
     this.playerService.createPicture(newPicture).subscribe({
-      complete: () => this.ngOnInit()
+      complete: () => {
+        this.ngOnInit();
+        this.toastService.show('Picture successfully added.', {
+          delay: 3000,
+          autohide: true,
+          headertext: 'Added...'
+        });
+      }
     });
   }
 
