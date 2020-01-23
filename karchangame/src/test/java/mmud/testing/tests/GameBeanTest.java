@@ -44,7 +44,6 @@ import java.util.logging.Logger;
 import static org.assertj.core.api.Assertions.assertThat;
 
 /**
- *
  * @author maartenl
  */
 public class GameBeanTest extends MudTest
@@ -59,9 +58,9 @@ public class GameBeanTest extends MudTest
   private LogBeanStub logBean;
 
   @Mocked(
-          {
-            "ok", "status"
-          })
+    {
+      "ok", "status"
+    })
   private javax.ws.rs.core.Response response;
 
   @Mocked
