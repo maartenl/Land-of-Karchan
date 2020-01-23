@@ -18,7 +18,6 @@ package awesomeness.vaadin;
 
 import awesomeness.vaadin.characters.Characters;
 import awesomeness.vaadin.characters.Players;
-import awesomeness.vaadin.rooms.Rooms;
 import com.vaadin.annotations.Theme;
 import com.vaadin.annotations.Widgetset;
 import com.vaadin.server.VaadinRequest;
@@ -74,12 +73,6 @@ public class MyUI extends UI implements UserInterface
     worldAttributesPanel.setContent(worldattributes);
     layout.addComponent(worldAttributesPanel);
 
-    final Panel scriptsPanel = new Panel("Scripts");
-    scriptsPanel.setVisible(false);
-    Layout scripts = new Scripts(admin, servlet.getLogBean());
-    scriptsPanel.setContent(scripts);
-    layout.addComponent(scriptsPanel);
-
     final Panel areasPanel = new Panel("Areas");
     areasPanel.setVisible(false);
     Layout areas = new Areas(admin, servlet.getLogBean());
@@ -91,18 +84,6 @@ public class MyUI extends UI implements UserInterface
     Layout events = new Events(admin, servlet.getLogBean());
     eventsPanel.setContent(events);
     layout.addComponent(eventsPanel);
-
-    final Panel roomsPanel = new Panel("Rooms");
-    roomsPanel.setVisible(false);
-    Layout rooms = new Rooms(admin, servlet.getLogBean());
-    roomsPanel.setContent(rooms);
-    layout.addComponent(roomsPanel);
-
-    final Panel commandsPanel = new Panel("Commands");
-    commandsPanel.setVisible(false);
-    Layout commands = new Commands(admin, servlet.getLogBean());
-    commandsPanel.setContent(commands);
-    layout.addComponent(commandsPanel);
 
     final Panel helpPanel = new Panel("Help");
     helpPanel.setVisible(false);
@@ -153,11 +134,8 @@ public class MyUI extends UI implements UserInterface
       public void menuSelected(MenuItem selectedItem)
       {
         worldAttributesPanel.setVisible(false);
-        scriptsPanel.setVisible(false);
         areasPanel.setVisible(false);
         eventsPanel.setVisible(false);
-        roomsPanel.setVisible(false);
-        commandsPanel.setVisible(false);
         banishmentPanel.setVisible(false);
         itemDefinitionsPanel.setVisible(false);
         helpPanel.setVisible(false);
@@ -170,20 +148,11 @@ public class MyUI extends UI implements UserInterface
           case "Worldattributes":
             worldAttributesPanel.setVisible(true);
             break;
-          case "Scripts":
-            scriptsPanel.setVisible(true);
-            break;
           case "Areas":
             areasPanel.setVisible(true);
             break;
           case "Events":
             eventsPanel.setVisible(true);
-            break;
-          case "Rooms":
-            roomsPanel.setVisible(true);
-            break;
-          case "Commands":
-            commandsPanel.setVisible(true);
             break;
           case "Banishment":
             banishmentPanel.setVisible(true);
