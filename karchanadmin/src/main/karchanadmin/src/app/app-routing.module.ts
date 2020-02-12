@@ -5,6 +5,7 @@ import { TemplatesComponent } from './templates/templates.component';
 import { SystemlogComponent } from './systemlog/systemlog.component';
 import { RoomsComponent } from './rooms/rooms.component';
 import { MethodsComponent } from './methods/methods.component';
+import { AreasComponent } from './areas/areas.component';
 import { CommandsComponent } from './commands/commands.component';
 
 const routes: Routes = [
@@ -13,6 +14,8 @@ const routes: Routes = [
   { path: 'systemlog', component: SystemlogComponent },
   { path: 'rooms/:id', component: RoomsComponent },
   { path: 'rooms', component: RoomsComponent },
+  { path: 'areas/:id', component: AreasComponent },
+  { path: 'areas', component: AreasComponent },
   { path: 'methods/:name', component: MethodsComponent },
   { path: 'methods', component: MethodsComponent },
   { path: 'commands/:id', component: CommandsComponent },

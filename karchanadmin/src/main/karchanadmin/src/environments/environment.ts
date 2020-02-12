@@ -9,7 +9,8 @@ export const environment = {
   SYSTEMLOG_URL: '/assets/systemlog.json',
   ROOMS_URL: '/assets/rooms.json',
   METHODS_URL: '/assets/methods.json',
-  COMMANDS_URL: '/assets/commands.json'
+  COMMANDS_URL: '/assets/commands.json',
+  AREAS_URL: '/assets/areas.json'
 };
 
 /*

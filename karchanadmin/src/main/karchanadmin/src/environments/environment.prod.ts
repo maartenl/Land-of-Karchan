@@ -5,5 +5,6 @@ export const environment = {
   SYSTEMLOG_URL: '/karchangame/resources/administration/systemlog',
   ROOMS_URL: '/karchangame/resources/administration/rooms',
   METHODS_URL: '/karchangame/resources/administration/methods',
-  COMMANDS_URL: '/karchangame/resources/administration/commands'
+  COMMANDS_URL: '/karchangame/resources/administration/commands',
+  AREAS_URL: '/karchangame/resources/administration/areas'
 };

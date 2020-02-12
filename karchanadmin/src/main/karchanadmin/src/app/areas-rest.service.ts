@@ -7,29 +7,29 @@ import { HttpErrorResponse } from '@angular/common/http';
 import { environment } from '../environments/environment';
 
 import { ErrorsService } from './errors.service';
-import { Command } from './commands/command.model';
+import { Area } from './areas/area.model';
 import { AdminRestService } from './admin/admin-rest.service';
 import { ToastService } from './toast.service';
 
 @Injectable({
   providedIn: 'root'
 })
-export class CommandsRestService implements AdminRestService<Command, number> {
+export class AreasRestService implements AdminRestService<Area, string> {
   url: string;
 
-  cache$: Observable<Command[]>;
+  cache$: Observable<Area[]>;
 
   constructor(
     private http: HttpClient,
     private errorsService: ErrorsService,
     private toastService: ToastService) {
-    this.url = environment.COMMANDS_URL;
+    this.url = environment.AREAS_URL;
   }
 
-  public get(id: number): Observable<Command> {
-    return this.http.get<Command>(this.url + '/' + id)
+  get(area: string): Observable<Area> {
+    return this.http.get<Area>(this.url + '/' + area)
       .pipe(
-        map(item => new Command(item)),
+        map(item => new Area(item)),
         catchError(err => {
           this.handleError(err);
           return [];
@@ -37,20 +37,20 @@ export class CommandsRestService implements AdminRestService<Command, number> {
       );
   }
 
-  public getAll(): Observable<Command[]> {
+  getAll(): Observable<Area[]> {
     if (this.cache$) {
       return this.cache$;
     }
-    this.toastService.show('Retrieving all commands.', {
+    this.toastService.show('Retrieving all areas.', {
       delay: 5000,
       autohide: true,
       headertext: 'Loading...'
     });
-    this.cache$ = this.http.get<Command[]>(this.url)
+    this.cache$ = this.http.get<Area[]>(this.url)
       .pipe(
         map(items => {
-          const newItems = new Array<Command>();
-          items.forEach(item => newItems.push(new Command(item)));
+          const newItems = new Array<Area>();
+          items.forEach(item => newItems.push(new Area(item)));
           return newItems;
         }),
         publishReplay(1),
@@ -63,12 +63,12 @@ export class CommandsRestService implements AdminRestService<Command, number> {
     return this.cache$;
   }
 
-  public clearCache() {
+  clearCache() {
     this.cache$ = undefined;
   }
 
-  public delete(command: Command): Observable<any> {
-    return this.http.delete(this.url + '/' + command.id)
+  delete(area: Area): Observable<any> {
+    return this.http.delete(this.url + '/' + area.area)
       .pipe(
         catchError(err => {
           this.handleError(err);
@@ -77,9 +77,9 @@ export class CommandsRestService implements AdminRestService<Command, number> {
       );
   }
 
-  public update(command: Command): any {
+  update(area: Area) {
     // update
-    return this.http.put<Command[]>(this.url + '/' + command.id, command)
+    return this.http.put<Area[]>(this.url + '/' + area.area, area)
       .pipe(
         catchError(err => {
           this.handleError(err);
@@ -88,9 +88,9 @@ export class CommandsRestService implements AdminRestService<Command, number> {
       );
   }
 
-  public create(command: Command): any {
+  create(area: Area) {
     // new
-    return this.http.post(this.url, command)
+    return this.http.post(this.url, area)
       .pipe(
         catchError(err => {
           this.handleError(err);
