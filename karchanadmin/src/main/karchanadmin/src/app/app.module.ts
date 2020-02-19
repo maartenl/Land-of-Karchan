@@ -22,6 +22,7 @@ import { MethodsComponent } from './methods/methods.component';
 import { CommandsComponent } from './commands/commands.component';
 import { ToastComponent } from './toast/toast.component';
 import { AreasComponent } from './areas/areas.component';
+import { ItemsComponent } from './items/items.component';
 
 @NgModule({
   declarations: [
@@ -34,7 +35,8 @@ import { AreasComponent } from './areas/areas.component';
     MethodsComponent,
     CommandsComponent,
     ToastComponent,
-    AreasComponent
+    AreasComponent,
+    ItemsComponent
   ],
   imports: [
     BrowserModule,

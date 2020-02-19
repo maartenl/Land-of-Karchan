@@ -82,7 +82,6 @@ export class CommandsComponent extends AdminComponent<Command, number> implement
     this.setItemById(idNumber);
   }
 
-
   setForm(item?: Command) {
     const object = item === undefined ? {
       callable: true,

@@ -10,7 +10,8 @@ export const environment = {
   ROOMS_URL: '/assets/rooms.json',
   METHODS_URL: '/assets/methods.json',
   COMMANDS_URL: '/assets/commands.json',
-  AREAS_URL: '/assets/areas.json'
+  AREAS_URL: '/assets/areas.json',
+  ITEMS_URL: '/assets/items.json'
 };
 
 /*
