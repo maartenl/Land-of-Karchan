@@ -205,7 +205,7 @@ public class ItemDefinitions extends Editor
         {
           Logger.getLogger(ItemDefinitions.class.getName()).log(Level.SEVERE, string);
         }
-        newInstance.setId(Integer.valueOf(id.getValue()));
+        newInstance.setId(Long.valueOf(id.getValue()));
         Object itemId = container.addEntity(newInstance);
         table.setValue(itemId);
         return itemId;

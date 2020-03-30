@@ -130,7 +130,7 @@ public class CommandRunner
       Items items = new Items(new ItemsInterface()
       {
         @Override
-        public Item createItem(int itemdefnr)
+        public Item createItem(long itemdefnr)
         {
           return itemBean.createItem(itemdefnr);
         }

@@ -61,7 +61,7 @@ public class ItemTest extends MudTest
     public void checkWearable()
     {
         ItemDefinition itemDefinition = new ItemDefinition();
-        itemDefinition.setId(905);
+        itemDefinition.setId(905L);
         setField(ItemDefinition.class, "wearable", itemDefinition, 458752);
         setField(ItemDefinition.class, "wieldable", itemDefinition, 0);
         Item item = new NormalItem();
@@ -91,7 +91,7 @@ public class ItemTest extends MudTest
     public void checkWieldable()
     {
         ItemDefinition itemDefinition = new ItemDefinition();
-        itemDefinition.setId(3234);
+        itemDefinition.setId(3234L);
         setField(ItemDefinition.class, "wearable", itemDefinition, 192);// 64 + 128
         setField(ItemDefinition.class, "wieldable", itemDefinition, 3);
         Item item = new NormalItem();

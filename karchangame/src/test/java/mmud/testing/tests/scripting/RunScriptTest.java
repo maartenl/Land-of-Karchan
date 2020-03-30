@@ -208,7 +208,7 @@ public class RunScriptTest
         {
 
             @Override
-            public Item createItem(int itemdefnr)
+            public Item createItem(long itemdefnr)
             {
                 ItemDefinition itemDefinition = new ItemDefinition();
                 itemDefinition.setId(itemdefnr);

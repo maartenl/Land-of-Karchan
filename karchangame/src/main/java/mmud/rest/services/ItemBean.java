@@ -287,7 +287,7 @@ public class ItemBean
         return amount;
     }
 
-    public Item createItem(int itemdefnr)
+    public Item createItem(long itemdefnr)
     {
         ItemDefinition itemDefinition = getEntityManager().find(ItemDefinition.class, itemdefnr);
         if (itemDefinition == null)

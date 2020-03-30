@@ -210,7 +210,7 @@ public class BuyCommandTest extends MudTest
     }
 
     @Test
-    public void buyCustomerHasNoMoney() 
+    public void buyCustomerHasNoMoney()
     {
         Shopkeeper karcas = new Shopkeeper();
         karcas.setName("Karcas");
@@ -244,9 +244,9 @@ public class BuyCommandTest extends MudTest
     }
 
     @Test
-    public void buyItemdefIdNegative() 
+    public void buyItemdefIdNegative()
     {
-        ring.getItemDefinition().setId(-3);
+        ring.getItemDefinition().setId(-3L);
         Shopkeeper karcas = new Shopkeeper();
         karcas.setName("Karcas");
         karcas.setRoom(room1);
@@ -316,7 +316,7 @@ public class BuyCommandTest extends MudTest
     }
 
     @Test
-    public void buyOk() 
+    public void buyOk()
     {
         Shopkeeper karcas = new Shopkeeper();
         karcas.setName("Karcas");
@@ -357,7 +357,7 @@ public class BuyCommandTest extends MudTest
         setField(ItemBean.class, "logBean", itemBean, logBean);
 
         itemDef = new ItemDefinition();
-        itemDef.setId(1);
+        itemDef.setId(1L);
         itemDef.setName("ring");
         itemDef.setAdject1("nice");
         itemDef.setAdject2("golden");

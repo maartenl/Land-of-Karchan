@@ -715,7 +715,7 @@ public class PrivateBeanTest
     LOGGER.fine("createMailItem");
     final Admin admin = TestingConstants.getAdmin();
     final ItemDefinition itemDef = new ItemDefinition();
-    itemDef.setId(8009);
+    itemDef.setId(8009L);
     itemDef.setReaddescription("this is letterhead.</p><p>letterbody</p><p>letterfoot</p>");
     itemDef.setName("paper");
     itemDef.setAdject1("small");
@@ -815,7 +815,7 @@ public class PrivateBeanTest
     LOGGER.fine("createSecondMailItem");
     final Admin admin = TestingConstants.getAdmin();
     final ItemDefinition itemDef = new ItemDefinition();
-    itemDef.setId(12);
+    itemDef.setId(12L);
     itemDef.setReaddescription("Dear people,</p><p>Blahblah</p><p>Regards, Karn.</p>");
     itemDef.setName("paper");
     itemDef.setAdject1("small");
