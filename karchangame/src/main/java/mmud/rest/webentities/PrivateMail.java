@@ -44,5 +44,5 @@ public class PrivateMail
     public Boolean newmail;
     public LocalDateTime whensent;
     public Boolean deleted;
-    public Integer item_id;
+    public Long item_id;
 }

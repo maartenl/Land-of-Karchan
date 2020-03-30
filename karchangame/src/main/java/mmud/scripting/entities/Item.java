@@ -40,7 +40,7 @@ public class Item
         return item.getId();
     }
 
-    public Integer getItemdef()
+    public Long getItemdef()
     {
         return item.getItemDefinition().getId();
     }

@@ -159,7 +159,7 @@ public class SellCommandTest extends MudTest
     }
 
     @Test
-    public void sellItemNotWorthAnything() 
+    public void sellItemNotWorthAnything()
     {
         ring.getItemDefinition().setCopper(1);
         Shopkeeper karcas = new Shopkeeper();
@@ -194,7 +194,7 @@ public class SellCommandTest extends MudTest
     }
 
     @Test
-    public void sellShopkeeperHasNoMoney() 
+    public void sellShopkeeperHasNoMoney()
     {
         Shopkeeper karcas = new Shopkeeper();
         karcas.setName("Karcas");
@@ -228,7 +228,7 @@ public class SellCommandTest extends MudTest
     }
 
     @Test
-    public void sellWearingItem() 
+    public void sellWearingItem()
     {
         Shopkeeper karcas = new Shopkeeper();
         karcas.setName("Karcas");
@@ -301,7 +301,7 @@ public class SellCommandTest extends MudTest
     @Test
     public void sellItemdefIdNegative()
     {
-        ring.getItemDefinition().setId(-3);
+        ring.getItemDefinition().setId(-3L);
         Shopkeeper karcas = new Shopkeeper();
         karcas.setName("Karcas");
         karcas.setRoom(room1);
@@ -335,7 +335,7 @@ public class SellCommandTest extends MudTest
     }
 
     @Test
-    public void sellBound() 
+    public void sellBound()
     {
         Shopkeeper karcas = new Shopkeeper();
         karcas.setName("Karcas");
@@ -371,7 +371,7 @@ public class SellCommandTest extends MudTest
     }
 
     @Test
-    public void sellOk() 
+    public void sellOk()
     {
         Shopkeeper karcas = new Shopkeeper();
         karcas.setName("Karcas");
@@ -422,7 +422,7 @@ public class SellCommandTest extends MudTest
         setField(ItemBean.class, "logBean", itemBean, logBean);
 
         itemDef = new ItemDefinition();
-        itemDef.setId(1);
+        itemDef.setId(1L);
         itemDef.setName("ring");
         itemDef.setAdject1("nice");
         itemDef.setAdject2("golden");

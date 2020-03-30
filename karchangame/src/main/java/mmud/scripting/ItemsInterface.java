@@ -33,6 +33,6 @@ public interface ItemsInterface
      * @param itemdefnr the id of the item definition
      * @return the new item or null if not created
      */
-    public Item createItem(int itemdefnr);
+    public Item createItem(long itemdefnr);
 
 }
