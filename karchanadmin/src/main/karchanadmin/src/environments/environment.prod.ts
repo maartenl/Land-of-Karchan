@@ -7,5 +7,9 @@ export const environment = {
   METHODS_URL: '/karchangame/resources/administration/methods',
   COMMANDS_URL: '/karchangame/resources/administration/commands',
   AREAS_URL: '/karchangame/resources/administration/areas',
-  ITEMS_URL: '/karchangame/resources/administration/items'
+  ITEMS_URL: '/karchangame/resources/administration/items',
+  BAN_URL: '/karchangame/resources/administration/ban',
+  UNBAN_URL: '/karchangame/resources/administration/unban',
+  SILLYNAMES_URL: '/karchangame/resources/administration/sillynames',
+  BANNEDNAMES_URL: '/karchangame/resources/administration/bannednames'
 };

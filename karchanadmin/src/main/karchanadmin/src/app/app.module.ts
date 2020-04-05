@@ -23,6 +23,7 @@ import { CommandsComponent } from './commands/commands.component';
 import { ToastComponent } from './toast/toast.component';
 import { AreasComponent } from './areas/areas.component';
 import { ItemsComponent } from './items/items.component';
+import { BanComponent } from './ban/ban.component';
 
 @NgModule({
   declarations: [
@@ -36,7 +37,8 @@ import { ItemsComponent } from './items/items.component';
     CommandsComponent,
     ToastComponent,
     AreasComponent,
-    ItemsComponent
+    ItemsComponent,
+    BanComponent
   ],
   imports: [
     BrowserModule,

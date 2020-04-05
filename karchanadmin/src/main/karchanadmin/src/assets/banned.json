@@ -1,0 +1,92 @@
+[
+    {
+        "address": "%prox%",
+        "days": 9999,
+        "IP": "%prox%",
+        "name": "---",
+        "deputy": "Victoria",
+        "date": "2018-06-16 09:29:01",
+        "reason": "Making it harder to circumvent bans."
+    },
+    {
+        "address": "%proxy%",
+        "days": 99999,
+        "IP": "%proxy%",
+        "name": "Proxy",
+        "deputy": "Victoria",
+        "date": "2017-04-02 00:37:37",
+        "reason": "Reason to believe that Ron is already using proxies to log in."
+    },
+    {
+        "address": "00.00.00.00.01",
+        "days": 1,
+        "IP": "00.00.00.00.01",
+        "name": "test",
+        "deputy": "Mya",
+        "date": "2016-04-18 04:26:06",
+        "reason": "test ban"
+    },
+    {
+        "address": "174.198.14.43",
+        "days": 9999,
+        "IP": "174.198.14.43",
+        "name": "Aurican",
+        "deputy": "Victoria",
+        "date": "2017-03-30 17:21:49",
+        "reason": "Permanently banned for harassment of multiple female rpers."
+    },
+    {
+        "address": "2601:0844:4200:1e90:504d:d174: 09e3:af18",
+        "days": 999,
+        "IP": "2601:0844:4200:1e90:504d:d174: 09e3:af18",
+        "name": "RobertaLynnFontaine",
+        "deputy": "Victoria",
+        "date": "2016-10-03 18:32:08",
+        "reason": "This person is logging on and making characters to mock someone that plays Karchan and Hollow."
+    },
+    {
+        "address": "2601:0844:4200:1e90:504d:d174:09e3:af18l",
+        "days": 60,
+        "IP": "2601:0844:4200:1e90:504d:d174:09e3:af18l",
+        "name": "RobertaLynnFontaine ",
+        "deputy": "Mya",
+        "date": "2016-10-03 19:39:46",
+        "reason": "Same as Nettie's re impersonation but without the space in the I.p address as I don't think I.ps have spaces. could be wrong but who knows?"
+    },
+    {
+        "address": "64.139.117.42",
+        "days": 9999,
+        "IP": "64.139.117.42",
+        "name": "Joan",
+        "deputy": "Anshera",
+        "date": "2018-02-09 20:23:34",
+        "reason": "Banned for self-harm threats, and a history of bad behaviour"
+    },
+    {
+        "address": "71.10.117.251",
+        "days": 999,
+        "IP": "71.10.117.251",
+        "name": "Desparrow",
+        "deputy": "Midevia",
+        "date": "2017-02-04 15:28:40",
+        "reason": "As of 2/4/17 -Desparrow was going to court for solicitation of a minor. "
+    },
+    {
+        "address": "73.190.165.83",
+        "days": 356,
+        "IP": "73.190.165.83",
+        "name": "Ashurah",
+        "deputy": "Victoria",
+        "date": "2016-10-06 17:39:27",
+        "reason": "The Roberta impersonator."
+    },
+    {
+        "address": "73.73.89.59",
+        "days": 9999,
+        "IP": "73.73.89.59",
+        "name": "Aurican",
+        "deputy": "Victoria",
+        "date": "2017-03-30 17:32:07",
+        "reason": "Permanently banned for harassment of multiple female rpers."
+    }
+]

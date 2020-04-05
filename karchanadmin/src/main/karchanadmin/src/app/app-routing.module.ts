@@ -8,6 +8,7 @@ import { MethodsComponent } from './methods/methods.component';
 import { AreasComponent } from './areas/areas.component';
 import { CommandsComponent } from './commands/commands.component';
 import { ItemsComponent } from './items/items.component';
+import { BanComponent } from './ban/ban.component';
 
 const routes: Routes = [
   { path: 'blogs', component: BlogsComponent },
@@ -22,7 +23,8 @@ const routes: Routes = [
   { path: 'commands/:id', component: CommandsComponent },
   { path: 'commands', component: CommandsComponent },
   { path: 'items/:id', component: ItemsComponent },
-  { path: 'items', component: ItemsComponent }
+  { path: 'items', component: ItemsComponent },
+  { path: 'ban', component: BanComponent }
 ];
 
 @NgModule({
