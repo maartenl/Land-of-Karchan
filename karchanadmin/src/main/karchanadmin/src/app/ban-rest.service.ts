@@ -30,17 +30,7 @@ export class BanRestService {
         })
       );
   }
-
-  public getBannedIPs(): Observable<any> {
-    return this.http.get<BannedIP[]>(environment.BAN_URL)
-      .pipe(
-        catchError(err => {
-          this.handleError(err);
-          return [];
-        })
-      );
-  }
-
+  
   /**
    * Handles error, delivers them to the errorService.
    * @param error the error message received from the HTTP call

@@ -24,6 +24,10 @@ import { ToastComponent } from './toast/toast.component';
 import { AreasComponent } from './areas/areas.component';
 import { ItemsComponent } from './items/items.component';
 import { BanComponent } from './ban/ban.component';
+import { BannedComponent } from './ban/banned/banned.component';
+import { BannednamesComponent } from './ban/bannednames/bannednames.component';
+import { SillynamesComponent } from './ban/sillynames/sillynames.component';
+import { UnbannedComponent } from './ban/unbanned/unbanned.component';
 
 @NgModule({
   declarations: [
@@ -38,7 +42,11 @@ import { BanComponent } from './ban/ban.component';
     ToastComponent,
     AreasComponent,
     ItemsComponent,
-    BanComponent
+    BanComponent,
+    BannedComponent,
+    BannednamesComponent,
+    SillynamesComponent,
+    UnbannedComponent
   ],
   imports: [
     BrowserModule,
