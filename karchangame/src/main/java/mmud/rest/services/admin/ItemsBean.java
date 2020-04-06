@@ -63,7 +63,6 @@ public class ItemsBean //implements AdminRestService<String>
     {
       "application/json"
     })
-
   public void create(String json, @Context SecurityContext sc)
   {
     AdminItem adminItem = AdminItem.fromJson(json);
@@ -255,7 +254,6 @@ public class ItemsBean //implements AdminRestService<String>
   @GET
   @Path("count")
   @Produces("text/plain")
-
   public String count(@Context UriInfo info)
   {
     return String.valueOf(getEntityManager().createNamedQuery("ItemDefinition.countAll").getSingleResult());
