@@ -16,180 +16,166 @@
  */
 package mmud.database.entities.game;
 
-import java.io.Serializable;
-import java.time.LocalDateTime;
-import java.util.Collection;
-import javax.persistence.Basic;
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.Lob;
-import javax.persistence.ManyToOne;
-import javax.persistence.NamedQueries;
-import javax.persistence.NamedQuery;
-import javax.persistence.OneToMany;
-import javax.persistence.Table;
+import mmud.database.entities.Ownage;
+
+import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
-import mmud.database.entities.Ownage;
+import java.io.Serializable;
+import java.time.LocalDateTime;
+import java.util.Collection;
 
 /**
- *
  * @author maartenl
  */
 @Entity
 @Table(name = "mm_area")
 @NamedQueries(
-        {
-            @NamedQuery(name = "Area.findAll", query = "SELECT a FROM Area a"),
-            @NamedQuery(name = "Area.findByArea", query = "SELECT a FROM Area a WHERE a.area = :area"),
-            @NamedQuery(name = "Area.findByShortdesc", query = "SELECT a FROM Area a WHERE a.shortdescription = :shortdesc"),
-            @NamedQuery(name = "Area.findByCreation", query = "SELECT a FROM Area a WHERE a.creation = :creation")
-        })
+  {
+    @NamedQuery(name = "Area.findAll", query = "SELECT a FROM Area a"),
+    @NamedQuery(name = "Area.findByArea", query = "SELECT a FROM Area a WHERE a.area = :area"),
+    @NamedQuery(name = "Area.findByShortdesc", query = "SELECT a FROM Area a WHERE a.shortdescription = :shortdesc"),
+    @NamedQuery(name = "Area.findByCreation", query = "SELECT a FROM Area a WHERE a.creation = :creation"),
+    @NamedQuery(name = "Area.countAll", query = "SELECT count(a) FROM Area a")
+  })
 @XmlRootElement
 public class Area implements Serializable, Ownage
 {
 
-    private static final long serialVersionUID = 1L;
-    @Id
-    @Basic(optional = false)
-    @NotNull
-    @Size(min = 1, max = 49)
-    @Column(name = "area")
-    private String area;
-    @Basic(optional = false)
-    @NotNull
-    @Lob
-    @Size(min = 1, max = 65535)
-    @Column(name = "description")
-    private String description;
-    @Basic(optional = false)
-    @NotNull
-    @Size(min = 1, max = 255)
-    @Column(name = "shortdesc")
-    private String shortdescription;
-    @Basic(optional = false)
-    @NotNull
-    @Column(name = "creation")
-    private LocalDateTime creation;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "area")
-    private Collection<Room> roomCollection;
-    @JoinColumn(name = "owner", referencedColumnName = "name")
-    @ManyToOne
-    private Admin owner;
+  private static final long serialVersionUID = 1L;
+  @Id
+  @Basic(optional = false)
+  @NotNull
+  @Size(min = 1, max = 49)
+  @Column(name = "area")
+  private String area;
+  @Basic(optional = false)
+  @NotNull
+  @Lob
+  @Size(min = 1, max = 65535)
+  @Column(name = "description")
+  private String description;
+  @Basic(optional = false)
+  @NotNull
+  @Size(min = 1, max = 255)
+  @Column(name = "shortdesc")
+  private String shortdescription;
+  @Basic(optional = false)
+  @NotNull
+  @Column(name = "creation")
+  private LocalDateTime creation;
+  @OneToMany(cascade = CascadeType.ALL, mappedBy = "area")
+  private Collection<Room> roomCollection;
+  @JoinColumn(name = "owner", referencedColumnName = "name")
+  @ManyToOne
+  private Admin owner;
 
-    public Area()
-    {
-    }
+  public Area()
+  {
+  }
 
-    public Area(String area)
-    {
-        this.area = area;
-    }
+  public Area(String area)
+  {
+    this.area = area;
+  }
 
-    public Area(String area, String description, String shortdesc, LocalDateTime creation)
-    {
-        this.area = area;
-        this.description = description;
-        this.shortdescription = shortdesc;
-        this.creation = creation;
-    }
+  public Area(String area, String description, String shortdesc, LocalDateTime creation)
+  {
+    this.area = area;
+    this.description = description;
+    this.shortdescription = shortdesc;
+    this.creation = creation;
+  }
 
-    public String getArea()
-    {
-        return area;
-    }
+  public String getArea()
+  {
+    return area;
+  }
 
-    public void setArea(String area)
-    {
-        this.area = area;
-    }
+  public void setArea(String area)
+  {
+    this.area = area;
+  }
 
-    public String getDescription()
-    {
-        return description;
-    }
+  public String getDescription()
+  {
+    return description;
+  }
 
-    public void setDescription(String description)
-    {
-        this.description = description;
-    }
+  public void setDescription(String description)
+  {
+    this.description = description;
+  }
 
-    public String getShortdescription()
-    {
-        return shortdescription;
-    }
+  public String getShortdescription()
+  {
+    return shortdescription;
+  }
 
-    public void setShortdescription(String shortdescription)
-    {
-        this.shortdescription = shortdescription;
-    }
+  public void setShortdescription(String shortdescription)
+  {
+    this.shortdescription = shortdescription;
+  }
 
-    public LocalDateTime getCreation()
-    {
-        return creation;
-    }
+  public LocalDateTime getCreation()
+  {
+    return creation;
+  }
 
-    public void setCreation(LocalDateTime creation)
-    {
-        this.creation = creation;
-    }
+  public void setCreation(LocalDateTime creation)
+  {
+    this.creation = creation;
+  }
 
-    @XmlTransient
-    public Collection<Room> getRoomCollection()
-    {
-        return roomCollection;
-    }
+  @XmlTransient
+  public Collection<Room> getRoomCollection()
+  {
+    return roomCollection;
+  }
 
-    public void setRoomCollection(Collection<Room> roomCollection)
-    {
-        this.roomCollection = roomCollection;
-    }
+  public void setRoomCollection(Collection<Room> roomCollection)
+  {
+    this.roomCollection = roomCollection;
+  }
 
-    @Override
-    public Admin getOwner()
-    {
-        return owner;
-    }
+  @Override
+  public Admin getOwner()
+  {
+    return owner;
+  }
 
-    @Override
-    public void setOwner(Admin owner)
-    {
-        this.owner = owner;
-    }
+  @Override
+  public void setOwner(Admin owner)
+  {
+    this.owner = owner;
+  }
 
-    @Override
-    public int hashCode()
-    {
-        int hash = 0;
-        hash += (area != null ? area.hashCode() : 0);
-        return hash;
-    }
+  @Override
+  public int hashCode()
+  {
+    int hash = 0;
+    hash += (area != null ? area.hashCode() : 0);
+    return hash;
+  }
 
-    @Override
-    public boolean equals(Object object)
+  @Override
+  public boolean equals(Object object)
+  {
+    // TODO: Warning - this method won't work in the case the id fields are not set
+    if (!(object instanceof Area))
     {
-        // TODO: Warning - this method won't work in the case the id fields are not set
-        if (!(object instanceof Area))
-        {
-            return false;
-        }
-        Area other = (Area) object;
-        if ((this.area == null && other.area != null) || (this.area != null && !this.area.equals(other.area)))
-        {
-            return false;
-        }
-        return true;
+      return false;
     }
+    Area other = (Area) object;
+    return (this.area != null || other.area == null) && (this.area == null || this.area.equals(other.area));
+  }
 
-    @Override
-    public String toString()
-    {
-        return "mmud.database.entities.game.Area[ area=" + area + " ]";
-    }
+  @Override
+  public String toString()
+  {
+    return "mmud.database.entities.game.Area[ area=" + area + " ]";
+  }
 
 }
