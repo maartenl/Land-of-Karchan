@@ -17,148 +17,166 @@
 package mmud.rest.services.admin;
 
 
-import java.time.LocalDateTime;
-import java.util.List;
-import java.util.logging.Logger;
-import javax.annotation.security.DeclareRoles;
-import javax.annotation.security.RolesAllowed;
-import javax.ejb.Stateless;
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
-import javax.ws.rs.Consumes;
-import javax.ws.rs.DELETE;
-import javax.ws.rs.GET;
-import javax.ws.rs.POST;
-import javax.ws.rs.PUT;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.Produces;
-import javax.ws.rs.core.Context;
-import javax.ws.rs.core.Response;
-import javax.ws.rs.core.SecurityContext;
 import mmud.database.entities.game.Admin;
 import mmud.database.entities.game.Area;
 import mmud.exceptions.MudWebException;
+import mmud.rest.services.LogBean;
+import mmud.rest.webentities.admin.AdminArea;
+
+import javax.annotation.security.DeclareRoles;
+import javax.annotation.security.RolesAllowed;
+import javax.ejb.Stateless;
+import javax.inject.Inject;
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+import javax.ws.rs.*;
+import javax.ws.rs.core.Context;
+import javax.ws.rs.core.Response;
+import javax.ws.rs.core.SecurityContext;
+import javax.ws.rs.core.UriInfo;
+import java.time.LocalDateTime;
+import java.util.List;
+import java.util.logging.Logger;
 
 /**
- *
  * @author maartenl
  */
 @DeclareRoles("deputy")
 @RolesAllowed("deputy")
 @Stateless
 @Path("/administration/areas")
-public class AreaBean extends AbstractFacade<Area>
+public class AreaBean // extends AbstractFacade<Area>
 {
 
-    private static final Logger LOGGER = Logger.getLogger(AreaBean.class.getName());
+  private static final Logger LOGGER = Logger.getLogger(AreaBean.class.getName());
 
-    @PersistenceContext(unitName = "karchangamePU")
-    private EntityManager em;
+  @PersistenceContext(unitName = "karchangamePU")
+  private EntityManager em;
 
-    public AreaBean()
+  @Inject
+  private LogBean logBean;
+
+  @POST
+  @Consumes(
     {
-        super(Area.class);
-    }
+      "application/json"
+    })
+  public void create(String json, @Context SecurityContext sc)
+  {
+    AdminArea adminArea = AdminArea.fromJson(json);
 
-    @POST
-    @Override
-    @Consumes(
-            {
-                "application/xml", "application/json"
-            })
-    public void create(Area entity, @Context SecurityContext sc)
+    final String name = sc.getUserPrincipal().getName();
+    Admin admin = getEntityManager().find(Admin.class, name);
+    Area area = new Area();
+    area.setArea(adminArea.area);
+    area.setDescription(adminArea.description);
+    area.setShortdescription(adminArea.shortdesc);
+    area.setCreation(LocalDateTime.now());
+    area.setOwner(admin);
+    ValidationUtils.checkValidation(name, area);
+    logBean.writeDeputyLog(admin, "New area '" + area.getArea() + "' created.");
+    getEntityManager().persist(area);
+  }
+
+  @PUT
+  @Path("{id}")
+  @Consumes(
     {
-        final String name = sc.getUserPrincipal().getName();
-        Admin admin = getEntityManager().find(Admin.class, name);
-        entity.setCreation(LocalDateTime.now());
-        entity.setOwner(admin);
-        checkValidation(name, entity);
-        getEntityManager().persist(entity);
-    }
-
-    @PUT
-    @Path("{id}")
-    @Consumes(
-            {
-                "application/xml", "application/json"
-            })
-    public void edit(@PathParam("id") String id, Area entity, @Context SecurityContext sc)
+      "application/xml", "application/json"
+    })
+  public void edit(@PathParam("id") String id, String json, @Context SecurityContext sc)
+  {
+    AdminArea adminArea = AdminArea.fromJson(json);
+    final String name = sc.getUserPrincipal().getName();
+    if (!id.equals(adminArea.area))
     {
-        final String name = sc.getUserPrincipal().getName();
-        Area attribute = find(id);
-
-        if (attribute == null)
-        {
-            throw new MudWebException(name, id + " not found.", Response.Status.NOT_FOUND);
-        }
-        Admin admin = (new OwnerHelper(getEntityManager())).authorize(name, attribute);
-        attribute.setDescription(entity.getDescription());
-        attribute.setShortdescription(entity.getShortdescription());
-        attribute.setOwner(admin);
-        checkValidation(name, attribute);
+      throw new MudWebException(name, "Area names do not match.", Response.Status.BAD_REQUEST);
     }
+    Area area = getEntityManager().find(Area.class, adminArea.area);
 
-    @DELETE
-    @Path("{id}")
-    public void remove(@PathParam("id") String id, @Context SecurityContext sc)
+    if (area == null)
     {
-        final String name = sc.getUserPrincipal().getName();
-        final Area attribute = find(id);
-        Admin admin = (new OwnerHelper(getEntityManager())).authorize(name, attribute);
-        super.remove(attribute);
+      throw new MudWebException(name, id + " not found.", Response.Status.NOT_FOUND);
     }
+    Admin admin = (new OwnerHelper(getEntityManager())).authorize(name, area);
+    area.setDescription(adminArea.description);
+    area.setShortdescription(adminArea.shortdesc);
+    area.setOwner(admin);
+    ValidationUtils.checkValidation(name, area);
+    logBean.writeDeputyLog(admin, "Area '" + area.getArea() + "' updated.");
+  }
 
-    @GET
-    @Path("{id}")
-    @Produces(
-            {
-                "application/xml", "application/json"
-            })
-    public Area find(@PathParam("id") String id)
+  @DELETE
+  @Path("{id}")
+  public void remove(@PathParam("id") String id, @Context SecurityContext sc)
+  {
+    final String name = sc.getUserPrincipal().getName();
+    final Area area = getEntityManager().find(Area.class, id);
+    if (area == null)
     {
-        return super.find(id);
+      throw new MudWebException(name, "Area " + id + " not found.", Response.Status.NOT_FOUND);
     }
+    Admin admin = (new OwnerHelper(getEntityManager())).authorize(name, area);
+    getEntityManager().remove(area);
+    logBean.writeDeputyLog(admin, "Area '" + area.getArea() + "' deleted.");
+  }
 
-    @GET
-    @Override
-    @Produces(
-            {
-                "application/xml", "application/json"
-            })
-    public List<Area> findAll()
+  @GET
+  @Path("{id}")
+  @Produces(
     {
-        LOGGER.info("findAll");
-        final List<Area> all = super.findAll();
-        return all;
+      "application/json"
+    })
+  public String find(@PathParam("id") String id, @Context SecurityContext sc)
+  {
+    final String name = sc.getUserPrincipal().getName();
+    final Area area = getEntityManager().find(Area.class, id);
+    if (area == null)
+    {
+      throw new MudWebException(name, "Area " + id + " not found.", Response.Status.NOT_FOUND);
     }
+    return new AdminArea(area).toJson();
+  }
 
-    @GET
-    @Path("{from}/{to}")
-    @Produces(
-            {
-                "application/xml", "application/json"
-            })
-    public List<Area> findRange(@PathParam("from") Integer from, @PathParam("to") Integer to)
+  @GET
+  @Produces(
     {
-        return super.findRange(new int[]
-        {
-            from, to
-        });
-    }
+      "application/json"
+    })
+  public String findAll(@Context UriInfo info)
+  {
+    List<String> items = getEntityManager().createNativeQuery(AdminArea.GET_QUERY)
+      .getResultList();
+    return "[" + String.join(",", items) + "]";
+  }
 
-    @GET
-    @Path("count")
-    @Produces("text/plain")
-    public String countREST()
+  @GET
+  @Path("{offset}/{pageSize}")
+  @Produces(
     {
-        return String.valueOf(super.count());
-    }
+      "application/json"
+    })
+  public String findRange(@Context UriInfo info, @PathParam("offset") Integer offset,
+                          @PathParam("pageSize") Integer pageSize)
+  {
+    List<String> items = getEntityManager().createNativeQuery(AdminArea.GET_QUERY)
+      .setMaxResults(pageSize)
+      .setFirstResult(offset)
+      .getResultList();
+    return "[" + String.join(",", items) + "]";
+  }
 
-    @Override
-    protected EntityManager getEntityManager()
-    {
-        return em;
-    }
+  @GET
+  @Path("count")
+  @Produces("text/plain")
+  public String count(@Context UriInfo info)
+  {
+    return String.valueOf(getEntityManager().createNamedQuery("Area.countAll").getSingleResult());
+  }
+
+  private EntityManager getEntityManager()
+  {
+    return em;
+  }
 
 }

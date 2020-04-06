@@ -16,54 +16,70 @@
  */
 package mmud.rest.services.admin;
 
-import javax.persistence.EntityManager;
-import javax.ws.rs.core.Response;
-import javax.ws.rs.core.SecurityContext;
 import mmud.database.entities.Ownage;
 import mmud.database.entities.game.Admin;
 import mmud.exceptions.MudWebException;
 
+import javax.persistence.EntityManager;
+import javax.ws.rs.core.Response;
+import javax.ws.rs.core.SecurityContext;
+
 /**
- *
  * @author maartenl
  */
 class OwnerHelper
 {
 
-    private EntityManager em;
+  private EntityManager em;
 
-    private EntityManager getEntityManager()
+  private EntityManager getEntityManager()
+  {
+    return em;
+  }
+
+  OwnerHelper(EntityManager em)
+  {
+    this.em = em;
+  }
+
+  /**
+   * Sees if the attribute is owned by the deputy with that name. Otherwise, throws a {@link MudWebException}.
+   *
+   * @param name      the name of the admin/deputy.
+   * @param attribute the attribute to check
+   * @return the admin/deputy
+   * @throws MudWebException if not the owner of the attribute.
+   */
+  Admin authorize(final String name, Ownage attribute) throws MudWebException
+  {
+    Admin admin = getEntityManager().find(Admin.class, name);
+    if (attribute.getOwner() != null && !attribute.getOwner().getName().equals(name))
     {
-        return em;
+      throw new MudWebException(name, name + " is not the owner of the object. " + attribute.getOwner().getName() + " is.", Response.Status.UNAUTHORIZED);
     }
+    return admin;
+  }
 
-    OwnerHelper(EntityManager em)
+  /**
+   * Remove ownership of a certain attribute, setting the property deputy to null.
+   *
+   * @param id          the id of the object
+   * @param sc          the security context
+   * @param entityClass the entity class (can be a lot of things, really)
+   * @param <T>         template which extends {@link Ownage}.
+   */
+  <T extends Ownage> void disown(Object id, SecurityContext sc, Class<T> entityClass)
+  {
+    final String name = sc.getUserPrincipal().getName();
+
+    T attribute = getEntityManager().find(entityClass, id);
+
+    if (attribute == null)
     {
-        this.em = em;
+      throw new MudWebException(name, id + " not found.", Response.Status.NOT_FOUND);
     }
-
-    Admin authorize(final String name, Ownage attribute) throws MudWebException
-    {
-        Admin admin = getEntityManager().find(Admin.class, name);
-        if (attribute.getOwner() != null && !attribute.getOwner().getName().equals(name))
-        {
-            throw new MudWebException(name, name + " is not the owner of the object. " + attribute.getOwner().getName() + " is.", Response.Status.UNAUTHORIZED);
-        }
-        return admin;
-    }
-
-    <T extends Ownage> void disown(Object id, SecurityContext sc, Class<T> entityClass)
-    {
-        final String name = sc.getUserPrincipal().getName();
-
-        T attribute = getEntityManager().find(entityClass, id);
-
-        if (attribute == null)
-        {
-            throw new MudWebException(name, id + " not found.", Response.Status.NOT_FOUND);
-        }
-        Admin admin = authorize(name, attribute);
-        attribute.setOwner(null);
-    }
+    Admin admin = authorize(name, attribute);
+    attribute.setOwner(null);
+  }
 
 }

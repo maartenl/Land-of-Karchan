@@ -97,10 +97,53 @@ public class AdminItem
     return JsonbBuilder.create().toJson(this);
   }
 
+  @Override
+  public String toString()
+  {
+    return "AdminItem{" +
+      "id=" + id +
+      ", name='" + name + '\'' +
+      ", adject1='" + adject1 + '\'' +
+      ", adject2='" + adject2 + '\'' +
+      ", adject3='" + adject3 + '\'' +
+      ", manaincrease=" + manaincrease +
+      ", hitincrease=" + hitincrease +
+      ", vitalincrease=" + vitalincrease +
+      ", movementincrease=" + movementincrease +
+      ", eatable='" + eatable + '\'' +
+      ", drinkable='" + drinkable + '\'' +
+      ", lightable=" + lightable +
+      ", getable=" + getable +
+      ", dropable=" + dropable +
+      ", visible=" + visible +
+      ", wieldable=" + wieldable +
+      ", description='" + description + '\'' +
+      ", readdescr='" + readdescr + '\'' +
+      ", wearable=" + wearable +
+      ", copper=" + copper +
+      ", weight=" + weight +
+      ", pasdefense=" + pasdefense +
+      ", damageresistance=" + damageresistance +
+      ", container=" + container +
+      ", owner='" + owner + '\'' +
+      ", creation=" + creation +
+      ", capacity=" + capacity +
+      ", isopenable=" + isopenable +
+      ", keyid=" + keyid +
+      ", containtype=" + containtype +
+      ", notes='" + notes + '\'' +
+      ", image='" + image + '\'' +
+      ", title='" + title + '\'' +
+      ", discriminator=" + discriminator +
+      ", bound=" + bound +
+      '}';
+  }
+
   public static AdminItem fromJson(String json)
   {
     Jsonb jsonb = JsonbBuilder.create();
-    AdminItem adminItem = jsonb.fromJson(json, AdminItem.class);
-    return adminItem;
+    return jsonb.fromJson(json, AdminItem.class);
   }
+
+
 }

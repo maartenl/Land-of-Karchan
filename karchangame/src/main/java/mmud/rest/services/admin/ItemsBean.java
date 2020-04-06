@@ -19,12 +19,14 @@ package mmud.rest.services.admin;
 import mmud.database.entities.game.Admin;
 import mmud.database.entities.items.ItemDefinition;
 import mmud.exceptions.MudWebException;
+import mmud.rest.services.LogBean;
 import mmud.rest.webentities.admin.AdminItem;
 
 import javax.annotation.security.DeclareRoles;
 import javax.annotation.security.RolesAllowed;
 import javax.ejb.LocalBean;
 import javax.ejb.Stateless;
+import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.ws.rs.*;
@@ -52,6 +54,9 @@ public class ItemsBean //implements AdminRestService<String>
 
   @PersistenceContext(unitName = "karchangamePU")
   private EntityManager em;
+
+  @Inject
+  private LogBean logBean;
 
   @POST
   @Consumes(
@@ -110,6 +115,7 @@ public class ItemsBean //implements AdminRestService<String>
     item.setOwner(admin);
     ValidationUtils.checkValidation(name, item);
     getEntityManager().persist(item);
+    logBean.writeDeputyLog(admin, "New item definition '" + item.getId() + "' created.");
   }
 
   @PUT
@@ -121,21 +127,64 @@ public class ItemsBean //implements AdminRestService<String>
   public void edit(@PathParam("id") Long id, String json, @Context SecurityContext sc)
   {
     AdminItem adminItem = AdminItem.fromJson(json);
+    LOGGER.info(adminItem.toString());
     final String name = sc.getUserPrincipal().getName();
     if (!id.equals(adminItem.id))
     {
       throw new MudWebException(name, "Item definition ids do not match.", Response.Status.BAD_REQUEST);
     }
-    ItemDefinition item = getEntityManager().find(ItemDefinition.class, adminItem.name);
+    ItemDefinition item = getEntityManager().find(ItemDefinition.class, adminItem.id);
 
     if (item == null)
     {
       throw new MudWebException(name, "Item definition " + id + " not found.", Response.Status.NOT_FOUND);
     }
     Admin admin = (new OwnerHelper(getEntityManager())).authorize(name, item);
-    // TODO: setters aanroepen
+    item.setName(adminItem.name);
+    item.setAdject1(adminItem.adject1);
+    item.setAdject2(adminItem.adject2);
+    item.setAdject3(adminItem.adject3);
+    item.setManaincrease(adminItem.manaincrease);
+    item.setHitincrease(adminItem.hitincrease);
+    item.setVitalincrease(adminItem.vitalincrease);
+    item.setMovementincrease(adminItem.movementincrease);
+    item.setEatable(adminItem.eatable);
+    item.setDrinkable(adminItem.drinkable);
+    item.setLightable(adminItem.lightable);
+    item.setGetable(adminItem.getable);
+    item.setDropable(adminItem.dropable);
+    item.setVisible(adminItem.visible);
+//    item.getWieldable()
+    item.setDescription(adminItem.description);
+    item.setReaddescription(adminItem.readdescr);
+//    item.setWearable()
+    item.setCopper(adminItem.copper);
+    item.setWeight(adminItem.weight);
+    item.setPasdefense(adminItem.pasdefense);
+    item.setDamageresistance(adminItem.damageresistance);
+    item.setContainer(adminItem.container);
+    item.setCapacity(adminItem.capacity);
+    item.setOpenable(adminItem.isopenable);
+    if (adminItem.keyid != null)
+    {
+      ItemDefinition key = getEntityManager().find(ItemDefinition.class, adminItem.keyid);
+      if (key == null)
+      {
+        throw new MudWebException(name, "Item definition for key of item " + item.getId() + " not found.", Response.Status.NOT_FOUND);
+      }
+      item.setKey(key);
+    }
+    item.setContaintype(adminItem.containtype);
+    item.setNotes(adminItem.notes);
+    item.setImage(adminItem.image);
+    item.setTitle(adminItem.title);
+    if (adminItem.bound != null)
+    {
+      item.setBound(adminItem.bound);
+    }
     item.setOwner(admin);
     ValidationUtils.checkValidation(name, item);
+    logBean.writeDeputyLog(admin, "Item definition '" + item.getId() + "' updated.");
   }
 
   @DELETE
@@ -151,6 +200,7 @@ public class ItemsBean //implements AdminRestService<String>
     }
     Admin admin = (new OwnerHelper(getEntityManager())).authorize(name, item);
     getEntityManager().remove(item);
+    logBean.writeDeputyLog(admin, "Item definition '" + item.getId() + "' deleted.");
   }
 
   @GET
@@ -179,10 +229,9 @@ public class ItemsBean //implements AdminRestService<String>
     })
   public String findAll(@Context UriInfo info)
   {
-    List<String> items = null;
-    items = getEntityManager().createNativeQuery(AdminItem.GET_QUERY)
+    List<String> items = getEntityManager().createNativeQuery(AdminItem.GET_QUERY)
       .getResultList();
-    return "[" + items.stream().collect(Collectors.joining(",")) + "]";
+    return "[" + String.join(",", items) + "]";
   }
 
   @GET
@@ -196,12 +245,11 @@ public class ItemsBean //implements AdminRestService<String>
                           @PathParam("pageSize") Integer pageSize
   )
   {
-    List<String> items = null;
-    items = getEntityManager().createNativeQuery(AdminItem.GET_QUERY)
+    List<String> items = getEntityManager().createNativeQuery(AdminItem.GET_QUERY)
       .setMaxResults(pageSize)
       .setFirstResult(offset)
       .getResultList();
-    return "[" + items.stream().collect(Collectors.joining(",")) + "]";
+    return "[" + String.join(",", items) + "]";
   }
 
   @GET
