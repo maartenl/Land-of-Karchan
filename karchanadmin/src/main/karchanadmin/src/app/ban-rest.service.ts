@@ -22,7 +22,7 @@ export class BanRestService {
   }
 
   public getBannedIPs(): Observable<any> {
-    return this.http.get<BannedIP[]>(environment.BAN_URL)
+    return this.http.get<BannedIP[]>(environment.BAN_URL + '/bannedips')
       .pipe(
         catchError(err => {
           this.handleError(err);
@@ -30,7 +30,28 @@ export class BanRestService {
         })
       );
   }
-  
+
+  deleteBannedIP(banned: BannedIP): Observable<any> {
+    return this.http.delete(environment.BAN_URL + '/bannedips/' + banned.address)
+      .pipe(
+        catchError(err => {
+          this.handleError(err);
+          return [];
+        })
+      );
+  }
+
+  createBannedIP(banned: BannedIP) {
+    // new
+    return this.http.post(environment.BAN_URL + '/bannedips', banned)
+      .pipe(
+        catchError(err => {
+          this.handleError(err);
+          return [];
+        })
+      );
+  }
+
   /**
    * Handles error, delivers them to the errorService.
    * @param error the error message received from the HTTP call
