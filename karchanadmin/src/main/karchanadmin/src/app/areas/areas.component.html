@@ -44,7 +44,7 @@
                     </thead>
                     <tbody>
                         <tr *cdkVirtualFor="let area of items; templateCacheSize: 0" [ngClass]="isActive(area)"
-                            (click)="setItemById(area.id)">
+                            (click)="setItemById(area.area)">
                             <td *ngIf="area">{{ area.area }}</td>
                             <td *ngIf="area">{{ area.owner }}</td>
                             <td *ngIf="area">{{ area.creation }}</td>
