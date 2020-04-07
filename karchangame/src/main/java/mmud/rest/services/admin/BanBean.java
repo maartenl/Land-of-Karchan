@@ -18,9 +18,11 @@ package mmud.rest.services.admin;
 
 import mmud.database.entities.game.Admin;
 import mmud.database.entities.game.BanTable;
+import mmud.database.entities.game.BannedName;
 import mmud.exceptions.MudWebException;
 import mmud.rest.services.LogBean;
 import mmud.rest.webentities.admin.bans.AdminBannedIP;
+import mmud.rest.webentities.admin.bans.AdminBannedName;
 
 import javax.annotation.security.DeclareRoles;
 import javax.annotation.security.RolesAllowed;
@@ -69,6 +71,19 @@ public class BanBean
     return "[" + String.join(",", items) + "]";
   }
 
+  @GET
+  @Path("bannednames")
+  @Produces(
+    {
+      "application/json"
+    })
+  public String findAllBannedNames(@Context UriInfo info)
+  {
+    List<String> items = getEntityManager().createNativeQuery(AdminBannedName.GET_QUERY)
+      .getResultList();
+    return "[" + String.join(",", items) + "]";
+  }
+
   @POST
   @Consumes(
     {
@@ -95,9 +110,31 @@ public class BanBean
   }
 
 
+  @POST
+  @Consumes(
+    {
+      "application/json"
+    })
+  @Path("bannednames")
+  public void createBannedName(String json, @Context SecurityContext sc)
+  {
+    AdminBannedName adminItem = AdminBannedName.fromJson(json);
+    final String name = sc.getUserPrincipal().getName();
+    Admin admin = getEntityManager().find(Admin.class, name);
+
+    BannedName item = new BannedName();
+    item.setCreation(LocalDateTime.now());
+    item.setDays(adminItem.days);
+    item.setDeputy(admin.getName());
+    item.setName(adminItem.name);
+    item.setReason(adminItem.reason);
+    ValidationUtils.checkValidation(name, item);
+    getEntityManager().persist(item);
+    logBean.writeDeputyLog(admin, "New banned name '" + item.getName() + "' created.");
+  }
+
   @DELETE
   @Path("bannedips/{address}")
-
   public void removeBannedIP(@PathParam("address") String address, @Context SecurityContext sc)
   {
     final String name = sc.getUserPrincipal().getName();
@@ -113,6 +150,25 @@ public class BanBean
     }
     getEntityManager().remove(item);
     logBean.writeDeputyLog(admin, "Banned IP '" + item.getAddress() + "' deleted.");
+  }
+
+  @DELETE
+  @Path("bannednames/{name}")
+  public void removeBannedName(@PathParam("name") String bannedName, @Context SecurityContext sc)
+  {
+    final String name = sc.getUserPrincipal().getName();
+    final BannedName item = getEntityManager().find(BannedName.class, bannedName);
+    if (item == null)
+    {
+      throw new MudWebException(name, "Banned name " + bannedName + " not found.", Response.Status.NOT_FOUND);
+    }
+    Admin admin = getEntityManager().find(Admin.class, name);
+    if (admin == null)
+    {
+      throw new MudWebException(name, "Administrator " + name + " not found.", Response.Status.UNAUTHORIZED);
+    }
+    getEntityManager().remove(item);
+    logBean.writeDeputyLog(admin, "Banned name '" + item.getName() + "' deleted.");
   }
 
   private EntityManager getEntityManager()

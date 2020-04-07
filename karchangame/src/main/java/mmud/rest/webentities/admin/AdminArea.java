@@ -18,7 +18,7 @@ public class AdminArea
 
   public AdminArea()
   {
-    // empty constructor, for creating a AdminRoom from scratch.
+    // empty constructor, for creating a web entity from scratch.
   }
 
   public AdminArea(Area item)

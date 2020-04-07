@@ -21,7 +21,7 @@ public class AdminBannedIP
 
   public AdminBannedIP()
   {
-    // empty constructor, for creating a AdminRoom from scratch.
+    // empty constructor, for creating a web entity from scratch.
   }
 
   public AdminBannedIP(BanTable item)

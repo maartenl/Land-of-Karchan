@@ -48,7 +48,7 @@ public class AdminItem
 
   public AdminItem()
   {
-    // empty constructor, for creating a AdminRoom from scratch.
+    // empty constructor, for creating a web entity from scratch.
   }
 
   public AdminItem(ItemDefinition item)

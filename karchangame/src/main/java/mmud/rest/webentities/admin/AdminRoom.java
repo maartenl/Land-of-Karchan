@@ -53,7 +53,7 @@ public class AdminRoom
 
   public AdminRoom()
   {
-    // empty constructor, for creating a AdminRoom from scratch.
+    // empty constructor, for creating a web entity from scratch.
   }
 
   public AdminRoom(Room room)
