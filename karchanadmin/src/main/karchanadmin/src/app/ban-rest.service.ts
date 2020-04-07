@@ -10,6 +10,7 @@ import { ErrorsService } from './errors.service';
 import { BannedIP } from './ban/banned.model';
 import { Bannedname } from './ban/bannednames.model';
 import { Sillyname } from './ban/sillynames.model';
+import { Unbannedname } from './ban/unbanned.model';
 
 @Injectable({
   providedIn: 'root'
@@ -114,6 +115,36 @@ export class BanRestService {
       );
   }
 
+  public getUnbannednames(): Observable<any> {
+    return this.http.get<Unbannedname[]>(environment.BAN_URL + '/unbannednames')
+      .pipe(
+        catchError(err => {
+          this.handleError(err);
+          return [];
+        })
+      );
+  }
+
+  deleteUnbannedname(banned: Unbannedname): Observable<any> {
+    return this.http.delete(environment.BAN_URL + '/unbannednames/' + banned.name)
+      .pipe(
+        catchError(err => {
+          this.handleError(err);
+          return [];
+        })
+      );
+  }
+
+  createUnbannedname(banned: Unbannedname) {
+    // new
+    return this.http.post(environment.BAN_URL + '/unbannednames', banned)
+      .pipe(
+        catchError(err => {
+          this.handleError(err);
+          return [];
+        })
+      );
+  }
   /**
    * Handles error, delivers them to the errorService.
    * @param error the error message received from the HTTP call
