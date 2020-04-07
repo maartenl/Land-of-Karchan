@@ -9,6 +9,7 @@ import { AreasComponent } from './areas/areas.component';
 import { CommandsComponent } from './commands/commands.component';
 import { ItemsComponent } from './items/items.component';
 import { BanComponent } from './ban/ban.component';
+import { ManpagesComponent } from './manpages/manpages.component';
 
 const routes: Routes = [
   { path: 'blogs', component: BlogsComponent },
@@ -24,7 +25,8 @@ const routes: Routes = [
   { path: 'commands', component: CommandsComponent },
   { path: 'items/:id', component: ItemsComponent },
   { path: 'items', component: ItemsComponent },
-  { path: 'ban', component: BanComponent }
+  { path: 'ban', component: BanComponent },
+  { path: 'manpages', component: ManpagesComponent }
 ];
 
 @NgModule({

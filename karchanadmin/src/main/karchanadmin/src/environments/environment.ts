@@ -12,7 +12,8 @@ export const environment = {
   COMMANDS_URL: '/assets/commands.json',
   AREAS_URL: '/assets/areas.json',
   ITEMS_URL: '/assets/items.json',
-  BAN_URL: '/assets/ban.json'
+  BAN_URL: '/assets/ban.json',
+  MANPAGES_URL: '/assets/manpages.json'
   };
 
 /*
