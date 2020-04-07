@@ -12,10 +12,6 @@
                     <input type="text" class="form-control" id="IP" name="IP" formControlName="IP">
                 </fieldset>
                 <fieldset class="form-group">
-                    <label for="IP">IP</label>
-                    <input type="text" class="form-control" id="IP" name="IP" formControlName="IP">
-                </fieldset>
-                <fieldset class="form-group">
                     <label for="days">Days</label>
                     <input type="number" class="form-control" id="days" name="days" formControlName="days">
                 </fieldset>
@@ -28,7 +24,7 @@
                     <input type="text" class="form-control" id="deputy" name="deputy" formControlName="deputy">
                 </fieldset>
                 <fieldset class="form-group">
-                    <label for="date">Date</label>
+                    <label for="date">Creation</label>
                     <input type="text" class="form-control" id="date" name="date" formControlName="date">
                 </fieldset>
                 <fieldset class="form-group">
@@ -51,6 +47,7 @@
                         <th scope="col">IP</th>
                         <th scope="col">Name</th>
                         <th scope="col">Deputy</th>
+                        <th scope="col">Creation</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -59,6 +56,7 @@
                         <td *ngIf="item">{{ item.IP }}</td>
                         <td *ngIf="item">{{ item.name }}</td>
                         <td *ngIf="item">{{ item.deputy }}</td>
+                        <td *ngIf="item">{{ item.date }}</td>
                     </tr>
                 </tbody>
             </table>

@@ -12,11 +12,8 @@ export const environment = {
   COMMANDS_URL: '/assets/commands.json',
   AREAS_URL: '/assets/areas.json',
   ITEMS_URL: '/assets/items.json',
-  BAN_URL: '/assets/banned.json',
-  UNBAN_URL: '/assets/unbanned.json',
-  SILLYNAMES_URL: '/assets/sillynames.json',
-  BANNEDNAMES_URL: '/assets/bannednames.json'
-};
+  BAN_URL: '/assets/ban.json'
+  };
 
 /*
  * For easier debugging in development mode, you can import the following file

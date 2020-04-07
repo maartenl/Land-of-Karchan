@@ -1,2 +1,53 @@
-<h1>Banned names</h1>>
-mm_bannednamestable
+<div class="container-fluid">
+    <div class="row row-content">
+        <div class="col-xs-12 col-xl-6">
+            <h1>Banned name {{ item === undefined ? '-' : item.name }}</h1>
+            <form [formGroup]="form" novalidate>
+                <fieldset class="form-group">
+                    <label for="name">Name</label>
+                    <input type="text" class="form-control" id="name" name="name" formControlName="name">
+                </fieldset>
+                <fieldset class="form-group">
+                    <label for="days">Days</label>
+                    <input type="number" class="form-control" id="days" name="days" formControlName="days">
+                </fieldset>
+                <fieldset class="form-group">
+                    <label for="deputy">Deputy</label>
+                    <input type="text" class="form-control" id="deputy" name="deputy" formControlName="deputy">
+                </fieldset>
+                <fieldset class="form-group">
+                    <label for="creation">Creation</label>
+                    <input type="text" class="form-control" id="creation" name="creation" formControlName="creation">
+                </fieldset>
+                <fieldset class="form-group">
+                    <label for="reason">Reason</label>
+                    <input type="reason" class="form-control" id="reason" name="reason" formControlName="reason">
+                </fieldset>
+                <div class="col-xs-12 col-sm-12 text-right"> 
+                    <button type="submit" [disabled]="form.pristine" class="mx-1 btn btn-primary"
+                        (click)="createItem()">Create</button>
+                    <button type="button" class="mx-1 btn btn-secondary" (click)="deleteItem()">Delete</button>
+                    <button type="reset" class="mx-1 btn btn-secondary" (click)="cancel()">Cancel</button>
+                </div>
+            </form>
+        </div>
+        <div class="col-xs-12 col-xl-6">
+            <table class="table table-sm table-hover">
+                <thead>
+                    <tr>
+                        <th scope="col">Banned name</th>
+                        <th scope="col">Deputy</th>
+                        <th scope="col">Creation</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let item of items; " (click)="setItem(item)">
+                        <td *ngIf="item">{{ item.name }}</td>
+                        <td *ngIf="item">{{ item.deputy }}</td>
+                        <td *ngIf="item">{{ item.creation }}</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
