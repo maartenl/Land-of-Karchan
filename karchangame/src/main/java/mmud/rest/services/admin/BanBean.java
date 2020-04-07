@@ -16,15 +16,13 @@
  */
 package mmud.rest.services.admin;
 
-import mmud.database.entities.game.Admin;
-import mmud.database.entities.game.BanTable;
-import mmud.database.entities.game.BannedName;
-import mmud.database.entities.game.SillyName;
+import mmud.database.entities.game.*;
 import mmud.exceptions.MudWebException;
 import mmud.rest.services.LogBean;
 import mmud.rest.webentities.admin.bans.AdminBannedIP;
 import mmud.rest.webentities.admin.bans.AdminBannedName;
 import mmud.rest.webentities.admin.bans.AdminSillyName;
+import mmud.rest.webentities.admin.bans.AdminUnbannedName;
 
 import javax.annotation.security.DeclareRoles;
 import javax.annotation.security.RolesAllowed;
@@ -95,6 +93,19 @@ public class BanBean
   public String findAllSillyNames(@Context UriInfo info)
   {
     List<String> items = getEntityManager().createNativeQuery(AdminSillyName.GET_QUERY)
+      .getResultList();
+    return "[" + String.join(",", items) + "]";
+  }
+
+  @GET
+  @Path("unbannednames")
+  @Produces(
+    {
+      "application/json"
+    })
+  public String findAllUnbannedNames(@Context UriInfo info)
+  {
+    List<String> items = getEntityManager().createNativeQuery(AdminUnbannedName.GET_QUERY)
       .getResultList();
     return "[" + String.join(",", items) + "]";
   }
@@ -182,6 +193,30 @@ public class BanBean
     logBean.writeDeputyLog(admin, "New silly name '" + item.getName() + "' created.");
   }
 
+  @POST
+  @Consumes(
+    {
+      "application/json"
+    })
+  @Path("unbannednames")
+  public void createUnbannedName(String json, @Context SecurityContext sc)
+  {
+    AdminUnbannedName adminItem = AdminUnbannedName.fromJson(json);
+    final String name = sc.getUserPrincipal().getName();
+    Admin admin = getEntityManager().find(Admin.class, name);
+    final UnbanTable existingItem = getEntityManager().find(UnbanTable.class, adminItem.name);
+    if (existingItem != null)
+    {
+      throw new MudWebException(name, "Silly name " + adminItem.name + " already exists.", Response.Status.PRECONDITION_FAILED);
+    }
+
+    UnbanTable item = new UnbanTable();
+    item.setName(adminItem.name);
+    ValidationUtils.checkValidation(name, item);
+    getEntityManager().persist(item);
+    logBean.writeDeputyLog(admin, "New unbanned name '" + item.getName() + "' created.");
+  }
+
   @DELETE
   @Path("bannedips/{address}")
   public void removeBannedIP(@PathParam("address") String address, @Context SecurityContext sc)
@@ -237,6 +272,25 @@ public class BanBean
     }
     getEntityManager().remove(item);
     logBean.writeDeputyLog(admin, "Silly name '" + item.getName() + "' deleted.");
+  }
+
+  @DELETE
+  @Path("unbannednames/{name}")
+  public void removeUnbannedName(@PathParam("name") String unbannedName, @Context SecurityContext sc)
+  {
+    final String name = sc.getUserPrincipal().getName();
+    final UnbanTable item = getEntityManager().find(UnbanTable.class, unbannedName);
+    if (item == null)
+    {
+      throw new MudWebException(name, "Unbanned name " + unbannedName + " not found.", Response.Status.NOT_FOUND);
+    }
+    Admin admin = getEntityManager().find(Admin.class, name);
+    if (admin == null)
+    {
+      throw new MudWebException(name, "Administrator " + name + " not found.", Response.Status.UNAUTHORIZED);
+    }
+    getEntityManager().remove(item);
+    logBean.writeDeputyLog(admin, "Unbanned name '" + item.getName() + "' deleted.");
   }
 
   private EntityManager getEntityManager()
