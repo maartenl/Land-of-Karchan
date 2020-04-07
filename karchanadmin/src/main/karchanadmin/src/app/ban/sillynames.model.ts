@@ -2,20 +2,12 @@ import { AdminObject } from '../admin/admin-object.model';
 
 export class Sillyname implements AdminObject<string> {
     name: string;
-    deputy: string;
-    creation: string;
-    days: number;
-    reason: string;
 
     constructor(object?: any) {
         if (object === undefined) {
             return;
         }
         this.name = object.name;
-        this.days = object.days;
-        this.deputy = object.deputy;
-        this.creation = object.creation;
-        this.reason = object.reason;
     }
 
     getIdentifier(): string {
@@ -27,7 +19,7 @@ export class Sillyname implements AdminObject<string> {
     }
 
     getType(): string {
-        return 'Bannedname';
+        return 'Silly name';
     }
 
 }

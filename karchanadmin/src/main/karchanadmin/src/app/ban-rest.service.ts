@@ -9,6 +9,7 @@ import { environment } from '../environments/environment';
 import { ErrorsService } from './errors.service';
 import { BannedIP } from './ban/banned.model';
 import { Bannedname } from './ban/bannednames.model';
+import { Sillyname } from './ban/sillynames.model';
 
 @Injectable({
   providedIn: 'root'
@@ -74,6 +75,37 @@ export class BanRestService {
   createBannedname(banned: Bannedname) {
     // new
     return this.http.post(environment.BAN_URL + '/bannednames', banned)
+      .pipe(
+        catchError(err => {
+          this.handleError(err);
+          return [];
+        })
+      );
+  }
+
+  public getSillynames(): Observable<any> {
+    return this.http.get<Sillyname[]>(environment.BAN_URL + '/sillynames')
+      .pipe(
+        catchError(err => {
+          this.handleError(err);
+          return [];
+        })
+      );
+  }
+
+  deleteSillyname(banned: Sillyname): Observable<any> {
+    return this.http.delete(environment.BAN_URL + '/sillynames/' + banned.name)
+      .pipe(
+        catchError(err => {
+          this.handleError(err);
+          return [];
+        })
+      );
+  }
+
+  createSillyname(banned: Sillyname) {
+    // new
+    return this.http.post(environment.BAN_URL + '/sillynames', banned)
       .pipe(
         catchError(err => {
           this.handleError(err);
