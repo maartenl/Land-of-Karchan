@@ -19,10 +19,12 @@ package mmud.rest.services.admin;
 import mmud.database.entities.game.Admin;
 import mmud.database.entities.game.BanTable;
 import mmud.database.entities.game.BannedName;
+import mmud.database.entities.game.SillyName;
 import mmud.exceptions.MudWebException;
 import mmud.rest.services.LogBean;
 import mmud.rest.webentities.admin.bans.AdminBannedIP;
 import mmud.rest.webentities.admin.bans.AdminBannedName;
+import mmud.rest.webentities.admin.bans.AdminSillyName;
 
 import javax.annotation.security.DeclareRoles;
 import javax.annotation.security.RolesAllowed;
@@ -84,6 +86,19 @@ public class BanBean
     return "[" + String.join(",", items) + "]";
   }
 
+  @GET
+  @Path("sillynames")
+  @Produces(
+    {
+      "application/json"
+    })
+  public String findAllSillyNames(@Context UriInfo info)
+  {
+    List<String> items = getEntityManager().createNativeQuery(AdminSillyName.GET_QUERY)
+      .getResultList();
+    return "[" + String.join(",", items) + "]";
+  }
+
   @POST
   @Consumes(
     {
@@ -95,6 +110,11 @@ public class BanBean
     AdminBannedIP adminItem = AdminBannedIP.fromJson(json);
     final String name = sc.getUserPrincipal().getName();
     Admin admin = getEntityManager().find(Admin.class, name);
+    final BanTable existingItem = getEntityManager().find(BanTable.class, adminItem.address);
+    if (existingItem != null)
+    {
+      throw new MudWebException(name, "Banned IP " + adminItem.address + " already exists.", Response.Status.PRECONDITION_FAILED);
+    }
 
     BanTable item = new BanTable();
     item.setAddress(adminItem.address);
@@ -121,6 +141,11 @@ public class BanBean
     AdminBannedName adminItem = AdminBannedName.fromJson(json);
     final String name = sc.getUserPrincipal().getName();
     Admin admin = getEntityManager().find(Admin.class, name);
+    final BannedName existingItem = getEntityManager().find(BannedName.class, adminItem.name);
+    if (existingItem != null)
+    {
+      throw new MudWebException(name, "Banned name " + adminItem.name + " already exists.", Response.Status.PRECONDITION_FAILED);
+    }
 
     BannedName item = new BannedName();
     item.setCreation(LocalDateTime.now());
@@ -131,6 +156,30 @@ public class BanBean
     ValidationUtils.checkValidation(name, item);
     getEntityManager().persist(item);
     logBean.writeDeputyLog(admin, "New banned name '" + item.getName() + "' created.");
+  }
+
+  @POST
+  @Consumes(
+    {
+      "application/json"
+    })
+  @Path("sillynames")
+  public void createSillyName(String json, @Context SecurityContext sc)
+  {
+    AdminSillyName adminItem = AdminSillyName.fromJson(json);
+    final String name = sc.getUserPrincipal().getName();
+    Admin admin = getEntityManager().find(Admin.class, name);
+    final SillyName existingItem = getEntityManager().find(SillyName.class, adminItem.name);
+    if (existingItem != null)
+    {
+      throw new MudWebException(name, "Silly name " + adminItem.name + " already exists.", Response.Status.PRECONDITION_FAILED);
+    }
+
+    SillyName item = new SillyName();
+    item.setName(adminItem.name);
+    ValidationUtils.checkValidation(name, item);
+    getEntityManager().persist(item);
+    logBean.writeDeputyLog(admin, "New silly name '" + item.getName() + "' created.");
   }
 
   @DELETE
@@ -169,6 +218,25 @@ public class BanBean
     }
     getEntityManager().remove(item);
     logBean.writeDeputyLog(admin, "Banned name '" + item.getName() + "' deleted.");
+  }
+
+  @DELETE
+  @Path("sillynames/{name}")
+  public void removeSillyName(@PathParam("name") String sillyName, @Context SecurityContext sc)
+  {
+    final String name = sc.getUserPrincipal().getName();
+    final SillyName item = getEntityManager().find(SillyName.class, sillyName);
+    if (item == null)
+    {
+      throw new MudWebException(name, "Silly name " + sillyName + " not found.", Response.Status.NOT_FOUND);
+    }
+    Admin admin = getEntityManager().find(Admin.class, name);
+    if (admin == null)
+    {
+      throw new MudWebException(name, "Administrator " + name + " not found.", Response.Status.UNAUTHORIZED);
+    }
+    getEntityManager().remove(item);
+    logBean.writeDeputyLog(admin, "Silly name '" + item.getName() + "' deleted.");
   }
 
   private EntityManager getEntityManager()
