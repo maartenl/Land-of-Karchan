@@ -126,7 +126,6 @@ public class ItemsBean //implements AdminRestService<String>
   public void edit(@PathParam("id") Long id, String json, @Context SecurityContext sc)
   {
     AdminItem adminItem = AdminItem.fromJson(json);
-    LOGGER.info(adminItem.toString());
     final String name = sc.getUserPrincipal().getName();
     if (!id.equals(adminItem.id))
     {
@@ -211,7 +210,6 @@ public class ItemsBean //implements AdminRestService<String>
 
   public String find(@PathParam("id") Long id, @Context SecurityContext sc)
   {
-
     final String name = sc.getUserPrincipal().getName();
     ItemDefinition item = getEntityManager().find(ItemDefinition.class, id);
     if (item == null)

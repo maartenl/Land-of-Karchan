@@ -16,44 +16,40 @@
  */
 package mmud.rest.services.admin;
 
-import java.time.LocalDateTime;
-import java.util.ArrayList;
-
-import java.util.List;
-import java.util.logging.Logger;
-import javax.annotation.security.DeclareRoles;
-import javax.annotation.security.RolesAllowed;
-import javax.ejb.Stateless;
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
-import javax.ws.rs.Consumes;
-import javax.ws.rs.DELETE;
-import javax.ws.rs.GET;
-import javax.ws.rs.POST;
-import javax.ws.rs.PUT;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.Produces;
-import javax.ws.rs.core.Context;
-import javax.ws.rs.core.Response;
-import javax.ws.rs.core.SecurityContext;
 import mmud.database.entities.characters.Person;
 import mmud.database.entities.game.Admin;
 import mmud.database.entities.game.Event;
 import mmud.database.entities.game.Method;
 import mmud.database.entities.game.Room;
 import mmud.exceptions.MudWebException;
+import mmud.rest.services.LogBean;
 import mmud.rest.webentities.admin.AdminEvent;
 
+import javax.annotation.security.DeclareRoles;
+import javax.annotation.security.RolesAllowed;
+import javax.ejb.Stateless;
+import javax.inject.Inject;
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+import javax.ws.rs.*;
+import javax.ws.rs.core.Context;
+import javax.ws.rs.core.Response;
+import javax.ws.rs.core.SecurityContext;
+import javax.ws.rs.core.UriInfo;
+import java.time.LocalDateTime;
+import java.util.List;
+import java.util.logging.Logger;
+
+import static mmud.rest.services.admin.ValidationUtils.checkValidation;
+
 /**
- *
  * @author maartenl
  */
 @DeclareRoles("deputy")
 @RolesAllowed("deputy")
 @Stateless
 @Path("/administration/events")
-public class EventBean extends AbstractFacade<Event>
+public class EventBean // extends AbstractFacade<Event>
 {
 
   private static final Logger LOGGER = Logger.getLogger(EventBean.class.getName());
@@ -61,33 +57,35 @@ public class EventBean extends AbstractFacade<Event>
   @PersistenceContext(unitName = "karchangamePU")
   private EntityManager em;
 
-  public EventBean()
-  {
-    super(Event.class);
-  }
+  @Inject
+  private LogBean logBean;
 
   @POST
   @Consumes(
-          {
-            "application/xml", "application/json"
-          })
-  public void create(AdminEvent entity, @Context SecurityContext sc)
+    {
+      "application/json"
+    })
+  public void create(String json, @Context SecurityContext sc)
   {
+    AdminEvent entity = AdminEvent.fromJson(json);
     final String name = sc.getUserPrincipal().getName();
+    Admin admin = getEntityManager().find(Admin.class, name);
+
     Event newEvent = createEvent(entity, name);
     newEvent.setEventid(entity.eventid);
     create(newEvent, sc);
+    logBean.writeDeputyLog(admin, "New event '" + entity.eventid + "' created.");
   }
 
   private Event createEvent(AdminEvent entity, final String name) throws MudWebException
   {
     Person person = null;
-    if (entity.person != null && !entity.person.trim().equals(""))
+    if (entity.name != null && !entity.name.trim().equals(""))
     {
-      person = getEntityManager().find(Person.class, entity.person);
+      person = getEntityManager().find(Person.class, entity.name);
       if (person == null)
       {
-        throw new MudWebException(name, "Person " + entity.person + " was not found.", Response.Status.NOT_FOUND);
+        throw new MudWebException(name, "Person " + entity.name + " was not found.", Response.Status.NOT_FOUND);
       }
     }
     Room room = null;
@@ -99,13 +97,13 @@ public class EventBean extends AbstractFacade<Event>
         throw new MudWebException(name, "Room " + entity.room + " was not found.", Response.Status.NOT_FOUND);
       }
     }
-    Method method = null;
-    if (entity.method != null && !entity.method.trim().equals(""))
+    Method method;
+    if (entity.methodname != null && !entity.methodname.trim().equals(""))
     {
-      method = getEntityManager().find(Method.class, entity.method);
+      method = getEntityManager().find(Method.class, entity.methodname);
       if (method == null)
       {
-        throw new MudWebException(name, "Method " + entity.method + " was not found.", Response.Status.NOT_FOUND);
+        throw new MudWebException(name, "Method " + entity.methodname + " was not found.", Response.Status.NOT_FOUND);
       }
     } else
     {
@@ -124,7 +122,6 @@ public class EventBean extends AbstractFacade<Event>
     return newEvent;
   }
 
-  @Override
   public void create(Event entity, @Context SecurityContext sc)
   {
     final String name = sc.getUserPrincipal().getName();
@@ -138,38 +135,38 @@ public class EventBean extends AbstractFacade<Event>
   @PUT
   @Path("{id}")
   @Consumes(
-          {
-            "application/xml", "application/json"
-          })
-
-  public void edit(@PathParam("id") Integer id, AdminEvent entity, @Context SecurityContext sc)
-  {
-    final String name = sc.getUserPrincipal().getName();
-    Event newEvent = createEvent(entity, name);
-    edit(id, newEvent, sc);
-  }
-
-  public void edit(@PathParam("id") Integer id, Event entity, @Context SecurityContext sc)
-  {
-    final String name = sc.getUserPrincipal().getName();
-    Event attribute = super.find(id);
-
-    if (attribute == null)
     {
-      throw new MudWebException(name, id + " not found.", Response.Status.NOT_FOUND);
+      "application/json"
+    })
+  public void edit(@PathParam("id") Integer id, String json, @Context SecurityContext sc)
+  {
+    AdminEvent entity = AdminEvent.fromJson(json);
+    final String name = sc.getUserPrincipal().getName();
+    if (!id.equals(entity.eventid))
+    {
+      throw new MudWebException(name, "Event ids do not match.", Response.Status.BAD_REQUEST);
     }
-    Admin admin = (new OwnerHelper(getEntityManager())).authorize(name, attribute);
-    attribute.setCallable(entity.getCallable());
-    attribute.setDayofmonth(entity.getDayofmonth());
-    attribute.setDayofweek(entity.getDayofweek());
-    attribute.setHour(entity.getHour());
-    attribute.setMethod(entity.getMethod());
-    attribute.setMinute(entity.getMinute());
-    attribute.setMonth(entity.getMonth());
-    attribute.setPerson(entity.getPerson());
-    attribute.setRoom(entity.getRoom());
-    attribute.setOwner(admin);
-    checkValidation(name, attribute);
+
+    Event event = getEntityManager().find(Event.class, entity.eventid);
+
+    if (event == null)
+    {
+      throw new MudWebException(name, "Event " + id + " not found.", Response.Status.NOT_FOUND);
+    }
+    Event newEvent = createEvent(entity, name);
+    Admin admin = (new OwnerHelper(getEntityManager())).authorize(name, event);
+    event.setCallable(newEvent.getCallable());
+    event.setDayofmonth(newEvent.getDayofmonth());
+    event.setDayofweek(newEvent.getDayofweek());
+    event.setHour(newEvent.getHour());
+    event.setMethod(newEvent.getMethod());
+    event.setMinute(newEvent.getMinute());
+    event.setMonth(newEvent.getMonth());
+    event.setPerson(newEvent.getPerson());
+    event.setRoom(newEvent.getRoom());
+    event.setOwner(admin);
+    checkValidation(name, event);
+    logBean.writeDeputyLog(admin, "Event '" + event.getEventid() + "' updated.");
   }
 
   @DELETE
@@ -177,88 +174,56 @@ public class EventBean extends AbstractFacade<Event>
   public void remove(@PathParam("id") Integer id, @Context SecurityContext sc)
   {
     final String name = sc.getUserPrincipal().getName();
-    final Event attribute = super.find(id);
-    Admin admin = (new OwnerHelper(getEntityManager())).authorize(name, attribute);
-    super.remove(attribute);
+    Event event = getEntityManager().find(Event.class, id);
+    Admin admin = (new OwnerHelper(getEntityManager())).authorize(name, event);
+    getEntityManager().remove(event);
+    logBean.writeDeputyLog(admin, "Event '" + event.getEventid() + "' deleted.");
   }
 
   @GET
   @Path("{id}")
   @Produces(
-          {
-            "application/xml", "application/json"
-          })
-  public AdminEvent find(@PathParam("id") Integer id)
-  {
-    Event event = super.find(id);
-    if (event == null)
     {
-      return null;
+      "application/json"
+    })
+  public String find(@PathParam("id") Integer id, @Context SecurityContext sc)
+  {
+    final String name = sc.getUserPrincipal().getName();
+    Event item = getEntityManager().find(Event.class, id);
+    if (item == null)
+    {
+      throw new MudWebException(name, "Event " + id + " not found.", Response.Status.NOT_FOUND);
     }
-    AdminEvent result = getAdminEvent(event);
-    return result;
+    return new AdminEvent(item).toJson();
   }
 
-  private AdminEvent getAdminEvent(Event event)
-  {
-    AdminEvent result = new AdminEvent();
-    result.callable = event.getCallable();
-    result.creation = event.getCreation();
-    result.dayofmonth = event.getDayofmonth();
-    result.dayofweek = event.getDayofweek();
-    result.eventid = event.getEventid();
-    result.hour = event.getHour();
-    result.method = event.getMethod().getName();
-    result.minute = event.getMinute();
-    result.month = event.getMonth();
-    result.owner = event.getOwner();
-    result.person = event.getPerson() != null ? event.getPerson().getName() : null;
-    result.room = event.getRoom() != null ? event.getRoom().getId() : null;
-    return result;
-  }
-
-  @DELETE
-  @Path("{id}/owner")
-  public void disown(@PathParam("id") Integer id, @Context SecurityContext sc)
-  {
-    (new OwnerHelper(getEntityManager())).disown(id, sc, Event.class);
-  }
 
   @GET
   @Produces(
-          {
-            "application/xml", "application/json"
-          })
-  public List<AdminEvent> findAllAdminEvents()
-  {
-    LOGGER.info("findAll");
-    List<Event> all = super.findAll();
-    final List<AdminEvent> result = new ArrayList<>();
-    for (Event event : all)
     {
-      result.add(getAdminEvent(event));
-    }
-    return result;
+      "application/json"
+    })
+  public String findAll()
+  {
+    List<String> items = getEntityManager().createNativeQuery(AdminEvent.GET_QUERY)
+      .getResultList();
+    return "[" + String.join(",", items) + "]";
   }
 
   @GET
-  @Path("{from}/{to}")
+  @Path("{offset}/{pageSize}")
   @Produces(
-          {
-            "application/xml", "application/json"
-          })
-  public List<AdminEvent> findRange(@PathParam("from") Integer from, @PathParam("to") Integer to)
+    {
+      "application/xml", "application/json"
+    })
+  public String findRange(@Context UriInfo info, @PathParam("offset") Integer offset,
+                          @PathParam("pageSize") Integer pageSize)
   {
-    List<Event> all = super.findRange(new int[]
-    {
-      from, to
-    });
-    final List<AdminEvent> result = new ArrayList<>();
-    for (Event event : all)
-    {
-      result.add(getAdminEvent(event));
-    }
-    return result;
+    List<String> items = getEntityManager().createNativeQuery(AdminEvent.GET_QUERY)
+      .setMaxResults(pageSize)
+      .setFirstResult(offset)
+      .getResultList();
+    return "[" + String.join(",", items) + "]";
   }
 
   @GET
@@ -266,11 +231,10 @@ public class EventBean extends AbstractFacade<Event>
   @Produces("text/plain")
   public String countREST()
   {
-    return String.valueOf(super.count());
+    return String.valueOf(getEntityManager().createNamedQuery("Event.countAll").getSingleResult());
   }
 
-  @Override
-  protected EntityManager getEntityManager()
+  public EntityManager getEntityManager()
   {
     return em;
   }

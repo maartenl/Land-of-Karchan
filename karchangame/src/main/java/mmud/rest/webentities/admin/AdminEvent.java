@@ -17,29 +17,62 @@
 package mmud.rest.webentities.admin;
 
 
-import java.time.LocalDateTime;
-import javax.xml.bind.annotation.XmlRootElement;
-import mmud.database.entities.game.Admin;
 import mmud.database.entities.game.Event;
 
+import javax.json.bind.Jsonb;
+import javax.json.bind.JsonbBuilder;
+import java.time.LocalDateTime;
+
 /**
- * @see Event
  * @author maartenl
+ * @see Event
  */
-@XmlRootElement
 public class AdminEvent
 {
+  public static final String GET_QUERY = "select json_object(\"eventid\", eventid, \"name\", name, \"methodname\", method_name, \"room\", room, \"owner\", owner, \"creation\", creation) from mm_events order by eventid";
 
-    public Integer eventid;
-    public String person;
-    public Integer month;
-    public Integer dayofmonth;
-    public Integer hour;
-    public Integer minute;
-    public Integer dayofweek;
-    public Boolean callable;
-    public Long room;
-    public LocalDateTime creation;
-    public Admin owner;
-    public String method;
+  public Integer eventid;
+  public String name;
+  public Integer month;
+  public Integer dayofmonth;
+  public Integer hour;
+  public Integer minute;
+  public Integer dayofweek;
+  public Boolean callable;
+  public Long room;
+  public LocalDateTime creation;
+  public String owner;
+  public String methodname;
+
+  public AdminEvent()
+  {
+    // empty constructor, for creating a web entity from scratch.
+  }
+
+  public AdminEvent(Event item)
+  {
+    this.eventid = item.getEventid();
+    this.name = item.getPerson() == null ? null : item.getPerson().getName();
+    this.month = item.getMonth();
+    this.dayofmonth = item.getDayofmonth();
+    this.hour = item.getHour();
+    this.minute = item.getMinute();
+    this.dayofweek = item.getDayofweek();
+    this.callable = item.getCallable();
+    this.room = item.getRoom() == null ? null : item.getRoom().getId();
+    this.methodname = item.getMethod() == null ? null : item.getMethod().getName();
+    this.creation = item.getCreation();
+    this.owner = item.getOwner() == null ? null : item.getOwner().getName();
+  }
+
+  public String toJson()
+  {
+    return JsonbBuilder.create().toJson(this);
+  }
+
+  public static AdminEvent fromJson(String json)
+  {
+    Jsonb jsonb = JsonbBuilder.create();
+    return jsonb.fromJson(json, AdminEvent.class);
+  }
 }
