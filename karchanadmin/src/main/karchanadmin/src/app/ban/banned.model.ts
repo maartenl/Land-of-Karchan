@@ -31,7 +31,7 @@ export class BannedIP implements AdminObject<string> {
     }
 
     getType(): string {
-        return 'Banned';
+        return 'Banned address';
     }
 
 }
