@@ -30,6 +30,7 @@ import { SillynamesComponent } from './ban/sillynames/sillynames.component';
 import { UnbannedComponent } from './ban/unbanned/unbanned.component';
 import { ManpagesComponent } from './manpages/manpages.component';
 import { EventsComponent } from './events/events.component';
+import { WorldattributesComponent } from './worldattributes/worldattributes.component';
 
 @NgModule({
   declarations: [
@@ -50,7 +51,8 @@ import { EventsComponent } from './events/events.component';
     SillynamesComponent,
     UnbannedComponent,
     ManpagesComponent,
-    EventsComponent
+    EventsComponent,
+    WorldattributesComponent
   ],
   imports: [
     BrowserModule,

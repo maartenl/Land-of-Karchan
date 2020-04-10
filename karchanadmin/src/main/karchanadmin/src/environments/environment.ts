@@ -14,7 +14,8 @@ export const environment = {
   ITEMS_URL: '/assets/items.json',
   BAN_URL: '/assets/ban.json',
   MANPAGES_URL: '/assets/manpages.json',
-  EVENTS_URL: '/assets/events.json'
+  EVENTS_URL: '/assets/events.json',
+  WORLDATTRIBUTES_URL: '/assets/worldattributes.json'
   };
 
 /*

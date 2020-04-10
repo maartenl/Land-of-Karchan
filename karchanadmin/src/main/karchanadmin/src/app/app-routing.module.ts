@@ -11,6 +11,7 @@ import { ItemsComponent } from './items/items.component';
 import { BanComponent } from './ban/ban.component';
 import { ManpagesComponent } from './manpages/manpages.component';
 import { EventsComponent } from './events/events.component';
+import { WorldattributesComponent } from './worldattributes/worldattributes.component';
 
 const routes: Routes = [
   { path: 'blogs', component: BlogsComponent },
@@ -28,7 +29,8 @@ const routes: Routes = [
   { path: 'items', component: ItemsComponent },
   { path: 'ban', component: BanComponent },
   { path: 'manpages', component: ManpagesComponent },
-  { path: 'events', component: EventsComponent }
+  { path: 'events', component: EventsComponent },
+  { path: 'worldattributes', component: WorldattributesComponent }
 ];
 
 @NgModule({

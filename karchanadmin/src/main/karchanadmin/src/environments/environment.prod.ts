@@ -10,5 +10,6 @@ export const environment = {
   ITEMS_URL: '/karchangame/resources/administration/items',
   BAN_URL: '/karchangame/resources/administration/ban',
   MANPAGES_URL: '/karchangame/resources/administration/manpages',
-  EVENTS_URL: '/karchangame/resources/administration/events'
+  EVENTS_URL: '/karchangame/resources/administration/events',
+  WORLDATTRIBUTES_URL: '/karchangame/resources/administration/worldattributes'
 };
