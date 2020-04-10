@@ -1,0 +1,85 @@
+<div class="container-fluid">
+    <div class="row row-content">
+        <div class="col-xs-12 col-xl-6">
+            <h1>Event {{ item === undefined ? '-' : item.eventid }}</h1>            
+            <form [formGroup]="form" novalidate>
+                <fieldset class="form-group">
+                    <label for="eventid">Event id</label>
+                    <input type="number" class="form-control" id="eventid" name="eventid" formControlName="eventid">
+                </fieldset>
+                <fieldset class="form-group">
+                    <label for="name">Name</label>
+                    <input type="text" class="form-control" id="name" name="name" formControlName="name">
+                </fieldset>
+                <fieldset class="form-group">
+                    <label for="month">Month</label>
+                    <input type="number" class="form-control" id="month" name="month" formControlName="month">
+                </fieldset>
+                <fieldset class="form-group">
+                    <label for="dayofmonth">Day of month</label>
+                    <input type="number" class="form-control" id="dayofmonth" name="dayofmonth" formControlName="dayofmonth">
+                </fieldset>
+                <fieldset class="form-group">
+                    <label for="hour">Hour</label>
+                    <input type="number" class="form-control" id="hour" name="hour" formControlName="hour">
+                </fieldset>
+                <fieldset class="form-group">
+                    <label for="minute">Minute</label>
+                    <input type="number" class="form-control" id="minute" name="minute" formControlName="minute">
+                </fieldset>
+                <fieldset class="form-group">
+                    <label for="dayofweek">Day of week</label>
+                    <input type="number" class="form-control" id="dayofweek" name="dayofweek" formControlName="dayofweek">
+                </fieldset>
+                <fieldset class="form-group">
+                    <label for="methodname">Methodname</label>
+                    <input type="text" class="form-control" id="methodname" name="methodname" formControlName="methodname">
+                </fieldset>
+                <fieldset class="form-group">
+                    <label for="room">Room</label>
+                    <input type="number" class="form-control" id="room" name="room" formControlName="room">
+                </fieldset>
+                <fieldset class="form-group">
+                    <label for="owner">Owner</label>
+                    <input type="text" class="form-control" id="owner" name="owner" formControlName="owner">
+                </fieldset>
+                <div class="col-xs-12 col-sm-12 text-right">
+                    <button type="submit" [disabled]="form.pristine" class="mx-1 btn btn-primary"
+                        (click)="updateItem()">Update</button>
+                    <button type="submit" [disabled]="form.pristine" class="mx-1 btn btn-primary"
+                        (click)="createItem()">Create</button>
+                    <button type="button" class="mx-1 btn btn-secondary" (click)="deleteItem()">Delete</button>
+                    <button type="reset" class="mx-1 btn btn-secondary" (click)="cancel()">Cancel</button>
+                </div>
+            </form>
+        </div>
+        <div class="col-xs-12 col-xl-6">
+            <button type="button" class="mx-1 btn btn-secondary" (click)="refresh()">Refresh</button>
+            <cdk-virtual-scroll-viewport style="height: 400px;" [itemSize]="33">
+                <table class="table table-sm table-hover">
+                    <thead>
+                        <tr>
+                            <th scope="col">Event id</th>
+                            <th scope="col">Name</th>
+                            <th scope="col">Method name</th>
+                            <th scope="col">Room</th>
+                            <th scope="col">Owner</th>
+                            <th scope="col">Creation</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *cdkVirtualFor="let event of items; templateCacheSize: 0" [ngClass]="isActive(event)"
+                            (click)="setItemById(event.eventid)">
+                            <td *ngIf="event">{{ event.eventid }}</td>
+                            <td *ngIf="event">{{ event.name }}</td>
+                            <td *ngIf="event">{{ event.methodname }}</td>
+                            <td *ngIf="event">{{ event.room }}</td>
+                            <td *ngIf="event">{{ event.owner }}</td>
+                            <td *ngIf="event">{{ event.creation }}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </cdk-virtual-scroll-viewport>
+        </div>
+    </div>
+</div>
