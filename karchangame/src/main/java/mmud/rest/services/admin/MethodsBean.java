@@ -16,38 +16,33 @@
  */
 package mmud.rest.services.admin;
 
-import java.time.LocalDateTime;
-import java.util.List;
-import java.util.logging.Logger;
-import java.util.stream.Collectors;
-import javax.annotation.security.DeclareRoles;
-import javax.annotation.security.RolesAllowed;
-import javax.ejb.LocalBean;
-import javax.ejb.Stateless;
-import javax.json.bind.JsonbBuilder;
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
-import javax.ws.rs.Consumes;
-import javax.ws.rs.DELETE;
-import javax.ws.rs.GET;
-import javax.ws.rs.POST;
-import javax.ws.rs.PUT;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.Produces;
-import javax.ws.rs.core.Context;
-import javax.ws.rs.core.Response;
-import javax.ws.rs.core.SecurityContext;
-import javax.ws.rs.core.UriInfo;
 import mmud.database.entities.game.Admin;
 import mmud.database.entities.game.Method;
 import mmud.database.entities.game.UserCommand;
 import mmud.exceptions.MudWebException;
+import mmud.rest.services.LogBean;
 import mmud.rest.webentities.admin.AdminMethod;
 import mmud.rest.webentities.admin.AdminUserCommand;
 
+import javax.annotation.security.DeclareRoles;
+import javax.annotation.security.RolesAllowed;
+import javax.ejb.LocalBean;
+import javax.ejb.Stateless;
+import javax.inject.Inject;
+import javax.json.bind.JsonbBuilder;
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+import javax.ws.rs.*;
+import javax.ws.rs.core.Context;
+import javax.ws.rs.core.Response;
+import javax.ws.rs.core.SecurityContext;
+import javax.ws.rs.core.UriInfo;
+import java.time.LocalDateTime;
+import java.util.List;
+import java.util.logging.Logger;
+import java.util.stream.Collectors;
+
 /**
- *
  * @author maartenl
  */
 @DeclareRoles("deputy")
@@ -63,12 +58,14 @@ public class MethodsBean //implements AdminRestService<String>
   @PersistenceContext(unitName = "karchangamePU")
   private EntityManager em;
 
+  @Inject
+  private LogBean logBean;
+
   @POST
   @Consumes(
-          {
-            "application/json"
-          })
-
+    {
+      "application/json"
+    })
   public void create(String json, @Context SecurityContext sc)
   {
     AdminMethod adminMethod = AdminMethod.fromJson(json);
@@ -82,15 +79,15 @@ public class MethodsBean //implements AdminRestService<String>
     method.setOwner(admin);
     ValidationUtils.checkValidation(name, method);
     getEntityManager().persist(method);
+    logBean.writeDeputyLog(admin, "New method '" + method.getName() + "' created.");
   }
 
   @PUT
   @Path("{id}")
   @Consumes(
-          {
-            "application/json"
-          })
-
+    {
+      "application/json"
+    })
   public void edit(@PathParam("id") String id, String json, @Context SecurityContext sc)
   {
     AdminMethod adminMethod = AdminMethod.fromJson(json);
@@ -129,9 +126,9 @@ public class MethodsBean //implements AdminRestService<String>
   @GET
   @Path("{id}")
   @Produces(
-          {
-            "application/json"
-          })
+    {
+      "application/json"
+    })
 
   public String find(@PathParam("id") String id, @Context SecurityContext sc)
   {
@@ -148,49 +145,47 @@ public class MethodsBean //implements AdminRestService<String>
   @GET
   @Path("{id}/commands")
   @Produces(
-          {
-            "application/json"
-          })
+    {
+      "application/json"
+    })
 
   public String getCommands(@PathParam("id") String id,
-          @Context SecurityContext sc)
+                            @Context SecurityContext sc)
   {
     final String name = sc.getUserPrincipal().getName();
     final List<UserCommand> userCommands = getEntityManager().createNamedQuery("UserCommand.findByMethodName").setParameter("methodname", id).getResultList();
-    List<AdminUserCommand> adminCommands = userCommands.stream().map(command -> new AdminUserCommand(command)).collect(Collectors.toList());
+    List<AdminUserCommand> adminCommands = userCommands.stream().map(AdminUserCommand::new).collect(Collectors.toList());
     return JsonbBuilder.create().toJson(adminCommands);
   }
 
   @GET
   @Produces(
-          {
-            "application/json"
-          })
+    {
+      "application/json"
+    })
   public String findAll(@Context UriInfo info)
   {
-    List<String> methods = null;
-    methods = getEntityManager().createNativeQuery(AdminMethod.GET_QUERY)
-            .getResultList();
-    return "[" + methods.stream().collect(Collectors.joining(",")) + "]";
+    List<String> methods = getEntityManager().createNativeQuery(AdminMethod.GET_QUERY)
+      .getResultList();
+    return "[" + String.join(",", methods) + "]";
   }
 
   @GET
   @Path("{offset}/{pageSize}")
   @Produces(
-          {
-            "application/json"
-          })
+    {
+      "application/json"
+    })
 
   public String findRange(@Context UriInfo info, @PathParam("offset") Integer offset,
-          @PathParam("pageSize") Integer pageSize
+                          @PathParam("pageSize") Integer pageSize
   )
   {
-    List<String> methods = null;
-    methods = getEntityManager().createNativeQuery(AdminMethod.GET_QUERY)
-            .setMaxResults(pageSize)
-            .setFirstResult(offset)
-            .getResultList();
-    return "[" + methods.stream().collect(Collectors.joining(",")) + "]";
+    List<String> methods = getEntityManager().createNativeQuery(AdminMethod.GET_QUERY)
+      .setMaxResults(pageSize)
+      .setFirstResult(offset)
+      .getResultList();
+    return "[" + String.join(",", methods) + "]";
   }
 
   @GET

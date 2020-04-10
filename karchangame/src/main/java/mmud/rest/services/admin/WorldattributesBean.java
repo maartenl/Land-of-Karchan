@@ -17,159 +17,175 @@
 package mmud.rest.services.admin;
 
 
-import java.time.LocalDateTime;
-import java.util.List;
-import java.util.logging.Logger;
+import mmud.database.entities.game.Admin;
+import mmud.database.entities.game.Help;
+import mmud.database.entities.game.Worldattribute;
+import mmud.exceptions.MudWebException;
+import mmud.rest.services.LogBean;
+import mmud.rest.webentities.admin.AdminManpage;
+import mmud.rest.webentities.admin.AdminWorldattribute;
+import mmud.scripting.World;
+
 import javax.annotation.security.DeclareRoles;
 import javax.annotation.security.RolesAllowed;
 import javax.ejb.Stateless;
+import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
-import javax.ws.rs.Consumes;
-import javax.ws.rs.DELETE;
-import javax.ws.rs.GET;
-import javax.ws.rs.POST;
-import javax.ws.rs.PUT;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.Produces;
+import javax.ws.rs.*;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.SecurityContext;
-import mmud.database.entities.game.Admin;
-import mmud.database.entities.game.Worldattribute;
-import mmud.exceptions.MudWebException;
+import javax.ws.rs.core.UriInfo;
+import java.time.LocalDateTime;
+import java.util.List;
+import java.util.logging.Logger;
 
 /**
- *
  * @author maartenl
  */
 @DeclareRoles("deputy")
 @RolesAllowed("deputy")
 @Stateless
 @Path("/administration/worldattributes")
-public class WorldattributesBean extends AbstractFacade<Worldattribute>
+public class WorldattributesBean
 {
 
-    private static final Logger LOGGER = Logger.getLogger(WorldattributesBean.class.getName());
+  private static final Logger LOGGER = Logger.getLogger(WorldattributesBean.class.getName());
 
-    @PersistenceContext(unitName = "karchangamePU")
-    private EntityManager em;
+  @PersistenceContext(unitName = "karchangamePU")
+  private EntityManager em;
 
-    public WorldattributesBean()
+  @Inject
+  private LogBean logBean;
+
+  @POST
+  @Consumes(
     {
-        super(Worldattribute.class);
+      "application/json"
+    })
+  public String create(String json, @Context SecurityContext sc)
+  {
+    AdminWorldattribute adminWorldattribute = AdminWorldattribute.fromJson(json);
+    final String name = sc.getUserPrincipal().getName();
+    Admin admin = getEntityManager().find(Admin.class, name);
+
+    final Worldattribute existingItem = getEntityManager().find(Worldattribute.class, adminWorldattribute.name);
+    if (existingItem != null)
+    {
+      throw new MudWebException(name, "Worldattribute for " + adminWorldattribute.name + " already exists.", Response.Status.PRECONDITION_FAILED);
+    }
+    Worldattribute entity = new Worldattribute();
+    entity.setName(adminWorldattribute.name);
+    entity.setType(adminWorldattribute.type);
+    entity.setContents(adminWorldattribute.contents);
+    entity.setCreation(LocalDateTime.now());
+    entity.setOwner(admin);
+    ValidationUtils.checkValidation(name, entity);
+    getEntityManager().persist(entity);
+    logBean.writeDeputyLog(admin, "New worldattribute '" + adminWorldattribute.name + "' created.");
+    return entity.getName();
+  }
+
+  @PUT
+  @Path("{id}")
+  @Consumes(
+    {
+      "application/json"
+    })
+  public void edit(@PathParam("id") String id, String json, @Context SecurityContext sc)
+  {
+    AdminWorldattribute adminWorldattribute = AdminWorldattribute.fromJson(json);
+    final String name = sc.getUserPrincipal().getName();
+    if (!id.equals(adminWorldattribute.name))
+    {
+      throw new MudWebException(name, "Worldattribute ids do not match.", Response.Status.BAD_REQUEST);
+    }
+    Worldattribute attribute = getEntityManager().find(Worldattribute.class, id);
+    if (attribute == null)
+    {
+      throw new MudWebException(name, id + " not found.", Response.Status.NOT_FOUND);
     }
 
-    @POST
-    @Override
-    @Consumes(
-            {
-                "application/xml", "application/json"
-            })
-    public void create(Worldattribute entity, @Context SecurityContext sc)
+    Admin admin = (new OwnerHelper(getEntityManager())).authorize(name, attribute);
+    attribute.setContents(adminWorldattribute.contents);
+    attribute.setType(adminWorldattribute.type);
+    attribute.setOwner(admin);
+    ValidationUtils.checkValidation(name, attribute);
+    logBean.writeDeputyLog(admin, "Worldattribute '" + id + "' updated.");
+  }
+
+  @DELETE
+  @Path("{id}")
+  public void remove(@PathParam("id") String id, @Context SecurityContext sc)
+  {
+    final String name = sc.getUserPrincipal().getName();
+    final Worldattribute attribute = getEntityManager().find(Worldattribute.class, id);
+    if (attribute == null)
     {
-        LOGGER.info("create");
-        final String name = sc.getUserPrincipal().getName();
-        Admin admin = getEntityManager().find(Admin.class, name);
-        LOGGER.info(admin.toString());
-        entity.setCreation(LocalDateTime.now());
-        entity.setOwner(admin);
-        LOGGER.info(entity.toString());
-        checkValidation(name, entity);
-        getEntityManager().persist(entity);
+      throw new MudWebException(name, "Worldattribute " + id + " not found.", Response.Status.NOT_FOUND);
     }
+    Admin admin = (new OwnerHelper(getEntityManager())).authorize(name, attribute);
+    getEntityManager().remove(attribute);
+    logBean.writeDeputyLog(admin, "Worldattribute '" + id + "' deleted.");
+  }
 
-    @PUT
-    @Path("{id}")
-    @Consumes(
-            {
-                "application/xml", "application/json"
-            })
-    public void edit(@PathParam("id") String id, Worldattribute entity, @Context SecurityContext sc)
+  @GET
+  @Path("{id}")
+  @Produces(
     {
-        LOGGER.info("edit");
-        final String name = sc.getUserPrincipal().getName();
-
-        Worldattribute attribute = find(id);
-
-        if (attribute == null)
-        {
-            throw new MudWebException(name, id + " not found.", Response.Status.NOT_FOUND);
-        }
-        Admin admin = (new OwnerHelper(getEntityManager())).authorize(name, attribute);
-        attribute.setContents(entity.getContents());
-        attribute.setType(entity.getType());
-        attribute.setOwner(admin);
-        checkValidation(name, attribute);
-    }
-
-    @DELETE
-    @Path("{id}")
-    public void remove(@PathParam("id") String id, @Context SecurityContext sc)
+      "application/json"
+    })
+  public String find(@PathParam("id") String id, @Context SecurityContext sc)
+  {
+    final String name = sc.getUserPrincipal().getName();
+    final Worldattribute worldattribute = getEntityManager().find(Worldattribute.class, id);
+    if (worldattribute == null)
     {
-        final String name = sc.getUserPrincipal().getName();
-        final Worldattribute attribute = find(id);
-        Admin admin = (new OwnerHelper(getEntityManager())).authorize(name, attribute);
-        remove(attribute);
+      throw new MudWebException(name, "Worldattribute " + id + " not found.", Response.Status.NOT_FOUND);
     }
+    return new AdminWorldattribute(worldattribute).toJson();
+  }
 
-    @DELETE
-    @Path("{id}/owner")
-    public void disown(@PathParam("id") String id, @Context SecurityContext sc)
+  @GET
+  @Produces(
     {
-        (new OwnerHelper(getEntityManager())).disown(id, sc, Worldattribute.class);
-    }
+      "application/json"
+    })
+  public String findAll(@Context UriInfo info)
+  {
+    List<String> items = getEntityManager().createNativeQuery(AdminWorldattribute.GET_QUERY)
+      .getResultList();
+    return "[" + String.join(",", items) + "]";
+  }
 
-    @GET
-    @Path("{id}")
-    @Produces(
-            {
-                "application/xml", "application/json"
-            })
-    public Worldattribute find(@PathParam("id") String id)
+  @GET
+  @Path("{offset}/{pageSize}")
+  @Produces(
     {
-        return super.find(id);
-    }
+      "application/json"
+    })
+  public String findRange(@Context UriInfo info, @PathParam("offset") Integer offset,
+                          @PathParam("pageSize") Integer pageSize)
+  {
+    List<String> items = getEntityManager().createNativeQuery(AdminWorldattribute.GET_QUERY)
+      .setMaxResults(pageSize)
+      .setFirstResult(offset)
+      .getResultList();
+    return "[" + String.join(",", items) + "]";
+  }
 
-    @GET
-    @Override
-    @Produces(
-            {
-                "application/xml", "application/json"
-            })
-    public List<Worldattribute> findAll()
-    {
-        final List<Worldattribute> collection = super.findAll();
-        return collection;
-    }
+  @GET
+  @Path("count")
+  @Produces("text/plain")
+  public String count(@Context UriInfo info)
+  {
+    return String.valueOf(getEntityManager().createNamedQuery("Worldattribute.countAll").getSingleResult());
+  }
 
-    @GET
-    @Path("{from}/{to}")
-    @Produces(
-            {
-                "application/xml", "application/json"
-            })
-    public List<Worldattribute> findRange(@PathParam("from") Integer from, @PathParam("to") Integer to)
-    {
-        return super.findRange(new int[]
-        {
-            from, to
-        });
-    }
-
-    @GET
-    @Path("count")
-    @Produces("text/plain")
-    public String countREST()
-    {
-        return String.valueOf(super.count());
-    }
-
-    @Override
-    protected EntityManager getEntityManager()
-    {
-        return em;
-    }
+  private EntityManager getEntityManager()
+  {
+    return em;
+  }
 
 }

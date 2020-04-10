@@ -32,148 +32,148 @@ import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlRootElement;
+
 import mmud.database.entities.Ownage;
 
 /**
- *
  * @author maartenl
  */
 @Entity
 @Table(name = "mm_worldattributes")
 @NamedQueries(
-        {
-            @NamedQuery(name = "Worldattribute.findAll", query = "SELECT w FROM Worldattribute w"),
-            @NamedQuery(name = "Worldattribute.findByName", query = "SELECT w FROM Worldattribute w WHERE w.name = :name"),
-            @NamedQuery(name = "Worldattribute.findByType", query = "SELECT w FROM Worldattribute w WHERE w.type = :type")
-        })
-@XmlRootElement
+  {
+    @NamedQuery(name = "Worldattribute.findAll", query = "SELECT w FROM Worldattribute w"),
+    @NamedQuery(name = "Worldattribute.findByName", query = "SELECT w FROM Worldattribute w WHERE w.name = :name"),
+    @NamedQuery(name = "Worldattribute.findByType", query = "SELECT w FROM Worldattribute w WHERE w.type = :type"),
+    @NamedQuery(name = "Worldattribute.countAll", query = "SELECT count(w) FROM Worldattribute w")
+  })
 public class Worldattribute implements Serializable, Ownage
 {
 
-    private static final long serialVersionUID = 1L;
+  private static final long serialVersionUID = 1L;
 
-    @Id
-    @Basic(optional = false)
-    @NotNull
-    @Size(min = 1, max = 180)
-    @Column(name = "name")
-    private String name;
+  @Id
+  @Basic(optional = false)
+  @NotNull
+  @Size(min = 1, max = 180)
+  @Column(name = "name")
+  private String name;
 
-    @Basic(optional = false)
-    @NotNull
-    @Size(min = 1, max = 40)
-    @Column(name = "type")
-    private String type;
+  @Basic(optional = false)
+  @NotNull
+  @Size(min = 1, max = 40)
+  @Column(name = "type")
+  private String type;
 
-    @Lob
-    @Size(max = 65535)
-    @Column(name = "contents")
-    private String contents;
+  @Lob
+  @Size(max = 65535)
+  @Column(name = "contents")
+  private String contents;
 
-    @JoinColumn(name = "owner", referencedColumnName = "name")
-    @ManyToOne
-    private Admin owner;
+  @JoinColumn(name = "owner", referencedColumnName = "name")
+  @ManyToOne
+  private Admin owner;
 
-    @Basic(optional = false)
-    @NotNull
-    @Column(name = "creation")
-    private LocalDateTime creation;
+  @Basic(optional = false)
+  @NotNull
+  @Column(name = "creation")
+  private LocalDateTime creation;
 
-    public Worldattribute()
+  public Worldattribute()
+  {
+  }
+
+  public Worldattribute(String name)
+  {
+    this.name = name;
+  }
+
+  public Worldattribute(String name, String type)
+  {
+    this.name = name;
+    this.type = type;
+  }
+
+  public String getName()
+  {
+    return name;
+  }
+
+  public void setName(String name)
+  {
+    this.name = name;
+  }
+
+  public String getType()
+  {
+    return type;
+  }
+
+  public void setType(String type)
+  {
+    this.type = type;
+  }
+
+  public String getContents()
+  {
+    return contents;
+  }
+
+  public void setContents(String contents)
+  {
+    this.contents = contents;
+  }
+
+  @Override
+  public Admin getOwner()
+  {
+    return owner;
+  }
+
+  @Override
+  public void setOwner(Admin owner)
+  {
+    this.owner = owner;
+  }
+
+  public LocalDateTime getCreation()
+  {
+    return creation;
+  }
+
+  public void setCreation(LocalDateTime creation)
+  {
+    this.creation = creation;
+  }
+
+  @Override
+  public int hashCode()
+  {
+    int hash = 0;
+    hash += (name != null ? name.hashCode() : 0);
+    return hash;
+  }
+
+  @Override
+  public boolean equals(Object object)
+  {
+    // TODO: Warning - this method won't work in the case the id fields are not set
+    if (!(object instanceof Worldattribute))
     {
+      return false;
     }
-
-    public Worldattribute(String name)
+    Worldattribute other = (Worldattribute) object;
+    if ((this.name == null && other.name != null) || (this.name != null && !this.name.equals(other.name)))
     {
-        this.name = name;
+      return false;
     }
+    return true;
+  }
 
-    public Worldattribute(String name, String type)
-    {
-        this.name = name;
-        this.type = type;
-    }
-
-    public String getName()
-    {
-        return name;
-    }
-
-    public void setName(String name)
-    {
-        this.name = name;
-    }
-
-    public String getType()
-    {
-        return type;
-    }
-
-    public void setType(String type)
-    {
-        this.type = type;
-    }
-
-    public String getContents()
-    {
-        return contents;
-    }
-
-    public void setContents(String contents)
-    {
-        this.contents = contents;
-    }
-
-    @Override
-    public Admin getOwner()
-    {
-        return owner;
-    }
-
-    @Override
-    public void setOwner(Admin owner)
-    {
-        this.owner = owner;
-    }
-
-    public LocalDateTime getCreation()
-    {
-        return creation;
-    }
-
-    public void setCreation(LocalDateTime creation)
-    {
-        this.creation = creation;
-    }
-
-    @Override
-    public int hashCode()
-    {
-        int hash = 0;
-        hash += (name != null ? name.hashCode() : 0);
-        return hash;
-    }
-
-    @Override
-    public boolean equals(Object object)
-    {
-        // TODO: Warning - this method won't work in the case the id fields are not set
-        if (!(object instanceof Worldattribute))
-        {
-            return false;
-        }
-        Worldattribute other = (Worldattribute) object;
-        if ((this.name == null && other.name != null) || (this.name != null && !this.name.equals(other.name)))
-        {
-            return false;
-        }
-        return true;
-    }
-
-    @Override
-    public String toString()
-    {
-        return "mmud.database.entities.game.Worldattribute[ name=" + name + " ]";
-    }
+  @Override
+  public String toString()
+  {
+    return "mmud.database.entities.game.Worldattribute[ name=" + name + " ]";
+  }
 
 }
