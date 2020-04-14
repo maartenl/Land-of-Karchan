@@ -1,0 +1,57 @@
+<div class="container-fluid">
+    <div class="row row-content">
+        <div class="col-xs-12 col-xl-6">
+            <h1>Event {{ item === undefined ? '-' : item.name }}</h1>
+            <form [formGroup]="form" novalidate>
+                <fieldset class="form-group">
+                    <label for="name">Name</label>
+                    <input type="text" class="form-control" id="name" name="name" formControlName="name">
+                </fieldset>
+                <fieldset class="form-group">
+                    <label for="type">Type</label>
+                    <input type="text" class="form-control" id="type" name="type" formControlName="type">
+                </fieldset>
+                <fieldset class="form-group">
+                    <label for="contents">Contents</label>
+                    <textarea class="form-control" id="contents" rows="13" formControlName="contents"></textarea>
+                </fieldset>
+                <fieldset class="form-group">
+                    <label for="owner">Owner</label>
+                    <input type="text" class="form-control" id="owner" name="owner" formControlName="owner">
+                </fieldset>
+                <div class="col-xs-12 col-sm-12 text-right">
+                    <button type="submit" [disabled]="form.pristine" class="mx-1 btn btn-primary"
+                        (click)="updateItem()">Update</button>
+                    <button type="submit" [disabled]="form.pristine" class="mx-1 btn btn-primary"
+                        (click)="createItem()">Create</button>
+                    <button type="button" class="mx-1 btn btn-secondary" (click)="deleteItem()">Delete</button>
+                    <button type="reset" class="mx-1 btn btn-secondary" (click)="cancel()">Cancel</button>
+                </div>
+            </form>
+        </div>
+        <div class="col-xs-12 col-xl-6">
+            <button type="button" class="mx-1 btn btn-secondary" (click)="refresh()">Refresh</button>
+            <cdk-virtual-scroll-viewport style="height: 400px;" [itemSize]="33">
+                <table class="table table-sm table-hover">
+                    <thead>
+                        <tr>
+                            <th scope="col">Name</th>
+                            <th scope="col">Type</th>
+                            <th scope="col">Owner</th>
+                            <th scope="col">Creation</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *cdkVirtualFor="let event of items; templateCacheSize: 0" [ngClass]="isActive(event)"
+                            (click)="setItemById(event.name)">
+                            <td *ngIf="event">{{ event.name }}</td>
+                            <td *ngIf="event">{{ event.type }}</td>
+                            <td *ngIf="event">{{ event.owner }}</td>
+                            <td *ngIf="event">{{ event.creation }}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </cdk-virtual-scroll-viewport>
+        </div>
+    </div>
+</div>
