@@ -26,6 +26,7 @@ import { WikipagesComponent } from './wikipages/wikipages.component';
 import { PicturesComponent } from './pictures/pictures.component';
 import { PlayComponent } from './play/play.component';
 import { ToastComponent } from './toast/toast.component';
+import { ComposeMailComponent } from './mail/compose-mail/compose-mail.component';
 
 @NgModule({
   declarations: [
@@ -40,7 +41,8 @@ import { ToastComponent } from './toast/toast.component';
     WikipagesComponent,
     PicturesComponent,
     PlayComponent,
-    ToastComponent
+    ToastComponent,
+    ComposeMailComponent
   ],
   imports: [
     BrowserModule,

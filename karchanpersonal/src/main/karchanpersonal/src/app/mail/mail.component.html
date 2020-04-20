@@ -7,11 +7,12 @@
             <th>#</th>
             <th>
               <a href="#" (click)="mails.toggleAll()">
-                <i class="material-icons align-middle">{{ mails.isAllSelected() ? "check_box": "check_box_outline_blank"}}</i>
-              </a>               
+                <i
+                  class="material-icons align-middle">{{ mails.isAllSelected() ? "check_box": "check_box_outline_blank"}}</i>
+              </a>
               <a href="#" (click)="deleteSelectedMails()">
                 <i class="material-icons align-middle">delete</i>
-              </a>               
+              </a>
             </th>
             <th>From</th>
             <th>Subject</th>
@@ -42,7 +43,8 @@
           <li class="page-item">
             <a class="page-link" href="#" tabindex="-1" (click)="mails.previous()">Previous</a>
           </li>
-          <li class="page-item" (click)="mails.setPage(header-1)" [ngClass]="{active: mails.page === (header-1)}" *ngFor="let header of mails.generatePages()"><a class="page-link" href="#">{{ header }}</a></li>
+          <li class="page-item" (click)="mails.setPage(header-1)" [ngClass]="{active: mails.page === (header-1)}"
+            *ngFor="let header of mails.generatePages()"><a class="page-link" href="#">{{ header }}</a></li>
           <li class="page-item">
             <a class="page-link" href="#" (click)="next()">Next</a>
           </li>
@@ -59,35 +61,6 @@
         </div>
       </div>
     </div>
-    <div class="col-xs-12 col-sm-12">
-      <h3>Compose Mail</h3>
-    </div>
-    <div class="col-xs-12 col-sm-12">
-      <form [formGroup]="mailForm" (ngSubmit)="send()" novalidate>
-        <fieldset class="form-group">
-          <label for="toname">To</label>
-          <input type="text" class="form-control" id="toname" name="toname" formControlName="toname">
-        </fieldset>
-        <fieldset class="form-group">
-          <label for="subject">Subject</label>
-          <input type="text" class="form-control" id="subject" name="subject" formControlName="subject">
-        </fieldset>
-        <div class="card">
-          <div class="card-header">
-            Body
-          </div>
-          <div class="card-text" [innerHTML]="mailForm.get('body').value">
-          </div>
-        </div>
-        <fieldset class="form-group">
-          <label for="body">Body</label>
-          <textarea class="form-control" id="body" rows="13" formControlName="body"></textarea>
-        </fieldset>
-        <div class="col-xs-12 col-sm-12 text-right">
-          <button type="submit" [disabled]="mailForm.pristine" class="btn btn-primary">Send</button>
-          <button type="reset" [disabled]="mailForm.pristine" class="btn btn-primary" (click)="cancel()">Cancel</button>
-        </div>
-      </form>
-    </div>
   </div>
 </div>
+<app-compose-mail [originalMail]="originalMail"></app-compose-mail>
