@@ -15,6 +15,9 @@ export class ComposeMailComponent implements OnInit {
 
   @Input()
   set originalMail(mail: Mail) {
+    if (mail === undefined || mail === null) {
+      return;
+    }
     this.mailForm.reset({
       toname: mail.name,
       subject: 'Re: ' + mail.subject,

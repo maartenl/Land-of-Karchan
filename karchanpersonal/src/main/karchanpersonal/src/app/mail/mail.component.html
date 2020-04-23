@@ -6,7 +6,7 @@
           <tr>
             <th>#</th>
             <th>
-              <a href="#" (click)="mails.toggleAll()">
+              <a href="#" (click)="toggleAll()">
                 <i
                   class="material-icons align-middle">{{ mails.isAllSelected() ? "check_box": "check_box_outline_blank"}}</i>
               </a>
@@ -24,7 +24,7 @@
           <tr *ngFor="let mail of mails.getMails()">
             <th scope="row"></th>
             <td>
-              <a href="#" (click)="mail.selected = !mail.selected">
+              <a href="#" (click)="toggleMail(mail)">
                 <i class="material-icons align-middle">{{ mail.selected ? "check_box": "check_box_outline_blank"}}</i>
               </a>
             </td>
@@ -41,9 +41,9 @@
       <nav aria-label="...">
         <ul class="pagination">
           <li class="page-item">
-            <a class="page-link" href="#" tabindex="-1" (click)="mails.previous()">Previous</a>
+            <a class="page-link" href="#" tabindex="-1" (click)="previous()">Previous</a>
           </li>
-          <li class="page-item" (click)="mails.setPage(header-1)" [ngClass]="{active: mails.page === (header-1)}"
+          <li class="page-item" (click)="setPage(header-1)" [ngClass]="{active: mails.page === (header-1)}"
             *ngFor="let header of mails.generatePages()"><a class="page-link" href="#">{{ header }}</a></li>
           <li class="page-item">
             <a class="page-link" href="#" (click)="next()">Next</a>

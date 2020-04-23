@@ -70,7 +70,7 @@ export class MailComponent implements OnInit {
     this.mail = mail;
   }
 
-  public deleteMail(mail: Mail): void {
+  public deleteMail(mail: Mail): boolean {
     this.playerService.deleteMail(mail).subscribe(
       (result: any) => { // on success
         this.mails.delete(mail);
@@ -86,12 +86,35 @@ export class MailComponent implements OnInit {
       () => { // on completion
       }
     );
-  }
-  public deleteSelectedMails(): void {
-    this.mails.getSelectedMails().forEach((mail) => this.deleteMail(mail));
+    return false;
   }
 
-  public next(): void {
+  public deleteSelectedMails(): boolean {
+    this.mails.getSelectedMails().forEach((mail) => this.deleteMail(mail));
+    return false;
+  }
+
+  public previous(): boolean {
+    this.mails.previous();
+    return false;
+  }
+
+  public setPage(page: number): boolean {
+    this.mails.setPage(page);
+    return false;
+  }
+
+  public toggleMail(mail: Mail) {
+    mail.selected = !mail.selected;
+    return false;
+  }
+
+  public toggleAll(): boolean {
+    this.mails.toggleAll();
+    return false;
+  }
+
+  public next(): boolean {
     if (this.mails.page !== this.mails.getNumberOfPages() - 1) {
       this.mails.next();
       return;
@@ -113,6 +136,7 @@ export class MailComponent implements OnInit {
       () => { // on completion
       }
     );
+    return false;
   }
 
 }
