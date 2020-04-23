@@ -200,9 +200,6 @@ public class ItemDefinition implements Serializable, Ownage
   @OneToMany(mappedBy = "itemDefinition")
   private Collection<Item> itemCollection;
 
-  @OneToMany(mappedBy = "itemDefinition")
-  private Collection<Mail> mailCollection;
-
   @JoinColumn(name = "owner", referencedColumnName = "name")
   @ManyToOne
   private Admin owner;
@@ -715,16 +712,6 @@ public class ItemDefinition implements Serializable, Ownage
   public void setItemCollection(Collection<Item> itemCollection)
   {
     this.itemCollection = itemCollection;
-  }
-
-  public Collection<Mail> getMailCollection()
-  {
-    return mailCollection;
-  }
-
-  public void setMailCollection(Collection<Mail> mailCollection)
-  {
-    this.mailCollection = mailCollection;
   }
 
   @Override

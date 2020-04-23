@@ -28,6 +28,7 @@
     <class>mmud.database.entities.game.Log</class>
     <class>mmud.database.entities.game.Macro</class>
     <class>mmud.database.entities.game.Mail</class>
+    <class>mmud.database.entities.game.MailReceiver</class>
     <class>mmud.database.entities.game.Method</class>
     <class>mmud.database.entities.game.Room</class>
     <class>mmud.database.entities.game.Roomattribute</class>
