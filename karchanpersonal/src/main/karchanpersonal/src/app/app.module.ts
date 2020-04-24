@@ -27,6 +27,8 @@ import { PicturesComponent } from './pictures/pictures.component';
 import { PlayComponent } from './play/play.component';
 import { ToastComponent } from './toast/toast.component';
 import { ComposeMailComponent } from './mail/compose-mail/compose-mail.component';
+import { InboxMailComponent } from './mail/inbox-mail/inbox-mail.component';
+import { ShowMailComponent } from './mail/show-mail/show-mail.component';
 
 @NgModule({
   declarations: [
@@ -42,7 +44,9 @@ import { ComposeMailComponent } from './mail/compose-mail/compose-mail.component
     PicturesComponent,
     PlayComponent,
     ToastComponent,
-    ComposeMailComponent
+    ComposeMailComponent,
+    InboxMailComponent,
+    ShowMailComponent
   ],
   imports: [
     BrowserModule,
