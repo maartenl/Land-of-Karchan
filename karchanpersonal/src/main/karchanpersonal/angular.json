@@ -121,6 +121,10 @@
           }
         }
       }
-    }},
-  "defaultProject": "karchanpersonal"
+    }
+  },
+  "defaultProject": "karchanpersonal",
+  "cli": {
+    "analytics": "c70b411f-2cfd-4e0c-be90-e0d53995b1f5"
+  }
 }
