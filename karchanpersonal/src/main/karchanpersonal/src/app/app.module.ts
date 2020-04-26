@@ -29,6 +29,7 @@ import { ToastComponent } from './toast/toast.component';
 import { ComposeMailComponent } from './mail/compose-mail/compose-mail.component';
 import { InboxMailComponent } from './mail/inbox-mail/inbox-mail.component';
 import { ShowMailComponent } from './mail/show-mail/show-mail.component';
+import { SentMailComponent } from './mail/sent-mail/sent-mail.component';
 
 @NgModule({
   declarations: [
@@ -46,7 +47,8 @@ import { ShowMailComponent } from './mail/show-mail/show-mail.component';
     ToastComponent,
     ComposeMailComponent,
     InboxMailComponent,
-    ShowMailComponent
+    ShowMailComponent,
+    SentMailComponent
   ],
   imports: [
     BrowserModule,

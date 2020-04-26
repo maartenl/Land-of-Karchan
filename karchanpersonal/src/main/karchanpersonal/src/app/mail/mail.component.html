@@ -1,2 +1,22 @@
-<app-inbox-mail (originalMail)="setOriginalMail($event)"></app-inbox-mail>
+<div class="container">
+    <div class="row row-content">
+        <div class="col-xs-12 col-sm-12">
+            <ul ngbNav #nav="ngbNav" class="nav nav-tabs">
+                <li [ngbNavItem]="1">
+                    <a ngbNavLink>Inbox</a>
+                    <ng-template ngbNavContent>
+                        <app-inbox-mail (originalMail)="setOriginalMail($event)"></app-inbox-mail>
+                    </ng-template>
+                </li>
+                <li [ngbNavItem]="2">
+                    <a ngbNavLink>Sent</a>
+                    <ng-template ngbNavContent>
+                        <app-sent-mail></app-sent-mail>
+                    </ng-template>
+                </li>
+            </ul>
+        </div>
+    </div>
+</div>
+<div [ngbNavOutlet]="nav"></div>
 <app-compose-mail [originalMail]="originalMail"></app-compose-mail>
