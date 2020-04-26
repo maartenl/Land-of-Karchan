@@ -93,6 +93,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -111,6 +112,7 @@ import java.util.logging.Logger;
 public class PrivateBean {
 
   @EJB
+
   private MailBean mailBean;
 
   @EJB
@@ -248,6 +250,49 @@ public class PrivateBean {
       query = getEntityManager().createNamedQuery("Mail.nonewmail");
       query.setParameter("name", person);
       query.executeUpdate();
+    } catch (WebApplicationException e) {
+      //ignore
+      throw e;
+    } catch (Exception e) {
+      throw new MudWebException(name, e, Response.Status.BAD_REQUEST);
+    }
+    return res;
+  }
+
+  /**
+   * Returns a List of mails you sent, with a maximum of 20 mails and an offset for
+   * paging.
+   *
+   * @param name   the name of the user
+   * @param offset the offset, default is 0 if not provided.
+   * @return a List of (max 20 by default) mails.
+   * @throws WebApplicationException <ul><li>UNAUTHORIZED, if the
+   *                                 authorisation failed. </li><li>BAD_REQUEST if an unexpected exception
+   *                                 crops up.</li></ul>
+   * @see #MAX_MAILS
+   */
+  @GET
+  @Path("{name}/sentmail")
+  @Produces(
+    {
+      MediaType.APPLICATION_JSON
+    })
+  public List<PrivateMail> listSentMail(@PathParam("name") String name, @QueryParam("offset") Integer offset) {
+    User person = authenticate(name);
+    List<PrivateMail> res = new ArrayList<>();
+    try {
+      Query query = getEntityManager().createNamedQuery("Mail.listsentmail");
+      query.setParameter("name", person);
+      query.setMaxResults(MAX_MAILS);
+      if (offset != null) {
+        query.setFirstResult(offset);
+      }
+
+      List<Mail> list = query.getResultList();
+      for (Mail mail : list) {
+        PrivateMail pmail = new PrivateMail(mail);
+        res.add(pmail);
+      }
     } catch (WebApplicationException e) {
       //ignore
       throw e;
