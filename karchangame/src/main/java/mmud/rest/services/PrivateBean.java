@@ -18,6 +18,7 @@ package mmud.rest.services;
 
 import mmud.database.entities.characters.Person;
 import mmud.database.entities.characters.User;
+import mmud.database.entities.game.Guild;
 import mmud.database.entities.game.Mail;
 import mmud.database.entities.game.MailReceiver;
 import mmud.database.entities.web.CharacterInfo;
@@ -41,8 +42,9 @@ import javax.json.bind.JsonbBuilder;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
+import javax.persistence.TypedQuery;
 import javax.servlet.http.HttpServletRequest;
-import javax.ws.rs.WebApplicationException;
+import javax.ws.rs.*;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
@@ -51,49 +53,6 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import javax.annotation.Resource;
-import javax.annotation.security.DeclareRoles;
-import javax.annotation.security.RolesAllowed;
-import javax.persistence.EntityManager;
- import javax.persistence.PersistenceContext;
- import javax.persistence.Query;
- import javax.servlet.http.HttpServletRequest;
-import javax.ws.rs.Consumes;
-import javax.ws.rs.DELETE;
-import javax.ws.rs.GET;
-import javax.ws.rs.POST;
-import javax.ws.rs.PUT;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.Produces;
-import javax.ws.rs.QueryParam;
-import javax.ws.rs.WebApplicationException;
-import javax.ws.rs.core.Context;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
-import javax.ws.rs.core.Response.Status;
-import mmud.database.entities.characters.Person;
-import mmud.database.entities.characters.User;
-import mmud.database.entities.game.Mail;
-import mmud.database.entities.web.CharacterInfo;
-import mmud.database.entities.web.Family;
-import mmud.database.entities.web.FamilyPK;
-import mmud.database.entities.web.FamilyValue;
-import mmud.exceptions.MudException;
-import mmud.exceptions.MudWebException;
-import mmud.rest.webentities.PrivateMail;
-import mmud.rest.webentities.PrivatePerson;
-import mmud.rest.webentities.PublicPerson;
-import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -109,7 +68,8 @@ import java.util.logging.Logger;
 @Stateless
 @LocalBean
 @Path("/private")
-public class PrivateBean {
+public class PrivateBean
+{
 
   @EJB
 
@@ -136,11 +96,13 @@ public class PrivateBean {
   @PersistenceContext(unitName = "karchangamePU")
   private EntityManager em;
 
-  public static class PrivateHasMail {
+  public static class PrivateHasMail
+  {
     public boolean hasMail;
   }
 
-  public PrivateBean() {
+  public PrivateBean()
+  {
     // empty constructor, I don't know why, but it's necessary.
   }
 
@@ -150,11 +112,13 @@ public class PrivateBean {
    *
    * @return EntityManager
    */
-  protected EntityManager getEntityManager() {
+  protected EntityManager getEntityManager()
+  {
     return em;
   }
 
-  public PublicBean getPublicBean() {
+  public PublicBean getPublicBean()
+  {
     return publicBean;
   }
 
@@ -171,18 +135,23 @@ public class PrivateBean {
    *                                 crops up or provided info is really not proper. UNAUTHORIZED if session
    *                                 passwords do not match.
    */
-  public User authenticate(String name) {
-    if (name == null || name.equals("null")) {
+  public User authenticate(String name)
+  {
+    if (name == null || name.equals("null"))
+    {
       throw new MudWebException(name, "You are not logged in.", Response.Status.UNAUTHORIZED);
     }
-    if (!getPlayerName().equals(name)) {
+    if (!getPlayerName().equals(name))
+    {
       throw new MudWebException(name, "You are not logged in as " + name + ".", Response.Status.UNAUTHORIZED);
     }
     User person = getEntityManager().find(User.class, name);
-    if (person == null) {
+    if (person == null)
+    {
       throw new MudWebException(name, "User was not found.", "User was not found  (" + name + ")", Status.NOT_FOUND);
     }
-    if (!person.isUser()) {
+    if (!person.isUser())
+    {
       throw new MudWebException(name, "User was not a user.", "User was not a user (" + name + ")", Status.BAD_REQUEST);
     }
     return person;
@@ -196,15 +165,19 @@ public class PrivateBean {
    * UNAUTHORIZED if you are not the guild master of your guild.
    * @see #authenticate(java.lang.String)
    */
-  public User authenticateGuildMaster(String name) {
-    if (!getPlayerName().equals(name)) {
+  public User authenticateGuildMaster(String name)
+  {
+    if (!getPlayerName().equals(name))
+    {
       throw new MudWebException(name, "You are not logged in as " + name, Response.Status.UNAUTHORIZED);
     }
     User person = authenticate(name);
-    if (person.getGuild() == null) {
+    if (person.getGuild() == null)
+    {
       throw new MudWebException(name, name + " is not a member of a guild.", "Person (" + name + ") is not a member of a guild", Status.NOT_FOUND);
     }
-    if (!person.getGuild().getBoss().getName().equals(person.getName())) {
+    if (!person.getGuild().getBoss().getName().equals(person.getName()))
+    {
       throw new MudWebException(name, name + " is not the guild master of " + person.getGuild().getTitle() + ".", "Person (" + name + ") is not the guild master of " + person.getGuild().getName(), Status.UNAUTHORIZED);
     }
     return person;
@@ -228,32 +201,38 @@ public class PrivateBean {
     {
       MediaType.APPLICATION_JSON
     })
-  public List<PrivateMail> listMail(@PathParam("name") String name, @QueryParam("offset") Integer offset) {
+  public List<PrivateMail> listMail(@PathParam("name") String name, @QueryParam("offset") Integer offset)
+  {
     LOGGER.finer("entering listMail");
     User person = authenticate(name);
     List<PrivateMail> res = new ArrayList<>();
-    try {
-      Query query = getEntityManager().createNamedQuery("Mail.listmail");
+    try
+    {
+      TypedQuery<MailReceiver> query = getEntityManager().createNamedQuery("Mail.listmail", MailReceiver.class);
       query.setParameter("name", person);
       query.setMaxResults(MAX_MAILS);
-      if (offset != null) {
+      if (offset != null)
+      {
         query.setFirstResult(offset);
       }
 
       List<MailReceiver> list = query.getResultList();
-      for (MailReceiver mail : list) {
+      for (MailReceiver mail : list)
+      {
         PrivateMail pmail = new PrivateMail(mail);
         res.add(pmail);
       }
 
       // turn off the "newmail" sign.
-      query = getEntityManager().createNamedQuery("Mail.nonewmail");
-      query.setParameter("name", person);
-      query.executeUpdate();
-    } catch (WebApplicationException e) {
+      getEntityManager().createNamedQuery("Mail.nonewmail")
+        .setParameter("name", person)
+        .executeUpdate();
+    } catch (WebApplicationException e)
+    {
       //ignore
       throw e;
-    } catch (Exception e) {
+    } catch (Exception e)
+    {
       throw new MudWebException(name, e, Response.Status.BAD_REQUEST);
     }
     return res;
@@ -277,26 +256,32 @@ public class PrivateBean {
     {
       MediaType.APPLICATION_JSON
     })
-  public List<PrivateMail> listSentMail(@PathParam("name") String name, @QueryParam("offset") Integer offset) {
+  public List<PrivateMail> listSentMail(@PathParam("name") String name, @QueryParam("offset") Integer offset)
+  {
     User person = authenticate(name);
     List<PrivateMail> res = new ArrayList<>();
-    try {
-      Query query = getEntityManager().createNamedQuery("Mail.listsentmail");
+    try
+    {
+      TypedQuery<Mail> query = getEntityManager().createNamedQuery("Mail.listsentmail", Mail.class);
       query.setParameter("name", person);
       query.setMaxResults(MAX_MAILS);
-      if (offset != null) {
+      if (offset != null)
+      {
         query.setFirstResult(offset);
       }
 
       List<Mail> list = query.getResultList();
-      for (Mail mail : list) {
+      for (Mail mail : list)
+      {
         PrivateMail pmail = new PrivateMail(mail);
         res.add(pmail);
       }
-    } catch (WebApplicationException e) {
+    } catch (WebApplicationException e)
+    {
       //ignore
       throw e;
-    } catch (Exception e) {
+    } catch (Exception e)
+    {
       throw new MudWebException(name, e, Response.Status.BAD_REQUEST);
     }
     return res;
@@ -317,7 +302,8 @@ public class PrivateBean {
     {
       MediaType.APPLICATION_JSON
     })
-  public String hasNewMail(@PathParam("name") String name) {
+  public String hasNewMail(@PathParam("name") String name)
+  {
     LOGGER.finer("entering hasNewMail");
     Person person = authenticate(name);
     boolean result = mailBean.hasNewMail(person);
@@ -326,20 +312,25 @@ public class PrivateBean {
     return JsonbBuilder.create().toJson(privateHasMail);
   }
 
-  private Person getPerson(String name) {
+  private Person getPerson(String name)
+  {
     Person toperson = getEntityManager().find(Person.class, name);
-    if (toperson == null) {
+    if (toperson == null)
+    {
       throw new MudWebException(name, name + " was not found.", "User was not found (" + name + ")", Response.Status.NOT_FOUND);
     }
     return toperson;
   }
 
-  private User getUser(String name) {
+  private User getUser(String name)
+  {
     User toperson = getEntityManager().find(User.class, name);
-    if (toperson == null) {
+    if (toperson == null)
+    {
       throw new MudWebException(name, name + " was not found.", "User was not found (" + name + ")", Response.Status.NOT_FOUND);
     }
-    if (!toperson.isUser()) {
+    if (!toperson.isUser())
+    {
       LOGGER.log(Level.INFO, "user not proper user, {0}", name);
       throw new MudWebException(name, name + " was not a proper user.", "User was not a proper user (" + name + ")", Response.Status.BAD_REQUEST);
     }
@@ -362,34 +353,68 @@ public class PrivateBean {
     {
       MediaType.APPLICATION_JSON
     })
-  public Response newMail(PrivateMail newMail, @PathParam("name") String name) {
+  public Response newMail(PrivateMail newMail, @PathParam("name") String name)
+  {
     LOGGER.finer("entering newMail");
     User person = authenticate(name);
-    if (newMail.toname != null && "deputies".equalsIgnoreCase(newMail.toname)) {
-      try {
+    if (newMail.toname != null && "deputies".equalsIgnoreCase(newMail.toname))
+    {
+      try
+      {
         createNewMail(newMail.subject, newMail.body, person, newMail.toname, getPublicBean().getDeputies());
-      } catch (WebApplicationException e) {
+      } catch (WebApplicationException e)
+      {
         //ignore
         throw e;
-      } catch (Exception e) {
+      } catch (Exception e)
+      {
         throw new MudWebException(name, e, Response.Status.BAD_REQUEST);
       }
       return Response.ok().build();
     }
-    User toperson = getUser(newMail.toname);
-    try {
-      createNewMail(newMail.subject, newMail.body, person, newMail.toname, Collections.singletonList(toperson));
-    } catch (WebApplicationException e) {
+    List<User> tousers;
+    if ("guild".equalsIgnoreCase(newMail.toname))
+    {
+      if (person.getGuild() == null)
+      {
+        throw new MudWebException(person.getName(), "You are not a member of a guild.", Response.Status.NOT_FOUND);
+      }
+      tousers = new ArrayList<>(person.getGuild().getMembers());
+    } else if (newMail.toname != null && newMail.toname.toLowerCase().startsWith("guild:"))
+    {
+      String guildname = newMail.toname.substring(6).trim();
+      Guild guild = getEntityManager().find(Guild.class, guildname);
+      if (guild == null)
+      {
+        throw new MudWebException(person.getName(), "Guild " + guildname + " not found.", Response.Status.NOT_FOUND);
+      }
+      tousers = new ArrayList<>(guild.getMembers());
+    } else if ("everybody".equalsIgnoreCase(newMail.toname))
+    {
+      TypedQuery<User> query = getEntityManager().createNamedQuery("User.everybodymail", User.class);
+      query.setParameter("olddate", LocalDateTime.now().minusMonths(3));
+      tousers = query.getResultList();
+    } else
+    {
+      tousers = Collections.singletonList(getUser(newMail.toname));
+    }
+    try
+    {
+      createNewMail(newMail.subject, newMail.body, person, newMail.toname, tousers);
+    } catch (WebApplicationException e)
+    {
       //ignore
       throw e;
-    } catch (Exception e) {
+    } catch (Exception e)
+    {
       throw new MudWebException(name, e, Response.Status.BAD_REQUEST);
     }
     LOGGER.finer("exiting newMail");
     return Response.ok().build();
   }
 
-  private void createNewMail(String subject, String body, User person, String toperson, List<User> receivers) {
+  private void createNewMail(String subject, String body, User person, String toperson, List<User> receivers)
+  {
     Mail mail = new Mail();
     mail.setBody(body);
     mail.setDeleted(Boolean.FALSE);
@@ -400,7 +425,8 @@ public class PrivateBean {
     mail.setWhensent(LocalDateTime.now());
     getEntityManager().persist(mail);
 
-    receivers.forEach(receiver -> {
+    receivers.forEach(receiver ->
+    {
       MailReceiver mailReceiver = new MailReceiver();
       mailReceiver.setId(null);
       mailReceiver.setToname(receiver);
@@ -414,16 +440,20 @@ public class PrivateBean {
 
   }
 
-  private MailReceiver getMail(String toname, Long id) {
+  private MailReceiver getMail(String toname, Long id)
+  {
     MailReceiver mail = getEntityManager().find(MailReceiver.class, id);
 
-    if (mail == null) {
+    if (mail == null)
+    {
       throw new MudWebException(toname, "Mail " + id + " not found.", Response.Status.NOT_FOUND);
     }
-    if (mail.getDeleted()) {
+    if (mail.getDeleted())
+    {
       throw new MudWebException(toname, "Mail with id " + id + " was deleted.", Response.Status.NOT_FOUND);
     }
-    if (!mail.getToname().getName().equals(toname)) {
+    if (!mail.getToname().getName().equals(toname))
+    {
       LOGGER.log(Level.INFO, "mail {0} not for {1}", new Object[]
         {
           id, toname
@@ -450,19 +480,23 @@ public class PrivateBean {
     {
       MediaType.APPLICATION_JSON
     })
-  public PrivateMail getMailInfo(@PathParam("name") String name, @PathParam("id") long id) {
+  public PrivateMail getMailInfo(@PathParam("name") String name, @PathParam("id") long id)
+  {
     LOGGER.finer("entering getMail");
     Person person = authenticate(name);
-    try {
+    try
+    {
       MailReceiver mail = getMail(person.getName(), id);
       // turn off the "have not read" sign.
       mail.setHaveread(Boolean.TRUE);
       LOGGER.finer("exiting getMail");
       return new PrivateMail(mail);
-    } catch (WebApplicationException e) {
+    } catch (WebApplicationException e)
+    {
       //ignore
       throw e;
-    } catch (Exception e) {
+    } catch (Exception e)
+    {
       throw new MudWebException(name, e, Response.Status.BAD_REQUEST);
     }
   }
@@ -503,7 +537,8 @@ public class PrivateBean {
     {
       MediaType.APPLICATION_JSON
     })
-  public Response createMailItem(@PathParam("name") String name, @PathParam("id") long id, @PathParam("item") int itemDefinitionId) {
+  public Response createMailItem(@PathParam("name") String name, @PathParam("id") long id, @PathParam("item") int itemDefinitionId)
+  {
     return Response.noContent().build();
     // TODO MLE: this needs to get fixed.
 //
@@ -616,7 +651,8 @@ public class PrivateBean {
     {
       MediaType.APPLICATION_JSON
     })
-  public Response deleteMail(@PathParam("name") String name, @PathParam("id") long id) {
+  public Response deleteMail(@PathParam("name") String name, @PathParam("id") long id)
+  {
     LOGGER.finer("entering deleteMail");
     Person person = authenticate(name);
     // get the specific mail with id {id}
@@ -642,7 +678,8 @@ public class PrivateBean {
     {
       MediaType.APPLICATION_JSON
     })
-  public Response deletePerson(@Context HttpServletRequest requestContext, @PathParam("name") String name) {
+  public Response deletePerson(@Context HttpServletRequest requestContext, @PathParam("name") String name)
+  {
     LOGGER.log(Level.FINER, "entering deletePerson {0}", name);
     Person person = authenticate(name);
     Query deleteBoardMessagesQuery = em.createNamedQuery("BoardMessage.deleteByName");
@@ -675,17 +712,21 @@ public class PrivateBean {
     {
       MediaType.APPLICATION_JSON
     })
-  public Response updateCharacterSheet(@PathParam("name") String name, PrivatePerson cinfo) {
+  public Response updateCharacterSheet(@PathParam("name") String name, PrivatePerson cinfo)
+  {
     LOGGER.finer("entering updateCharacterSheet");
     Person person = authenticate(name);
-    if (!person.getName().equals(cinfo.name)) {
+    if (!person.getName().equals(cinfo.name))
+    {
       throw new MudWebException(name, "User trying to update somebody elses charactersheet?",
         person.getName() + " trying to update charactersheet of " + cinfo.name, Response.Status.UNAUTHORIZED);
     }
-    try {
+    try
+    {
       CharacterInfo characterInfo = getEntityManager().find(CharacterInfo.class, person.getName());
       boolean isNew = false;
-      if (characterInfo == null) {
+      if (characterInfo == null)
+      {
         isNew = true;
         characterInfo = new CharacterInfo();
         characterInfo.setName(person.getName());
@@ -696,14 +737,17 @@ public class PrivateBean {
       characterInfo.setDateofbirth(cinfo.dateofbirth);
       characterInfo.setCityofbirth(cinfo.cityofbirth);
       characterInfo.setStoryline(cinfo.storyline);
-      if (isNew) {
+      if (isNew)
+      {
         getEntityManager().persist(characterInfo);
       }
 
-    } catch (WebApplicationException e) {
+    } catch (WebApplicationException e)
+    {
       //ignore
       throw e;
-    } catch (MudException e) {
+    } catch (MudException e)
+    {
       throw new MudWebException(name, e, Response.Status.BAD_REQUEST);
     }
     return Response.ok().build();
@@ -723,16 +767,20 @@ public class PrivateBean {
     {
       MediaType.APPLICATION_JSON
     })
-  public Response delete(@PathParam("name") String name) {
+  public Response delete(@PathParam("name") String name)
+  {
     LOGGER.finer("entering delete");
     Person person = authenticate(name);
-    try {
+    try
+    {
       logBean.writeLog(person, "character deleted.");
       getEntityManager().remove(person);
-    } catch (WebApplicationException e) {
+    } catch (WebApplicationException e)
+    {
       //ignore
       throw e;
-    } catch (Exception e) {
+    } catch (Exception e)
+    {
       throw new MudWebException(name, e, Response.Status.BAD_REQUEST);
     }
     return Response.ok().build();
@@ -752,7 +800,8 @@ public class PrivateBean {
     {
       MediaType.APPLICATION_JSON
     })
-  public PublicPerson getCharacterSheet(@PathParam("name") String name) {
+  public PublicPerson getCharacterSheet(@PathParam("name") String name)
+  {
     User person = authenticate(name);
     return getPublicBean().charactersheet(name);
   }
@@ -774,19 +823,24 @@ public class PrivateBean {
     {
       MediaType.APPLICATION_JSON
     })
-  public Response updateFamilyvalues(@PathParam("name") String name, @PathParam("toname") String toname, @PathParam("description") Integer description) {
+  public Response updateFamilyvalues(@PathParam("name") String name, @PathParam("toname") String toname, @PathParam("description") Integer description)
+  {
     LOGGER.finer("entering updateFamilyvalues");
-    if (description == null || description == 0) {
+    if (description == null || description == 0)
+    {
       throw new MudWebException(name, "An invalid relationship was provided.", Response.Status.BAD_REQUEST);
     }
-    if (toname == null || "".equals(toname.trim())) {
+    if (toname == null || "".equals(toname.trim()))
+    {
       throw new MudWebException(name, "No person provided.", Response.Status.BAD_REQUEST);
     }
     User person = authenticate(name);
     Person toperson = getPerson(toname);
-    try {
+    try
+    {
       FamilyValue familyValue = getEntityManager().find(FamilyValue.class, description);
-      if (familyValue == null) {
+      if (familyValue == null)
+      {
         throw new MudWebException(name, "Family value was not found.",
           "Family value " + description + " was not found.",
           Response.Status.BAD_REQUEST);
@@ -797,15 +851,18 @@ public class PrivateBean {
       Family family = getEntityManager().find(Family.class, pk);
 
       boolean isNew = family == null;
-      if (family == null) {
+      if (family == null)
+      {
         family = new Family();
         family.setFamilyPK(pk);
       }
       family.setDescription(familyValue);
-      if (isNew) {
+      if (isNew)
+      {
         getEntityManager().persist(family);
       }
-    } catch (MudWebException e) {
+    } catch (MudWebException e)
+    {
       //ignore
       throw e;
     }
@@ -828,14 +885,16 @@ public class PrivateBean {
     {
       MediaType.APPLICATION_JSON
     })
-  public Response deleteFamilyvalues(@PathParam("name") String name, @PathParam("toname") String toname) {
+  public Response deleteFamilyvalues(@PathParam("name") String name, @PathParam("toname") String toname)
+  {
     LOGGER.finer("entering deleteFamilyValues");
     Person person = authenticate(name);
     FamilyPK pk = new FamilyPK();
     pk.setName(person.getName());
     pk.setToname(toname);
     Family family = getEntityManager().find(Family.class, pk);
-    if (family == null) {
+    if (family == null)
+    {
       throw new MudWebException(name, "Unable to delete family value. Family value not found.", Response.Status.NOT_FOUND);
     }
     getEntityManager().remove(family);
@@ -849,9 +908,11 @@ public class PrivateBean {
    * @return name of the player
    * @throws IllegalStateException
    */
-  protected String getPlayerName() throws IllegalStateException {
+  protected String getPlayerName() throws IllegalStateException
+  {
     final String name = context.getCallerPrincipal().getName();
-    if (name.equals("ANONYMOUS")) {
+    if (name.equals("ANONYMOUS"))
+    {
       throw new MudWebException(null, "Not logged in.", Response.Status.UNAUTHORIZED);
     }
     return name;

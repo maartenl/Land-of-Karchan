@@ -278,6 +278,10 @@ public class Guild implements Serializable, DisplayInterface, Ownage
     return members;
   }
 
+  /**
+   * All members of the guild actively playing the game as of this moment.
+   * @return set of users
+   */
   public Set<User> getActiveMembers()
   {
     return activeMembers;
