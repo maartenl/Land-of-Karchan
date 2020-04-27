@@ -18,6 +18,7 @@ package mmud.rest.services;
 
 import mmud.database.entities.characters.Person;
 import mmud.database.entities.characters.User;
+import mmud.database.entities.game.Admin;
 import mmud.database.entities.game.Guild;
 import mmud.database.entities.game.Mail;
 import mmud.database.entities.game.MailReceiver;
@@ -391,6 +392,11 @@ public class PrivateBean
       tousers = new ArrayList<>(guild.getMembers());
     } else if ("everybody".equalsIgnoreCase(newMail.toname))
     {
+      Admin admin = getEntityManager().find(Admin.class, name);
+      if (admin == null)
+      {
+        throw new MudWebException(person.getName(), "Only administrators are allowed to use 'everybody' in mail.", Status.UNAUTHORIZED);
+      }
       TypedQuery<User> query = getEntityManager().createNamedQuery("User.everybodymail", User.class);
       query.setParameter("olddate", LocalDateTime.now().minusMonths(3));
       tousers = query.getResultList();
