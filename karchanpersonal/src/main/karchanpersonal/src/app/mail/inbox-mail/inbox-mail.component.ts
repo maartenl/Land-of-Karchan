@@ -47,6 +47,13 @@ export class InboxMailComponent implements OnInit {
     return false;
   }
 
+  replyAllMail(mail: Mail) {
+    const newmail = new Mail(mail);
+    newmail.name = newmail.name + ', ' + newmail.toname;
+    this.originalMail.emit(newmail);
+    return false;
+  }
+
   public setMail(mail: Mail): void {
     this.mail = mail;
   }

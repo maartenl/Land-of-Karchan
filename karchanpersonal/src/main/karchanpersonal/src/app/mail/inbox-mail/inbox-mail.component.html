@@ -34,6 +34,7 @@
                         <td (click)="setMail(mail)">{{ mail.whensent | date:'medium' }}</td>
                         <td>
                             <a href="#" (click)="replyMail(mail)"><i class="material-icons align-middle">reply</i></a>
+                            <a href="#" (click)="replyAllMail(mail)"><i class="material-icons align-middle">reply_all</i></a>
                             <a href="#" (click)="deleteMail(mail)"><i class="material-icons align-middle">delete</i></a>
                         </td>
                     </tr>

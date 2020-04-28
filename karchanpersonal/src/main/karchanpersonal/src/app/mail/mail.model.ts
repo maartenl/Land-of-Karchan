@@ -11,18 +11,29 @@ export class Mail {
   deleted: boolean;
   selected = false;
 
-  constructor() {
-    this.name = void 0;
-    this.toname = void 0;
-    this.subject = void 0;
-    this.body = void 0;
-    this.id = void 0;
-    this.haveread = void 0;
-    this.newmail = void 0;
-    this.whensent = void 0;
-    this.deleted = void 0;
+  constructor(object?: any) {
+    if (object === undefined) {
+      this.name = void 0;
+      this.toname = void 0;
+      this.subject = void 0;
+      this.body = void 0;
+      this.id = void 0;
+      this.haveread = void 0;
+      this.newmail = void 0;
+      this.whensent = void 0;
+      this.deleted = void 0;
+      return;
+    }
+    this.name = object.name;
+    this.toname = object.toname;
+    this.subject = object.subject;
+    this.body = object.body;
+    this.id = object.id;
+    this.haveread = object.haveread;
+    this.newmail = object.newmail;
+    this.whensent = object.whensent;
+    this.deleted = object.deleted;
   }
-
 }
 
 export class MailList {
