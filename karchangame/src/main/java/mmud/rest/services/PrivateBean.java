@@ -52,10 +52,12 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
+import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * Contains all rest calls that are available to a specific character, with
@@ -358,55 +360,17 @@ public class PrivateBean
   {
     LOGGER.finer("entering newMail");
     User person = authenticate(name);
-    if (newMail.toname != null && "deputies".equalsIgnoreCase(newMail.toname))
+    if (newMail.toname == null || "".equals(newMail.toname.trim()))
     {
-      try
-      {
-        createNewMail(newMail.subject, newMail.body, person, newMail.toname, getPublicBean().getDeputies());
-      } catch (WebApplicationException e)
-      {
-        //ignore
-        throw e;
-      } catch (Exception e)
-      {
-        throw new MudWebException(name, e, Response.Status.BAD_REQUEST);
-      }
-      return Response.ok().build();
+      throw new MudWebException(person.getName(), "No recipient found.", Response.Status.NOT_FOUND);
     }
-    List<User> tousers;
-    if ("guild".equalsIgnoreCase(newMail.toname))
-    {
-      if (person.getGuild() == null)
-      {
-        throw new MudWebException(person.getName(), "You are not a member of a guild.", Response.Status.NOT_FOUND);
-      }
-      tousers = new ArrayList<>(person.getGuild().getMembers());
-    } else if (newMail.toname != null && newMail.toname.toLowerCase().startsWith("guild:"))
-    {
-      String guildname = newMail.toname.substring(6).trim();
-      Guild guild = getEntityManager().find(Guild.class, guildname);
-      if (guild == null)
-      {
-        throw new MudWebException(person.getName(), "Guild " + guildname + " not found.", Response.Status.NOT_FOUND);
-      }
-      tousers = new ArrayList<>(guild.getMembers());
-    } else if ("everybody".equalsIgnoreCase(newMail.toname))
-    {
-      Admin admin = getEntityManager().find(Admin.class, name);
-      if (admin == null)
-      {
-        throw new MudWebException(person.getName(), "Only administrators are allowed to use 'everybody' in mail.", Status.UNAUTHORIZED);
-      }
-      TypedQuery<User> query = getEntityManager().createNamedQuery("User.everybodymail", User.class);
-      query.setParameter("olddate", LocalDateTime.now().minusMonths(3));
-      tousers = query.getResultList();
-    } else
-    {
-      tousers = Collections.singletonList(getUser(newMail.toname));
-    }
+    Set<User> users = Stream.of(newMail.toname.split(","))
+      .map(String::trim)
+      .flatMap(receiver -> getReceivers(person.getName(), receiver, person.getGuild()))
+      .collect(Collectors. toSet());
     try
     {
-      createNewMail(newMail.subject, newMail.body, person, newMail.toname, tousers);
+      createNewMail(newMail.subject, newMail.body, person, newMail.toname, users);
     } catch (WebApplicationException e)
     {
       //ignore
@@ -419,7 +383,46 @@ public class PrivateBean
     return Response.ok().build();
   }
 
-  private void createNewMail(String subject, String body, User person, String toperson, List<User> receivers)
+  private Stream<User> getReceivers(String fromname, String toname, Guild guild)
+  {
+    if ("deputies".equalsIgnoreCase(toname))
+    {
+      return getPublicBean().getDeputies().stream();
+    }
+
+    if ("guild".equalsIgnoreCase(toname))
+    {
+      if (guild == null)
+      {
+        throw new MudWebException(fromname, "You are not a member of a guild.", Response.Status.NOT_FOUND);
+      }
+      return guild.getMembers().stream();
+    }
+    if (toname.toLowerCase().startsWith("guild:"))
+    {
+      String guildname = toname.substring(6).trim();
+      guild = getEntityManager().find(Guild.class, guildname);
+      if (guild == null)
+      {
+        throw new MudWebException(fromname, "Guild " + guildname + " not found.", Response.Status.NOT_FOUND);
+      }
+      return guild.getMembers().stream();
+    }
+    if ("everybody".equalsIgnoreCase(toname))
+    {
+      Admin admin = getEntityManager().find(Admin.class, toname);
+      if (admin == null)
+      {
+        throw new MudWebException(fromname, "Only administrators are allowed to use 'everybody' in mail.", Status.UNAUTHORIZED);
+      }
+      TypedQuery<User> query = getEntityManager().createNamedQuery("User.everybodymail", User.class);
+      query.setParameter("olddate", LocalDateTime.now().minusMonths(3));
+      return query.getResultList().stream();
+    }
+    return Stream.of(getUser(toname));
+  }
+
+  private void createNewMail(String subject, String body, User person, String toperson, Set<User> receivers)
   {
     Mail mail = new Mail();
     mail.setBody(body);

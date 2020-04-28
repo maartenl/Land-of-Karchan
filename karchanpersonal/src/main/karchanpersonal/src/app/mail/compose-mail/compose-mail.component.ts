@@ -57,45 +57,35 @@ export class ComposeMailComponent implements OnInit {
   }
 
   public send(): void {
-    const newMails: Mail[] = this.prepareSaveMail();
-    for (const newMail of newMails) {
-      this.playerService.sendMail(newMail).subscribe(
-        (result: any) => { // on success
-          this.resetForm();
-          this.toastService.show('New mail sent.', {
-            delay: 3000,
-            autohide: true,
-            headertext: 'Success...'
-          });
-        },
-        (err: any) => { // error
-          // console.log('error', err);
-        },
-        () => { // on completion
-        }
-      );
-    }
+    const newMail: Mail = this.prepareSaveMail();
+    this.playerService.sendMail(newMail).subscribe(
+      (result: any) => { // on success
+        this.resetForm();
+        this.toastService.show('New mail sent.', {
+          delay: 3000,
+          autohide: true,
+          headertext: 'Success...'
+        });
+      },
+      (err: any) => { // error
+        // console.log('error', err);
+      },
+      () => { // on completion
+      }
+    );
   }
 
 
-  prepareSaveMail(): Mail[] {
-    const result: Mail[] = [];
+  prepareSaveMail(): Mail {
     const formModel = this.mailForm.value;
-    const namesFromForm: string = formModel.toname as string;
-    if (namesFromForm === null || namesFromForm.trim() === '') {
-      return result;
-    }
-    const names = (namesFromForm).split(',');
+    const names: string = formModel.toname as string;
 
-    for (const name of names) {
-      // return new `Mail` object
-      const mail: Mail = new Mail();
-      mail.subject = formModel.subject as string;
-      mail.toname = name.trim();
-      mail.body = formModel.body as string;
-      result.push(mail);
-    }
-    return result;
+    // return new `Mail` object
+    const mail: Mail = new Mail();
+    mail.subject = formModel.subject as string;
+    mail.toname = names.trim();
+    mail.body = formModel.body as string;
+    return mail;
   }
 
 
