@@ -16,23 +16,9 @@
  */
 package mmud.testing.tests;
 
-import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.Arrays;
-
-import java.util.List;
-import java.util.logging.Logger;
-import javax.persistence.EntityManager;
-import javax.persistence.Query;
-import javax.ws.rs.WebApplicationException;
-import javax.ws.rs.core.Response;
-import javax.ws.rs.core.Response.ResponseBuilder;
 import mmud.database.entities.characters.Person;
 import mmud.database.entities.characters.User;
-import mmud.database.entities.game.Admin;
-import mmud.database.entities.game.Area;
-import mmud.database.entities.game.Mail;
-import mmud.database.entities.game.Room;
+import mmud.database.entities.game.*;
 import mmud.database.entities.items.Item;
 import mmud.database.entities.items.ItemDefinition;
 import mmud.database.entities.web.CharacterInfo;
@@ -42,30 +28,32 @@ import mmud.database.entities.web.FamilyValue;
 import mmud.exceptions.ErrorDetails;
 import mmud.exceptions.MudException;
 import mmud.exceptions.MudWebException;
-import mmud.rest.services.MailBean;
 import mmud.rest.services.PrivateBean;
 import mmud.rest.services.PublicBean;
 import mmud.rest.webentities.PrivateMail;
 import mmud.rest.webentities.PrivatePerson;
 import mmud.testing.TestingConstants;
 import mmud.testing.TestingUtils;
-import mockit.Deencapsulation;
 import mockit.Delegate;
 import mockit.Expectations;
 import mockit.Mocked;
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertNotNull;
-import static org.testng.Assert.assertNull;
-import static org.testng.Assert.fail;
-import org.testng.annotations.AfterClass;
-import org.testng.annotations.AfterMethod;
-import org.testng.annotations.BeforeClass;
-import org.testng.annotations.BeforeMethod;
-import org.testng.annotations.Test;
+import org.testng.annotations.*;
+
+import javax.persistence.EntityManager;
+import javax.persistence.Query;
+import javax.persistence.TypedQuery;
+import javax.ws.rs.WebApplicationException;
+import javax.ws.rs.core.Response;
+import javax.ws.rs.core.Response.ResponseBuilder;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.logging.Logger;
+
+import static org.testng.Assert.*;
 
 /**
- *
  * @author maartenl
  */
 public class PrivateBeanTest
@@ -78,9 +66,9 @@ public class PrivateBeanTest
   EntityManager entityManager;
 
   @Mocked(
-          {
-            "ok", "status"
-          })
+    {
+      "ok", "status"
+    })
   javax.ws.rs.core.Response response;
 
   @Mocked
@@ -94,6 +82,9 @@ public class PrivateBeanTest
 
   @Mocked
   Query query;
+
+  @Mocked
+  TypedQuery typedquery;
 
   private Person hotblack;
   private Person marvin;
@@ -201,15 +192,16 @@ public class PrivateBeanTest
       {
         entityManager.find(User.class, "Marvin");
         result = marvin;
-        entityManager.createNamedQuery("Mail.listmail");
-        result = query;
-        query.setParameter("name", marvin);
-        query.setMaxResults(20);
-        query.getResultList();
+        entityManager.createNamedQuery("Mail.listmail", MailReceiver.class);
+        result = typedquery;
+        typedquery.setParameter("name", marvin);
+        typedquery.setMaxResults(20);
+        typedquery.getResultList();
 
         entityManager.createNamedQuery("Mail.nonewmail");
         result = query;
         query.setParameter("name", marvin);
+        result = query;
         query.executeUpdate();
       }
     };
@@ -225,29 +217,39 @@ public class PrivateBeanTest
     LOGGER.fine("listMail");
     LocalDateTime secondDate = LocalDateTime.now();
     LocalDateTime firstDate = secondDate.plusSeconds(-1_000L);
-    final List<Mail> list = new ArrayList<>();
+    final List<MailReceiver> list = new ArrayList<>();
     Mail mail = new Mail();
     mail.setId(1l);
     mail.setSubject("Subject");
     mail.setBody("First mail");
-//    mail.setToname(hotblack);
+    mail.setToname("hotblack");
     mail.setName(marvin);
     mail.setDeleted(false);
-//    mail.setHaveread(false);
-//    mail.setNewmail(true);
     mail.setWhensent(firstDate);
-    list.add(mail);
+    MailReceiver mailreceiver = new MailReceiver();
+    mailreceiver.setId(5L);
+    mailreceiver.setDeleted(false);
+    mailreceiver.setMail(mail);
+    mailreceiver.setHaveread(false);
+    mailreceiver.setToname(hotblack);
+    mailreceiver.setNewmail(true);
+    list.add(mailreceiver);
     mail = new Mail();
     mail.setId(2l);
     mail.setSubject("Subject2");
     mail.setBody("Second mail");
-//    mail.setToname(hotblack);
+    mail.setToname("hotblack");
     mail.setName(marvin);
     mail.setDeleted(false);
-//    mail.setHaveread(true);
-//    mail.setNewmail(false);
     mail.setWhensent(secondDate);
-    list.add(mail);
+    mailreceiver = new MailReceiver();
+    mailreceiver.setId(6L);
+    mailreceiver.setDeleted(false);
+    mailreceiver.setMail(mail);
+    mailreceiver.setHaveread(true);
+    mailreceiver.setToname(hotblack);
+    mailreceiver.setNewmail(false);
+    list.add(mailreceiver);
     PrivateBean privateBean = new PrivateBean()
     {
       @Override
@@ -268,16 +270,17 @@ public class PrivateBeanTest
       {
         entityManager.find(User.class, "Marvin");
         result = marvin;
-        entityManager.createNamedQuery("Mail.listmail");
-        result = query;
-        query.setParameter("name", marvin);
-        query.setMaxResults(20);
-        query.getResultList();
+        entityManager.createNamedQuery("Mail.listmail", MailReceiver.class);
+        result = typedquery;
+        typedquery.setParameter("name", marvin);
+        typedquery.setMaxResults(20);
+        typedquery.getResultList();
         result = list;
 
         entityManager.createNamedQuery("Mail.nonewmail");
         result = query;
         query.setParameter("name", marvin);
+        result = query;
         query.executeUpdate();
         result = 1;
       }
@@ -290,11 +293,11 @@ public class PrivateBeanTest
     expected.body = "First mail";
     expected.subject = "Subject";
     expected.haveread = false;
-    expected.id = 1l;
+    expected.id = 5l;
     expected.item_id = null;
     expected.name = "Marvin";
     expected.newmail = true;
-    expected.toname = "Hotblack";
+    expected.toname = "hotblack";
     expected.whensent = firstDate;
     expected.deleted = false;
     compare(result.get(0), expected);
@@ -302,11 +305,11 @@ public class PrivateBeanTest
     expected.body = "Second mail";
     expected.subject = "Subject2";
     expected.haveread = true;
-    expected.id = 2l;
+    expected.id = 6l;
     expected.item_id = null;
     expected.name = "Marvin";
     expected.newmail = false;
-    expected.toname = "Hotblack";
+    expected.toname = "hotblack";
     expected.whensent = secondDate;
     expected.deleted = false;
     compare(result.get(1), expected);
@@ -354,12 +357,26 @@ public class PrivateBeanTest
             assertNotNull(mail);
             assertEquals(mail.getBody(), "First mail");
             assertEquals(mail.getSubject(), "Subject");
-//            assertEquals(mail.getHaveread(), Boolean.FALSE);
             assertEquals(mail.getId(), null);
-//            assertEquals(mail.getItemDefinition(), null);
 
             assertEquals(mail.getName(), marvin);
-//            assertEquals(mail.getNewmail(), Boolean.TRUE);
+            assertEquals(mail.getToname(), "Hotblack");
+            // unable to assertEquals getWhensent. As it is using the current date/time.
+            assertEquals(mail.getDeleted(), Boolean.FALSE);
+
+          }
+        };
+        entityManager.persist((MailReceiver) any);
+        result = new Delegate()
+        {
+          // The name of this method can actually be anything.
+          void persist(MailReceiver mail)
+          {
+            assertNotNull(mail);
+            assertEquals(mail.getHaveread(), Boolean.FALSE);
+            assertEquals(mail.getId(), null);
+
+            assertEquals(mail.getNewmail(), Boolean.TRUE);
             assertEquals(mail.getToname(), hotblack);
             // unable to assertEquals getWhensent. As it is using the current date/time.
             assertEquals(mail.getDeleted(), Boolean.FALSE);
@@ -435,56 +452,60 @@ public class PrivateBeanTest
           {
             assertNotNull(mail);
             assertEquals(mail.getBody(), "First mail");
-            assertEquals(mail.getSubject(), "[To deputies] Subject");
-//            assertEquals(mail.getHaveread(), Boolean.FALSE);
+            assertEquals(mail.getSubject(), "Subject");
             assertEquals(mail.getId(), null);
-//            assertEquals(mail.getItemDefinition(), null);
-
             assertEquals(mail.getName(), marvin);
-//            assertEquals(mail.getNewmail(), Boolean.TRUE);
-//            assertEquals(mail.getToname().getName(), "Karn");
             // unable to assertEquals getWhensent. As it is using the current date/time.
             assertEquals(mail.getDeleted(), Boolean.FALSE);
 
           }
         };
-        entityManager.persist((Mail) any);
+        entityManager.persist((MailReceiver) any);
         result = new Delegate()
         {
           // The name of this method can actually be anything.
-          void persist(Mail mail)
+          void persist(MailReceiver mail)
           {
             assertNotNull(mail);
-            assertEquals(mail.getBody(), "First mail");
-            assertEquals(mail.getSubject(), "[To deputies] Subject");
-//            assertEquals(mail.getHaveread(), Boolean.FALSE);
+            assertEquals(mail.getHaveread(), Boolean.FALSE);
             assertEquals(mail.getId(), null);
-//            assertEquals(mail.getItemDefinition(), null);
 
-            assertEquals(mail.getName(), marvin);
-//            assertEquals(mail.getNewmail(), Boolean.TRUE);
-//            assertEquals(mail.getToname().getName(), "Ephinie");
+            assertEquals(mail.getNewmail(), Boolean.TRUE);
+            assertEquals(mail.getToname().getName(), "Karn");
             // unable to assertEquals getWhensent. As it is using the current date/time.
             assertEquals(mail.getDeleted(), Boolean.FALSE);
 
           }
         };
-        entityManager.persist((Mail) any);
+        entityManager.persist((MailReceiver) any);
         result = new Delegate()
         {
           // The name of this method can actually be anything.
-          void persist(Mail mail)
+          void persist(MailReceiver mail)
           {
             assertNotNull(mail);
-            assertEquals(mail.getBody(), "First mail");
-            assertEquals(mail.getSubject(), "[To deputies] Subject");
-//            assertEquals(mail.getHaveread(), Boolean.FALSE);
+            assertEquals(mail.getHaveread(), Boolean.FALSE);
             assertEquals(mail.getId(), null);
-//            assertEquals(mail.getItemDefinition(), null);
 
-            assertEquals(mail.getName(), marvin);
-//            assertEquals(mail.getNewmail(), Boolean.TRUE);
-//            assertEquals(mail.getToname().getName(), "Mya");
+            assertEquals(mail.getNewmail(), Boolean.TRUE);
+            assertEquals(mail.getToname().getName(), "Mya");
+//             unable to assertEquals getWhensent. As it is using the current date/time.
+            assertEquals(mail.getDeleted(), Boolean.FALSE);
+
+          }
+        };
+        entityManager.persist((MailReceiver) any);
+        result = new Delegate()
+        {
+          // The name of this method can actually be anything.
+          void persist(MailReceiver mail)
+          {
+            assertNotNull(mail);
+            assertEquals(mail.getHaveread(), Boolean.FALSE);
+            assertEquals(mail.getId(), null);
+
+            assertEquals(mail.getNewmail(), Boolean.TRUE);
+            assertEquals(mail.getToname().getName(), "Ephinie");
             // unable to assertEquals getWhensent. As it is using the current date/time.
             assertEquals(mail.getDeleted(), Boolean.FALSE);
 
@@ -564,7 +585,7 @@ public class PrivateBeanTest
       {
         entityManager.find(User.class, "Marvin");
         result = marvin;
-        entityManager.find(Mail.class, 1l);
+        entityManager.find(MailReceiver.class, 1l);
         result = null;
       }
     };
@@ -577,12 +598,17 @@ public class PrivateBeanTest
   {
     LOGGER.fine("getMailSomeoneElse");
     final Mail mail = new Mail();
-//    mail.setToname(hotblack);
+    mail.setToname("hotblack");
     mail.setName(hotblack);
     mail.setBody("First mail");
     mail.setSubject("Subject");
     mail.setDeleted(Boolean.TRUE);
-//    mail.setHaveread(Boolean.TRUE);
+    MailReceiver mailreceiver = new MailReceiver();
+    mailreceiver.setDeleted(false);
+    mailreceiver.setMail(mail);
+    mailreceiver.setHaveread(true);
+    mailreceiver.setToname(hotblack);
+    mailreceiver.setNewmail(true);
     // all other props are ignored by the method under test
 
     PrivateBean privateBean = new PrivateBean()
@@ -606,8 +632,8 @@ public class PrivateBeanTest
       {
         entityManager.find(User.class, "Marvin");
         result = marvin;
-        entityManager.find(Mail.class, 1l);
-        result = mail;
+        entityManager.find(MailReceiver.class, 1l);
+        result = mailreceiver;
       }
     };
     // Unit under test is exercised.
@@ -619,12 +645,17 @@ public class PrivateBeanTest
   {
     LOGGER.fine("getMailDeleted");
     final Mail mail = new Mail();
-//    mail.setToname(marvin);
+    mail.setToname("marvin");
     mail.setName(hotblack);
     mail.setBody("First mail");
     mail.setSubject("Subject");
-    mail.setDeleted(Boolean.TRUE);
-//    mail.setHaveread(Boolean.TRUE);
+    mail.setDeleted(Boolean.FALSE);
+    MailReceiver mailreceiver = new MailReceiver();
+    mailreceiver.setDeleted(true);
+    mailreceiver.setMail(mail);
+    mailreceiver.setHaveread(true);
+    mailreceiver.setToname(marvin);
+    mailreceiver.setNewmail(true);
     // all other props are ignored by the method under test
 
     PrivateBean privateBean = new PrivateBean()
@@ -648,8 +679,8 @@ public class PrivateBeanTest
       {
         entityManager.find(User.class, "Marvin");
         result = marvin;
-        entityManager.find(Mail.class, 1l);
-        result = mail;
+        entityManager.find(MailReceiver.class, 1l);
+        result = mailreceiver;
       }
     };
     // Unit under test is exercised.
@@ -661,12 +692,17 @@ public class PrivateBeanTest
   {
     LOGGER.fine("getMail");
     final Mail mail = new Mail();
-//    mail.setToname(marvin);
+    mail.setToname("marvin");
     mail.setName(hotblack);
     mail.setBody("First mail");
     mail.setSubject("Subject");
     mail.setDeleted(Boolean.FALSE);
-//    mail.setHaveread(Boolean.FALSE);
+    MailReceiver mailreceiver = new MailReceiver();
+    mailreceiver.setDeleted(false);
+    mailreceiver.setMail(mail);
+    mailreceiver.setHaveread(false);
+    mailreceiver.setToname(marvin);
+    mailreceiver.setNewmail(true);
     // all other props are ignored by the method under test
 
     PrivateBean privateBean = new PrivateBean()
@@ -690,8 +726,8 @@ public class PrivateBeanTest
       {
         entityManager.find(User.class, "Marvin");
         result = marvin;
-        entityManager.find(Mail.class, 1l);
-        result = mail;
+        entityManager.find(MailReceiver.class, 1l);
+        result = mailreceiver;
       }
     };
     // Unit under test is exercised.
@@ -701,10 +737,11 @@ public class PrivateBeanTest
     PrivateMail expected = new PrivateMail();
     expected.body = "First mail";
     expected.subject = "Subject";
-    expected.toname = "Marvin";
+    expected.toname = "marvin";
     expected.name = "Hotblack";
     expected.deleted = false;
     expected.haveread = true;
+    expected.newmail = true;
     compare(actual, expected);
   }
 
@@ -970,12 +1007,17 @@ public class PrivateBeanTest
     LOGGER.fine("deleteMail");
     final Mail mail = new Mail();
     mail.setId(1l);
-//    mail.setToname(marvin);
+    mail.setToname("marvin");
     mail.setName(hotblack);
     mail.setBody("First mail");
     mail.setSubject("Subject");
     mail.setDeleted(Boolean.FALSE);
-//    mail.setHaveread(Boolean.FALSE);
+    MailReceiver mailreceiver = new MailReceiver();
+    mailreceiver.setDeleted(false);
+    mailreceiver.setMail(mail);
+    mailreceiver.setHaveread(false);
+    mailreceiver.setToname(marvin);
+    mailreceiver.setNewmail(true);
     PrivateBean privateBean = new PrivateBean()
     {
       @Override
@@ -997,15 +1039,15 @@ public class PrivateBeanTest
       {
         entityManager.find(User.class, "Marvin");
         result = marvin;
-        entityManager.find(Mail.class, 1l);
-        result = mail;
+        entityManager.find(MailReceiver.class, 1l);
+        result = mailreceiver;
       }
     };
     responseOkExpectations();
     // Unit under test is exercised.
     Response response = privateBean.deleteMail("Marvin", 1l);
     // Verification code (JUnit/TestNG asserts), if any.
-    assertEquals(mail.getDeleted(), Boolean.TRUE);
+    assertEquals(mailreceiver.getDeleted(), Boolean.TRUE);
   }
 
   @Test
@@ -1014,12 +1056,17 @@ public class PrivateBeanTest
     LOGGER.fine("deleteMail");
     final Mail mail = new Mail();
     mail.setId(1l);
-//    mail.setToname(hotblack);
+    mail.setToname("hotblack");
     mail.setName(marvin);
     mail.setBody("First mail");
     mail.setSubject("Subject");
     mail.setDeleted(Boolean.FALSE);
-//    mail.setHaveread(Boolean.FALSE);
+    MailReceiver mailreceiver = new MailReceiver();
+    mailreceiver.setDeleted(false);
+    mailreceiver.setMail(mail);
+    mailreceiver.setHaveread(false);
+    mailreceiver.setToname(hotblack);
+    mailreceiver.setNewmail(true);
     PrivateBean privateBean = new PrivateBean()
     {
       @Override
@@ -1041,8 +1088,8 @@ public class PrivateBeanTest
       {
         entityManager.find(User.class, "Marvin");
         result = marvin;
-        entityManager.find(Mail.class, 1l);
-        result = mail;
+        entityManager.find(MailReceiver.class, 1l);
+        result = mailreceiver;
       }
     };
 
@@ -1055,7 +1102,7 @@ public class PrivateBeanTest
     {
       // Yay! We get an exception!
     }// Verification code (JUnit/TestNG asserts), if any.
-    assertEquals(mail.getDeleted(), Boolean.FALSE);
+    assertEquals(mailreceiver.getDeleted(), Boolean.FALSE);
   }
 
   @Test(expectedExceptions = MudWebException.class)
@@ -1083,7 +1130,7 @@ public class PrivateBeanTest
       {
         entityManager.find(User.class, "Marvin");
         result = marvin;
-        entityManager.find(Mail.class, 1l);
+        entityManager.find(MailReceiver.class, 1l);
         result = null;
       }
     };
@@ -1398,7 +1445,7 @@ public class PrivateBeanTest
         result = null;
       }
     };
-      Response response = privateBean.updateFamilyvalues("Marvin", "Hotblack", 12);
+    Response response = privateBean.updateFamilyvalues("Marvin", "Hotblack", 12);
   }
 
   @Test
