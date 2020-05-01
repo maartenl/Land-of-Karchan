@@ -16,41 +16,6 @@
  */
 package mmud.rest.services;
 
-import java.net.InetAddress;
-import java.net.UnknownHostException;
-import java.time.LocalDateTime;
-import java.util.ArrayList;
-
-import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import javax.annotation.Resource;
-import javax.annotation.security.DeclareRoles;
-import javax.annotation.security.PermitAll;
-import javax.annotation.security.RolesAllowed;
-import javax.ejb.EJB;
-import javax.ejb.LocalBean;
-import javax.ejb.SessionContext;
-import javax.ejb.Stateless;
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
-import javax.persistence.PersistenceException;
-import javax.persistence.Query;
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.validation.ConstraintViolationException;
-import javax.ws.rs.DELETE;
-import javax.ws.rs.GET;
-import javax.ws.rs.POST;
-import javax.ws.rs.PUT;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.Produces;
-import javax.ws.rs.QueryParam;
-import javax.ws.rs.WebApplicationException;
-import javax.ws.rs.core.Context;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
 import mmud.Constants;
 import mmud.Utils;
 import mmud.commands.CommandFactory;
@@ -59,14 +24,7 @@ import mmud.commands.CommandRunner;
 import mmud.database.InputSanitizer;
 import mmud.database.entities.characters.Person;
 import mmud.database.entities.characters.User;
-import mmud.database.entities.game.Board;
-import mmud.database.entities.game.BoardMessage;
-import mmud.database.entities.game.DisplayInterface;
-import mmud.database.entities.game.Macro;
-import mmud.database.entities.game.MacroPK;
-import mmud.database.entities.game.Room;
-import mmud.database.entities.game.UserCommand;
-import mmud.database.entities.game.Worldattribute;
+import mmud.database.entities.game.*;
 import mmud.database.enums.Sex;
 import mmud.exceptions.ExceptionUtils;
 import mmud.exceptions.MudException;
@@ -77,21 +35,45 @@ import mmud.rest.webentities.PrivatePerson;
 import mmud.services.CommunicationService;
 import mmud.services.PersonCommunicationService;
 
+import javax.annotation.Resource;
+import javax.annotation.security.DeclareRoles;
+import javax.annotation.security.PermitAll;
+import javax.annotation.security.RolesAllowed;
+import javax.ejb.EJB;
+import javax.ejb.LocalBean;
+import javax.ejb.SessionContext;
+import javax.ejb.Stateless;
+import javax.persistence.*;
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.validation.ConstraintViolationException;
+import javax.ws.rs.*;
+import javax.ws.rs.core.Context;
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 /**
  * Takes care of all the game-related functions.
  * <img
  * src="doc-files/Gamebean.png">
  *
- * @startuml doc-files/Gamebean.png 
- * (*) --> "Create character" 
- * --> "Login" 
- * --> "Play" 
- * --> "Retrieve log" 
- * --> "Play" 
- * --> "Quit" 
+ * @author maartenl
+ * @startuml doc-files/Gamebean.png
+ * (*) --> "Create character"
+ * --> "Login"
+ * --> "Play"
+ * --> "Retrieve log"
+ * --> "Play"
+ * --> "Quit"
  * -->(*)
  * @enduml
- * @author maartenl
  */
 @DeclareRoles("player")
 @RolesAllowed("player")
@@ -158,13 +140,13 @@ public class GameBean
    *
    * @param name the name to identify the person
    * @throws WebApplicationException NOT_FOUND, if the user is either not found
-   * or is not a proper user. BAD_REQUEST if an unexpected exception crops up or
-   * provided info is really not proper. UNAUTHORIZED if session passwords do
-   * not match.
-   * @startuml doc-files/Gamebean_authenticate.png 
-   * (*) --> "find character" 
-   * --> "character found" 
-   * --> "character == user" 
+   *                                 or is not a proper user. BAD_REQUEST if an unexpected exception crops up or
+   *                                 provided info is really not proper. UNAUTHORIZED if session passwords do
+   *                                 not match.
+   * @startuml doc-files/Gamebean_authenticate.png
+   * (*) --> "find character"
+   * --> "character found"
+   * --> "character == user"
    * --> "session password is good"
    * -->(*)
    * @enduml
@@ -204,13 +186,13 @@ public class GameBean
    * @param name the name to identify the person
    * @return the authenticated User
    * @throws WebApplicationException BAD_REQUEST if an unexpected exception
-   * crops up or provided info is really not proper. UNAUTHORIZED if session
-   * passwords do not match or user not found.
-   * @startuml doc-files/Gamebean_authenticateWithPassword.png 
-   * (*) --> "find character" 
-   * --> "character found" 
-   * --> "character == user" 
-   * --> "password is good" 
+   *                                 crops up or provided info is really not proper. UNAUTHORIZED if session
+   *                                 passwords do not match or user not found.
+   * @startuml doc-files/Gamebean_authenticateWithPassword.png
+   * (*) --> "find character"
+   * --> "character found"
+   * --> "character == user"
+   * --> "password is good"
    * -->(*)
    * @enduml
    */
@@ -224,22 +206,22 @@ public class GameBean
     if (person == null)
     {
       throw new MudWebException(name,
-              name + " was not found.",
-              "User was not found (" + name + ")",
-              Response.Status.NOT_FOUND);
+        name + " was not found.",
+        "User was not found (" + name + ")",
+        Response.Status.NOT_FOUND);
     }
     if (!person.isUser())
     {
       throw new MudWebException(name,
-              name + " is not a user.",
-              "User was not a user (" + name + ")",
-              Response.Status.BAD_REQUEST);
+        name + " is not a user.",
+        "User was not a user (" + name + ")",
+        Response.Status.BAD_REQUEST);
     }
     if (person.getTimeout() > 0)
     {
       throw new MudWebException(name, name + " has been kicked out of the game and "
-              + "is not allowed to logon for " + person.getTimeout() + " minutes.",
-              Response.Status.FORBIDDEN);
+        + "is not allowed to logon for " + person.getTimeout() + " minutes.",
+        Response.Status.FORBIDDEN);
     }
     return person;
   }
@@ -251,14 +233,14 @@ public class GameBean
    * <img
    * src="doc-files/Gamebean_isBanned.png"></p>
    *
-   * @param name the name of the person
+   * @param name    the name of the person
    * @param address the ip address the person is playing from
    * @return true if banned, false otherwise.
-   * @startuml doc-files/Gamebean_isBanned.png 
-   * (*) --> "check silly names" 
-   * --> "check unbanned" 
+   * @startuml doc-files/Gamebean_isBanned.png
+   * (*) --> "check silly names"
+   * --> "check unbanned"
    * --> "check address banned"
-   * --> "check name banned" 
+   * --> "check name banned"
    * -->(*)
    * @enduml
    */
@@ -326,19 +308,19 @@ public class GameBean
    * like remote address.
    *
    * @param requestContext for determining the remote address.
-   * @param name the name of the user
-   * @param pperson the data of the new character
+   * @param name           the name of the user
+   * @param pperson        the data of the new character
    * @return NO_CONTENT if the game is offline for maintenance.
    * @throws WebApplicationException BAD_REQUEST if an unexpected exception
-   * crops up or something could not be validated.
-   * @startuml doc-files/Gamebean_create.png 
-   * (*) --> "check for offline" 
-   * --> "check presence of data" 
-   * --> "check name == pperson.name" 
-   * --> "check password == password2" 
-   * --> "check isBanned" 
-   * --> "check already person" 
-   * --> "create person" 
+   *                                 crops up or something could not be validated.
+   * @startuml doc-files/Gamebean_create.png
+   * (*) --> "check for offline"
+   * --> "check presence of data"
+   * --> "check name == pperson.name"
+   * --> "check password == password2"
+   * --> "check isBanned"
+   * --> "check already person"
+   * --> "create person"
    * -->(*)
    * @enduml
    */
@@ -367,9 +349,9 @@ public class GameBean
       if (pperson.password == null || !pperson.password.equals(pperson.password2))
       {
         throw new MudWebException(name,
-                "Passwords do not match.",
-                "Passwords do not match.",
-                Response.Status.BAD_REQUEST);
+          "Passwords do not match.",
+          "Passwords do not match.",
+          Response.Status.BAD_REQUEST);
       }
       User person = new User();
       person.setName(name);
@@ -378,18 +360,18 @@ public class GameBean
       {
         // is banned
         throw new MudWebException(name,
-                name + " was banned.",
-                "User was banned (" + name + ", " + address + ")",
-                Response.Status.FORBIDDEN);
+          name + " was banned.",
+          "User was banned (" + name + ", " + address + ")",
+          Response.Status.FORBIDDEN);
       }
       Person foundPerson = getEntityManager().find(Person.class, name);
       if (foundPerson != null)
       {
         // already a person
         throw new MudWebException(name,
-                name + " already exists.",
-                "User already exists (" + name + ", " + address + ")",
-                Response.Status.BAD_REQUEST);
+          name + " already exists.",
+          "User already exists (" + name + ", " + address + ")",
+          Response.Status.BAD_REQUEST);
       }
       // everything's cool! Let's do this!
       person.setActive(false);
@@ -446,9 +428,9 @@ public class GameBean
    * http://localhost:8080/karchangame/resources/game/Karn/logon?password=itsasecret..
    *
    * @param requestContext the context of the request, useful for example
-   * querying for the IP address.
-   * @param password password for verification of the user.
-   * @param name the name of the user
+   *                       querying for the IP address.
+   * @param password       password for verification of the user.
+   * @param name           the name of the user
    */
   @PermitAll
   @PUT
@@ -464,17 +446,17 @@ public class GameBean
       if (VPS386.equals(address))
       {
         throw new MudWebException(name,
-                "User has server address.",
-                "User has server address (" + name + ", " + address + ")",
-                Response.Status.BAD_REQUEST);
+          "User has server address.",
+          "User has server address (" + name + ", " + address + ")",
+          Response.Status.BAD_REQUEST);
       }
     }
     if ((address == null) || ("".equals(address.trim())))
     {
       throw new MudWebException(name,
-              "User has no address.",
-              "User has no address (" + name + ", " + address + ")",
-              Response.Status.BAD_REQUEST);
+        "User has no address.",
+        "User has no address (" + name + ", " + address + ")",
+        Response.Status.BAD_REQUEST);
     }
     if (Utils.isOffline())
     {
@@ -483,8 +465,8 @@ public class GameBean
     if (isBanned(name, address))
     {
       throw new MudWebException(name, "User was banned",
-              "User was banned (" + name + ", " + address + ")",
-              Response.Status.FORBIDDEN);
+        "User was banned (" + name + ", " + address + ")",
+        Response.Status.FORBIDDEN);
     }
     User person = getPlayer(name);
 
@@ -522,7 +504,7 @@ public class GameBean
    * part of the game.
    *
    * @param requestContext the context of the request, useful for example
-   * querying for the IP address.
+   *                       querying for the IP address.
    */
   @PUT
   @Path("{name}/logoff")
@@ -554,20 +536,20 @@ public class GameBean
    * Starts playing the game.
    *
    * @param requestContext used for retrieving the ip address/hostname of the
-   * player for determining ban-rules and the like.
-   * @param name the name of the character/player
+   *                       player for determining ban-rules and the like.
+   * @param name           the name of the character/player
    * @throws WebApplicationException <ul><li>BAD_REQUEST if an unexpected
-   * exception crops up.</li>
-   * <li>NO_CONTENT if the game is offline</li>
-   * <li>FORBIDDEN, if the player is banned.</li>
-   * </ul>
+   *                                 exception crops up.</li>
+   *                                 <li>NO_CONTENT if the game is offline</li>
+   *                                 <li>FORBIDDEN, if the player is banned.</li>
+   *                                 </ul>
    */
   @POST
   @Path("{name}/enter")
   @Produces(
-          {
-            MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON
-          })
+    {
+      MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON
+    })
   public void enterGame(@Context HttpServletRequest requestContext, @PathParam("name") String name)
   {
     LOGGER.finer("entering enterGame");
@@ -576,7 +558,6 @@ public class GameBean
     {
       person.activate();
       final PersonCommunicationService communicationService = CommunicationService.getCommunicationService(person);
-      communicationService.createLog();
       // write logon message
       Board newsBoard = boardBean.getNewsBoard();
       StringBuilder buffer = new StringBuilder(newsBoard.getDescription());
@@ -608,11 +589,11 @@ public class GameBean
         if (person.getGuild().getLogonmessage() != null)
         {
           communicationService.writeMessage(person.getGuild().getLogonmessage()
-                  + "<hr/>");
+            + "<hr/>");
         }
         // guild alarm message
         communicationService.writeMessage(person.getGuild().getAlarmDescription()
-                + "<hr/>");
+          + "<hr/>");
       }
       // write log "entered game."
       logBean.writeLog(person, "entered game.");
@@ -626,7 +607,7 @@ public class GameBean
     {
       throw new MudWebException(name, e, Response.Status.BAD_REQUEST);
     } catch (PersistenceException e)
-    {    
+    {
       ExceptionUtils.createMessage(e).ifPresent(message ->
       {
         throw new MudWebException(name, message, e, Response.Status.BAD_REQUEST);
@@ -657,21 +638,21 @@ public class GameBean
   /**
    * Main function for executing a command in the game.
    *
-   * @param name the name of the player. Should match the authorized user.
+   * @param name    the name of the player. Should match the authorized user.
    * @param command the command issued
-   * @param offset the offset used for the log
-   * @param log indicates with true or false, whether or not we are interested
-   * in the log.
+   * @param offset  the offset used for the log
+   * @param log     indicates with true or false, whether or not we are interested
+   *                in the log.
    * @return NO_CONTENT if the game is offline for maintenance.
    * @throws WebApplicationException BAD_REQUEST if an unexpected exception
-   * crops up or something could not be validated.
+   *                                 crops up or something could not be validated.
    */
   @POST
   @Path("{name}/play")
   @Produces(
-          {
-            MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON
-          })
+    {
+      MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON
+    })
   public PrivateDisplay playGame(@PathParam(value = "name") String name, String command, @QueryParam(value = "offset") Integer offset, @QueryParam(value = "log") boolean log) throws MudException
   {
     LOGGER.entering(this.getClass().getName(), "playGame");
@@ -715,9 +696,9 @@ public class GameBean
     } catch (WebApplicationException e)
     {
       LOGGER.log(Level.INFO, "caught and rethrowing WebApplicationException {0}  {1}", new Object[]
-      {
-        e.getClass().getName(), e.getMessage()
-      });
+        {
+          e.getClass().getName(), e.getMessage()
+        });
       //ignore
       throw e;
     } catch (Throwable e)
@@ -732,8 +713,8 @@ public class GameBean
         f = f.getCause();
       }
       String message = (e.getMessage() == null || e.getMessage().trim().equals(""))
-              ? "An error occurred. Please notify Karn or one of the deps."
-              : e.getMessage();
+        ? "An error occurred. Please notify Karn or one of the deps."
+        : e.getMessage();
       //ignore
       throw new MudWebException(name, message, e, Response.Status.BAD_REQUEST);
     }
@@ -752,7 +733,7 @@ public class GameBean
   }
 
   private PrivateDisplay runMultipleCommands(User person, String command)
-          throws MudException
+    throws MudException
   {
     PrivateDisplay result = null;
     // multiple commands
@@ -768,7 +749,7 @@ public class GameBean
    * It parses and executes the command of the user. The main batch of the
    * server.
    *
-   * @param person User who wishes to execute a command.
+   * @param person  User who wishes to execute a command.
    * @param command String containing the command entered
    * @return PrivateDisplay containing the response.
    * @throws MudException when something goes wrong.
@@ -781,7 +762,7 @@ public class GameBean
     {
       // get all user commands
       LOGGER.log(Level.FINER, "{0}.gameMain - get all user commands", this.getClass().getName());
-      Query query = getEntityManager().createNamedQuery("UserCommand.findActive");
+      TypedQuery<UserCommand> query = getEntityManager().createNamedQuery("UserCommand.findActive", UserCommand.class);
       List<UserCommand> list = query.getResultList();
       for (UserCommand userCommand : list)
       {
@@ -826,19 +807,19 @@ public class GameBean
   /**
    * Retrieves the log of a player.
    *
-   * @param name the name of the user
+   * @param name   the name of the user
    * @param offset the offset from whence to read the log
    * @return returns the log
-   * @see PrivateLog
    * @throws WebApplicationException BAD_REQUEST if an unexpected exception
-   * crops up.
+   *                                 crops up.
+   * @see PrivateLog
    */
   @GET
   @Path("{name}/log")
   @Produces(
-          {
-            MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON
-          })
+    {
+      MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON
+    })
   public PrivateLog getLog(@PathParam("name") String name, @QueryParam("offset") Integer offset)
   {
     LOGGER.finer("entering retrieveLog");
@@ -866,14 +847,14 @@ public class GameBean
    * @param name the name of the user
    * @return Response.ok if everything's okay
    * @throws WebApplicationException BAD_REQUEST if an unexpected exception
-   * crops up.
+   *                                 crops up.
    */
   @DELETE
   @Path("{name}/log")
   @Produces(
-          {
-            MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON
-          })
+    {
+      MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON
+    })
   public Response deleteLog(@PathParam("name") String name)
   {
     LOGGER.finer("entering deleteLog");
@@ -899,14 +880,14 @@ public class GameBean
    * @param name the name of the user
    * @return An Ok response.
    * @throws WebApplicationException BAD_REQUEST if an unexpected exception
-   * crops up.
+   *                                 crops up.
    */
   @GET
   @Path("{name}/quit")
   @Produces(
-          {
-            MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON
-          })
+    {
+      MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON
+    })
   public Response quitGame(@PathParam("name") String name)
   {
     LOGGER.finer("entering quit");

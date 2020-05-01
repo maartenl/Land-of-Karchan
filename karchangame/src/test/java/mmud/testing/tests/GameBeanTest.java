@@ -23,6 +23,7 @@ import mmud.database.entities.characters.User;
 import mmud.database.entities.game.Area;
 import mmud.database.entities.game.Macro;
 import mmud.database.entities.game.Room;
+import mmud.database.entities.game.UserCommand;
 import mmud.exceptions.ErrorDetails;
 import mmud.exceptions.MudException;
 import mmud.rest.services.GameBean;
@@ -36,6 +37,7 @@ import org.testng.annotations.*;
 
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
+import javax.persistence.TypedQuery;
 import javax.ws.rs.core.Response;
 import java.util.Collections;
 import java.util.HashSet;
@@ -65,6 +67,9 @@ public class GameBeanTest extends MudTest
 
   @Mocked
   private Query query;
+
+  @Mocked
+  private TypedQuery typedquery;
 
   @Mocked
   private CommandRunner commandRunner;
@@ -154,9 +159,9 @@ public class GameBeanTest extends MudTest
         result = marvin;
         entityManager.find(Macro.class, (Object) any);
         result = null;
-        entityManager.createNamedQuery("UserCommand.findActive");
-        result = query;
-        query.getResultList();
+        entityManager.createNamedQuery("UserCommand.findActive", UserCommand.class);
+        result = typedquery;
+        typedquery.getResultList();
         result = Collections.emptyList();
 
       }
@@ -214,9 +219,9 @@ public class GameBeanTest extends MudTest
         result = marvin;
         entityManager.find(Macro.class, (Object) any);
         result = null;
-        entityManager.createNamedQuery("UserCommand.findActive");
-        result = query;
-        query.getResultList();
+        entityManager.createNamedQuery("UserCommand.findActive", UserCommand.class);
+        result = typedquery;
+        typedquery.getResultList();
         result = Collections.emptyList();
 
       }
@@ -276,9 +281,9 @@ public class GameBeanTest extends MudTest
         result = marvin;
         entityManager.find(Macro.class, (Object) any);
         result = null;
-        entityManager.createNamedQuery("UserCommand.findActive");
-        result = query;
-        query.getResultList();
+        entityManager.createNamedQuery("UserCommand.findActive", UserCommand.class);
+        result = typedquery;
+        typedquery.getResultList();
         result = Collections.emptyList();
 
       }
@@ -338,9 +343,9 @@ public class GameBeanTest extends MudTest
         result = marvin;
         entityManager.find(Macro.class, (Object) any);
         result = null;
-        entityManager.createNamedQuery("UserCommand.findActive");
-        result = query;
-        query.getResultList();
+        entityManager.createNamedQuery("UserCommand.findActive", UserCommand.class);
+        result = typedquery;
+        typedquery.getResultList();
         result = Collections.emptyList();
 
       }
