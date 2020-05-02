@@ -26,6 +26,10 @@ import { WikipagesComponent } from './wikipages/wikipages.component';
 import { PicturesComponent } from './pictures/pictures.component';
 import { PlayComponent } from './play/play.component';
 import { ToastComponent } from './toast/toast.component';
+import { ComposeMailComponent } from './mail/compose-mail/compose-mail.component';
+import { InboxMailComponent } from './mail/inbox-mail/inbox-mail.component';
+import { ShowMailComponent } from './mail/show-mail/show-mail.component';
+import { SentMailComponent } from './mail/sent-mail/sent-mail.component';
 
 @NgModule({
   declarations: [
@@ -40,7 +44,11 @@ import { ToastComponent } from './toast/toast.component';
     WikipagesComponent,
     PicturesComponent,
     PlayComponent,
-    ToastComponent
+    ToastComponent,
+    ComposeMailComponent,
+    InboxMailComponent,
+    ShowMailComponent,
+    SentMailComponent
   ],
   imports: [
     BrowserModule,

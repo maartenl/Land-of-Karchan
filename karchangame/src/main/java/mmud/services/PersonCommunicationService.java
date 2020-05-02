@@ -16,33 +16,28 @@
  */
 package mmud.services;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.FileWriter;
-import java.io.IOException;
 import mmud.Constants;
-import mmud.Utils;
 import mmud.database.InputSanitizer;
 import mmud.database.OutputFormatter;
 import mmud.database.entities.characters.Person;
-import static mmud.database.entities.characters.Person.EMPTY_LOG;
 import mmud.exceptions.MudException;
 
+import java.io.*;
+
+import static mmud.database.entities.characters.Person.EMPTY_LOG;
+
 /**
- *
  * @author maartenl
  */
 public class PersonCommunicationService implements CommunicationService
 {
-  
+
   private Person person;
-  
+
   private File theLogfile;
-  
+
   private StringBuffer theLog;
-  
+
   PersonCommunicationService(Person person)
   {
     if (person == null)
@@ -51,15 +46,22 @@ public class PersonCommunicationService implements CommunicationService
     }
     this.person = person;
   }
-  
+
   /**
-   * Clears the log, i.e. deletes the file and recreates it.
-   *
-   * @see #createLog()
+   * Clears the log.
    */
   public void clearLog() throws MudException
   {
-    createLog();
+    try (RandomAccessFile file = new RandomAccessFile(getLogfile(), "rw");)
+    {
+      file.setLength(0);
+    } catch (FileNotFoundException fileNotFoundException)
+    {
+      throw new MudException("Log file not found.", fileNotFoundException);
+    } catch (IOException e)
+    {
+      throw new MudException("Error writing to log file.", e);
+    }
   }
 
   /**
@@ -112,8 +114,8 @@ public class PersonCommunicationService implements CommunicationService
     if (foundit != -1)
     {
       aMessage = aMessage.substring(0, foundit)
-              + Character.toUpperCase(aMessage.charAt(foundit))
-              + aMessage.substring(foundit + 1);
+        + Character.toUpperCase(aMessage.charAt(foundit))
+        + aMessage.substring(foundit + 1);
     }
     try (FileWriter myFileWriter = new FileWriter(getLogfile(), true))
     {
@@ -140,10 +142,10 @@ public class PersonCommunicationService implements CommunicationService
    * </TR> <TR> <TD></TD> <TD></TD> <TD></TD> </TR> </TABLE>
    *
    * @param aMessage the message to be written to the logfile.
-   * @param aSource the source of the message, the thing originating the
-   * message.
-   * @param aTarget the target of the message, could be null if there is not
-   * target for this specific message.
+   * @param aSource  the source of the message, the thing originating the
+   *                 message.
+   * @param aTarget  the target of the message, could be null if there is not
+   *                 target for this specific message.
    * @see #writeMessage(String aMessage)
    * @see #writeMessage(Person aSource, String aMessage)
    */
@@ -195,8 +197,8 @@ public class PersonCommunicationService implements CommunicationService
    * <TD></TD> </TR> </TABLE>
    *
    * @param aMessage the message to be written to the logfile.
-   * @param aSource the source of the message, the thing originating the
-   * message.
+   * @param aSource  the source of the message, the thing originating the
+   *                 message.
    * @see #writeMessage(Person aSource, Person aTarget, String aMessage)
    * @see #writeMessage(String aMessage)
    */
@@ -238,43 +240,35 @@ public class PersonCommunicationService implements CommunicationService
   }
 
   /**
-   * creates a new log file and deletes the old one.
+   * Gets the log file, or creates it if it does not exist.
    *
    * @throws MudException which indicates probably that the log file could not
-   * be created. Possibly due to either permissions or the directory does not
-   * exist.
+   *                      be created. Possibly due to either permissions or the directory does not
+   *                      exist.
    */
-  public void createLog() throws MudException
-  {
-    if (getLogfile().exists())
-    {
-      getLogfile().delete();
-    }
-    try
-    {
-      getLogfile().createNewFile();
-    } catch (IOException e)
-    {
-      throw new MudException("Error creating logfile for " + person.getName()
-              + " in " + Constants.getMudfilepath(), e);
-    }
-  }
-
   private File getLogfile()
   {
     if (theLogfile == null)
     {
       theLogfile = new File(Constants.getMudfilepath(), person.getName() + ".log");
     }
+    try
+    {
+      theLogfile.createNewFile();
+    } catch (IOException e)
+    {
+      throw new MudException("Error creating logfile for " + person.getName()
+        + " in " + Constants.getMudfilepath(), e);
+    }
     return theLogfile;
   }
-  
+
   private void readLog() throws MudException
   {
     File file = getLogfile();
 
     try (BufferedReader reader = new BufferedReader(
-            new FileReader(file)))
+      new FileReader(file)))
     {
       theLog = new StringBuffer(1000);
 
@@ -313,10 +307,10 @@ public class PersonCommunicationService implements CommunicationService
    * happens to be empty.
    *
    * @param offset the offset from whence to read the log. Offset starts with 0
-   * and is inclusive.
+   *               and is inclusive.
    * @return a String, part of the Log.
    * @throws MudException in case of accidents with reading the log, or a
-   * negative offset.
+   *                      negative offset.
    */
   public String getLog(Integer offset) throws MudException
   {
@@ -343,7 +337,6 @@ public class PersonCommunicationService implements CommunicationService
    * Returns the amount of money that you are carrying.
    *
    * @return String description of the amount of money.
-   * @see Constants#getDescriptionOfMoney
    */
   public String getDescriptionOfMoney()
   {

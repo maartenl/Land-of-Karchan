@@ -1,0 +1,16 @@
+<div class="container">
+    <div class="row row-content">
+        <div class="col-xs-12 col-sm-12">
+            <div class="card" *ngIf="mail.toname !== undefined">
+                <div class="card-text">
+                    <h4 class="card-title">{{ mail.subject }}</h4>
+                    <p class="card-text"><strong>From:</strong> {{ mail.name }}</p>
+                    <p class="card-text"><strong>To:</strong> {{ mail.toname }}</p>
+                    <p class="card-text"><strong>On:</strong> {{ mail.whensent | date:'medium' }}</p>
+                </div>
+                <div class="card-text" [innerHTML]="mail.body">
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

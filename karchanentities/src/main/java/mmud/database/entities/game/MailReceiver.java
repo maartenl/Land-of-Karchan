@@ -17,21 +17,21 @@
 package mmud.database.entities.game;
 
 import mmud.database.entities.characters.Person;
-import mmud.database.entities.items.ItemDefinition;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
 import java.io.Serializable;
-import java.time.LocalDateTime;
 
 /**
- * Contents of mail someone has sent.
- * @see MailReceiver
+ * It's basically a couple table between the mail sent, and the addressee.
+ * Which means there are potentially many records here for the same mail, if the mail
+ * is sent in bulk.
+ *
  * @author maartenl
+ * @see Mail
  */
 @Entity
-@Table(name = "mm_mailcontents")
+@Table(name = "mm_mailtable")
 @NamedQueries(
   {
 //    @NamedQuery(name = "Mail.findAll", query = "SELECT m FROM Mail m"),
@@ -40,13 +40,12 @@ import java.time.LocalDateTime;
 //    @NamedQuery(name = "Mail.findByWhensent", query = "SELECT m FROM Mail m WHERE m.whensent = :whensent"),
 //    @NamedQuery(name = "Mail.findByHaveread", query = "SELECT m FROM Mail m WHERE m.haveread = :haveread"),
 //    @NamedQuery(name = "Mail.findByNewmail", query = "SELECT m FROM Mail m WHERE m.newmail = :newmail"),
-    @NamedQuery(name = "Mail.deleteByName", query = "DELETE FROM Mail m WHERE m.name = :person"),
-    @NamedQuery(name = "Mail.listmail", query = "SELECT DISTINCT r FROM Mail m, MailReceiver r WHERE m = r.mail and r.deleted = false and r.toname = :name order by m.whensent desc"),
-    @NamedQuery(name = "Mail.listsentmail", query = "SELECT DISTINCT m FROM Mail m WHERE m.deleted = false and m.name = :name order by m.whensent desc"),
-    @NamedQuery(name = "Mail.nonewmail", query = "UPDATE MailReceiver r SET r.newmail = false WHERE r.toname = :name"),
-    @NamedQuery(name = "Mail.hasnewmail", query = "SELECT count(r.id) FROM MailReceiver r WHERE r.newmail = true and r.deleted = false and r.toname = :name")
+    @NamedQuery(name = "MailReceiver.deleteByName", query = "DELETE FROM MailReceiver m WHERE m.toname = :person")
+//    @NamedQuery(name = "Mail.listmail", query = "SELECT m FROM Mail m WHERE m.deleted = false and m.toname = :name order by m.id desc"),
+//    @NamedQuery(name = "Mail.nonewmail", query = "UPDATE Mail m SET m.newmail = false WHERE m.toname = :name"),
+//    @NamedQuery(name = "Mail.hasnewmail", query = "SELECT count(m.id) FROM Mail m WHERE m.newmail = true and m.deleted = false and m.toname = :name")
   })
-public class Mail implements Serializable {
+public class MailReceiver implements Serializable {
 
   private static final long serialVersionUID = 1L;
 
@@ -68,40 +67,26 @@ public class Mail implements Serializable {
   @Column(name = "id")
   private Long id;
 
-  @Basic(optional = false)
-  @NotNull
-  @Size(min = 1, max = 100)
-  @Column(name = "subject")
-  private String subject;
+  @Column(name = "haveread")
+  private Boolean haveread;
 
-  @Basic(optional = false)
-  @NotNull
-  @Column(name = "whensent")
-  private LocalDateTime whensent;
-
-  @Basic(optional = false)
-  @NotNull
-  @Lob
-  @Size(min = 1, max = 65535)
-  @Column(name = "body")
-  private String body;
+  @Column(name = "newmail")
+  private Boolean newmail;
 
   @Basic(optional = false)
   @NotNull
   @Column(name = "deleted")
   private Boolean deleted;
 
-  @Basic(optional = false)
-  @NotNull
-  @Size(min = 1, max = 4096)
-  @Column(name = "toname")
-  private String toname;
-
-  @JoinColumn(name = "name", referencedColumnName = "name")
+  @JoinColumn(name = "toname", referencedColumnName = "name")
   @ManyToOne(optional = false)
-  private Person name;
+  private Person toname;
 
-  public Mail() {
+  @JoinColumn(name = "contentsid", referencedColumnName = "id")
+  @ManyToOne(optional = false)
+  private Mail mail;
+
+  public MailReceiver() {
   }
 
   public Long getId() {
@@ -112,41 +97,25 @@ public class Mail implements Serializable {
     this.id = id;
   }
 
-  /**
-   * The subject or title of the mail.
-   * @return String containing the subject.
-   */
-  public String getSubject() {
-    return subject;
+  public Boolean getHaveread() {
+    return haveread;
+  }
+
+  public void setHaveread(Boolean haveread) {
+    this.haveread = haveread;
+  }
+
+  public Boolean getNewmail() {
+    return newmail;
+  }
+
+  public void setNewmail(Boolean newmail) {
+    this.newmail = newmail;
   }
 
   /**
-   * @see #getSubject()
-   */
-  public void setSubject(String subject) {
-    this.subject = subject;
-  }
-
-  public LocalDateTime getWhensent() {
-    return whensent;
-  }
-
-  public void setWhensent(LocalDateTime whensent) {
-    this.whensent = whensent;
-  }
-
-  public String getBody() {
-    return body;
-  }
-
-  public void setBody(String body) {
-    this.body = body;
-  }
-
-
-  /**
-   * Indicates wether or not the original send of the mail, has deleted the mail.
-   * This has no effect on the mail received, these are still viewable by the receivers.
+   * Indicates wether the received of the mail has deleted the mail.
+   * This has no effect on other receivers or the send said mail.
    */
   public Boolean getDeleted() {
     if (deleted == null) {
@@ -163,40 +132,37 @@ public class Mail implements Serializable {
   }
 
   /**
-   * <p>Returns the receiver(s) of the mail. as originally typed. For example, "Jim", but also "Jim, Hank",
-   * but also possible is "guild", "deputies", "everybody", "guild: The Inner Flame".</p>
-   * <p>As such there is no hard relation to persons or anything of the kind. It's just a string.</p>
-   * @return comma separated list of all people receiving the mail
+   * Returns the receiver of the mail.
+   *
+   * @return the person receiving the mail
    */
-  public String getToname() {
+  public Person getToname() {
     return toname;
   }
 
   /**
    * Sets the receiver of the mail.
    *
-   * @see #getToname()
+   * @param toname
    */
-  public void setToname(String toname) {
+  public void setToname(Person toname) {
     this.toname = toname;
   }
 
   /**
-   * Returns the sender of the mail.
+   * Gets the actual mail record this person received.
    *
-   * @return the person sending the mail.
+   * @return the mail itself
    */
-  public Person getName() {
-    return name;
+  public Mail getMail() {
+    return mail;
   }
 
   /**
-   * Sets the sender of the mail.
-   *
-   * @param name
+   * @see #getMail()
    */
-  public void setName(Person name) {
-    this.name = name;
+  public void setMail(Mail mail) {
+    this.mail = mail;
   }
 
   @Override
@@ -209,10 +175,10 @@ public class Mail implements Serializable {
   @Override
   public boolean equals(Object object) {
     // TODO: Warning - this method won't work in the case the id fields are not set
-    if (!(object instanceof Mail)) {
+    if (!(object instanceof MailReceiver)) {
       return false;
     }
-    Mail other = (Mail) object;
+    MailReceiver other = (MailReceiver) object;
     if ((this.id == null && other.id != null) || (this.id != null && !this.id.equals(other.id))) {
       return false;
     }

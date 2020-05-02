@@ -32,6 +32,8 @@ export class PlayerService {
 
   mailUrl: string;
 
+  sentmailUrl: string;
+
   hasNewMailUrl: string;
 
   familyUrl: string;
@@ -59,6 +61,7 @@ export class PlayerService {
     this.charactersheetUrl = environment.CHARACTERSHEET_URL;
     this.familyUrl = environment.FAMILY_URL;
     this.mailUrl = environment.MAIL_URL;
+    this.sentmailUrl = environment.SENTMAIL_URL;
     this.hasNewMailUrl = environment.HASNEWMAIL_URL;
     this.guildUrl = environment.GUILD_URL;
     this.guildhopefulsUrl = environment.GUILDHOPEFULS_URL;
@@ -113,6 +116,10 @@ export class PlayerService {
 
   private getMailUrl(): string {
     return this.mailUrl.replace('[player]', this.getName());
+  }
+
+  private getSentMailUrl(): string {
+    return this.sentmailUrl.replace('[player]', this.getName());
   }
 
   private getHasNewMailUrl(): string {
@@ -192,6 +199,16 @@ export class PlayerService {
 
   public getMail(offset: number): Observable<any> {
     return this.http.get<Mail[]>(this.getMailUrl() + '?offset=' + offset)
+      .pipe(
+        catchError(err => {
+          this.handleError(err);
+          return [];
+        })
+      );
+  }
+
+  public getSentMail(offset: number): Observable<any> {
+    return this.http.get<Mail[]>(this.getSentMailUrl() + '?offset=' + offset)
       .pipe(
         catchError(err => {
           this.handleError(err);

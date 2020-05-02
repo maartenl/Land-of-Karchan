@@ -1,0 +1,35 @@
+<div class="container">
+    <div class="row row-content">
+        <div class="col-xs-12 col-sm-12">
+            <table class="table table-sm table-striped table-bordered">
+                <thead class="thead-inverse">
+                    <tr>
+                        <th>To</th>
+                        <th>Subject</th>
+                        <th>When</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let mail of mails.getMails()">
+                        <td (click)="setMail(mail)">{{ mail.toname }}</td>
+                        <td (click)="setMail(mail)">{{ mail.subject }}</td>
+                        <td (click)="setMail(mail)">{{ mail.whensent | date:'medium' }}</td>
+                    </tr>
+                </tbody>
+            </table>
+            <nav aria-label="...">
+                <ul class="pagination">
+                    <li class="page-item">
+                        <a class="page-link" href="#" tabindex="-1" (click)="previous()">Previous</a>
+                    </li>
+                    <li class="page-item" (click)="setPage(header-1)" [ngClass]="{active: mails.page === (header-1)}"
+                        *ngFor="let header of mails.generatePages()"><a class="page-link" href="#">{{ header }}</a></li>
+                    <li class="page-item">
+                        <a class="page-link" href="#" (click)="next()">Next</a>
+                    </li>
+                </ul>
+            </nav>
+        </div>
+    </div>
+</div>
+<app-show-mail [mail]="mail"></app-show-mail>
