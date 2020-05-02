@@ -52,7 +52,8 @@ import mmud.database.Attributes;
 @NamedQueries(
         {
           @NamedQuery(name = "Person.findAll", query = "SELECT p FROM Person p"),
-          @NamedQuery(name = "Person.findByName", query = "SELECT p FROM Person p WHERE lower(p.name) = lower(:name)")
+          @NamedQuery(name = "Person.findByName", query = "SELECT p FROM Person p WHERE lower(p.name) = lower(:name)"),
+          @NamedQuery(name = "Person.countAll", query = "SELECT count(p) FROM Person p"),
         })
 abstract public class Person implements Serializable, AttributeWrangler, DisplayInterface, ItemWrangler, Ownage
 {
@@ -2168,4 +2169,5 @@ abstract public class Person implements Serializable, AttributeWrangler, Display
   {
     // purposefully empty,
   }
+
 }
