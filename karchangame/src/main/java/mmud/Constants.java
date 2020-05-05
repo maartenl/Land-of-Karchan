@@ -16,8 +16,9 @@
  */
 package mmud;
 
-import com.google.gwt.thirdparty.guava.common.escape.Escaper;
-import com.google.gwt.thirdparty.guava.common.html.HtmlEscapers;
+import com.google.common.escape.Escaper;
+import com.google.common.html.HtmlEscapers;
+import mmud.database.OutputFormatter;
 import mmud.database.entities.items.Item;
 import mmud.database.entities.items.ItemDefinition;
 import mmud.rest.webentities.PrivateItem;
@@ -28,9 +29,6 @@ import javax.validation.Validator;
 import javax.validation.ValidatorFactory;
 import java.io.File;
 import java.util.*;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-import mmud.database.OutputFormatter;
 
 /**
  * @author maartenl
@@ -49,6 +47,7 @@ public class Constants
   /**
    * Returns the base file path. This property can be set as a startup parameter called "mmud.base.path".
    * So for instance upon startup "-Dmmud.base.path=/home/payara".
+   *
    * @return the base file path to use.
    */
   public static String getBasepath()
@@ -175,5 +174,5 @@ public class Constants
     }
     return buffer == null ? null : buffer.toString();
   }
-    
+
 }

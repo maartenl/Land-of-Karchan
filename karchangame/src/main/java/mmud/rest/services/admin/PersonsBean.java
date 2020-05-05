@@ -39,7 +39,6 @@ import javax.ws.rs.core.SecurityContext;
 import javax.ws.rs.core.UriInfo;
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.logging.Logger;
 
 /**
  * @author maartenl
@@ -51,7 +50,7 @@ import java.util.logging.Logger;
 @Path("/administration/characters")
 public class PersonsBean //implements AdminRestService<String>
 {
-  
+
   @PersistenceContext(unitName = "karchangamePU")
   private EntityManager em;
 
