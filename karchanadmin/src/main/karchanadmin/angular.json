@@ -119,6 +119,10 @@
           }
         }
       }
-    }},
-  "defaultProject": "karchanadmin"
+    }
+  },
+  "defaultProject": "karchanadmin",
+  "cli": {
+    "analytics": "737bdfa8-1da1-4690-88d2-3f8cc99b8822"
+  }
 }
