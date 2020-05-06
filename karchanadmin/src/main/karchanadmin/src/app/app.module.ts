@@ -5,12 +5,14 @@ import {
   ReactiveFormsModule
 } from '@angular/forms';
 import { CookieService } from 'ngx-cookie-service';
-import { HttpClientModule } from '@angular/common/http';
+import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
+import { DefaultHttpInterceptor } from './http.interceptor';
+import { MockHttpInterceptor } from './http.mock.interceptor';
 import { BlogsComponent } from './blogs/blogs.component';
 import { TemplatesComponent } from './templates/templates.component';
 import { ErrorsComponent } from './errors/errors.component';
@@ -32,6 +34,9 @@ import { ManpagesComponent } from './manpages/manpages.component';
 import { EventsComponent } from './events/events.component';
 import { WorldattributesComponent } from './worldattributes/worldattributes.component';
 import { CharactersComponent } from './characters/characters.component';
+import { environment } from 'src/environments/environment';
+
+export const isMock = environment.mock;
 
 @NgModule({
   declarations: [
@@ -65,7 +70,11 @@ import { CharactersComponent } from './characters/characters.component';
     ScrollingModule,
     NgbModule
   ],
-  providers: [CookieService],
+  providers: [CookieService, {
+    provide: HTTP_INTERCEPTORS,
+    useClass: isMock ? MockHttpInterceptor : DefaultHttpInterceptor,
+    multi: true
+  }],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

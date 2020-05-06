@@ -1,5 +1,6 @@
 export const environment = {
   production: true,
+  mock: false,
   BLOGS_URL: '/karchangame/resources/administration/blogs',
   TEMPLATES_URL: '/karchangame/resources/administration/templates',
   SYSTEMLOG_URL: '/karchangame/resources/administration/systemlog',
