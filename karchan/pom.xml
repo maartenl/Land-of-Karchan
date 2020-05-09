@@ -24,19 +24,19 @@
     <bliki.version>3.1.0</bliki.version>
   </properties>
 
-  <dependencies>    
+  <dependencies>
     <dependency>
       <groupId>mmud</groupId>
       <artifactId>karchanentities</artifactId>
       <version>${karchanentities.version}</version>
-    </dependency> 
+    </dependency>
     <dependency>
       <groupId>org.eclipse.microprofile</groupId>
       <artifactId>microprofile</artifactId>
       <version>${microprofile.version}</version>
       <type>pom</type>
       <scope>provided</scope>
-    </dependency> 
+    </dependency>
     <dependency>
       <groupId>io.jsonwebtoken</groupId>
       <artifactId>jjwt</artifactId>
@@ -61,12 +61,6 @@
       <scope>test</scope>
     </dependency>
     <dependency>
-      <groupId>javax.servlet</groupId>
-      <artifactId>javax.servlet-api</artifactId>
-      <version>4.0.1</version>
-      <scope>provided</scope>
-    </dependency>
-    <dependency>
       <groupId>org.freemarker</groupId>
       <artifactId>freemarker</artifactId>
       <version>${freemarker.version}</version>
@@ -83,9 +77,9 @@
       <type>jar</type>
     </dependency>
     <dependency>
-      <groupId>javax</groupId>
-      <artifactId>javaee-api</artifactId>
-      <version>${javaee.version}</version>
+      <groupId>jakarta.platform</groupId>
+      <artifactId>jakarta.jakartaee-api</artifactId>
+      <version>${jakartaee.version}</version>
       <scope>provided</scope>
     </dependency>
   </dependencies>

@@ -19,7 +19,7 @@
     <project.target.version>1.8</project.target.version>
     <maven.compiler.source>1.8</maven.compiler.source>
     <maven.compiler.target>1.8</maven.compiler.target>
-    <javaee.version>8.0.1</javaee.version>
+    <jakartaee.version>8.0.0</jakartaee.version>
     <microprofile.version>2.2</microprofile.version>
     <jsonwebtoken.version>0.9.1</jsonwebtoken.version>
     <eclipselink.version>2.5.2</eclipselink.version>
@@ -75,11 +75,11 @@
     <module>karchan</module>
     <module>karchangame</module>
     <module>karchanentities</module>
-<!-- these are usually not included 
+<!-- these are usually not included
 -->
     <module>karchanadmin</module>
     <module>karchanimages</module>
     <module>karchanpersonal</module>
-    <module>karchanscripts</module> 
+    <module>karchanscripts</module>
   </modules>
 </project>
