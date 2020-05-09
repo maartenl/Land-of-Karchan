@@ -1,16 +1,27 @@
 import { Injectable, Injector } from '@angular/core';
 import { HttpEvent, HttpHandler, HttpInterceptor, HttpRequest, HttpResponse } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { Observable, of } from 'rxjs';
+
+import * as reginald from '../assets/characters/reginald.json';
 
 /**
- * Usefull for mocking the http rest calls in a testing environment.
+ * Useful for mocking the http rest calls in a testing environment.
  */
 @Injectable()
 export class MockHttpInterceptor implements HttpInterceptor {
-    constructor(private injector: Injector) { }
+    private urlMapper = new Map();
+
+    constructor(private injector: Injector) {
+        this.urlMapper.set('/assets/characters.json/Reginald', reginald);
+    }
 
     intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
-        console.log('Intercepted request' + request.url);
+        if (this.urlMapper.has(request.url)) {
+            console.log('Hit ' + request.url);
+            return of(new HttpResponse({ status: 200, body: ((this.urlMapper.get(request.url)) as any).default }));
+        } else {
+            console.log('No hit for ' + request.url);
+        }
         return next.handle(request);
     }
 }
