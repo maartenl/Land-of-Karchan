@@ -27,6 +27,7 @@ import javax.validation.Validation;
 import javax.validation.Validator;
 import javax.validation.ValidatorFactory;
 import java.io.File;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -45,6 +46,11 @@ public class Constants
   private static final String PLAYERLOG_DIR = "temp";
 
   public static final String MMUD_BASE_PATH_PROPERTY = "mmud.base.path";
+
+  /**
+   * For example 2020-05-17 13:23:34.
+   */
+  public static final DateTimeFormatter DATETIME_FORMAT = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
   /**
    * Returns the base file path. This property can be set as a startup parameter called "mmud.base.path".
@@ -175,5 +181,5 @@ public class Constants
     }
     return buffer == null ? null : buffer.toString();
   }
-    
+
 }

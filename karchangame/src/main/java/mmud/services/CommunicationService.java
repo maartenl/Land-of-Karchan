@@ -27,17 +27,32 @@ import mmud.exceptions.MudException;
  */
 public interface CommunicationService
 {
-  
+
+  /**
+   * Returns the communication service, based on a person.
+   * @param person the person to base the communication on.
+   * @return the service
+   */
   static PersonCommunicationService getCommunicationService(Person person)
   {
     return new PersonCommunicationService(person);
   }
 
-  public static RoomCommunicationService getCommunicationService(Room room)
+  /**
+   * Returns the communication service, based on a room.
+   * @param room the room to base the communication on.
+   * @return the service
+   */
+  static RoomCommunicationService getCommunicationService(Room room)
   {
     return new RoomCommunicationService(room);
   }
 
+  /**
+   * Returns the communication service, based on a guild.
+   * @param guild the guild to base the communication on.
+   * @return the service
+   */
   public static GuildCommunicationService getCommunicationService(Guild guild)
   {
     return new GuildCommunicationService(guild);

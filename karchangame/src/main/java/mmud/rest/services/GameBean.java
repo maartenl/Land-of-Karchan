@@ -59,6 +59,8 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import static mmud.Constants.DATETIME_FORMAT;
+
 /**
  * Takes care of all the game-related functions.
  * <img
@@ -165,6 +167,11 @@ public class GameBean
     return person;
   }
 
+  /**
+   * Will also work if the person is not playing the game, yet. When playing the game, use {@link #authenticate(String)}.
+   * @param name the name of the player
+   * @return the user
+   */
   private User authenticateToEnterGame(String name)
   {
     if (!getPlayerName().equals(name))
@@ -533,6 +540,56 @@ public class GameBean
   }
 
   /**
+   * Retrieves the logon message.
+   *
+   * @param requestContext used for retrieving the ip address/hostname of the
+   *                       player for determining ban-rules and the like.
+   * @param name           the name of the character/player
+   * @throws WebApplicationException <ul><li>BAD_REQUEST if an unexpected
+   *                                 exception crops up.</li>
+   *                                 <li>NO_CONTENT if the game is offline</li>
+   *                                 <li>FORBIDDEN, if the player is banned.</li>
+   *                                 </ul>
+   */
+  @GET
+  @Path("{name}/logonmessage")
+  @Produces(
+    {
+      MediaType.TEXT_HTML
+    })
+  public String getLogonMessage(@PathParam("name") String name)
+  {
+    LOGGER.finer("entering getLogonMessage");
+    User person = authenticateToEnterGame(name);
+    // write logon message
+    Board newsBoard = boardBean.getNewsBoard();
+    StringBuilder buffer = new StringBuilder(newsBoard.getDescription());
+    List<BoardMessage> news = boardBean.getNews();
+    for (BoardMessage newMessage : news)
+    {
+      buffer.append("<hr/>");
+      buffer.append(newMessage.getPosttime());
+      buffer.append("<p/>\r\n");
+      buffer.append(newMessage.getMessage());
+      buffer.append("<p><i>");
+      buffer.append(newMessage.getPerson().getName());
+      buffer.append("</i>");
+    }
+    // has guild
+    if (person.getGuild() != null)
+    {
+      // guild logonmessage
+      if (person.getGuild().getLogonmessage() != null)
+      {
+        buffer.append(person.getGuild().getLogonmessage()).append("<hr/>");
+      }
+      // guild alarm message
+      buffer.append(person.getGuild().getAlarmDescription()).append("<hr/>");
+    }
+    return buffer.toString();
+  }
+
+  /**
    * Starts playing the game.
    *
    * @param requestContext used for retrieving the ip address/hostname of the
@@ -548,7 +605,7 @@ public class GameBean
   @Path("{name}/enter")
   @Produces(
     {
-      MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON
+      MediaType.APPLICATION_JSON
     })
   public void enterGame(@Context HttpServletRequest requestContext, @PathParam("name") String name)
   {
@@ -558,47 +615,18 @@ public class GameBean
     {
       person.activate();
       final PersonCommunicationService communicationService = CommunicationService.getCommunicationService(person);
-      // write logon message
-      Board newsBoard = boardBean.getNewsBoard();
-      StringBuilder buffer = new StringBuilder(newsBoard.getDescription());
-      List<BoardMessage> news = boardBean.getNews();
-      for (BoardMessage newMessage : news)
-      {
-        buffer.append("<hr/>");
-        buffer.append(newMessage.getPosttime());
-        buffer.append("<p/>\r\n");
-        buffer.append(newMessage.getMessage());
-        buffer.append("<p><i>");
-        buffer.append(newMessage.getPerson().getName());
-        buffer.append("</i>");
-      }
-      communicationService.writeMessage(buffer.toString());
+      String message = "You have entered the game. (" + LocalDateTime.now().format(DATETIME_FORMAT) + ")<br>";
+      communicationService.writeMessage(message);
       // check mail
       if (mailBean.hasNewMail(person))
       {
-        communicationService.writeMessage("<p>You have new Mudmail!</p>\r\n");
+        communicationService.writeMessage("You have new Mudmail!<br>");
       } else
       {
-        communicationService.writeMessage("<p>You have no new Mudmail...</p>\r\n");
-      }
-      // has guild
-      if (person.getGuild() != null)
-      {
-
-        // guild logonmessage
-        if (person.getGuild().getLogonmessage() != null)
-        {
-          communicationService.writeMessage(person.getGuild().getLogonmessage()
-            + "<hr/>");
-        }
-        // guild alarm message
-        communicationService.writeMessage(person.getGuild().getAlarmDescription()
-          + "<hr/>");
+        communicationService.writeMessage("You have no new Mudmail...<br>");
       }
       // write log "entered game."
       logBean.writeLog(person, "entered game.");
-      // TODO : execute command "me has entered the game..." -> can be moved to the darned next ajax calls
-
     } catch (WebApplicationException e)
     {
       //ignore
@@ -651,7 +679,7 @@ public class GameBean
   @Path("{name}/play")
   @Produces(
     {
-      MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON
+      MediaType.APPLICATION_JSON
     })
   public PrivateDisplay playGame(@PathParam(value = "name") String name, String command, @QueryParam(value = "offset") Integer offset, @QueryParam(value = "log") boolean log) throws MudException
   {
@@ -818,7 +846,7 @@ public class GameBean
   @Path("{name}/log")
   @Produces(
     {
-      MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON
+      MediaType.APPLICATION_JSON
     })
   public PrivateLog getLog(@PathParam("name") String name, @QueryParam("offset") Integer offset)
   {
@@ -853,7 +881,7 @@ public class GameBean
   @Path("{name}/log")
   @Produces(
     {
-      MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON
+      MediaType.APPLICATION_JSON
     })
   public Response deleteLog(@PathParam("name") String name)
   {
@@ -886,7 +914,7 @@ public class GameBean
   @Path("{name}/quit")
   @Produces(
     {
-      MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON
+      MediaType.APPLICATION_JSON
     })
   public Response quitGame(@PathParam("name") String name)
   {
@@ -895,7 +923,8 @@ public class GameBean
     User person = authenticate(name);
     try
     {
-      CommunicationService.getCommunicationService(person.getRoom()).sendMessage(person, "%SNAME left the game.<BR>\r\n");
+      String message = "You have left the game. (" + LocalDateTime.now().format(DATETIME_FORMAT) + ")<br>";
+      CommunicationService.getCommunicationService(person.getRoom()).sendMessage(person, message);
       person.deactivate();
       logBean.writeLog(person, "left the game.");
     } catch (WebApplicationException e)
