@@ -19,12 +19,17 @@ export class GameService {
 
   gameUrl: string;
 
+  showLogonmessage = true;
+
+  isGaming: boolean;
+
   constructor(
     private cookieService: CookieService,
     private playerService: PlayerService,
     private http: HttpClient,
     private errorsService: ErrorsService) {
     this.gameUrl = environment.GAME_URL;
+    this.isGaming = false;
   }
 
   private getGameUrl(): string {
@@ -39,6 +44,31 @@ export class GameService {
     }
     const url: string = this.getGameUrl() + 'enter';
     return this.http.post(url, null);
+  }
+
+  getLogonmessage(): Observable<string> {
+    if (!environment.production) {
+      return this.http.get(this.getGameUrl() + 'logonmessage.json', {responseType: 'text'});
+    }
+    const url: string = this.getGameUrl() + 'logonmessage';
+    return this.http.get(url, {responseType: 'text'});
+  }
+
+
+  public setIsGaming(isGaming: boolean) {
+    this.isGaming = isGaming;
+  }
+
+  public getIsGaming(): boolean {
+    return this.isGaming;
+  }
+
+  public getShowLogonmessage(): boolean {
+    return this.showLogonmessage;
+  }
+
+  public setShowLogonmessage(show: boolean) {
+    this.showLogonmessage = show;
   }
 
   public quitGame(): Observable<any> {
