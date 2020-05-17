@@ -31,6 +31,7 @@ import { UnbannedComponent } from './ban/unbanned/unbanned.component';
 import { ManpagesComponent } from './manpages/manpages.component';
 import { EventsComponent } from './events/events.component';
 import { WorldattributesComponent } from './worldattributes/worldattributes.component';
+import { CharactersComponent } from './characters/characters.component';
 
 @NgModule({
   declarations: [
@@ -52,7 +53,8 @@ import { WorldattributesComponent } from './worldattributes/worldattributes.comp
     UnbannedComponent,
     ManpagesComponent,
     EventsComponent,
-    WorldattributesComponent
+    WorldattributesComponent,
+    CharactersComponent
   ],
   imports: [
     BrowserModule,

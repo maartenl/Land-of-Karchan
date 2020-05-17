@@ -1,0 +1,156 @@
+<div class="container-fluid">
+    <div class="row row-content">
+        <div class="col-xs-12 col-xl-6">
+            <h1>Character {{ item === undefined ? '-' : item.name }}</h1>
+            <form [formGroup]="form" novalidate>
+                <fieldset class="form-group">
+                    <label for="name">Name</label>
+                    <input type="text" [readonly]="item !== undefined" class="form-control" id="name" name="name"
+                        formControlName="name">
+                </fieldset>
+                <fieldset class="form-group">
+                    <label for="image">Image</label>
+                    <input type="text" class="form-control" id="image" name="image" formControlName="image">
+                </fieldset>
+                <fieldset class="form-group">
+                    <div class="card" *ngIf="item !== undefined && item.title !== undefined">
+                        <div class="card-text" [innerHTML]="item.title">
+                        </div>
+                    </div>
+                    <label for="title">Title</label>
+                    <input type="text" class="form-control" id="title" name="title" formControlName="title">
+                </fieldset>
+                <fieldset class="form-group">
+                    <label for="room">Room</label>
+                    <input type="number" class="form-control" id="room" name="room" formControlName="room">
+                </fieldset>
+                <fieldset *ngIf="item !== undefined && item.name !== undefined" class="form-group">
+                    <label for="god">God</label>
+                    <input readonly type="text" class="form-control" id="god" name="god" formControlName="god">
+                </fieldset>
+                <fieldset *ngIf="item === undefined || item.name === undefined" class="form-group">
+                    <label for="god">God</label>
+                    <select class="form-control" id="god" name="god" formControlName="god">
+                        <option>GOD</option>
+                        <option>BOT</option>
+                        <option>MOB</option>
+                        <option>SHOPKEEPER</option>
+                        <option>DEFAULT_USER</option>
+                    </select>
+                </fieldset>
+                <fieldset class="form-group">
+                    <label for="race">Race</label>
+                    <input type="text" class="form-control" id="race" name="race" formControlName="race">
+                </fieldset>
+                <fieldset class="form-group">
+                    <label for="sex">Sex</label>
+                    <input type="text" class="form-control" id="sex" name="sex" formControlName="sex">
+                </fieldset>
+                <fieldset class="form-group">
+                    <label for="age">Age</label>
+                    <input type="text" class="form-control" id="age" name="age" formControlName="age">
+                </fieldset>
+                <fieldset class="form-group">
+                    <label for="height">Height</label>
+                    <input type="text" class="form-control" id="height" name="height" formControlName="height">
+                </fieldset>
+                <fieldset class="form-group">
+                    <label for="width">Width</label>
+                    <input type="text" class="form-control" id="width" name="width" formControlName="width">
+                </fieldset>
+                <fieldset class="form-group">
+                    <label for="complexion">Complexion</label>
+                    <input type="text" class="form-control" id="complexion" name="complexion"
+                        formControlName="complexion">
+                </fieldset>
+                <fieldset class="form-group">
+                    <label for="eyes">Eyes</label>
+                    <input type="text" class="form-control" id="eyes" name="eyes" formControlName="eyes">
+                </fieldset>
+                <fieldset class="form-group">
+                    <label for="face">Face</label>
+                    <input type="text" class="form-control" id="face" name="face" formControlName="face">
+                </fieldset>
+                <fieldset class="form-group">
+                    <label for="hair">Hair</label>
+                    <input type="text" class="form-control" id="hair" name="hair" formControlName="hair">
+                </fieldset>
+                <fieldset class="form-group">
+                    <label for="beard">Beard</label>
+                    <input type="text" class="form-control" id="beard" name="beard" formControlName="beard">
+                </fieldset>
+                <fieldset class="form-group">
+                    <label for="arm">Arm</label>
+                    <input type="text" class="form-control" id="arm" name="arm" formControlName="arm">
+                </fieldset>
+                <fieldset class="form-group">
+                    <label for="leg">Leg</label>
+                    <input type="text" class="form-control" id="leg" name="leg" formControlName="leg">
+                </fieldset>
+                <fieldset class="form-group">
+                    <label for="copper">Copper</label>
+                    <input readonly type="number" class="form-control" id="copper" name="copper"
+                        formControlName="copper">
+                </fieldset>
+                <fieldset class="form-group">
+                    <label for="address">Address</label>
+                    <input type="text" class="form-control" id="address" name="address" formControlName="address">
+                </fieldset>
+                <fieldset class="form-group">
+                    <label for="realname">Realname</label>
+                    <input type="text" class="form-control" id="realname" name="realname" formControlName="realname">
+                </fieldset>
+                <fieldset class="form-group">
+                    <label for="address">Address</label>
+                    <input type="text" class="form-control" id="address" name="address" formControlName="address">
+                </fieldset>
+                <fieldset class="form-group">
+                    <label for="notes">Notes</label>
+                    <textarea class="form-control" id="notes" rows="13" formControlName="notes"></textarea>
+                </fieldset>
+                <fieldset class="form-group">
+                    <label for="owner">Owner</label>
+                    <input type="text" class="form-control" id="owner" name="owner" formControlName="owner">
+                </fieldset>
+                <div class="col-xs-12 col-sm-12 text-right">
+                    <button type="submit" [disabled]="form.pristine" class="mx-1 btn btn-primary"
+                        (click)="updateItem()">Update</button>
+                    <button type="submit" [disabled]="form.pristine" class="mx-1 btn btn-primary"
+                        (click)="createItem()">Create</button>
+                    <button type="button" class="mx-1 btn btn-secondary" (click)="deleteItem()">Delete</button>
+                    <button type="reset" class="mx-1 btn btn-secondary" (click)="cancel()">Cancel</button>
+                </div>
+            </form>
+        </div>
+        <div class="col-xs-12 col-xl-6">
+            <button type="button" class="mx-1 btn btn-secondary" (click)="refresh()">Refresh</button>
+            <cdk-virtual-scroll-viewport style="height: 400px;" [itemSize]="33">
+                <table class="table table-sm table-hover">
+                    <thead>
+                        <tr>
+                            <th scope="col">Name</th>
+                            <th scope="col">Room</th>
+                            <th scope="col">Race</th>
+                            <th scope="col">Sex</th>
+                            <th scope="col">Age</th>
+                            <th scope="col">Owner</th>
+                            <th scope="col">Creation</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *cdkVirtualFor="let character of items; templateCacheSize: 0"
+                            [ngClass]="isActive(character)" (click)="setItemById(character.name)">
+                            <td *ngIf="character">{{ character.name }}</td>
+                            <td *ngIf="character">{{ character.room }}</td>
+                            <td *ngIf="character">{{ character.race }}</td>
+                            <td *ngIf="character">{{ character.sex }}</td>
+                            <td *ngIf="character">{{ character.age }}</td>
+                            <td *ngIf="character">{{ character.owner }}</td>
+                            <td *ngIf="character">{{ character.creation }}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </cdk-virtual-scroll-viewport>
+        </div>
+    </div>
+</div>

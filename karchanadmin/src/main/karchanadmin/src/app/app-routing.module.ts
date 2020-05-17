@@ -12,6 +12,7 @@ import { BanComponent } from './ban/ban.component';
 import { ManpagesComponent } from './manpages/manpages.component';
 import { EventsComponent } from './events/events.component';
 import { WorldattributesComponent } from './worldattributes/worldattributes.component';
+import { CharactersComponent } from './characters/characters.component';
 
 const routes: Routes = [
   { path: 'blogs', component: BlogsComponent },
@@ -30,7 +31,9 @@ const routes: Routes = [
   { path: 'ban', component: BanComponent },
   { path: 'manpages', component: ManpagesComponent },
   { path: 'events', component: EventsComponent },
-  { path: 'worldattributes', component: WorldattributesComponent }
+  { path: 'worldattributes', component: WorldattributesComponent },
+  { path: 'characters/:name', component: CharactersComponent },
+  { path: 'characters', component: CharactersComponent }
 ];
 
 @NgModule({

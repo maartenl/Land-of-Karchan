@@ -117,7 +117,4 @@ export class EventsComponent extends AdminComponent<MudEvent, number> implements
     });
   }
 
-
-
-
 }
