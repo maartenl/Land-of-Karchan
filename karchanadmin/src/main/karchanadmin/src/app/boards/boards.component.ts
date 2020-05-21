@@ -43,6 +43,7 @@ export class BoardsComponent extends AdminComponent<Board, number> implements On
 
   setForm(item?: Board) {
     const object = item === undefined ? {
+      id: null,
       name: null,
       description: null,
       room: null,
@@ -69,7 +70,7 @@ export class BoardsComponent extends AdminComponent<Board, number> implements On
     const id = this.item === undefined ? null : this.item.id;
     const creation = this.item === undefined ? null : this.item.creation;
     const saveBoard: Board = new Board({
-      id,
+      id: formModel.id as number,
       name: formModel.name as string,
       description: formModel.description as string,
       room: formModel.room as number,
@@ -92,6 +93,7 @@ export class BoardsComponent extends AdminComponent<Board, number> implements On
   private setBoard(board: Board) {
     this.item = board;
     this.form.reset({
+      id: board.id,
       name: board.name,
       description: board.description,
       room: board.room,
