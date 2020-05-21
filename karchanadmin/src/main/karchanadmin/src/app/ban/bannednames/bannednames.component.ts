@@ -37,7 +37,8 @@ export class BannednamesComponent implements OnInit {
       name: null,
       deputy: null,
       date: null,
-      reason: null
+      reason: null,
+      creation: null
     } : item;
     if (this.form === undefined) {
       this.form = this.formBuilder.group(object);
@@ -63,7 +64,8 @@ export class BannednamesComponent implements OnInit {
       name: formModel.name as string,
       deputy: formModel.deputy as string,
       date: formModel.date as string,
-      reason: formModel.reason as string
+      reason: formModel.reason as string,
+      creation: formModel.creation as string
     });
     return saveMethod;
   }

@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { MudCharacter } from './characters/character.model';
+import { Board } from './boards/board.model';
 import { Observable } from 'rxjs';
 import { catchError, publishReplay, refCount, map } from 'rxjs/operators';
 import { HttpClient } from '@angular/common/http';
@@ -14,44 +14,42 @@ import { ToastService } from './toast.service';
 @Injectable({
   providedIn: 'root'
 })
-export class CharactersRestService implements AdminRestService<MudCharacter, string>   {
-
+export class BoardsRestService implements AdminRestService<Board, number> {
   url: string;
 
-  cache$: Observable<MudCharacter[]>;
+  cache$: Observable<Board[]>;
 
   constructor(
     private http: HttpClient,
     private errorsService: ErrorsService,
     private toastService: ToastService) {
-    this.url = environment.CHARACTERS_URL;
+    this.url = '/karchangame/resources/administration/boards';
   }
 
-  get(name: string): Observable<MudCharacter> {
-    return this.http.get<MudCharacter>(this.url + '/' + name)
+  get(id: number): Observable<Board> {
+    return this.http.get<Board>(this.url + '/' + id)
       .pipe(
-        map(item => new MudCharacter(item)),
+        map(item => new Board(item)),
         catchError(err => {
           this.handleError(err);
           return [];
         })
       );
   }
-
-  getAll(): Observable<MudCharacter[]> {
+  getAll(): Observable<Board[]> {
     if (this.cache$) {
       return this.cache$;
     }
-    this.toastService.show('Retrieving all characters.', {
+    this.toastService.show('Retrieving all boards.', {
       delay: 5000,
       autohide: true,
       headertext: 'Loading...'
     });
-    this.cache$ = this.http.get<MudCharacter[]>(this.url)
+    this.cache$ = this.http.get<Board[]>(this.url)
       .pipe(
         map(items => {
-          const newItems = new Array<MudCharacter>();
-          items.forEach(item => newItems.push(new MudCharacter(item)));
+          const newItems = new Array<Board>();
+          items.forEach(item => newItems.push(new Board(item)));
           return newItems;
         }),
         publishReplay(1),
@@ -68,8 +66,8 @@ export class CharactersRestService implements AdminRestService<MudCharacter, str
     this.cache$ = undefined;
   }
 
-  delete(character: MudCharacter): Observable<any> {
-    return this.http.delete(this.url + '/' + character.name)
+  delete(board: Board): Observable<any> {
+    return this.http.delete(this.url + '/' + board.id)
       .pipe(
         catchError(err => {
           this.handleError(err);
@@ -78,9 +76,9 @@ export class CharactersRestService implements AdminRestService<MudCharacter, str
       );
   }
 
-  update(character: MudCharacter) {
+  update(board: Board) {
     // update
-    return this.http.put<MudCharacter[]>(this.url + '/' + character.name, character)
+    return this.http.put<Board[]>(this.url + '/' + board.id, board)
       .pipe(
         catchError(err => {
           this.handleError(err);
@@ -89,9 +87,9 @@ export class CharactersRestService implements AdminRestService<MudCharacter, str
       );
   }
 
-  create(character: MudCharacter) {
+  create(board: Board) {
     // new
-    return this.http.post(this.url, character)
+    return this.http.post(this.url, board)
       .pipe(
         catchError(err => {
           this.handleError(err);
@@ -108,5 +106,4 @@ export class CharactersRestService implements AdminRestService<MudCharacter, str
   private handleError(error: HttpErrorResponse, ignore?: string[]) {
     this.errorsService.addHttpError(error, ignore);
   }
-
 }

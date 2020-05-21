@@ -15,7 +15,6 @@ import { CharactersRestService } from '../characters-rest.service';
 export class CharactersComponent extends AdminComponent<MudCharacter, string> implements OnInit {
   form: FormGroup;
 
-
   constructor(
     private charactersRestService: CharactersRestService,
     private formBuilder: FormBuilder,

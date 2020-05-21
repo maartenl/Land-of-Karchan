@@ -35,6 +35,7 @@ import { EventsComponent } from './events/events.component';
 import { WorldattributesComponent } from './worldattributes/worldattributes.component';
 import { CharactersComponent } from './characters/characters.component';
 import { environment } from 'src/environments/environment';
+import { BoardsComponent } from './boards/boards.component';
 
 export const isMock = environment.mock;
 
@@ -59,7 +60,8 @@ export const isMock = environment.mock;
     ManpagesComponent,
     EventsComponent,
     WorldattributesComponent,
-    CharactersComponent
+    CharactersComponent,
+    BoardsComponent
   ],
   imports: [
     BrowserModule,

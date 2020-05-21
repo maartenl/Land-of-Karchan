@@ -13,6 +13,7 @@ import { ManpagesComponent } from './manpages/manpages.component';
 import { EventsComponent } from './events/events.component';
 import { WorldattributesComponent } from './worldattributes/worldattributes.component';
 import { CharactersComponent } from './characters/characters.component';
+import { BoardsComponent } from './boards/boards.component';
 
 const routes: Routes = [
   { path: 'blogs', component: BlogsComponent },
@@ -33,7 +34,8 @@ const routes: Routes = [
   { path: 'events', component: EventsComponent },
   { path: 'worldattributes', component: WorldattributesComponent },
   { path: 'characters/:name', component: CharactersComponent },
-  { path: 'characters', component: CharactersComponent }
+  { path: 'characters', component: CharactersComponent },
+  { path: 'boards', component: BoardsComponent }
 ];
 
 @NgModule({

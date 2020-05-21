@@ -1,0 +1,61 @@
+<div class="container-fluid">
+    <div class="row row-content">
+        <div class="col-xs-12 col-xl-6">
+            <h1>Board {{ item === undefined ? '-' : item.id }}</h1>
+            <form [formGroup]="form" novalidate>
+                <fieldset class="form-group">
+                    <label for="name">Name</label>
+                    <input type="text" class="form-control" id="name" name="name"
+                        formControlName="name">
+                </fieldset>
+                <fieldset class="form-group">
+                    <label for="description">Description</label>
+                    <input type="text" class="form-control" id="description" name="description"
+                        formControlName="description">
+                </fieldset>
+                <fieldset class="form-group">
+                    <label for="room">Room</label>
+                    <input type="number" class="form-control" id="room" name="room" formControlName="room">
+                </fieldset>
+                <fieldset class="form-group">
+                    <label for="owner">Owner</label>
+                    <input type="text" class="form-control" id="owner" name="owner" formControlName="owner">
+                </fieldset>
+                <div class="col-xs-12 col-sm-12 text-right">
+                    <button type="submit" [disabled]="form.pristine" class="mx-1 btn btn-primary"
+                        (click)="updateItem()">Update</button>
+                    <button type="submit" [disabled]="form.pristine" class="mx-1 btn btn-primary"
+                        (click)="createItem()">Create</button>
+                    <button type="button" class="mx-1 btn btn-secondary" (click)="deleteItem()">Delete</button>
+                    <button type="reset" class="mx-1 btn btn-secondary" (click)="cancel()">Cancel</button>
+                </div>
+            </form>
+        </div>
+        <div class="col-xs-12 col-xl-6">
+            <button type="button" class="mx-1 btn btn-secondary" (click)="refresh()">Refresh</button>
+            <cdk-virtual-scroll-viewport style="height: 400px;" [itemSize]="33">
+                <table class="table table-sm table-hover">
+                    <thead>
+                        <tr>
+                            <th scope="col">Id</th>
+                            <th scope="col">Name</th>
+                            <th scope="col">Room</th>
+                            <th scope="col">Owner</th>
+                            <th scope="col">Creation</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *cdkVirtualFor="let board of items; templateCacheSize: 0" [ngClass]="isActive(board)"
+                            (click)="setItemById(board.id)">
+                            <td *ngIf="board">{{ board.id }}</td>
+                            <td *ngIf="board">{{ board.name }}</td>
+                            <td *ngIf="board">{{ board.room }}</td>
+                            <td *ngIf="board">{{ board.owner }}</td>
+                            <td *ngIf="board">{{ board.creation }}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </cdk-virtual-scroll-viewport>
+        </div>
+    </div>
+</div>

@@ -38,16 +38,19 @@ export class ErrorsService {
       errormessage.type = 'Network Error';
       this.addError(errormessage);
     } else {
+      console.error('An unknown error occurred:', error);
       // The backend returned an unsuccessful response code.
       // The response body may contain clues as to what went wrong,
       if (ignore !== undefined && ignore.includes(error.status.toString())) {
         return;
       }
       const errormessage = new ErrorMessage();
-      errormessage.message = error.error.errormessage;
-      if (error.error.errormessage === undefined) {
-        errormessage.message = error.statusText;
-      }
+      if (error.error !== undefined) {
+        errormessage.message = error.error.errormessage;
+        if (error.error.errormessage === undefined) {
+          errormessage.message = error.statusText;
+        }
+      } else { errormessage.message = error.statusText; }
       errormessage.type = error.status.toString();
       this.addError(errormessage);
     }
