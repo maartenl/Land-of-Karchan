@@ -144,7 +144,7 @@ public class GuildBean
   @RolesAllowed("guildmember")
   @Consumes(
           {
-            MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON
+            MediaType.APPLICATION_JSON
           })
   public PrivateGuild getGuildInfo(@PathParam("name") String name)
   {
@@ -182,7 +182,7 @@ public class GuildBean
   @RolesAllowed("guildmaster")
   @Consumes(
           {
-            MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON
+            MediaType.APPLICATION_JSON
           })
   public Response updateGuild(@PathParam("name") String name, PrivateGuild cinfo)
   {
@@ -220,7 +220,7 @@ public class GuildBean
   @RolesAllowed("player")
   @Consumes(
           {
-            MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON
+            MediaType.APPLICATION_JSON
           })
   public Response createGuild(@PathParam("name") String name, PrivateGuild cinfo)
   {
@@ -272,7 +272,7 @@ public class GuildBean
   @RolesAllowed("guildmaster")
   @Consumes(
           {
-            MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON
+            MediaType.APPLICATION_JSON
           })
   public Response deleteGuild(@PathParam("name") String name)
   {
@@ -306,7 +306,7 @@ public class GuildBean
   @RolesAllowed("guildmember")
   @Consumes(
           {
-            MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON
+            MediaType.APPLICATION_JSON
           })
   public List<PrivatePerson> getMembers(@PathParam("name") String name)
   {
@@ -340,7 +340,7 @@ public class GuildBean
   @RolesAllowed("guildmember")
   @Consumes(
           {
-            MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON
+            MediaType.APPLICATION_JSON
           })
   public PrivatePerson getMember(@PathParam("name") String name,
           @PathParam("membername") String membername)
@@ -373,7 +373,7 @@ public class GuildBean
   @RolesAllowed("guildmaster")
   @Consumes(
           {
-            MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON
+            MediaType.APPLICATION_JSON
           })
   public Response deleteMember(@PathParam("name") String name,
           @PathParam("membername") String membername)
@@ -412,7 +412,7 @@ public class GuildBean
   @RolesAllowed("guildmaster")
   @Consumes(
           {
-            MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON
+            MediaType.APPLICATION_JSON
           })
   public Response createMember(@PathParam("name") String name, PrivatePerson member)
   {
@@ -451,7 +451,7 @@ public class GuildBean
   @RolesAllowed("guildmaster")
   @Consumes(
           {
-            MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON
+            MediaType.APPLICATION_JSON
           })
   public Response updateMember(@PathParam("name") String name,
           @PathParam("membername") String membername, PrivatePerson member)
@@ -490,7 +490,7 @@ public class GuildBean
   @RolesAllowed("guildmember")
   @Consumes(
           {
-            MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON
+            MediaType.APPLICATION_JSON
           })
   public List<PrivatePerson> getGuildHopefuls(@PathParam("name") String name)
   {
@@ -536,7 +536,7 @@ public class GuildBean
   @RolesAllowed("guildmaster")
   @Consumes(
           {
-            MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON
+            MediaType.APPLICATION_JSON
           })
   public Response deleteGuildHopeful(@PathParam("name") String name,
           @PathParam("hopefulname") String hopefulname)
@@ -564,7 +564,7 @@ public class GuildBean
   @RolesAllowed("guildmember")
   @Consumes(
           {
-            MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON
+            MediaType.APPLICATION_JSON
           })
   public List<PrivateRank> getGuildRanks(@PathParam("name") String name)
   {
@@ -610,7 +610,7 @@ public class GuildBean
   @RolesAllowed("guildmember")
   @Consumes(
           {
-            MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON
+            MediaType.APPLICATION_JSON
           })
   public PrivateRank getGuildRank(@PathParam("name") String name, @PathParam("guildlevel") Integer guildlevel)
   {
@@ -642,7 +642,7 @@ public class GuildBean
   @Path("ranks")
   @Consumes(
           {
-            MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON
+            MediaType.APPLICATION_JSON
           })
   public Response createGuildRank(@PathParam("name") String name, PrivateRank rank)
   {
@@ -688,7 +688,7 @@ public class GuildBean
   @Path("ranks/{guildlevel}")
   @Consumes(
           {
-            MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON
+            MediaType.APPLICATION_JSON
           })
   public Response updateGuildRank(@PathParam("name") String name, @PathParam("guildlevel") Integer guildlevel, PrivateRank rank)
   {
@@ -725,7 +725,7 @@ public class GuildBean
   @Path("ranks/{guildlevel}")
   @Consumes(
           {
-            MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON
+            MediaType.APPLICATION_JSON
           })
   public Response deleteGuildRank(@PathParam("name") String name, @PathParam("guildlevel") Integer guildlevel)
   {

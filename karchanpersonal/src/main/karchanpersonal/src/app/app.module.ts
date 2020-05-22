@@ -30,6 +30,7 @@ import { ComposeMailComponent } from './mail/compose-mail/compose-mail.component
 import { InboxMailComponent } from './mail/inbox-mail/inbox-mail.component';
 import { ShowMailComponent } from './mail/show-mail/show-mail.component';
 import { SentMailComponent } from './mail/sent-mail/sent-mail.component';
+import { LogonmessageComponent } from './play/logonmessage/logonmessage.component';
 
 @NgModule({
   declarations: [
@@ -48,7 +49,8 @@ import { SentMailComponent } from './mail/sent-mail/sent-mail.component';
     ComposeMailComponent,
     InboxMailComponent,
     ShowMailComponent,
-    SentMailComponent
+    SentMailComponent,
+    LogonmessageComponent
   ],
   imports: [
     BrowserModule,

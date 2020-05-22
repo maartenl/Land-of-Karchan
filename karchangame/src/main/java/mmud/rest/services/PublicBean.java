@@ -95,7 +95,7 @@ public class PublicBean
   @Path("fortunes")
   @Produces(
           {
-            MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON
+            MediaType.APPLICATION_JSON
           })
   public List<Fortune> fortunes()
   {
@@ -131,7 +131,7 @@ public class PublicBean
   @Path("who")
   @Produces(
           {
-            MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON
+            MediaType.APPLICATION_JSON
           })
   public List<PublicPerson> who()
   {
@@ -189,7 +189,7 @@ public class PublicBean
   @Path("news")
   @Produces(
           {
-            MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON
+            MediaType.APPLICATION_JSON
           })
   public List<News> news()
   {
@@ -229,7 +229,7 @@ public class PublicBean
   @Path("status")
   @Produces(
           {
-            MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON
+            MediaType.APPLICATION_JSON
           })
   public List<PublicPerson> status()
   {
@@ -272,7 +272,7 @@ public class PublicBean
   @Path("guilds")
   @Produces(
           {
-            MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON
+            MediaType.APPLICATION_JSON
           })
   public List<PublicGuild> guilds()
   {
@@ -320,7 +320,7 @@ public class PublicBean
   @Path("charactersheets/{name}")
   @Produces(
           {
-            MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON
+            MediaType.APPLICATION_JSON
           })
   public PublicPerson charactersheet(@PathParam("name") String name)
   {
@@ -378,7 +378,7 @@ public class PublicBean
   @Path("charactersheets")
   @Produces(
           {
-            MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON
+            MediaType.APPLICATION_JSON
           })
   public List<PublicPerson> charactersheets()
   {

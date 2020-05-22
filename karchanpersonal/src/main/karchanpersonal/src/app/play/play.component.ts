@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
 import * as ClassicEditor from '@ckeditor/ckeditor5-build-classic';
 import { ChangeEvent } from '@ckeditor/ckeditor5-angular/ckeditor.component';
@@ -9,6 +9,7 @@ import { GameService } from '../game.service';
 import { Display, Person, Item } from './display.model';
 import { LanguageUtils } from '../language.utils';
 import { StringUtils } from '../string.utils';
+import { LogonmessageComponent } from './logonmessage/logonmessage.component';
 
 /**
  * Actually plays teh game, instead of administration of your player character/settings/mail.
@@ -20,6 +21,8 @@ import { StringUtils } from '../string.utils';
 })
 export class PlayComponent implements OnInit {
   public Editor = ClassicEditor;
+
+  @ViewChild(LogonmessageComponent) logonmessageComponent: LogonmessageComponent;
 
   Karchan = class {
     name: string;
@@ -57,9 +60,14 @@ export class PlayComponent implements OnInit {
   }
 
   public playGame(): void {
+    if (this.gameService.getIsGaming()) {
+      this.playInit();
+      return;
+    }
     this.gameService.enterGame()
       .subscribe(
         (result: any) => { // on success
+          this.gameService.setIsGaming(true);
           this.playInit();
         },
         (err: any) => { // error
@@ -84,7 +92,14 @@ export class PlayComponent implements OnInit {
       console.log('playInit command=' + command);
     }
     this.processCall(command, true);
+    if (this.gameService.getShowLogonmessage()) {
+      this.showLogonmessage();
+    }
+  }
 
+  public showLogonmessage(): boolean {
+    this.logonmessageComponent.open();
+    return false;
   }
 
   public quit(): boolean {
@@ -92,6 +107,7 @@ export class PlayComponent implements OnInit {
     this.gameService.quitGame()
       .subscribe(
         (result: any) => { // on success
+          this.gameService.setIsGaming(false);
           this.router.navigate(['/']);
         },
         (err: any) => { // error
