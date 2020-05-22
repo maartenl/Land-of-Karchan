@@ -13,6 +13,8 @@ export class AppComponent implements OnInit {
 
   darkmode: boolean;
 
+  collapsed = true;
+
   constructor(
     private cookieService: CookieService) {
     this.production = environment.production;

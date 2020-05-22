@@ -8,14 +8,14 @@
 </div>
 <div class="container-fluid">
   <nav class="navbar navbar-expand-lg">
-    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
-      aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+    <button class="navbar-toggler" type="button" aria-controls="navbarSupportedContent"
+      [attr.aria-expanded]="!collapsed" aria-label="Toggle navigation" (click)="collapsed = !collapsed">
       <span class="navbar-toggler-icon"></span>
     </button>
     <div class="navbar-expand d-block d-sm-none">
       <a class="navbar-brand">Land of Karchan</a>
     </div>
-    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+    <div class="collapse navbar-collapse" [class.collapse]="collapsed" id="navbarSupportedContent">
       <ul class="navbar-nav mr-auto">
         <li class="nav-item">
           <a routerLink="/characters" class="nav-link" routerLinkActive="active">Characters</a>

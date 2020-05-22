@@ -12,6 +12,8 @@ import { ChristmasUtils } from './christmas.utils';
 export class AppComponent implements OnInit {
   darkmode: boolean;
 
+  collapsed = true;
+
   constructor(
     private cookieService: CookieService,
     private router: Router) {
