@@ -19,10 +19,12 @@ package mmud.rest.services.admin;
 
 import mmud.database.entities.game.Admin;
 import mmud.database.entities.game.Board;
+import mmud.database.entities.game.BoardMessage;
 import mmud.database.entities.game.Room;
 import mmud.exceptions.MudWebException;
 import mmud.rest.services.LogBean;
 import mmud.rest.webentities.admin.AdminBoard;
+import mmud.rest.webentities.admin.AdminBoardMessage;
 
 import javax.annotation.security.DeclareRoles;
 import javax.annotation.security.RolesAllowed;
@@ -38,6 +40,7 @@ import javax.ws.rs.core.UriInfo;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.logging.Logger;
+import java.util.stream.Collectors;
 
 /**
  * @author maartenl
@@ -120,7 +123,8 @@ public class BoardsBean
         throw new MudWebException(name, "Room " + adminBoard.room + " not found.", Response.Status.NOT_FOUND);
       }
       board.setRoom(room);
-    } else {
+    } else
+    {
       board.setRoom(null);
     }
     board.setOwner(admin);
@@ -158,6 +162,55 @@ public class BoardsBean
       throw new MudWebException(name, "Board " + id + " not found.", Response.Status.NOT_FOUND);
     }
     return new AdminBoard(board).toJson();
+  }
+
+
+  @GET
+  @Path("{id}/messages")
+  @Produces(
+    {
+      "application/json"
+    })
+  public String findRecentMessages(@PathParam("id") Long id, @Context SecurityContext sc)
+  {
+    final String name = sc.getUserPrincipal().getName();
+    final Board board = getEntityManager().find(Board.class, id);
+    if (board == null)
+    {
+      throw new MudWebException(name, "Board " + id + " not found.", Response.Status.NOT_FOUND);
+    }
+    List<BoardMessage> messages = getEntityManager().createNamedQuery("BoardMessage.recent", BoardMessage.class)
+      .setParameter("board", board)
+      .setMaxResults(50)
+      .getResultList();
+    return "[" + messages.stream().map(message -> new AdminBoardMessage(message).toJson()).collect(Collectors.joining(",")) + "]";
+  }
+
+  @PUT
+  @Path("{id}/messages/{messageid}")
+  @Produces(
+    {
+      "application/json"
+    })
+  public void editMessage(@PathParam("id") Long id, @PathParam("messageid") Long messageid, String json, @Context SecurityContext sc)
+  {
+    AdminBoardMessage adminBoardMessage = AdminBoardMessage.fromJson(json);
+    final String name = sc.getUserPrincipal().getName();
+    final Board board = getEntityManager().find(Board.class, id);
+    if (board == null)
+    {
+      throw new MudWebException(name, "Board " + id + " not found.", Response.Status.NOT_FOUND);
+    }
+    final BoardMessage boardmessage = getEntityManager().find(BoardMessage.class, messageid);
+    if (boardmessage == null)
+    {
+      throw new MudWebException(name, "Boardmessage " + messageid + " not found.", Response.Status.NOT_FOUND);
+    }
+    if (!boardmessage.getBoard().equals(board)) {
+      throw new MudWebException(name, "Boardmessage " + messageid + " does not belong to board " + id + ".", Response.Status.NOT_FOUND);
+    }
+    boardmessage.setRemoved(adminBoardMessage.removed);
+    logBean.writeDeputyLog(admin, "Boardmessage '" + messageid + "' updated.");
   }
 
   @GET

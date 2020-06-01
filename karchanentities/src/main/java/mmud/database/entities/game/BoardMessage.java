@@ -48,7 +48,8 @@ import mmud.database.entities.characters.User;
           @NamedQuery(name = "BoardMessage.findAll", query = "SELECT b FROM BoardMessage b"),
           @NamedQuery(name = "BoardMessage.findByName", query = "SELECT b FROM BoardMessage b WHERE b.user = :person"),
           @NamedQuery(name = "BoardMessage.deleteByName", query = "DELETE FROM BoardMessage b WHERE b.user = :person"),
-          @NamedQuery(name = "BoardMessage.news", query = "SELECT b FROM BoardMessage b WHERE b.board.name = 'logonmessage' and b.posttime > :lastSunday order by b.id desc")
+          @NamedQuery(name = "BoardMessage.news", query = "SELECT b FROM BoardMessage b WHERE b.board.name = 'logonmessage' and b.posttime > :lastSunday order by b.id desc"),
+          @NamedQuery(name = "BoardMessage.recent", query = "SELECT b FROM BoardMessage b WHERE b.board = :board order by b.id desc")
         })
 public class BoardMessage implements Serializable
 {
@@ -58,7 +59,7 @@ public class BoardMessage implements Serializable
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   @Basic(optional = false)
   @Column(name = "id")
-  private Integer id;
+  private Long id;
   @JoinColumn(name = "boardid", referencedColumnName = "id")
   @ManyToOne(optional = false)
   private Board board;
@@ -133,12 +134,12 @@ public class BoardMessage implements Serializable
     this.board = board;
   }
 
-  public Integer getId()
+  public Long getId()
   {
     return id;
   }
 
-  public void setId(Integer id)
+  public void setId(Long id)
   {
     this.id = id;
   }

@@ -396,14 +396,14 @@ public class PublicBeanTest
     LocalDateTime firstDate = secondDate.plusSeconds(- 1_000L);
     final List<BoardMessage> list = new ArrayList<>();
     BoardMessage message = new BoardMessage();
-    message.setId(1);
+    message.setId(1L);
     message.setPerson(hotblack);
     message.setMessage("First post!");
     message.setPosttime(firstDate);
     message.setRemoved(Boolean.FALSE);
     list.add(message);
     message = new BoardMessage();
-    message.setId(2);
+    message.setId(2L);
     message.setPerson(marvin);
     message.setMessage("Damn!");
     message.setPosttime(secondDate);

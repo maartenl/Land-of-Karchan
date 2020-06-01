@@ -19,35 +19,34 @@
 package mmud.rest.webentities.admin;
 
 import mmud.database.entities.game.Board;
+import mmud.database.entities.game.BoardMessage;
 
 import javax.json.bind.Jsonb;
 import javax.json.bind.JsonbBuilder;
 import java.time.LocalDateTime;
 
-public class AdminBoard
+public class AdminBoardMessage
 {
-  public static final String GET_QUERY = "select json_object(\"id\", id, \"name\", name, \"room\", room, \"owner\", owner, \"creation\", creation) from mm_boards order by id";
-
   public Long id;
+  public Long boardid;
   public String name;
-  public String description;
-  public Long room;
-  public LocalDateTime creation;
-  public String owner;
+  public LocalDateTime posttime;
+  public String message;
+  public Boolean removed;
 
-  public AdminBoard()
+  public AdminBoardMessage()
   {
     // empty constructor, for creating a web entity from scratch.
   }
 
-  public AdminBoard(Board item)
+  public AdminBoardMessage(BoardMessage item)
   {
     this.id = item.getId();
-    this.description = item.getDescription();
-    this.name = item.getName();
-    this.room = item.getRoom() == null ? null : item.getRoom().getId();
-    this.creation = item.getCreation();
-    this.owner = item.getOwner() == null ? null : item.getOwner().getName();
+    this.boardid = item.getBoard().getId();
+    this.name = item.getPerson().getName();
+    this.posttime = item.getPosttime();
+    this.message = item.getMessage();
+    this.removed = item.getRemoved();
   }
 
   public String toJson()
@@ -55,9 +54,9 @@ public class AdminBoard
     return JsonbBuilder.create().toJson(this);
   }
 
-  public static AdminBoard fromJson(String json)
+  public static AdminBoardMessage fromJson(String json)
   {
     Jsonb jsonb = JsonbBuilder.create();
-    return jsonb.fromJson(json, AdminBoard.class);
+    return jsonb.fromJson(json, AdminBoardMessage.class);
   }
 }
