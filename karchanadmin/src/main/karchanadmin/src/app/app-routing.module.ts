@@ -14,6 +14,7 @@ import { EventsComponent } from './events/events.component';
 import { WorldattributesComponent } from './worldattributes/worldattributes.component';
 import { CharactersComponent } from './characters/characters.component';
 import { BoardsComponent } from './boards/boards.component';
+import { GuildsComponent } from './guilds/guilds.component';
 
 const routes: Routes = [
   { path: 'blogs', component: BlogsComponent },
@@ -35,7 +36,8 @@ const routes: Routes = [
   { path: 'worldattributes', component: WorldattributesComponent },
   { path: 'characters/:name', component: CharactersComponent },
   { path: 'characters', component: CharactersComponent },
-  { path: 'boards', component: BoardsComponent }
+  { path: 'boards', component: BoardsComponent },
+  { path: 'guilds', component: GuildsComponent }
 ];
 
 @NgModule({

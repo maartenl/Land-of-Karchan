@@ -1,0 +1,81 @@
+<div class="container-fluid">
+    <div class="row row-content">
+        <div class="col-xs-12 col-xl-6">
+            <h1>Guild {{ item === undefined ? '-' : item.name }}</h1>
+            <form [formGroup]="form" novalidate>
+                <fieldset class="form-group">
+                    <label for="name">Name</label>
+                    <input type="text" class="form-control" id="name" name="name" formControlName="name">
+                </fieldset>
+                <fieldset class="form-group">
+                    <label for="title">Title</label>
+                    <input type="text" class="form-control" id="title" name="title" formControlName="title">
+                </fieldset>
+                <fieldset class="form-group">
+                    <label for="guilddescription">Description</label>
+                    <textarea class="form-control" id="guilddescription" name="guilddescription" rows="13"
+                        formControlName="guilddescription"></textarea>
+                </fieldset>
+                <fieldset class="form-group">
+                    <label for="guildurl">Url</label>
+                    <input type="text" class="form-control" id="guildurl" name="guildurl" formControlName="guildurl">
+                </fieldset>
+                <fieldset class="form-group">
+                    <label for="bossname">Guildmaster</label>
+                    <input type="text" class="form-control" id="bossname" name="bossname" formControlName="bossname">
+                </fieldset>
+                <fieldset class="form-group">
+                    <label for="logonmessage">Logonmessage</label>
+                    <textarea class="form-control" id="logonmessage" name="logonmessage" rows="13"
+                        formControlName="logonmessage"></textarea>
+                </fieldset>
+                <fieldset class="form-group">
+                    <label for="colour">Colour</label>
+                    <input type="text" class="form-control" id="colour" name="colour" formControlName="colour">
+                </fieldset>
+                <fieldset class="form-group">
+                    <label for="imageurl">Image url</label>
+                    <input type="text" class="form-control" id="imageurl" name="imageurl" formControlName="imageurl">
+                </fieldset>
+                <fieldset class="form-group">
+                    <label for="owner">Owner</label>
+                    <input type="text" class="form-control" id="owner" name="owner" formControlName="owner">
+                </fieldset>
+                <div class="col-xs-12 col-sm-12 text-right">
+                    <button type="submit" [disabled]="form.pristine" class="mx-1 btn btn-primary"
+                        (click)="updateItem()">Update</button>
+                    <button type="submit" [disabled]="form.pristine" class="mx-1 btn btn-primary"
+                        (click)="createItem()">Create</button>
+                    <button type="button" class="mx-1 btn btn-secondary" (click)="deleteItem()">Delete</button>
+                    <button type="reset" class="mx-1 btn btn-secondary" (click)="cancel()">Cancel</button>
+                </div>
+            </form>
+        </div>
+        <div class="col-xs-12 col-xl-6">
+            <button type="button" class="mx-1 btn btn-secondary" (click)="refresh()">Refresh</button>
+            <cdk-virtual-scroll-viewport style="height: 400px;" [itemSize]="33">
+                <table class="table table-sm table-hover">
+                    <thead>
+                        <tr>
+                            <th scope="col">Name</th>
+                            <th scope="col">Title</th>
+                            <th scope="col">Guildmaster</th>
+                            <th scope="col">Owner</th>
+                            <th scope="col">Creation</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *cdkVirtualFor="let guild of items; templateCacheSize: 0" [ngClass]="isActive(guild)"
+                            (click)="setItemById(guild.name)">
+                            <td *ngIf="guild">{{ guild.name }}</td>
+                            <td *ngIf="guild">{{ guild.title }}</td>
+                            <td *ngIf="guild">{{ guild.bossname }}</td>
+                            <td *ngIf="guild">{{ guild.owner }}</td>
+                            <td *ngIf="guild">{{ guild.creation }}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </cdk-virtual-scroll-viewport>
+        </div>
+    </div>
+</div>

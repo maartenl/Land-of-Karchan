@@ -36,6 +36,7 @@ import { WorldattributesComponent } from './worldattributes/worldattributes.comp
 import { CharactersComponent } from './characters/characters.component';
 import { environment } from 'src/environments/environment';
 import { BoardsComponent } from './boards/boards.component';
+import { GuildsComponent } from './guilds/guilds.component';
 
 export const isMock = environment.mock;
 
@@ -61,7 +62,8 @@ export const isMock = environment.mock;
     EventsComponent,
     WorldattributesComponent,
     CharactersComponent,
-    BoardsComponent
+    BoardsComponent,
+    GuildsComponent
   ],
   imports: [
     BrowserModule,

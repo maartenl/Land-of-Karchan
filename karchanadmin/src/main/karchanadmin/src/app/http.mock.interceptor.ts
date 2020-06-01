@@ -3,6 +3,7 @@ import { HttpEvent, HttpHandler, HttpInterceptor, HttpRequest, HttpResponse } fr
 import { Observable, of } from 'rxjs';
 
 import { Board, BoardMessage } from './boards/board.model';
+import { Guild } from './guilds/guild.model';
 
 export class RestService {
     urlRegExp: string;
@@ -48,7 +49,10 @@ export class RestService {
     add(body) {
         body.creation = new Date();
         body.owner = 'Karn';
-        this.result.push(this.creator(body));
+        const newitem = this.creator(body);
+        this.result.push(newitem);
+        if (window.console) { console.log(this.result); }
+        return newitem.getIdentifier();
     }
 }
 
@@ -73,6 +77,7 @@ export class RestServer {
                 removed: true
             }]));
         this.restservices.push(new RestService('/karchangame/resources/administration/boards', (x: any) => new Board(x)));
+        this.restservices.push(new RestService('/karchangame/resources/administration/guilds', (x: any) => new Guild(x)));
     }
 
     getRestService(url: string): RestService {
@@ -97,8 +102,9 @@ export class MockHttpInterceptor implements HttpInterceptor {
         if (restService !== undefined) {
             if (request.method === 'POST') {
                 if (window.console) { console.log('POST Hit ' + request.url); }
-                restService.add(request.body);
-                const n = new HttpResponse({ status: 200 });
+                // if (window.console) { console.log(request.body); }
+                const identifier = restService.add(request.body);
+                const n = new HttpResponse({ status: 200, body: identifier });
                 return of(n);
             }
             if (request.method === 'GET') {
