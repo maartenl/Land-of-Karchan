@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { Board } from './board.model';
+import { Board, BoardMessage } from './board.model';
 import { FormGroup, FormBuilder } from '@angular/forms';
 
 import { AdminComponent } from '../admin/admin.component';
@@ -14,6 +14,10 @@ import { BoardsRestService } from '../boards-rest.service';
 })
 export class BoardsComponent extends AdminComponent<Board, number> implements OnInit {
   form: FormGroup;
+
+  boardmessages: BoardMessage[];
+
+  boardmessage: BoardMessage;
 
   constructor(
     private boardsRestService: BoardsRestService,
@@ -89,7 +93,6 @@ export class BoardsComponent extends AdminComponent<Board, number> implements On
     return false;
   }
 
-
   private setBoard(board: Board) {
     this.item = board;
     this.form.reset({
@@ -99,6 +102,32 @@ export class BoardsComponent extends AdminComponent<Board, number> implements On
       room: board.room,
       owner: board.owner
     });
+    this.boardsRestService.getMessages(board.id).subscribe({
+      next: (data: BoardMessage[]) => {
+        if (data !== undefined) { this.boardmessages = data.map(x => new BoardMessage(x)); }
+      }
+    });
+  }
+
+  removeMessage(message: BoardMessage) {
+    const newmessage = new BoardMessage(message);
+    newmessage.removed = !newmessage.removed;
+    this.boardsRestService.updateMessage(newmessage).subscribe({
+      next: (data) => {
+        message.removed = !message.removed;
+        this.boardmessages = [...this.boardmessages];
+        this.getToastService().show(message.getType() + ' ' + message.getIdentifier() + ' successfully updated.', {
+          delay: 3000,
+          autohide: true,
+          headertext: 'Updated...'
+        });
+      }
+    });
+    return false;
+  }
+
+  setBoardmessage(message: BoardMessage) {
+    this.boardmessage = message;
   }
 
 }

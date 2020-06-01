@@ -9,12 +9,12 @@
                 </fieldset>
                 <fieldset class="form-group">
                     <label for="name">Name</label>
-                    <input type="text" class="form-control" id="name" name="name"
-                        formControlName="name">
+                    <input type="text" class="form-control" id="name" name="name" formControlName="name">
                 </fieldset>
                 <fieldset class="form-group">
                     <label for="description">Description</label>
-                    <textarea class="form-control" id="description" name="description" rows="13" formControlName="description"></textarea>
+                    <textarea class="form-control" id="description" name="description" rows="13"
+                        formControlName="description"></textarea>
                 </fieldset>
                 <fieldset class="form-group">
                     <label for="room">Room</label>
@@ -33,6 +33,49 @@
                     <button type="reset" class="mx-1 btn btn-secondary" (click)="cancel()">Cancel</button>
                 </div>
             </form>
+            <h2>Messages</h2>
+            <div *ngIf="boardmessage !== undefined">
+                <form novalidate>
+                    <fieldset class="form-group">
+                        <label for="id">Id</label>:
+                        {{ boardmessage.id }}
+                    </fieldset>
+                    <fieldset class="form-group">
+                        <label for="name">Name</label>:
+                        {{ boardmessage.name }}
+                    </fieldset>
+                    <fieldset class="form-group">
+                        <label for="description">Message</label>
+                        <textarea class="form-control" id="message" name="description" rows="13"
+                            [value]="boardmessage.message" readonly></textarea>
+                    </fieldset>
+                    <fieldset class="form-group">
+                        <label for="posttime">Posttime</label>:
+                        {{ boardmessage.posttime }}
+                    </fieldset>
+                </form>
+            </div>
+            <table class="table table-sm table-hover">
+                <thead>
+                    <tr>
+                        <th scope="col">Id</th>
+                        <th scope="col">Name</th>
+                        <th scope="col">Posttime</th>
+                        <th scope="col">Removed</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let boardmessage of boardmessages" (click)="setBoardmessage(boardmessage)">
+                        <td>{{ boardmessage.id }}</td>
+                        <td>{{ boardmessage.name }}</td>
+                        <td>{{ boardmessage.posttime }}</td>
+                        <td>
+                            <input type="checkbox" class="form-check-input" id="removed"
+                                (click)="removeMessage(boardmessage)" [checked]="boardmessage.removed">
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
         </div>
         <div class="col-xs-12 col-xl-6">
             <button type="button" class="mx-1 btn btn-secondary" (click)="refresh()">Refresh</button>

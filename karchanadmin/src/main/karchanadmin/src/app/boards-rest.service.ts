@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Board } from './boards/board.model';
+import { Board, BoardMessage } from './boards/board.model';
 import { Observable } from 'rxjs';
 import { catchError, publishReplay, refCount, map } from 'rxjs/operators';
 import { HttpClient } from '@angular/common/http';
@@ -36,6 +36,7 @@ export class BoardsRestService implements AdminRestService<Board, number> {
         })
       );
   }
+
   getAll(): Observable<Board[]> {
     if (this.cache$) {
       return this.cache$;
@@ -60,6 +61,27 @@ export class BoardsRestService implements AdminRestService<Board, number> {
         })
       );
     return this.cache$;
+  }
+
+  getMessages(boardid: number) {
+    return this.http.get<BoardMessage[]>(this.url + '/' + boardid + '/messages')
+      .pipe(
+        catchError(err => {
+          this.handleError(err);
+          return [];
+        })
+      );
+  }
+
+  updateMessage(message: BoardMessage) {
+    // update
+    return this.http.put<BoardMessage>(this.url + '/' + message.boardid + '/messages/' + message.id, message)
+      .pipe(
+        catchError(err => {
+          this.handleError(err);
+          return [];
+        })
+      );
   }
 
   clearCache() {

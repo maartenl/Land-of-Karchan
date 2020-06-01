@@ -2,26 +2,29 @@ import { Injectable, Injector } from '@angular/core';
 import { HttpEvent, HttpHandler, HttpInterceptor, HttpRequest, HttpResponse } from '@angular/common/http';
 import { Observable, of } from 'rxjs';
 
-import { Board } from './boards/board.model';
+import { Board, BoardMessage } from './boards/board.model';
 
 export class RestService {
-    url: string;
+    urlRegExp: string;
     result: Array<any>;
-    maxid = 1;
     creator;
 
-    constructor(url: string, creator: any) {
-        this.url = url;
-        this.result = new Array();
+    constructor(urlRegExp: string, creator: any, initialArray?: Array<any>) {
+        this.urlRegExp = urlRegExp;
         this.creator = creator;
+        if (initialArray === undefined) {
+            this.result = new Array();
+        } else {
+            this.result = initialArray.map(x => creator(x));
+        }
     }
 
     hasPartial(url: string): boolean {
-        return url !== this.url && url.startsWith(this.url);
+        return url !== this.urlRegExp && url.search(this.urlRegExp) === 0;
     }
 
     getPartial(url: string) {
-        return url.substring(this.url.length + 1);
+        return url.substring(url.lastIndexOf('/') + 1);
     }
 
     getById(url: string) {
@@ -43,11 +46,9 @@ export class RestService {
     }
 
     add(body) {
-        body.id = this.maxid;
         body.creation = new Date();
         body.owner = 'Karn';
         this.result.push(this.creator(body));
-        this.maxid++;
     }
 }
 
@@ -55,11 +56,27 @@ export class RestServer {
     private restservices: Array<RestService> = new Array();
 
     constructor() {
+        this.restservices.push(new RestService('/karchangame/resources/administration/boards/1/messages',
+            (x: any) => new BoardMessage(x), [{
+                id: 1,
+                boardid: 1,
+                name: 'Midevia',
+                posttime: '2020-12-02 13:14:15',
+                message: 'This is my message.',
+                removed: false
+            }, {
+                id: 2,
+                boardid: 1,
+                name: 'Karn',
+                posttime: '2020-10-02 13:14:15',
+                message: 'This is a curse message with much cursing.',
+                removed: true
+            }]));
         this.restservices.push(new RestService('/karchangame/resources/administration/boards', (x: any) => new Board(x)));
     }
 
     getRestService(url: string): RestService {
-        return this.restservices.find(x => url.startsWith(x.url));
+        return this.restservices.find(x => url.search(x.urlRegExp) !== -1);
     }
 
 }
