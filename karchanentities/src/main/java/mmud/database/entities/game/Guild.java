@@ -22,51 +22,34 @@ import mmud.database.entities.characters.User;
 import mmud.exceptions.MudException;
 import org.eclipse.persistence.annotations.Customizer;
 
-
-
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 import java.io.Serializable;
 import java.time.LocalDateTime;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
-
-import java.util.Set;
-import java.util.SortedSet;
+import java.util.*;
 
 /**
- *
  * @author maartenl
  */
 @Entity
 @Table(name = "mm_guilds")
 @NamedQueries(
-        {
-          @NamedQuery(name = "Guild.findAll", query = "SELECT g FROM Guild g ORDER BY g.title")
-          ,
-            @NamedQuery(name = "Guild.findByName", query = "SELECT g FROM Guild g WHERE g.name = :name")
-          ,
-            @NamedQuery(name = "Guild.findByTitle", query = "SELECT g FROM Guild g WHERE g.title = :title")
-          ,
-            @NamedQuery(name = "Guild.findByDaysguilddeath", query = "SELECT g FROM Guild g WHERE g.daysguilddeath = :daysguilddeath")
-          ,
-            @NamedQuery(name = "Guild.findByMaxguilddeath", query = "SELECT g FROM Guild g WHERE g.maxguilddeath = :maxguilddeath")
-          ,
-            @NamedQuery(name = "Guild.findByMinguildmembers", query = "SELECT g FROM Guild g WHERE g.minguildmembers = :minguildmembers")
-          ,
-            @NamedQuery(name = "Guild.findByMinguildlevel", query = "SELECT g FROM Guild g WHERE g.minguildlevel = :minguildlevel")
-          ,
-            @NamedQuery(name = "Guild.findByGuildurl", query = "SELECT g FROM Guild g WHERE g.guildurl = :guildurl")
-          ,
-            @NamedQuery(name = "Guild.findByActive", query = "SELECT g FROM Guild g WHERE g.active = :active")
-          ,
-            @NamedQuery(name = "Guild.findByCreation", query = "SELECT g FROM Guild g WHERE g.creation = :creation")
-          ,
-            @NamedQuery(name = "Guild.findGuildHopefuls", query = "SELECT p from Person p, Charattribute c WHERE c.person = p and c.name = :attributename and c.value = :guildname and c.valueType = :valuetype")
-        })
+  {
+    @NamedQuery(name = "Guild.findAll", query = "SELECT g FROM Guild g ORDER BY g.title"),
+    @NamedQuery(name = "Guild.findByName", query = "SELECT g FROM Guild g WHERE g.name = :name"),
+    @NamedQuery(name = "Guild.findByTitle", query = "SELECT g FROM Guild g WHERE g.title = :title"),
+    @NamedQuery(name = "Guild.findByDaysguilddeath", query = "SELECT g FROM Guild g WHERE g.daysguilddeath = :daysguilddeath"),
+    @NamedQuery(name = "Guild.findByMaxguilddeath", query = "SELECT g FROM Guild g WHERE g.maxguilddeath = :maxguilddeath"),
+    @NamedQuery(name = "Guild.findByMinguildmembers", query = "SELECT g FROM Guild g WHERE g.minguildmembers = :minguildmembers"),
+    @NamedQuery(name = "Guild.findByMinguildlevel", query = "SELECT g FROM Guild g WHERE g.minguildlevel = :minguildlevel"),
+    @NamedQuery(name = "Guild.findByGuildurl", query = "SELECT g FROM Guild g WHERE g.guildurl = :guildurl"),
+    @NamedQuery(name = "Guild.findByActive", query = "SELECT g FROM Guild g WHERE g.active = :active"),
+    @NamedQuery(name = "Guild.findByCreation", query = "SELECT g FROM Guild g WHERE g.creation = :creation"),
+    @NamedQuery(name = "Guild.findGuildHopefuls", query = "SELECT p from Person p, Charattribute c WHERE c.person = p and c.name = :attributename and c.value = :guildname and c.valueType = :valuetype"),
+    @NamedQuery(name = "Guild.countAll", query = "SELECT count(g) from Guild g")
+  })
 @Customizer(PersonsFilterForGuild.class)
 public class Guild implements Serializable, DisplayInterface, Ownage
 {
@@ -280,6 +263,7 @@ public class Guild implements Serializable, DisplayInterface, Ownage
 
   /**
    * All members of the guild actively playing the game as of this moment.
+   *
    * @return set of users
    */
   public Set<User> getActiveMembers()
@@ -324,7 +308,7 @@ public class Guild implements Serializable, DisplayInterface, Ownage
    *
    * @param boss the new guildmaster. Should never be null.
    * @throws MudException if new guildmaster is null, or not a member of this
-   * guild.
+   *                      guild.
    */
   public void setBoss(User boss) throws MudException
   {
@@ -333,8 +317,8 @@ public class Guild implements Serializable, DisplayInterface, Ownage
       throw new MudException("There should always be a guildmaster of guild " + getName());
     }
     if (boss.getGuild() != null
-            && (!boss.getGuild().getName().equals(
-                    getName())))
+      && (!boss.getGuild().getName().equals(
+      getName())))
     {
       throw new MudException(boss.getName() + " cannot be a guildmaster of guild " + getName() + ". Already is a guildmaster of " + boss.getGuild().getName());
     }
@@ -365,11 +349,12 @@ public class Guild implements Serializable, DisplayInterface, Ownage
     }
     return colour;
   }
+
   public static final String DEFAULT_GUILDMESSAGE_COLOUR = "Green";
 
   /**
-   * @see #getColour()
    * @param colour
+   * @see #getColour()
    */
   public void setColour(String colour)
   {
@@ -410,7 +395,7 @@ public class Guild implements Serializable, DisplayInterface, Ownage
    * Returns a description in case the guild is in danger of being purged from
    * the database. This is necessary to make sure there is not a plethora of
    * guilds with few members.
-   * <P>
+   * <p>
    * The following preconditions are in effect:
    * <UL>
    * <LI>the guild is active
@@ -428,9 +413,9 @@ public class Guild implements Serializable, DisplayInterface, Ownage
       return "";
     }
     return "The minimum amount of members of this guild is "
-            + getMinguildmembers()
-            + ".<br/>The guild has too few members, and will be removed in "
-            + getDaysguilddeath() + " days.";
+      + getMinguildmembers()
+      + ".<br/>The guild has too few members, and will be removed in "
+      + getDaysguilddeath() + " days.";
   }
 
   /**
@@ -480,8 +465,8 @@ public class Guild implements Serializable, DisplayInterface, Ownage
   /**
    * Sets an url pointing to an image.
    *
-   * @see #getImage()
    * @param image
+   * @see #getImage()
    */
   public void setImage(String image)
   {
@@ -560,10 +545,10 @@ public class Guild implements Serializable, DisplayInterface, Ownage
     // TODO
     // The guild is <I>" + (isActive() ? "active" : "inactive") + "</I>.<BR>
     return "<H1><IMG SRC=\"/images/gif/money.gif\">" + getTitle()
-            + "</H1>You" + " are a member of the <I>" + getTitle()
-            + "</I> (" + getName() + ").<BR>The current guildmaster is <I>"
-            + getBoss().getName() + "</I>.<BR>The guild has " + members.size()
-            + " members." + getAlarmDescription() + "<P>" + result + "<P>";
+      + "</H1>You" + " are a member of the <I>" + getTitle()
+      + "</I> (" + getName() + ").<BR>The current guildmaster is <I>"
+      + getBoss().getName() + "</I>.<BR>The guild has " + members.size()
+      + " members." + getAlarmDescription() + "<P>" + result + "<P>";
 
   }
 
@@ -596,6 +581,7 @@ public class Guild implements Serializable, DisplayInterface, Ownage
 
   /**
    * Should return a list of hopefuls, but currently does absolutely nothing.
+   *
    * @return list of hopefuls
    */
   // TODO

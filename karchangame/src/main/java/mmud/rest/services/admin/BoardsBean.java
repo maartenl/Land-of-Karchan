@@ -71,7 +71,11 @@ public class BoardsBean
 
     final String name = sc.getUserPrincipal().getName();
     Admin admin = getEntityManager().find(Admin.class, name);
-    Board board = new Board();
+    Board board = getEntityManager().find(Board.class, adminBoard.id);
+    if (board != null)
+    {
+      throw new MudWebException(name, "Board " + adminBoard.id + " already exists.", Response.Status.PRECONDITION_FAILED);
+    }    board = new Board();
     board.setId(adminBoard.id);
     board.setName(adminBoard.name);
     board.setDescription(adminBoard.description);
@@ -107,7 +111,6 @@ public class BoardsBean
       throw new MudWebException(name, "Board ids do not match.", Response.Status.BAD_REQUEST);
     }
     Board board = getEntityManager().find(Board.class, adminBoard.id);
-
     if (board == null)
     {
       throw new MudWebException(name, id + " not found.", Response.Status.NOT_FOUND);
@@ -196,6 +199,7 @@ public class BoardsBean
   {
     AdminBoardMessage adminBoardMessage = AdminBoardMessage.fromJson(json);
     final String name = sc.getUserPrincipal().getName();
+    final Admin admin = getEntityManager().find(Admin.class, name);
     final Board board = getEntityManager().find(Board.class, id);
     if (board == null)
     {

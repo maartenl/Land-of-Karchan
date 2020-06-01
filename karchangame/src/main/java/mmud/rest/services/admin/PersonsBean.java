@@ -94,7 +94,6 @@ public class PersonsBean //implements AdminRestService<String>
       default:
         throw new MudWebException(name, "Character has invalid god value (" + adminCharacter.god + ").", Response.Status.BAD_REQUEST);
     }
-    new User();
     character.setName(adminCharacter.name);
 //    character.setImage(adminCharacter.image);
     character.setTitle(adminCharacter.title);
