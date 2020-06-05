@@ -75,4 +75,18 @@ public class ChatLogEndPoint
     }
   }
 
+  public static void send(String user, Message message) throws IOException, EncodeException
+  {
+    for (ChatLogEndPoint endpoint : chatEndpoints)
+    {
+      String s = users.get(endpoint.session.getId());
+      if (s.equals(user))
+      {
+        synchronized (endpoint)
+        {
+          endpoint.session.getBasicRemote().sendObject(message);
+        }
+      }
+    }
+  }
 }

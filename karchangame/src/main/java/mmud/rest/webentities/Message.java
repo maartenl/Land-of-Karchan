@@ -19,4 +19,15 @@ public class Message
     Jsonb jsonb = JsonbBuilder.create();
     return jsonb.fromJson(json, Message.class);
   }
+
+  public Message()
+  {
+  }
+
+  public Message(String from, String to, String content)
+  {
+    this.from = from;
+    this.to = to;
+    this.content = content;
+  }
 }

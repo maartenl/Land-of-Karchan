@@ -24,14 +24,14 @@ import mmud.exceptions.MudException;
  *
  * @author maartenl
  */
-public class GuildCommunicationService
+public class GuildCommunicationService implements CommunicationService
 {
 
   private Guild guild;
 
   GuildCommunicationService(Guild guild)
   {
-    if (guild == null) 
+    if (guild == null)
     {
       throw new NullPointerException();
     }

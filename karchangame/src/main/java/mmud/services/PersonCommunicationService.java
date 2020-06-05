@@ -21,7 +21,10 @@ import mmud.database.InputSanitizer;
 import mmud.database.OutputFormatter;
 import mmud.database.entities.characters.Person;
 import mmud.exceptions.MudException;
+import mmud.rest.webentities.Message;
+import mmud.services.websocket.ChatLogEndPoint;
 
+import javax.websocket.EncodeException;
 import java.io.*;
 
 import static mmud.database.entities.characters.Person.EMPTY_LOG;
@@ -119,9 +122,10 @@ public class PersonCommunicationService implements CommunicationService
     }
     try (FileWriter myFileWriter = new FileWriter(getLogfile(), true))
     {
+      ChatLogEndPoint.send(person.getName(), new Message(null, person.getName(), aMessage));
       myFileWriter.write(aMessage, 0, aMessage.length());
 
-    } catch (IOException e)
+    } catch (IOException | EncodeException e)
     {
       throw new MudException("error writing message", e);
     }
