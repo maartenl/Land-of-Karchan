@@ -28,7 +28,7 @@ export class ChatlogService {
   }
 
   open(username: string) {
-    this.myWebSocket = webSocket('ws://10.0.0.1:8080/karchangame/chat');
+    this.myWebSocket = webSocket('wss://www.karchan.org/karchangame/chat');
     this.connectionOpen = true;
     this.myWebSocket.subscribe(
       msg => this.receive(msg),
