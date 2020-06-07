@@ -48,10 +48,10 @@ export class GameService {
 
   getLogonmessage(): Observable<string> {
     if (!environment.production) {
-      return this.http.get(this.getGameUrl() + 'logonmessage.json', {responseType: 'text'});
+      return this.http.get(this.getGameUrl() + 'logonmessage.json', { responseType: 'text' });
     }
     const url: string = this.getGameUrl() + 'logonmessage';
-    return this.http.get(url, {responseType: 'text'});
+    return this.http.get(url, { responseType: 'text' });
   }
 
 
@@ -76,12 +76,21 @@ export class GameService {
     return this.http.get(url);
   }
 
-  public processCommand(command: string, logOffset: number, log: boolean): Observable<Display> {
+  public processCommand(command: string): Observable<Display> {
     if (!environment.production) {
       return this.http.get<Display>(this.getGameUrl() + 'play.json');
     }
-    const url: string = this.getGameUrl() + 'play?offset=' + logOffset + '&log=' + log;
+    const url: string = this.getGameUrl() + 'play';
     return this.http.post<Display>(url, command);
+  }
+
+  public getLog(): Observable<string> {
+    var headers = new HttpHeaders({ 'Content-Type': 'text/plain', 'No-Auth': 'False' });
+    if (!environment.production) {
+      return this.http.get<string>(this.getGameUrl() + 'log.html', { headers: headers, responseType: 'text' as 'json'  });
+    }
+    const url: string = this.getGameUrl() + 'log';
+    return this.http.get<string>(url, { headers: headers, responseType: 'text' as 'json'  });
   }
 
   /**

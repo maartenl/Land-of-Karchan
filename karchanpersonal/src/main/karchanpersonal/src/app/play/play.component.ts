@@ -6,10 +6,11 @@ import { FormControl, FormGroup, FormBuilder } from '@angular/forms';
 
 import { PlayerService } from '../player.service';
 import { GameService } from '../game.service';
-import { Display, Person, Item } from './display.model';
+import { Display, Person, Item, Log } from './display.model';
 import { LanguageUtils } from '../language.utils';
 import { StringUtils } from '../string.utils';
 import { LogonmessageComponent } from './logonmessage/logonmessage.component';
+import { ChatlogService, Message } from '../chatlog.service';
 
 /**
  * Actually plays teh game, instead of administration of your player character/settings/mail.
@@ -30,6 +31,7 @@ export class PlayComponent implements OnInit {
     sleep: boolean;
     bigEntry: boolean;
     editor: string;
+    log: string;
   };
 
   display: Display = new Display();
@@ -41,6 +43,7 @@ export class PlayComponent implements OnInit {
   constructor(
     private gameService: GameService,
     private playerService: PlayerService,
+    private chatlogService: ChatlogService,
     private router: Router,
     private formBuilder: FormBuilder) {
     this.karchan.bigEntry = false;
@@ -69,6 +72,22 @@ export class PlayComponent implements OnInit {
         (result: any) => { // on success
           this.gameService.setIsGaming(true);
           this.playInit();
+          this.chatlogService.open(this.karchan.name);
+        },
+        (err: any) => { // error
+          // console.log('error', err);
+        },
+        () => { // on completion
+        }
+      );
+    this.gameService.getLog()
+      .subscribe(
+        (result: string) => { // on success
+          this.display.log = new Log();
+          this.display.log.log = result;
+          this.display.log.size = result.length;
+          this.display.log.offset = 0;
+          console.log('log rest:' + result);
         },
         (err: any) => { // error
           // console.log('error', err);
@@ -108,6 +127,7 @@ export class PlayComponent implements OnInit {
       .subscribe(
         (result: any) => { // on success
           this.gameService.setIsGaming(false);
+          this.chatlogService.close();
           this.router.navigate(['/']);
         },
         (err: any) => { // error
@@ -127,7 +147,7 @@ export class PlayComponent implements OnInit {
     const formModel = this.commandForm.value;
     const command = formModel.command as string;
     if (this.karchan.bigEntry) {
-      if (window.console) { console.log('play '  + command + ' ' + this.karchan.editor); }
+      if (window.console) { console.log('play ' + command + ' ' + this.karchan.editor); }
       this.processCall(command + ' ' + this.karchan.editor, true);
       return false;
     }
@@ -150,7 +170,7 @@ export class PlayComponent implements OnInit {
       this.karchan.logOffset = 0;
       log = true;
     }
-    this.gameService.processCommand(command, this.karchan.logOffset, true)
+    this.gameService.processCommand(command)
       .subscribe(
         (result: any) => { // on success
           this.writeStuff(result);
@@ -165,7 +185,7 @@ export class PlayComponent implements OnInit {
   }
 
   public writeStuff(display: Display): void {
-    this.display = display;
+    this.display.set(display);
   }
 
   public getTitle(): string {
@@ -252,20 +272,37 @@ export class PlayComponent implements OnInit {
 
   public clearLog(): boolean {
     if (window.console) { console.log('clearLog'); }
+    const messages = this.chatlogService.getMessages();
+    this.chatlogService.clearMessages();
+    messages.forEach(message => this.display.log.log = this.display.log.log + message.content);
     this.display.log.offset = this.display.log.log.length;
+    this.display.log.size = this.display.log.log.length;
+    return false;
+  }
+
+  public resetLog(): boolean {
+    if (window.console) { console.log('resetLog'); }
+    this.display.log.offset = 0;
     this.display.log.size = this.display.log.log.length;
     return false;
   }
 
   public getLog(): string {
     if (this.display.log === undefined) {
+      console.log('empty log');
       return '';
     }
-    return this.display.log.log.substr(this.display.log.offset);
+    const log = this.display.log.log.substr(this.display.log.offset);
+    console.log('log ui:' + log);
+    return log;
   }
 
   public getRoomDescription(body: string): string {
     return StringUtils.getCapitalized(body);
+  }
+
+  public getMessages(): Message[] {
+    return this.chatlogService.getMessages();
   }
 
 }

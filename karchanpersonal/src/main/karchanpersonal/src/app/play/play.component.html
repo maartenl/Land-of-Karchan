@@ -40,6 +40,8 @@
                         </p>
                     </div>
                     <div id="karchan_log" *ngIf="display.log !== undefined" [innerHTML]="getLog()"></div>
+                    <div *ngFor="let message of getMessages()" [innerHTML]="message.content">
+                    </div>
                     <p>&nbsp;</p>
                     <form [formGroup]="commandForm" (ngSubmit)="play()" novalidate>
                         <div class="row">
@@ -81,7 +83,13 @@
                             <div class="col">
                                 <p class="card-text">
                                     <a class="btn btn-block btn-outline-primary" href="#" (click)="clearLog();"
-                                        title="Clear your log">Clear</a>
+                                        title="Clears your log">Clear</a>
+                                </p>
+                            </div>
+                            <div class="col">
+                                <p class="card-text">
+                                    <a class="btn btn-block btn-outline-primary" href="#" (click)="resetLog();"
+                                        title="Reset your log">Reset</a>
                                 </p>
                             </div>
                             <div class="col">
