@@ -668,9 +668,6 @@ public class GameBean
    *
    * @param name    the name of the player. Should match the authorized user.
    * @param command the command issued
-   * @param offset  the offset used for the log
-   * @param log     indicates with true or false, whether or not we are interested
-   *                in the log.
    * @return NO_CONTENT if the game is offline for maintenance.
    * @throws WebApplicationException BAD_REQUEST if an unexpected exception
    *                                 crops up or something could not be validated.
@@ -681,7 +678,7 @@ public class GameBean
     {
       MediaType.APPLICATION_JSON
     })
-  public PrivateDisplay playGame(@PathParam(value = "name") String name, String command, @QueryParam(value = "offset") Integer offset, @QueryParam(value = "log") boolean log) throws MudException
+  public PrivateDisplay playGame(@PathParam(value = "name") String name, String command) throws MudException
   {
     LOGGER.entering(this.getClass().getName(), "playGame");
     command = InputSanitizer.security(command);
@@ -746,17 +743,6 @@ public class GameBean
       //ignore
       throw new MudWebException(name, message, e, Response.Status.BAD_REQUEST);
     }
-    // add log to the return value
-    if (log)
-    {
-      try
-      {
-        display.log = retrieveLog(person, offset);
-      } catch (MudException ex)
-      {
-        LOGGER.throwing("play: throws ", ex.getMessage(), ex);
-      }
-    }
     return display;
   }
 
@@ -818,20 +804,6 @@ public class GameBean
     return createPrivateDisplay(display, person);
   }
 
-  private PrivateLog retrieveLog(Person person, Integer offset) throws MudException
-  {
-    if (offset == null)
-    {
-      offset = 0;
-    }
-    String log = CommunicationService.getCommunicationService(person).getLog(offset);
-    PrivateLog plog = new PrivateLog();
-    plog.offset = offset;
-    plog.log = log;
-    plog.size = plog.log.length();
-    return plog;
-  }
-
   /**
    * Retrieves the log of a player.
    *
@@ -846,19 +818,29 @@ public class GameBean
   @Path("{name}/log")
   @Produces(
     {
-      MediaType.APPLICATION_JSON
+      MediaType.TEXT_HTML
     })
-  public PrivateLog getLog(@PathParam("name") String name, @QueryParam("offset") Integer offset)
+  public String getLog(@PathParam("name") String name, @QueryParam("offset") Integer offset)
   {
     LOGGER.finer("entering retrieveLog");
-    Person person = authenticate(name);
+    Person person = authenticateToEnterGame(name);
     if (offset == null)
     {
       offset = 0;
     }
     try
     {
-      return retrieveLog(person, offset);
+      Integer offset1 = offset;
+      if (offset1 == null)
+      {
+        offset1 = 0;
+      }
+      String log = CommunicationService.getCommunicationService(person).getLog(offset1);
+      PrivateLog plog = new PrivateLog();
+      plog.offset = offset1;
+      plog.log = log;
+      plog.size = plog.log.length();
+      return log.substring(offset);
     } catch (WebApplicationException e)
     {
       //ignore

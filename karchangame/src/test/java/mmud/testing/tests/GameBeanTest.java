@@ -167,7 +167,7 @@ public class GameBeanTest extends MudTest
       }
     };
     // Unit under test is exercised.
-    PrivateDisplay result = gameBean.playGame("Marvin", "l", 0, true);
+    PrivateDisplay result = gameBean.playGame("Marvin", "l");
     assertThat(result.body).isEqualTo("You are standing on a small bridge.");
     assertThat(result.image).isNull();
     assertThat(result.title).isEqualTo("The bridge");
@@ -181,9 +181,7 @@ public class GameBeanTest extends MudTest
     assertThat(result.persons).hasSize(2); // marvin doesn't show up, because he's the one playing
     assertThat(result.persons.get(0).name).isEqualTo("Hotblack");
     assertThat(result.persons.get(1).name).isEqualTo("Karn");
-    assertThat(result.log.log).isEqualTo("");
-    assertThat(result.log.offset).isEqualTo(0);
-    assertThat(result.log.size).isEqualTo(0);
+    assertThat(getLog(marvin)).isEqualTo("");
   }
 
   /**
@@ -227,7 +225,7 @@ public class GameBeanTest extends MudTest
       }
     };
     // Unit under test is exercised.
-    PrivateDisplay result = gameBean.playGame("Marvin", "l", 0, true);
+    PrivateDisplay result = gameBean.playGame("Marvin", "l");
     assertThat(result.body).isEqualTo("You are standing on a small bridge.");
     assertThat(result.image).isNull();
     assertThat(result.title).isEqualTo("The bridge");
@@ -243,9 +241,7 @@ public class GameBeanTest extends MudTest
     assertThat(result.persons.get(0).race).isEqualTo("frog");
     assertThat(result.persons.get(1).name).isEqualTo("Karn");
     assertThat(result.persons.get(1).race).isEqualTo("human");
-    assertThat(result.log.log).isEqualTo("");
-    assertThat(result.log.offset).isEqualTo(0);
-    assertThat(result.log.size).isEqualTo(0);
+    assertThat(getLog(marvin)).isEqualTo("");
   }
 
   /**
@@ -289,7 +285,7 @@ public class GameBeanTest extends MudTest
       }
     };
     // Unit under test is exercised.
-    PrivateDisplay result = gameBean.playGame("Marvin", "l", 0, true);
+    PrivateDisplay result = gameBean.playGame("Marvin", "l");
     assertThat(result.body).isEqualTo("You are standing on a small bridge.");
     assertThat(result.image).isNull();
     assertThat(result.title).isEqualTo("The bridge");
@@ -305,9 +301,8 @@ public class GameBeanTest extends MudTest
     assertThat(result.persons.get(0).race).isEqualTo("jackass");
     assertThat(result.persons.get(1).name).isEqualTo("Karn");
     assertThat(result.persons.get(1).race).isEqualTo("human");
-    assertThat(result.log.log).isEqualTo("");
-    assertThat(result.log.offset).isEqualTo(0);
-    assertThat(result.log.size).isEqualTo(0);
+    assertThat(getLog(marvin)).isEqualTo("");
+
   }
 
   /**
@@ -351,7 +346,7 @@ public class GameBeanTest extends MudTest
       }
     };
     // Unit under test is exercised.
-    PrivateDisplay result = gameBean.playGame("Marvin", "l", 0, true);
+    PrivateDisplay result = gameBean.playGame("Marvin", "l");
     assertThat(result.body).isEqualTo("You are standing on a small bridge.");
     assertThat(result.image).isNull();
     assertThat(result.title).isEqualTo("The bridge");
@@ -365,9 +360,7 @@ public class GameBeanTest extends MudTest
     assertThat(result.persons).hasSize(1); // marvin doesn't show up, because he's the one playing
     assertThat(result.persons.get(0).name).isEqualTo("Hotblack");
     // karn doesn't show up! Which is awesome!
-    assertThat(result.log.log).isEqualTo("");
-    assertThat(result.log.offset).isEqualTo(0);
-    assertThat(result.log.size).isEqualTo(0);
+    assertThat(getLog(marvin)).isEqualTo("");
   }
 
 }

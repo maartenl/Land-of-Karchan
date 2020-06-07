@@ -30,9 +30,8 @@ public class PrivateDisplay
     public String image;
     public String title;
     public String body;
-    public PrivateLog log;
 
-    public Boolean west;
+  public Boolean west;
     public Boolean east;
     public Boolean north;
     public Boolean south;

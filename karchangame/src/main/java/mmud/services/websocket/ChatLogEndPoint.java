@@ -1,7 +1,12 @@
 package mmud.services.websocket;
 
+import mmud.exceptions.MudWebException;
 import mmud.rest.webentities.Message;
 
+import javax.annotation.security.DeclareRoles;
+import javax.annotation.security.RolesAllowed;
+import javax.ejb.LocalBean;
+import javax.ejb.Stateless;
 import javax.websocket.*;
 import javax.websocket.server.PathParam;
 import javax.websocket.server.ServerEndpoint;
@@ -16,7 +21,7 @@ import java.util.concurrent.CopyOnWriteArraySet;
  * Every instance of this class, corresponds to an active user chatting.
  * We are communicating via text, the {@link Message} class is encoded and decoded to JSON format.
  */
-@ServerEndpoint(value = "/chat/{username}",
+@ServerEndpoint(value = "/chat",
   decoders = MessageDecoder.class,
   encoders = MessageEncoder.class)
 public class ChatLogEndPoint
@@ -24,10 +29,12 @@ public class ChatLogEndPoint
   private Session session;
   private static final Set<ChatLogEndPoint> chatEndpoints = new CopyOnWriteArraySet<>();
   private static Map<String, String> users = new HashMap<>();
+//  private static Map<String, String> tokens = new HashMap<>();
 
   @OnOpen
-  public void onOpen(Session session, @PathParam("username") String username) throws IOException, EncodeException
+  public void onOpen(Session session) throws IOException, EncodeException
   {
+    String username = session.getUserPrincipal().getName();
     // Get session and WebSocket connection
     this.session = session;
     chatEndpoints.add(this);
@@ -35,7 +42,7 @@ public class ChatLogEndPoint
 
     Message message = new Message();
     message.from = username;
-    message.content = "Connected!";
+    message.content = username + " has entered the game.<br/>";
     broadcast(message);
   }
 
@@ -50,11 +57,13 @@ public class ChatLogEndPoint
   @OnClose
   public void onClose(Session session) throws IOException, EncodeException
   {
+    String username = session.getUserPrincipal().getName();
     // WebSocket connection closes
     chatEndpoints.remove(this);
+    users.remove(session.getId());
     Message message = new Message();
     message.from = users.get(session.getId());
-    message.content = "Disconnected!";
+    message.content = username + " has left the game.<br/>";
     broadcast(message);
   }
 

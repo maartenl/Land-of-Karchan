@@ -19,6 +19,9 @@ package mmud.testing.tests;
 import java.lang.reflect.Field;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
+import mmud.database.entities.characters.Person;
+import mmud.services.CommunicationService;
 import org.testng.annotations.BeforeMethod;
 
 /**
@@ -33,7 +36,7 @@ public class MudTest
   {
     System.setProperty("mmud.base.path", "/home/maartenl");
   }
-  
+
     /**
      * Sets the field 'fieldname' in object 'object' to the value 'value'. Where 'object' is an object
      * of class 'targetClass'.
@@ -56,5 +59,9 @@ public class MudTest
             Logger.getLogger(MudTest.class.getName()).log(Level.SEVERE, null, ex);
             throw new RuntimeException(ex);
         }
+    }
+
+    public String getLog(Person person) {
+      return CommunicationService.getCommunicationService(person).getLog(0);
     }
 }
