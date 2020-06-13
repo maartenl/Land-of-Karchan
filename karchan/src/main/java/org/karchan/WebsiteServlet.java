@@ -57,7 +57,7 @@ public class WebsiteServlet extends HttpServlet
 
   private static final String VERSION_COOKIENAME = "karchanversion";
 
-  private static final String CURRENT_VERSION = "2.0.6";
+  private static final String CURRENT_VERSION = "2.0.7-SNAPSHOT";
 
   @Inject
   private SecurityContext securityContext;
