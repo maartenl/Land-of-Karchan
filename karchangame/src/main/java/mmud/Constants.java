@@ -37,7 +37,7 @@ import java.util.*;
 public class Constants
 {
 
-  private static final String BASEPATH = "/home/payara";
+  private static final String BASEPATH = "/home/jelastic";
 
   public static final String DEPUTIES_EMAILADDRESS = "deputiesofkarchan@outlook.com";
 
