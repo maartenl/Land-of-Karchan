@@ -28,7 +28,14 @@ export class ChatlogService {
   }
 
   open(username: string) {
-    this.myWebSocket = webSocket('wss://www.karchan.org/karchangame/chat');
+    const url = new URL('/karchangame/chat', window.location.href);
+    url.protocol = url.protocol.replace('http', 'ws');
+    url.protocol = url.protocol.replace('https', 'wss');
+    if (window.console) {
+      console.log("Opening websocket to " + url.href);
+    }
+    url.href // => ws://www.example.com:9999/path/to/websocket
+    this.myWebSocket = webSocket(url.href);
     this.connectionOpen = true;
     this.myWebSocket.subscribe(
       msg => this.receive(msg),
