@@ -410,8 +410,8 @@ public class PrivateBean
     }
     if ("everybody".equalsIgnoreCase(toname))
     {
-      Admin admin = getEntityManager().find(Admin.class, toname);
-      if (admin == null)
+      Admin admin = getEntityManager().find(Admin.class, fromname);
+      if (admin == null || !admin.isValid())
       {
         throw new MudWebException(fromname, "Only administrators are allowed to use 'everybody' in mail.", Status.UNAUTHORIZED);
       }
