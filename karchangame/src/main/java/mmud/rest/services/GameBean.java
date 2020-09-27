@@ -906,7 +906,7 @@ public class GameBean
     try
     {
       String message = "You have left the game. (" + LocalDateTime.now().format(DATETIME_FORMAT) + ")<br>";
-      CommunicationService.getCommunicationService(person.getRoom()).sendMessage(person, message);
+      CommunicationService.getCommunicationService(person).writeMessage(person, message);
       person.deactivate();
       logBean.writeLog(person, "left the game.");
     } catch (WebApplicationException e)

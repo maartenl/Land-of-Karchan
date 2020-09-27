@@ -75,8 +75,7 @@ public class PersonCommunicationService implements CommunicationService
    * <b>Important!</b> : Use this method only for Environmental communication or
    * personal communication , as it does not check the Ignore Flag. Use the
    * writeMessage(Person aSource, String aMessage) for specific communication
-   * between users.</p> TODO : move the logging to a protected hashtable in a
-   * singleton bean containing StringBuffers.
+   * between users.</p>
    *
    * @param aMessage the message to be written to the logfile.
    * @see #writeMessage(Person aSource, Person aTarget, String aMessage)
