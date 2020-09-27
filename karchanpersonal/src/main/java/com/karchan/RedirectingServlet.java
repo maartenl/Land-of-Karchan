@@ -14,16 +14,16 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+package com.karchan;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.PrintWriter;
 import javax.servlet.ServletException;
 import javax.servlet.ServletOutputStream;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.io.InputStream;
 
 /**
  * Takes care to send the index.html file of Angular, so Angular routing can be
@@ -32,9 +32,9 @@ import javax.servlet.http.HttpServletResponse;
  * @author maartenl
  */
 @WebServlet(name = "RedirectingServlet", urlPatterns =
-{
-  "/settings/*", "/mail/*", "/guild/*", "/wikipages/*", "/pictures/*", "/play/*"
-})
+  {
+    "/settings/*", "/mail/*", "/guild/*", "/wikipages/*", "/pictures/*", "/play/*"
+  })
 public class RedirectingServlet extends HttpServlet
 {
 
@@ -42,18 +42,22 @@ public class RedirectingServlet extends HttpServlet
    * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
    * methods.
    *
-   * @param request servlet request
+   * @param request  servlet request
    * @param response servlet response
    * @throws ServletException if a servlet-specific error occurs
-   * @throws IOException if an I/O error occurs
+   * @throws IOException      if an I/O error occurs
    */
   protected void processRequest(HttpServletRequest request, HttpServletResponse response)
-          throws ServletException, IOException
+    throws ServletException, IOException
   {
     response.setContentType("text/html;charset=UTF-8");
     try (ServletOutputStream out = response.getOutputStream();
-            InputStream in = request.getServletContext().getResourceAsStream("/index.html"))
+         InputStream in = request.getServletContext().getResourceAsStream("/index.html"))
     {
+      if (in == null)
+      {
+        throw new ServletException("Unable to read /index.html");
+      }
       byte[] buffer = new byte[1024];
       int len = in.read(buffer);
       while (len != -1)
@@ -65,17 +69,18 @@ public class RedirectingServlet extends HttpServlet
   }
 
   // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
+
   /**
    * Handles the HTTP <code>GET</code> method.
    *
-   * @param request servlet request
+   * @param request  servlet request
    * @param response servlet response
    * @throws ServletException if a servlet-specific error occurs
-   * @throws IOException if an I/O error occurs
+   * @throws IOException      if an I/O error occurs
    */
   @Override
   protected void doGet(HttpServletRequest request, HttpServletResponse response)
-          throws ServletException, IOException
+    throws ServletException, IOException
   {
     processRequest(request, response);
   }
@@ -83,14 +88,14 @@ public class RedirectingServlet extends HttpServlet
   /**
    * Handles the HTTP <code>POST</code> method.
    *
-   * @param request servlet request
+   * @param request  servlet request
    * @param response servlet response
    * @throws ServletException if a servlet-specific error occurs
-   * @throws IOException if an I/O error occurs
+   * @throws IOException      if an I/O error occurs
    */
   @Override
   protected void doPost(HttpServletRequest request, HttpServletResponse response)
-          throws ServletException, IOException
+    throws ServletException, IOException
   {
     processRequest(request, response);
   }
