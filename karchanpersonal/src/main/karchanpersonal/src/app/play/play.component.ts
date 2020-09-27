@@ -80,21 +80,6 @@ export class PlayComponent implements OnInit {
         () => { // on completion
         }
       );
-    this.gameService.getLog()
-      .subscribe(
-        (result: string) => { // on success
-          this.display.log = new Log();
-          this.display.log.log = result;
-          this.display.log.size = result.length;
-          this.display.log.offset = 0;
-          console.log('log rest:' + result);
-        },
-        (err: any) => { // error
-          // console.log('error', err);
-        },
-        () => { // on completion
-        }
-      );
   }
 
   public playInit(): void {
@@ -126,7 +111,12 @@ export class PlayComponent implements OnInit {
     this.gameService.quitGame()
       .subscribe(
         (result: any) => { // on success
+          this.display.log = new Log();
+          this.display.log.log = "";
+          this.display.log.size = 0;
+          this.display.log.offset = 0;
           this.gameService.setIsGaming(false);
+          this.chatlogService.clearMessages();
           this.chatlogService.close();
           this.router.navigate(['/']);
         },
@@ -282,8 +272,22 @@ export class PlayComponent implements OnInit {
 
   public resetLog(): boolean {
     if (window.console) { console.log('resetLog'); }
-    this.display.log.offset = 0;
-    this.display.log.size = this.display.log.log.length;
+    this.gameService.getLog()
+      .subscribe(
+        (result: string) => { // on success
+          this.display.log = new Log();
+          this.display.log.log = result;
+          this.display.log.size = result.length;
+          this.display.log.offset = 0;
+          this.chatlogService.clearMessages();
+          console.log('log rest:' + result);
+        },
+        (err: any) => { // error
+          // console.log('error', err);
+        },
+        () => { // on completion
+        }
+      );
     return false;
   }
 
