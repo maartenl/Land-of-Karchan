@@ -400,6 +400,7 @@ public class GameBean
       person.setArm(pperson.arm);
       person.setLeg(pperson.leg);
       person.setBirth(LocalDateTime.now());
+      person.setOoc(true);
       person.setCreation(LocalDateTime.now());
       person.setRoom(getEntityManager().find(Room.class, Room.STARTERS_ROOM));
 
