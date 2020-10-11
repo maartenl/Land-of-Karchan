@@ -1,115 +1,128 @@
 <app-logonmessage></app-logonmessage>
 <div class="container-fluid">
-    <script src="https://cdn.ckeditor.com/ckeditor5/11.2.0/classic/ckeditor.js"></script>
-    <div class="row">
-        <div class="col-12">
-            <div class="card">
-                <div class="card-body">
-                    <img alt="compass" src="assets/images/compass.png" class="float-right" usemap="#roosmap" />
-                    <map name="roosmap">
-                        <area alt="North" coords="0,0,80,75,160,0,0,0" href="#" (click)="goNorth();" shape="poly" />
-                        <area alt="South" coords="0,151,80,75,160,151,0,151" href="#" (click)="goSouth();"
-                            shape="poly" />
-                        <area alt="West" coords="0,0,80,75,0,151,0,0" href="#" (click)="goWest();" shape="poly" />
-                        <area alt="East" coords="160,0,80,75,160,151,160,0" href="#" (click)="goEast()" shape="poly" />
-                    </map>
-                    <h5 id="page-title" class="card-title"><img *ngIf="display.image"
-                            style="vertical-align: text-bottom;" [src]="display.image" />{{ getTitle() }}</h5>
-                    <div class="card-text" [innerHTML]="getRoomDescription(display.body)">
-                    </div>
-                    <div id="karchan_body" class="card-text">
-                        <p>[
-                            <a *ngIf="display.west" href="#" (click)='goWest();'>west </a>
-                            <a *ngIf="display.east" href="#" (click)='goEast();'>east </a>
-                            <a *ngIf="display.north" href="#" (click)='goNorth();'>north </a>
-                            <a *ngIf="display.south" href="#" (click)='goSouth();'>south </a>
-                            <a *ngIf="display.up" href="#" (click)='goUp();'>up </a>
-                            <a *ngIf="display.down" href="#" (click)='goDown();'>down </a>
-                            ]</p>
-                        <p *ngIf="display.persons">
+  <script src="https://cdn.ckeditor.com/ckeditor5/11.2.0/classic/ckeditor.js"></script>
+  <div class="row">
+    <div class="col-12">
+      <div class="card">
+        <div class="card-body">
+          <img alt="compass" src="assets/images/compass.png" class="float-right" usemap="#roosmap"/>
+          <map name="roosmap">
+            <area alt="North" coords="0,0,80,75,160,0,0,0" href="#" (click)="goNorth();" shape="poly"/>
+            <area alt="South" coords="0,151,80,75,160,151,0,151" href="#" (click)="goSouth();"
+                  shape="poly"/>
+            <area alt="West" coords="0,0,80,75,0,151,0,0" href="#" (click)="goWest();" shape="poly"/>
+            <area alt="East" coords="160,0,80,75,160,151,160,0" href="#" (click)="goEast()" shape="poly"/>
+          </map>
+          <h5 id="page-title" class="card-title"><img *ngIf="display.image"
+                                                      style="vertical-align: text-bottom;"
+                                                      [src]="display.image"/>{{ getTitle() }}</h5>
+          <div class="card-text" [innerHTML]="getRoomDescription(display.body)">
+          </div>
+          <div id="karchan_body" class="card-text">
+            <p>[
+              <a *ngIf="display.west" href="#" (click)='goWest();'>west </a>
+              <a *ngIf="display.east" href="#" (click)='goEast();'>east </a>
+              <a *ngIf="display.north" href="#" (click)='goNorth();'>north </a>
+              <a *ngIf="display.south" href="#" (click)='goSouth();'>south </a>
+              <a *ngIf="display.up" href="#" (click)='goUp();'>up </a>
+              <a *ngIf="display.down" href="#" (click)='goDown();'>down </a>
+              ]</p>
+            <p *ngIf="display.persons">
                             <span *ngFor="let person of display.persons">
                                 {{ getVowel(person) }} {{ person.race }} called <a href="#"
-                                    (click)="lookAtPerson(person);">{{ person.name }}</a> is here.<br />
+                                                                                   (click)="lookAtPerson(person);">{{ person.name }}</a> is here.<br/>
                             </span>
-                        </p>
-                        <p *ngIf="display.items">
+            </p>
+            <p *ngIf="display.items">
                             <span *ngFor="let item of display.items">
                                 <a href="#" (click)="lookAtItem(item);">{{ getDescription(item) }}</a>
-                                {{item.amount > 1 ? 'are' : 'is'}} here.<br />
+                              {{item.amount > 1 ? 'are' : 'is'}} here.<br/>
                             </span>
-                        </p>
-                    </div>
-                    <div id="karchan_log" *ngIf="display.log !== undefined" [innerHTML]="getLog()"></div>
-                    <div *ngFor="let message of getMessages()" [innerHTML]="message.content">
-                    </div>
-                    <p>&nbsp;</p>
-                    <form [formGroup]="commandForm" (ngSubmit)="play()" novalidate>
-                        <div class="row">
-                            <div class="col">
-                                <fieldset class="form-group">
-                                    <input type="text" class="form-control" id="command" name="command"
-                                        formControlName="command" size="60" />
-                                </fieldset>
-                            </div>
-                            <div class="col">
-                                <fieldset class="form-group">
-                                    <input type="submit" class="btn btn-outline-primary" value="Submit" />
-                                </fieldset>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col">
-                                <fieldset class="form-group">
-                                    <ckeditor [editor]="Editor" *ngIf="karchan.bigEntry" (change)="onChange($event)">
-                                    </ckeditor>
-                                </fieldset>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col">
-                                <p class="card-text">
-                                    <a class="btn btn-block btn-outline-primary" href="#" (click)="toggleSleep();">
-                                        <span *ngIf="!karchan.sleep">Sleep</span>
-                                        <span *ngIf="karchan.sleep">Awaken</span>
-                                    </a>
-                                </p>
-                            </div>
-                            <div class="col">
-                                <p class="card-text">
-                                    <a class="btn btn-block btn-outline-primary" href="#" (click)="toggleEntry();"
-                                        title="Provide a big entry form">Big talk</a>
-                                </p>
-                            </div>
-                            <div class="col">
-                                <p class="card-text">
-                                    <a class="btn btn-block btn-outline-primary" href="#" (click)="clearLog();"
-                                        title="Clears your log">Clear</a>
-                                </p>
-                            </div>
-                            <div class="col">
-                                <p class="card-text">
-                                    <a class="btn btn-block btn-outline-primary" href="#" (click)="resetLog();"
-                                        title="Reset your log">Reset</a>
-                                </p>
-                            </div>
-                            <div class="col">
-                                <p class="card-text">
-                                    <a class="btn btn-block btn-outline-primary" href="#" (click)="showLogonmessage();"
-                                        title="Show logon message">Logon message</a>
-                                </p>
-                            </div>
-                            <div class="col">
-                                <p class="card-text">
-                                    <a class="btn btn-block btn-outline-primary" href="#" (click)="quit();"
-                                        title="Quit the game">Quit</a>
-                                </p>
-                            </div>
-                        </div>
-                    </form>
-                </div>
+            </p>
+          </div>
+          <div id="karchan_log" *ngIf="display.log !== undefined" [innerHTML]="getLog()"></div>
+          <div *ngFor="let message of getMessages()" [innerHTML]="message.content">
+          </div>
+          <p>&nbsp;</p>
+          <form [formGroup]="commandForm" (ngSubmit)="play()" novalidate>
+            <div class="row">
+              <div class="col">
+                <fieldset class="form-group">
+                  <input type="text" class="form-control" id="command" name="command"
+                         formControlName="command" size="60"/>
+                </fieldset>
+              </div>
+              <div class="col">
+                <fieldset class="form-group">
+                  <input type="submit" class="btn btn-outline-primary" value="Submit"/>
+                </fieldset>
+              </div>
             </div>
+            <div class="row">
+              <div class="col">
+                <fieldset class="form-group">
+                  <ckeditor [editor]="Editor" *ngIf="karchan.bigEntry" (change)="onChange($event)">
+                  </ckeditor>
+                </fieldset>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col">
+                <p class="card-text">
+                  <a class="btn btn-block btn-outline-primary" href="#" (click)="toggleSleep();">
+                    <span *ngIf="!karchan.sleep">Sleep</span>
+                    <span *ngIf="karchan.sleep">Awaken</span>
+                  </a>
+                </p>
+              </div>
+              <div class="col">
+                <p class="card-text">
+                  <a class="btn btn-block btn-outline-primary" href="#" (click)="toggleEntry();"
+                     title="Provide a big entry form">Big talk</a>
+                </p>
+              </div>
+              <div class="col">
+                <p class="card-text">
+                  <a class="btn btn-block btn-outline-primary" href="#" (click)="clearLog();"
+                     title="Clears your log">Clear</a>
+                </p>
+              </div>
+              <div class="col">
+                <p class="card-text">
+                  <a class="btn btn-block btn-outline-primary" href="#" (click)="resetLog();"
+                     title="Reset your log">Reset</a>
+                </p>
+              </div>
+              <div class="col">
+                <p class="card-text">
+                  <a class="btn btn-block btn-outline-primary" href="#" (click)="ping();"
+                     title="Ping">Ping</a>
+                </p>
+              </div>
+              <div class="col">
+                <p class="card-text">
+                  <a class="btn btn-block btn-outline-primary" href="#" (click)="reconnect();"
+                     title="Reconnect">Reconnect</a>
+                </p>
+              </div>
+              <div class="col">
+                <p class="card-text">
+                  <a class="btn btn-block btn-outline-primary" href="#" (click)="showLogonmessage();"
+                     title="Show logon message">Logon message</a>
+                </p>
+              </div>
+              <div class="col">
+                <p class="card-text">
+                  <a class="btn btn-block btn-outline-primary" href="#" (click)="quit();"
+                     title="Quit the game">Quit</a>
+                </p>
+              </div>
+            </div>
+          </form>
         </div>
-        <div class="col-12 col-lg-2">
-        </div>
+      </div>
     </div>
+    <div class="col-12 col-lg-2">
+    </div>
+  </div>
 </div>

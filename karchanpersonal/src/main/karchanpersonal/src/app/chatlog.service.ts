@@ -6,6 +6,7 @@ export class Message {
   from: string;
   to: string;
   content: string;
+  type: string;
 
   constructor() { }
 
@@ -20,6 +21,8 @@ export class ChatlogService {
 
   private myWebSocket: WebSocketSubject<Message>;
 
+  private username: string;
+
   private messages: Message[] = [];
 
   constructor(
@@ -28,6 +31,7 @@ export class ChatlogService {
   }
 
   open(username: string) {
+    this.username = username;
     const url = new URL('/karchangame/chat', window.location.href);
     url.protocol = url.protocol.replace('http', 'ws');
     url.protocol = url.protocol.replace('https', 'wss');
@@ -49,6 +53,18 @@ export class ChatlogService {
     });
   }
 
+  ping() {
+    const message = new Message();
+    message.content = "ping";
+    message.from = this.username;
+    message.type = "ping";
+    this.send(message);
+  }
+
+  reconnect() {
+    this.open(this.username);
+  }
+
   /**
    *
    * Called whenever there is a message from the server
@@ -56,7 +72,21 @@ export class ChatlogService {
    */
   receive(data: Message) {
     if (window.console) { console.log(data); }
-    this.messages.push(data);
+    if (data.type === "chat") {
+      this.messages.push(data);
+    }
+    if (data.type === "info") {
+      this.toastService.show(data.content, {
+        delay: 5000,
+        autohide: true
+      });
+    }
+    if (data.type === "pong") {
+      this.toastService.show("Pong!", {
+        delay: 5000,
+        autohide: true
+      });
+    }
   }
 
   send(data: Message) {
@@ -73,9 +103,7 @@ export class ChatlogService {
       autohide: true,
       headertext: 'Closing...'
     });
-
   }
-
 
   /**
    * Called if WebSocket API signals some kind of error

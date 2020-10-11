@@ -106,6 +106,11 @@ export class PlayComponent implements OnInit {
     return false;
   }
 
+  public reconnect(): boolean {
+    this.chatlogService.reconnect();
+    return false;
+  }
+
   public quit(): boolean {
     if (window.console) { console.log('quit'); }
     this.gameService.quitGame()
@@ -309,4 +314,8 @@ export class PlayComponent implements OnInit {
     return this.chatlogService.getMessages();
   }
 
+  public ping(): boolean {
+    this.chatlogService.ping();
+    return false;
+  }
 }
