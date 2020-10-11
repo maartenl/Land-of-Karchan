@@ -42,7 +42,8 @@ public class ChatLogEndPoint
 
     Message message = new Message();
     message.from = username;
-    message.content = username + " has entered the game.<br/>";
+    message.content = username + " has entered the game.";
+    message.type = "info";
     broadcast(message);
   }
 
@@ -51,6 +52,10 @@ public class ChatLogEndPoint
   {
     // Handle new messages
     message.from = users.get(session.getId());
+    if ("ping".equals(message.type)) {
+      send(message.from, new Message(message.from, null, "pong", "pong"));
+      return;
+    }
     broadcast(message);
   }
 
@@ -63,7 +68,7 @@ public class ChatLogEndPoint
     users.remove(session.getId());
     Message message = new Message();
     message.from = users.get(session.getId());
-    message.content = username + " has left the game.<br/>";
+    message.content = username + " has left the game.";
     broadcast(message);
   }
 

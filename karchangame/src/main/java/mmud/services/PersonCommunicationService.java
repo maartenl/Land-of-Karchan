@@ -121,7 +121,7 @@ public class PersonCommunicationService implements CommunicationService
     }
     try (FileWriter myFileWriter = new FileWriter(getLogfile(), true))
     {
-      ChatLogEndPoint.send(person.getName(), new Message(null, person.getName(), aMessage));
+      ChatLogEndPoint.send(person.getName(), new Message(null, person.getName(), aMessage, "chat"));
       myFileWriter.write(aMessage, 0, aMessage.length());
 
     } catch (IOException | EncodeException e)

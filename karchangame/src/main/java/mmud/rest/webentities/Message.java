@@ -8,6 +8,7 @@ public class Message
   public String from;
   public String to;
   public String content;
+  public String type;
 
   public String toJson()
   {
@@ -24,10 +25,11 @@ public class Message
   {
   }
 
-  public Message(String from, String to, String content)
+  public Message(String from, String to, String content, String type)
   {
     this.from = from;
     this.to = to;
     this.content = content;
+    this.type = type;
   }
 }

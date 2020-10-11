@@ -106,161 +106,161 @@ public class CommandFactory
    * "look", in order to distinguish different commands with the same verb.
    */
   private static final TreeMap<String, CommandCreator> theCommandStructure = new TreeMap<>();
-  private static List<UserCommandInfo> theUserCommandStructure = new CopyOnWriteArrayList<>();
+  private static final List<UserCommandInfo> theUserCommandStructure = new CopyOnWriteArrayList<>();
 
-  public static interface CommandCreator
+  public interface CommandCreator
   {
 
-    public NormalCommand createCommand();
+    NormalCommand createCommand();
   }
 
   static
   {
-    theCommandStructure.put("bow", (CommandCreator) () -> new BowCommand("bow( to (\\w)+)?( (\\w)+)?"));
+    theCommandStructure.put("bow", () -> new BowCommand("bow( to (\\w)+)?( (\\w)+)?"));
     theCommandStructure.put("me", new CommandCreatorImpl());
     // quit command has been replaced with a specific rest service.
     // theCommandStructure.put("quit", new QuitCommand("quit"));
-    theCommandStructure.put("sleep", (CommandCreator) () -> new SleepCommand("sleep"));
-    theCommandStructure.put("condition", (CommandCreator) () -> new ConditionCommand("(condition)|(condition .+)"));
-    theCommandStructure.put("awaken", (CommandCreator) () -> new AwakenCommand("awaken"));
-    theCommandStructure.put("ask", (CommandCreator) () -> new AskCommand("ask (to (\\w)+ )?.+"));
-    theCommandStructure.put("ooc", (CommandCreator) () -> new OocCommand("ooc .+"));
-    theCommandStructure.put("title", (CommandCreator) () -> new TitleCommand("(title|title ?.+)"));
-    theCommandStructure.put("tell", (CommandCreator) () -> new TellCommand("tell to (\\w)+ .+"));
-    theCommandStructure.put("say", (CommandCreator) () -> new SayCommand("say (to (\\w)+ )?.+"));
-    theCommandStructure.put("macro", (CommandCreator) () -> new MacroCommand("macro( .+)?"));
-    theCommandStructure.put("sing", (CommandCreator) () -> new SingCommand("sing (to (\\w)+ )?.+"));
-    theCommandStructure.put("cry", (CommandCreator) () -> new CryCommand("cry (to (\\w)+ )?.+"));
-    theCommandStructure.put("shout", (CommandCreator) () -> new ShoutCommand(
+    theCommandStructure.put("sleep", () -> new SleepCommand("sleep"));
+    theCommandStructure.put("condition", () -> new ConditionCommand("(condition)|(condition .+)"));
+    theCommandStructure.put("awaken", () -> new AwakenCommand("awaken"));
+    theCommandStructure.put("ask", () -> new AskCommand("ask (to (\\w)+ )?.+"));
+    theCommandStructure.put("ooc", () -> new OocCommand("ooc .+"));
+    theCommandStructure.put("title", () -> new TitleCommand("(title|title ?.+)"));
+    theCommandStructure.put("tell", () -> new TellCommand("tell to (\\w)+ .+"));
+    theCommandStructure.put("say", () -> new SayCommand("say (to (\\w)+ )?.+"));
+    theCommandStructure.put("macro", () -> new MacroCommand("macro( .+)?"));
+    theCommandStructure.put("sing", () -> new SingCommand("sing (to (\\w)+ )?.+"));
+    theCommandStructure.put("cry", () -> new CryCommand("cry (to (\\w)+ )?.+"));
+    theCommandStructure.put("shout", () -> new ShoutCommand(
             "shout (to (\\w )+)?.+"));
-    theCommandStructure.put("scream", (CommandCreator) () -> new ScreamCommand(
+    theCommandStructure.put("scream", () -> new ScreamCommand(
             "scream (to (\\w )+)?.+"));
-    theCommandStructure.put("whisper", (CommandCreator) () -> new WhisperCommand(
+    theCommandStructure.put("whisper", () -> new WhisperCommand(
             "whisper (to (\\w)+ )?.+"));
-    theCommandStructure.put("clear", (CommandCreator) () -> new ClearCommand("clear"));
-    theCommandStructure.put("time", (CommandCreator) () -> new TimeCommand("time"));
-    theCommandStructure.put("date", (CommandCreator) () -> new DateCommand("date"));
-    theCommandStructure.put("south", (CommandCreator) () -> new SouthCommand("south"));
-    theCommandStructure.put("north", (CommandCreator) () -> new NorthCommand("north"));
-    theCommandStructure.put("east", (CommandCreator) () -> new EastCommand("east"));
-    theCommandStructure.put("west", (CommandCreator) () -> new WestCommand("west"));
-    theCommandStructure.put("s", (CommandCreator) () -> new SouthCommand("s"));
-    theCommandStructure.put("n", (CommandCreator) () -> new NorthCommand("n"));
-    theCommandStructure.put("e", (CommandCreator) () -> new EastCommand("e"));
-    theCommandStructure.put("w", (CommandCreator) () -> new WestCommand("w"));
-    theCommandStructure.put("up", (CommandCreator) () -> new UpCommand("up"));
-    theCommandStructure.put("down", (CommandCreator) () -> new DownCommand("down"));
-    theCommandStructure.put("go", (CommandCreator) () -> new GoCommand(
+    theCommandStructure.put("clear", () -> new ClearCommand("clear"));
+    theCommandStructure.put("time", () -> new TimeCommand("time"));
+    theCommandStructure.put("date", () -> new DateCommand("date"));
+    theCommandStructure.put("south", () -> new SouthCommand("south"));
+    theCommandStructure.put("north", () -> new NorthCommand("north"));
+    theCommandStructure.put("east", () -> new EastCommand("east"));
+    theCommandStructure.put("west", () -> new WestCommand("west"));
+    theCommandStructure.put("s", () -> new SouthCommand("s"));
+    theCommandStructure.put("n", () -> new NorthCommand("n"));
+    theCommandStructure.put("e", () -> new EastCommand("e"));
+    theCommandStructure.put("w", () -> new WestCommand("w"));
+    theCommandStructure.put("up", () -> new UpCommand("up"));
+    theCommandStructure.put("down", () -> new DownCommand("down"));
+    theCommandStructure.put("go", () -> new GoCommand(
             "go (up|down|north|south|east|west)?"));
-    theCommandStructure.put("help", (CommandCreator) () -> new HelpCommand("help( (\\w)+)?"));
-    theCommandStructure.put("show ignoring", (CommandCreator) () -> new IgnoringCommand(
+    theCommandStructure.put("help", () -> new HelpCommand("help( (\\w)+)?"));
+    theCommandStructure.put("show ignoring", () -> new IgnoringCommand(
             "show ignoring"));
-    theCommandStructure.put("fully", (CommandCreator) () -> new IgnoreCommand(
+    theCommandStructure.put("fully", () -> new IgnoreCommand(
             "fully ignore (\\w)+"));
-    theCommandStructure.put("acknowledge", (CommandCreator) () -> new AcknowledgeCommand(
+    theCommandStructure.put("acknowledge", () -> new AcknowledgeCommand(
             "acknowledge (\\w)+"));
-    theCommandStructure.put("curtsey", (CommandCreator) () -> new CurtseyCommand(
+    theCommandStructure.put("curtsey", () -> new CurtseyCommand(
             "curtsey( to (\\w)+)?"));
-    theCommandStructure.put("eyebrow", (CommandCreator) () -> new EyebrowCommand("eyebrow"));
-    theCommandStructure.put("wimpy", (CommandCreator) () -> new WimpyCommand("wimpy( .+|help)?"));
-    theCommandStructure.put("who", (CommandCreator) () -> new WhoCommand("who"));
+    theCommandStructure.put("eyebrow", () -> new EyebrowCommand("eyebrow"));
+    theCommandStructure.put("wimpy", () -> new WimpyCommand("wimpy( .+|help)?"));
+    theCommandStructure.put("who", () -> new WhoCommand("who"));
 //        theCommandStructure.put("pkill", new PkillCommand("pkill( (\\w)+)?"));
 //        theCommandStructure.put("fight", new FightCommand("fight (\\w)+"));
 //        theCommandStructure.put("stop", new FightCommand("stop fighting"));
-    theCommandStructure.put("stats", (CommandCreator) () -> new StatsCommand("stats"));
-    theCommandStructure.put("inventory", (CommandCreator) () -> new InventoryCommand("inventory"));
-    theCommandStructure.put("i", (CommandCreator) () -> new InventoryCommand("i"));
-    theCommandStructure.put("drink", (CommandCreator) () -> new DrinkCommand(
+    theCommandStructure.put("stats", () -> new StatsCommand("stats"));
+    theCommandStructure.put("inventory", () -> new InventoryCommand("inventory"));
+    theCommandStructure.put("i", () -> new InventoryCommand("i"));
+    theCommandStructure.put("drink", () -> new DrinkCommand(
             "drink( (\\w|-)+){1,4}"));
-    theCommandStructure.put("eat", (CommandCreator) () -> new EatCommand("eat( (\\w|-)+){1,4}"));
-    theCommandStructure.put("destroy", (CommandCreator) () -> new DestroyCommand("destroy( (\\w|-)+){1,4}"));
-    theCommandStructure.put("wear", (CommandCreator) () -> new WearCommand(
+    theCommandStructure.put("eat", () -> new EatCommand("eat( (\\w|-)+){1,4}"));
+    theCommandStructure.put("destroy", () -> new DestroyCommand("destroy( (\\w|-)+){1,4}"));
+    theCommandStructure.put("wear", () -> new WearCommand(
             "wear( (\\w|-)+){1,4} on (\\w)+"));
-    theCommandStructure.put("remove", (CommandCreator) () -> new UnwearCommand(
+    theCommandStructure.put("remove", () -> new UnwearCommand(
             "remove from (\\w)+"));
-    theCommandStructure.put("undress", (CommandCreator) () -> new UndressCommand(
+    theCommandStructure.put("undress", () -> new UndressCommand(
             "undress"));
-    theCommandStructure.put("disarm", (CommandCreator) () -> new DisarmCommand(
+    theCommandStructure.put("disarm", () -> new DisarmCommand(
             "disarm"));
-    theCommandStructure.put("wield", (CommandCreator) () -> new WieldCommand(
+    theCommandStructure.put("wield", () -> new WieldCommand(
             "wield( (\\w|-)+){1,4} with (\\w)+"));
-    theCommandStructure.put("unwield", (CommandCreator) () -> new UnwieldCommand(
+    theCommandStructure.put("unwield", () -> new UnwieldCommand(
             "unwield from (\\w)+"));
-    theCommandStructure.put("drop", (CommandCreator) () -> new DropCommand("drop( (\\w|-)+){1,4}"));
-    theCommandStructure.put("get", (CommandCreator) () -> new GetCommand("get( (\\w|-)+){1,4}"));
-    theCommandStructure.put("put", (CommandCreator) () -> new PutCommand(
+    theCommandStructure.put("drop", () -> new DropCommand("drop( (\\w|-)+){1,4}"));
+    theCommandStructure.put("get", () -> new GetCommand("get( (\\w|-)+){1,4}"));
+    theCommandStructure.put("put", () -> new PutCommand(
             "put( (\\w|-)+){1,4} in( (\\w|-)+){1,4}"));
-    theCommandStructure.put("retrieve", (CommandCreator) () -> new RetrieveCommand(
+    theCommandStructure.put("retrieve", () -> new RetrieveCommand(
             "retrieve( (\\w|-)+){1,4} from( (\\w|-)+){1,4}"));
-    theCommandStructure.put("lock", (CommandCreator) () -> new LockCommand(
+    theCommandStructure.put("lock", () -> new LockCommand(
             "lock( (\\w|-)+){1,4} with( (\\w|-)+){1,4}"));
-    theCommandStructure.put("unlock", (CommandCreator) () -> new UnlockCommand(
+    theCommandStructure.put("unlock", () -> new UnlockCommand(
             "unlock( (\\w|-)+){1,4} with( (\\w|-)+){1,4}"));
-    theCommandStructure.put("give", (CommandCreator) () -> new GiveCommand(
+    theCommandStructure.put("give", () -> new GiveCommand(
             "give( (\\w|-)+){1,4} to (\\w)+"));
-    theCommandStructure.put("open", (CommandCreator) () -> new OpenCommand("open( (\\w|-)+){1,4}"));
-    theCommandStructure.put("close", (CommandCreator) () -> new CloseCommand(
+    theCommandStructure.put("open", () -> new OpenCommand("open( (\\w|-)+){1,4}"));
+    theCommandStructure.put("close", () -> new CloseCommand(
             "close( (\\w|-)+){1,4}"));
-    theCommandStructure.put("read", (CommandCreator) () -> new ReadCommand("read( (\\w|-)+){1,4}"));
-    theCommandStructure.put("readboard", (CommandCreator) () -> new ReadBoardCommand(
+    theCommandStructure.put("read", () -> new ReadCommand("read( (\\w|-)+){1,4}"));
+    theCommandStructure.put("readboard", () -> new ReadBoardCommand(
             "readboard (\\w)+"));
-    theCommandStructure.put("post", (CommandCreator) () -> new PostBoardCommand("post (\\w)+ .+"));
-    theCommandStructure.put("l", (CommandCreator) () -> new LookCommand("l"));
-    theCommandStructure.put("look", (CommandCreator) () -> new LookCommand(
+    theCommandStructure.put("post", () -> new PostBoardCommand("post (\\w)+ .+"));
+    theCommandStructure.put("l", () -> new LookCommand("l"));
+    theCommandStructure.put("look", () -> new LookCommand(
             "look"));
-    theCommandStructure.put("look at", (CommandCreator) () -> new LookAtCommand(
+    theCommandStructure.put("look at", () -> new LookAtCommand(
             "look at( (\\w|-)+){1,4}"));
-    theCommandStructure.put("look in", (CommandCreator) () -> new LookInCommand(
+    theCommandStructure.put("look in", () -> new LookInCommand(
             "look in( (\\w|-)+){1,4}"));
 //        theCommandStructure.put("search", new SearchCommand(
 //                "search( (\\w|-)+){1,4}"));
-    theCommandStructure.put("buy", (CommandCreator) () -> new BuyCommand(
+    theCommandStructure.put("buy", () -> new BuyCommand(
             "buy( (\\w|-)+){1,4} from (\\w)+"));
-    theCommandStructure.put("sell", (CommandCreator) () -> new SellCommand(
+    theCommandStructure.put("sell", () -> new SellCommand(
             "sell( (\\w|-)+){1,4} to (\\w)+"));
 //        theCommandStructure.put("show", new ShowCommand(
 //                "show( (\\w|-)+){1,4} to (\\w)+"));
 //        theCommandStructure.put("title", new TitleCommand("title .+"));
-    theCommandStructure.put("admin", (CommandCreator) () -> new AdminCommand("admin .+"));
-    theCommandStructure.put("owner", (CommandCreator) () -> new OwnerCommand("owner( (\\w)+)?"));
-    theCommandStructure.put("deputies", (CommandCreator) () -> new OwnerCommand("deputies"));
+    theCommandStructure.put("admin", () -> new AdminCommand("admin .+"));
+    theCommandStructure.put("owner", () -> new OwnerCommand("owner( (\\w)+)?"));
+    theCommandStructure.put("deputies", () -> new OwnerCommand("deputies"));
     // guild commands
-    theCommandStructure.put("guildapply", (CommandCreator) () -> new ApplyCommand(
+    theCommandStructure.put("guildapply", () -> new ApplyCommand(
             "guildapply( (\\w)+)?"));
-    theCommandStructure.put("guildmessage", (CommandCreator) () -> new GuildMessageCommand(
+    theCommandStructure.put("guildmessage", () -> new GuildMessageCommand(
             "guildmessage .+"));
-    theCommandStructure.put("guildleave", (CommandCreator) () -> new LeaveCommand("guildleave"));
-    theCommandStructure.put("guilddetails", (CommandCreator) () -> new DetailsCommand(
+    theCommandStructure.put("guildleave", () -> new LeaveCommand("guildleave"));
+    theCommandStructure.put("guilddetails", () -> new DetailsCommand(
             "guilddetails"));
-    theCommandStructure.put("guildaccept", (CommandCreator) () -> new AcceptCommand(
+    theCommandStructure.put("guildaccept", () -> new AcceptCommand(
             "guildaccept (\\w)+"));
-    theCommandStructure.put("guildreject", (CommandCreator) () -> new RejectCommand(
+    theCommandStructure.put("guildreject", () -> new RejectCommand(
             "guildreject (\\w)+"));
-    theCommandStructure.put("guildrank", (CommandCreator) () -> new RankChangeCommand(
+    theCommandStructure.put("guildrank", () -> new RankChangeCommand(
             "guildrank (\\d){1,3} (\\w)+"));
-    theCommandStructure.put("guildaddrank", (CommandCreator) () -> new RankChangeCommand(
+    theCommandStructure.put("guildaddrank", () -> new RankChangeCommand(
             "guildaddrank (\\d){1,3} (\\w)+"));
-    theCommandStructure.put("guildassignrank", (CommandCreator) () -> new RankAssignCommand(
+    theCommandStructure.put("guildassignrank", () -> new RankAssignCommand(
             "guildassignrank (\\w)+ (\\w)+"));
-    theCommandStructure.put("guilddelrank", (CommandCreator) () -> new RankDeleteCommand(
+    theCommandStructure.put("guilddelrank", () -> new RankDeleteCommand(
             "guilddelrank (\\d){1,3}"));
-    theCommandStructure.put("createguild", (CommandCreator) () -> new CreateGuildCommand(
+    theCommandStructure.put("createguild", () -> new CreateGuildCommand(
             "createguild (\\w)+ .+"));
-    theCommandStructure.put("deleteguild", (CommandCreator) () -> new DeleteGuildCommand(
+    theCommandStructure.put("deleteguild", () -> new DeleteGuildCommand(
             "deleteguild"));
-    theCommandStructure.put("guildremove", (CommandCreator) () -> new RemoveCommand(
+    theCommandStructure.put("guildremove", () -> new RemoveCommand(
             "guildremove (\\w)+"));
-    theCommandStructure.put("guildmasterchange", (CommandCreator) () -> new ChangeMasterCommand(
+    theCommandStructure.put("guildmasterchange", () -> new ChangeMasterCommand(
             "guildmasterchange (\\w)+"));
-    theCommandStructure.put("guild", (CommandCreator) () -> new MessageCommand("guild .+"));
+    theCommandStructure.put("guild", () -> new MessageCommand("guild .+"));
 
     for (Map.Entry<String, String> entry : Utils.getEmotions().entrySet())
     {
-      theCommandStructure.put(entry.getKey(), (CommandCreator) () -> new EmotionCommand(".+"));
+      theCommandStructure.put(entry.getKey(), () -> new EmotionCommand(".+"));
     }
     for (Map.Entry<String, String> entry : Utils.getTargetEmotions().entrySet())
     {
-      theCommandStructure.put(entry.getKey(), (CommandCreator) () -> new EmotionToCommand(".+"));
+      theCommandStructure.put(entry.getKey(), () -> new EmotionToCommand(".+"));
     }
   }
 
