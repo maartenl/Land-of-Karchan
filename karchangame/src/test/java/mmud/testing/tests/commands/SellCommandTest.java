@@ -31,9 +31,8 @@ import mmud.database.enums.Wearing;
 import mmud.database.enums.Wielding;
 import mmud.rest.services.ItemBean;
 import mmud.rest.services.LogBean;
+import mmud.testing.tests.LogBeanStub;
 import mmud.testing.tests.MudTest;
-import mockit.Expectations;
-import mockit.Mocked;
 import org.testng.annotations.*;
 
 
@@ -57,11 +56,9 @@ public class SellCommandTest extends MudTest
     private ItemDefinition itemDef;
     private ItemBean itemBean;
 
-    @Mocked
-    private LogBean logBean;
+    private LogBean logBean = new LogBeanStub();
 
-    @Mocked
-    private CommandRunner commandRunner;
+    private CommandRunner commandRunner = new CommandRunner();
 
     public SellCommandTest()
     {
@@ -177,15 +174,7 @@ public class SellCommandTest extends MudTest
         SellCommand sellCommand = new SellCommand("sell( (\\w|-)+){1,4} to (\\w)+");
         sellCommand.setCallback(commandRunner);
         assertThat(sellCommand.getRegExpr()).isEqualTo("sell( (\\w|-)+){1,4} to (\\w)+");
-        new Expectations() // an "expectation block"
-        {
-
-
-            {
-                commandRunner.getItemBean();
-                result = itemBean;
-            }
-        };
+  commandRunner.setBeans(null, null, null, itemBean, null, null, null);
         DisplayInterface display = sellCommand.run("sell ring to karcas", karn);
         assertThat(display).isNotNull();
         assertThat(display.getBody()).isEqualTo("You are in a small room.");
@@ -211,15 +200,7 @@ public class SellCommandTest extends MudTest
         SellCommand sellCommand = new SellCommand("sell( (\\w|-)+){1,4} to (\\w)+");
         sellCommand.setCallback(commandRunner);
         assertThat(sellCommand.getRegExpr()).isEqualTo("sell( (\\w|-)+){1,4} to (\\w)+");
-        new Expectations() // an "expectation block"
-        {
-
-
-            {
-                commandRunner.getItemBean();
-                result = itemBean;
-            }
-        };
+  commandRunner.setBeans(null, null, null, itemBean, null, null, null);
         DisplayInterface display = sellCommand.run("sell ring to karcas", karn);
         assertThat(display).isNotNull();
         assertThat(display.getBody()).isEqualTo("You are in a small room.");
@@ -246,15 +227,7 @@ public class SellCommandTest extends MudTest
         SellCommand sellCommand = new SellCommand("sell( (\\w|-)+){1,4} to (\\w)+");
         sellCommand.setCallback(commandRunner);
         assertThat(sellCommand.getRegExpr()).isEqualTo("sell( (\\w|-)+){1,4} to (\\w)+");
-        new Expectations() // an "expectation block"
-        {
-
-
-            {
-                commandRunner.getItemBean();
-                result = itemBean;
-            }
-        };
+  commandRunner.setBeans(null, null, null, itemBean, null, null, null);
         DisplayInterface display = sellCommand.run("sell ring to karcas", karn);
         assertThat(display).isNotNull();
         assertThat(display.getBody()).isEqualTo("You are in a small room.");
@@ -282,15 +255,7 @@ public class SellCommandTest extends MudTest
         SellCommand sellCommand = new SellCommand("sell( (\\w|-)+){1,4} to (\\w)+");
         sellCommand.setCallback(commandRunner);
         assertThat(sellCommand.getRegExpr()).isEqualTo("sell( (\\w|-)+){1,4} to (\\w)+");
-        new Expectations() // an "expectation block"
-        {
-
-
-            {
-                commandRunner.getItemBean();
-                result = itemBean;
-            }
-        };
+  commandRunner.setBeans(null, null, null, itemBean, null, null, null);
         DisplayInterface display = sellCommand.run("sell ring to karcas", karn);
         assertThat(display).isNotNull();
         assertThat(display.getBody()).isEqualTo("You are in a small room.");
@@ -318,15 +283,7 @@ public class SellCommandTest extends MudTest
         SellCommand sellCommand = new SellCommand("sell( (\\w|-)+){1,4} to (\\w)+");
         sellCommand.setCallback(commandRunner);
         assertThat(sellCommand.getRegExpr()).isEqualTo("sell( (\\w|-)+){1,4} to (\\w)+");
-        new Expectations() // an "expectation block"
-        {
-
-
-            {
-                commandRunner.getItemBean();
-                result = itemBean;
-            }
-        };
+  commandRunner.setBeans(null, null, null, itemBean, null, null, null);
         DisplayInterface display = sellCommand.run("sell ring to karcas", karn);
         assertThat(display).isNotNull();
         assertThat(display.getBody()).isEqualTo("You are in a small room.");
@@ -354,15 +311,7 @@ public class SellCommandTest extends MudTest
         SellCommand sellCommand = new SellCommand("sell( (\\w|-)+){1,4} to (\\w)+");
         sellCommand.setCallback(commandRunner);
         assertThat(sellCommand.getRegExpr()).isEqualTo("sell( (\\w|-)+){1,4} to (\\w)+");
-        new Expectations() // an "expectation block"
-        {
-
-
-            {
-                commandRunner.getItemBean();
-                result = itemBean;
-            }
-        };
+  commandRunner.setBeans(null, null, null, itemBean, null, null, null);
         DisplayInterface display = sellCommand.run("sell ring to karcas", karn);
         assertThat(display).isNotNull();
         assertThat(display.getBody()).isEqualTo("You are in a small room.");
@@ -389,30 +338,12 @@ public class SellCommandTest extends MudTest
         SellCommand sellCommand = new SellCommand("sell( (\\w|-)+){1,4} to (\\w)+");
         sellCommand.setCallback(commandRunner);
         assertThat(sellCommand.getRegExpr()).isEqualTo("sell( (\\w|-)+){1,4} to (\\w)+");
-        new Expectations() // an "expectation block"
-        {
-
-
-            {
-                commandRunner.getItemBean();
-                result = itemBean;
-            }
-        };
+  commandRunner.setBeans(null, logBean, null, itemBean, null, null, null);
         DisplayInterface display = sellCommand.run("sell ring to karcas", karn);
         assertThat(display).isNotNull();
         assertThat(display.getBody()).isEqualTo("You are in a small room.");
         String log = CommunicationService.getCommunicationService(karn).getLog(0);
         assertThat(log).isEqualTo("You sold a nice, golden, friendship ring to Karcas for 4 copper coins.<br />\r\n");
-    }
-
-    @BeforeClass
-    public static void setUpClass() throws Exception
-    {
-    }
-
-    @AfterClass
-    public static void tearDownClass() throws Exception
-    {
     }
 
     @BeforeMethod
@@ -445,8 +376,4 @@ public class SellCommandTest extends MudTest
         writer.close();
     }
 
-    @AfterMethod
-    public void tearDownMethod() throws Exception
-    {
-    }
 }

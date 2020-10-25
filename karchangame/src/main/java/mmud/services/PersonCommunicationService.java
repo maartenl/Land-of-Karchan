@@ -26,6 +26,7 @@ import mmud.services.websocket.ChatLogEndPoint;
 
 import javax.websocket.EncodeException;
 import java.io.*;
+import java.util.function.Consumer;
 
 import static mmud.database.entities.characters.Person.EMPTY_LOG;
 
@@ -35,19 +36,30 @@ import static mmud.database.entities.characters.Person.EMPTY_LOG;
 public class PersonCommunicationService implements CommunicationService
 {
 
+  /**
+   * Pure for testing.
+   */
+  private final Consumer<String> messageConsumer;
+
   private Person person;
 
   private File theLogfile;
 
   private StringBuffer theLog;
 
-  PersonCommunicationService(Person person)
+  /**
+   *
+   * @param person the person the messages get
+   * @param messageConsumer pure for testing, optional.
+   */
+  PersonCommunicationService(Person person, Consumer<String> messageConsumer)
   {
     if (person == null)
     {
       throw new NullPointerException();
     }
     this.person = person;
+    this.messageConsumer = messageConsumer;
   }
 
   /**
@@ -55,7 +67,7 @@ public class PersonCommunicationService implements CommunicationService
    */
   public void clearLog() throws MudException
   {
-    try (RandomAccessFile file = new RandomAccessFile(getLogfile(), "rw");)
+    try (RandomAccessFile file = new RandomAccessFile(getLogfile(), "rw"))
     {
       file.setLength(0);
     } catch (FileNotFoundException fileNotFoundException)
@@ -119,14 +131,26 @@ public class PersonCommunicationService implements CommunicationService
         + Character.toUpperCase(aMessage.charAt(foundit))
         + aMessage.substring(foundit + 1);
     }
-    try (FileWriter myFileWriter = new FileWriter(getLogfile(), true))
+    if (messageConsumer != null)
     {
-      ChatLogEndPoint.send(person.getName(), new Message(null, person.getName(), aMessage, "chat"));
-      myFileWriter.write(aMessage, 0, aMessage.length());
+      messageConsumer.accept(person.getName() + ":" + aMessage);
+    } else
+    {
+      try
+      {
+        ChatLogEndPoint.send(person.getName(), new Message(null, person.getName(), aMessage, "chat"));
+      } catch (IOException | EncodeException e)
+      {
+        throw new MudException("error sending message", e);
+      }
+      try (FileWriter myFileWriter = new FileWriter(getLogfile(), true))
+      {
+        myFileWriter.write(aMessage, 0, aMessage.length());
 
-    } catch (IOException | EncodeException e)
-    {
-      throw new MudException("error writing message", e);
+      } catch (IOException e)
+      {
+        throw new MudException("error writing message", e);
+      }
     }
   }
 

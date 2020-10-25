@@ -28,8 +28,6 @@ import mmud.rest.services.PersonBean;
 import mmud.testing.TestingConstants;
 import mmud.testing.tests.LogBeanStub;
 import mmud.testing.tests.MudTest;
-import mockit.Expectations;
-import mockit.Mocked;
 import org.testng.annotations.*;
 
 import java.io.File;
@@ -53,8 +51,7 @@ public class OocCommandTest extends MudTest
 
     private LogBeanStub logBean;
 
-    @Mocked
-    private CommandRunner commandRunner;
+    private CommandRunner commandRunner = new CommandRunner();
 
     private PersonBean personBean;
 
@@ -68,7 +65,7 @@ public class OocCommandTest extends MudTest
     @Test
     public void runTurnOn()
     {
-        assertThat(marvin.getOoc()).isEqualTo(false);
+        assertThat(marvin.getOoc()).isFalse();
         OocCommand heehawCommand = new OocCommand("ooc .+");
         heehawCommand.setCallback(commandRunner);
         assertThat(heehawCommand.getRegExpr()).isEqualTo("ooc .+");
@@ -86,7 +83,7 @@ public class OocCommandTest extends MudTest
     public void runTurnOff()
     {
         marvin.setOoc(true);
-        assertThat(marvin.getOoc()).isEqualTo(true);
+        assertThat(marvin.getOoc()).isTrue();
         OocCommand heehawCommand = new OocCommand("ooc .+");
         heehawCommand.setCallback(commandRunner);
         assertThat(heehawCommand.getRegExpr()).isEqualTo("ooc .+");
@@ -103,7 +100,7 @@ public class OocCommandTest extends MudTest
     @Test
     public void runMessageTurnedOff()
     {
-        assertThat(marvin.getOoc()).isEqualTo(false);
+        assertThat(marvin.getOoc()).isFalse();
         OocCommand heehawCommand = new OocCommand("ooc .+");
         heehawCommand.setCallback(commandRunner);
         assertThat(heehawCommand.getRegExpr()).isEqualTo("ooc .+");
@@ -111,7 +108,7 @@ public class OocCommandTest extends MudTest
         assertThat(display).isNotNull();
         String log = CommunicationService.getCommunicationService(marvin).getLog(0);
         assertThat(log).isEqualTo("Sorry, you have your OOC channel turned off.<br />\r\n");
-        assertThat(marvin.getOoc()).isEqualTo(false);
+        assertThat(marvin.getOoc()).isFalse();
     }
 
     /**
@@ -122,35 +119,18 @@ public class OocCommandTest extends MudTest
     {
         marvin.setOoc(true);
         karn.setOoc(true);
-        assertThat(marvin.getOoc()).isEqualTo(true);
+        assertThat(marvin.getOoc()).isTrue();
         OocCommand heehawCommand = new OocCommand("ooc .+");
         heehawCommand.setCallback(commandRunner);
         assertThat(heehawCommand.getRegExpr()).isEqualTo("ooc .+");
-        new Expectations() // an "expectation block"
-        {
-
-            {
-                commandRunner.getPersonBean();
-                result = personBean;
-            }
-        };
+commandRunner.setBeans(personBean, null, null, null, null, null, null);
         DisplayInterface display = heehawCommand.run("ooc Hey! This works!", marvin);
         assertThat(display).isNotNull();
         String log = CommunicationService.getCommunicationService(marvin).getLog(0);
         assertThat(log).isEqualTo("<span style=\"color:#4c76a2\">&gt;[OOC: <b>Marvin</b>] Hey! This works!</span><br />\r\n");
         log = CommunicationService.getCommunicationService(karn).getLog(0);
         assertThat(log).isEqualTo("<span style=\"color:#4c76a2\">&gt;[OOC: <b>Marvin</b>] Hey! This works!</span><br />\r\n");
-        assertThat(marvin.getOoc()).isEqualTo(true);
-    }
-
-    @BeforeClass
-    public static void setUpClass() throws Exception
-    {
-    }
-
-    @AfterClass
-    public static void tearDownClass() throws Exception
-    {
+        assertThat(marvin.getOoc()).isTrue();
     }
 
     @BeforeMethod
@@ -198,11 +178,6 @@ public class OocCommandTest extends MudTest
         file = new File(Constants.getMudfilepath() + File.separator + "Marvin.log");
         writer = new PrintWriter(file);
         writer.close();
-    }
-
-    @AfterMethod
-    public void tearDownMethod() throws Exception
-    {
     }
 
 }

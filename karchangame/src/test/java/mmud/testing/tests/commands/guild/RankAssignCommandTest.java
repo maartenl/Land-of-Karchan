@@ -23,9 +23,8 @@ import mmud.database.entities.characters.Person;
 import mmud.database.entities.characters.User;
 import mmud.database.entities.game.*;
 import mmud.rest.services.LogBean;
+import mmud.testing.tests.LogBeanStub;
 import mmud.testing.tests.MudTest;
-import mockit.Expectations;
-import mockit.Mocked;
 import org.testng.annotations.*;
 
 import java.io.File;
@@ -49,11 +48,10 @@ public class RankAssignCommandTest extends MudTest
   private User marvin;
   private Room room1;
 
-  @Mocked
-  private LogBean logBean;
 
-  @Mocked
-  private CommandRunner commandRunner;
+  private LogBean logBean = new LogBeanStub();
+
+  private CommandRunner commandRunner = new CommandRunner();
   private Guild deputy;
   private Guildrank boss;
   private Guildrank minion;
@@ -68,15 +66,7 @@ public class RankAssignCommandTest extends MudTest
     RankAssignCommand rankCommand = new RankAssignCommand("guildassignrank (\\d){1,3} (\\w)+");
     rankCommand.setCallback(commandRunner);
     assertThat(rankCommand.getRegExpr()).isEqualTo("guildassignrank (\\d){1,3} (\\w)+");
-    new Expectations() // an "expectation block"
-    {
-
-      {
-        commandRunner.getLogBean();
-        result = logBean;
-
-      }
-    };
+commandRunner.setBeans(null, logBean, null, null, null, null, null);
     DisplayInterface display = rankCommand.run("guildassignrank 0 Marvin", karn);
     assertThat(display).isNotNull();
     assertThat(display.getBody()).isEqualTo("You are in a small room.");
@@ -96,14 +86,7 @@ public class RankAssignCommandTest extends MudTest
     RankAssignCommand rankCommand = new RankAssignCommand("guildassignrank (\\d){1,3} (\\w)+");
     rankCommand.setCallback(commandRunner);
     assertThat(rankCommand.getRegExpr()).isEqualTo("guildassignrank (\\d){1,3} (\\w)+");
-    new Expectations() // an "expectation block"
-    {
-
-      {
-        commandRunner.getLogBean();
-        result = logBean;
-      }
-    };
+commandRunner.setBeans(null, logBean, null, null, null, null, null);
     DisplayInterface display = rankCommand.run("guildassignrank henk Marvin", karn);
     assertThat(display).isNotNull();
     assertThat(display.getBody()).isEqualTo("You are in a small room.");
@@ -119,14 +102,7 @@ public class RankAssignCommandTest extends MudTest
     RankAssignCommand rankCommand = new RankAssignCommand("guildassignrank (\\d){1,3} (\\w)+");
     rankCommand.setCallback(commandRunner);
     assertThat(rankCommand.getRegExpr()).isEqualTo("guildassignrank (\\d){1,3} (\\w)+");
-    new Expectations() // an "expectation block"
-    {
-
-      {
-        commandRunner.getLogBean();
-        result = logBean;
-      }
-    };
+commandRunner.setBeans(null, logBean, null, null, null, null, null);
     DisplayInterface display = rankCommand.run("guildassignrank 0 Henk", karn);
     assertThat(display).isNotNull();
     assertThat(display.getBody()).isEqualTo("You are in a small room.");
@@ -141,14 +117,7 @@ public class RankAssignCommandTest extends MudTest
     RankAssignCommand rankCommand = new RankAssignCommand("guildassignrank (\\d){1,3} (\\w)+");
     rankCommand.setCallback(commandRunner);
     assertThat(rankCommand.getRegExpr()).isEqualTo("guildassignrank (\\d){1,3} (\\w)+");
-    new Expectations() // an "expectation block"
-    {
-
-      {
-        commandRunner.getLogBean();
-        result = logBean;
-      }
-    };
+commandRunner.setBeans(null, logBean, null, null, null, null, null);
     DisplayInterface display = rankCommand.run("guildassignrank 1 Marvin", karn);
     assertThat(display).isNotNull();
     assertThat(display.getBody()).isEqualTo("You are in a small room.");
@@ -169,14 +138,7 @@ public class RankAssignCommandTest extends MudTest
     RankAssignCommand rankCommand = new RankAssignCommand("guildassignrank (\\d){1,3} (\\w)+");
     rankCommand.setCallback(commandRunner);
     assertThat(rankCommand.getRegExpr()).isEqualTo("guildassignrank (\\d){1,3} (\\w)+");
-    new Expectations() // an "expectation block"
-    {
-
-      {
-        commandRunner.getLogBean();
-        result = logBean;
-      }
-    };
+commandRunner.setBeans(null, logBean, null, null, null, null, null);
     DisplayInterface display = rankCommand.run("guildassignrank none Marvin", karn);
     assertThat(display).isNotNull();
     assertThat(display.getBody()).isEqualTo("You are in a small room.");
@@ -185,16 +147,6 @@ public class RankAssignCommandTest extends MudTest
     // the important bit
     assertThat(rank).isNotNull();
     assertThat(marvin.getGuildrank()).isNull();
-  }
-
-  @BeforeClass
-  public static void setUpClass() throws Exception
-  {
-  }
-
-  @AfterClass
-  public static void tearDownClass() throws Exception
-  {
   }
 
   @BeforeMethod
@@ -288,8 +240,4 @@ public class RankAssignCommandTest extends MudTest
 
   }
 
-  @AfterMethod
-  public void tearDownMethod() throws Exception
-  {
-  }
 }

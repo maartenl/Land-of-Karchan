@@ -16,6 +16,42 @@
  */
 package mmud.rest.services;
 
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+import javax.annotation.Resource;
+import javax.annotation.security.DeclareRoles;
+import javax.annotation.security.RolesAllowed;
+import javax.ejb.EJB;
+import javax.ejb.LocalBean;
+import javax.ejb.SessionContext;
+import javax.ejb.Stateless;
+import javax.json.bind.JsonbBuilder;
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
+import javax.persistence.TypedQuery;
+import javax.servlet.http.HttpServletRequest;
+import javax.ws.rs.Consumes;
+import javax.ws.rs.DELETE;
+import javax.ws.rs.GET;
+import javax.ws.rs.POST;
+import javax.ws.rs.PUT;
+import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
+import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
+import javax.ws.rs.WebApplicationException;
+import javax.ws.rs.core.Context;
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
+import javax.ws.rs.core.Response.Status;
+
 import mmud.database.entities.characters.Person;
 import mmud.database.entities.characters.User;
 import mmud.database.entities.game.Admin;
@@ -31,33 +67,6 @@ import mmud.exceptions.MudWebException;
 import mmud.rest.webentities.PrivateMail;
 import mmud.rest.webentities.PrivatePerson;
 import mmud.rest.webentities.PublicPerson;
-
-import javax.annotation.Resource;
-import javax.annotation.security.DeclareRoles;
-import javax.annotation.security.RolesAllowed;
-import javax.ejb.EJB;
-import javax.ejb.LocalBean;
-import javax.ejb.SessionContext;
-import javax.ejb.Stateless;
-import javax.json.bind.JsonbBuilder;
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
-import javax.persistence.Query;
-import javax.persistence.TypedQuery;
-import javax.servlet.http.HttpServletRequest;
-import javax.ws.rs.*;
-import javax.ws.rs.core.Context;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
-import javax.ws.rs.core.Response.Status;
-import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 /**
  * Contains all rest calls that are available to a specific character, with
@@ -356,7 +365,13 @@ public class PrivateBean
     {
       MediaType.APPLICATION_JSON
     })
-  public Response newMail(PrivateMail newMail, @PathParam("name") String name)
+  public Response newMailRest(PrivateMail newMail, @PathParam("name") String name)
+  {
+    newMail(newMail, name);
+    return Response.ok().build();
+  }
+
+  public void newMail(PrivateMail newMail, String name)
   {
     LOGGER.finer("entering newMail");
     User person = authenticate(name);
@@ -367,7 +382,7 @@ public class PrivateBean
     Set<User> users = Stream.of(newMail.toname.split(","))
       .map(String::trim)
       .flatMap(receiver -> getReceivers(person.getName(), receiver, person.getGuild()))
-      .collect(Collectors. toSet());
+      .collect(Collectors.toSet());
     try
     {
       createNewMail(newMail.subject, newMail.body, person, newMail.toname, users);
@@ -380,7 +395,6 @@ public class PrivateBean
       throw new MudWebException(name, e, Response.Status.BAD_REQUEST);
     }
     LOGGER.finer("exiting newMail");
-    return Response.ok().build();
   }
 
   private Stream<User> getReceivers(String fromname, String toname, Guild guild)
@@ -660,7 +674,13 @@ public class PrivateBean
     {
       MediaType.APPLICATION_JSON
     })
-  public Response deleteMail(@PathParam("name") String name, @PathParam("id") long id)
+  public Response deleteMailRest(@PathParam("name") String name, @PathParam("id") long id)
+  {
+    deleteMail(name, id);
+    return Response.ok().build();
+  }
+
+  public void deleteMail(String name, long id)
   {
     LOGGER.finer("entering deleteMail");
     Person person = authenticate(name);
@@ -668,7 +688,6 @@ public class PrivateBean
     MailReceiver mail = getMail(person.getName(), id);
     mail.setDeleted(Boolean.TRUE);
     LOGGER.finer("exiting deleteMail");
-    return Response.ok().build();
   }
 
   /**
@@ -721,7 +740,13 @@ public class PrivateBean
     {
       MediaType.APPLICATION_JSON
     })
-  public Response updateCharacterSheet(@PathParam("name") String name, PrivatePerson cinfo)
+  public Response updateCharacterSheetRest(@PathParam("name") String name, PrivatePerson cinfo)
+  {
+    updateCharacterSheet(name, cinfo);
+    return Response.ok().build();
+  }
+
+  public void updateCharacterSheet(String name, PrivatePerson cinfo)
   {
     LOGGER.finer("entering updateCharacterSheet");
     Person person = authenticate(name);
@@ -759,7 +784,6 @@ public class PrivateBean
     {
       throw new MudWebException(name, e, Response.Status.BAD_REQUEST);
     }
-    return Response.ok().build();
   }
 
   /**
@@ -832,7 +856,13 @@ public class PrivateBean
     {
       MediaType.APPLICATION_JSON
     })
-  public Response updateFamilyvalues(@PathParam("name") String name, @PathParam("toname") String toname, @PathParam("description") Integer description)
+  public Response updateFamilyvaluesRest(@PathParam("name") String name, @PathParam("toname") String toname, @PathParam("description") Integer description)
+  {
+    updateFamilyvalues(name, toname, description);
+    return Response.ok().build();
+  }
+
+  public void updateFamilyvalues(String name, String toname, Integer description)
   {
     LOGGER.finer("entering updateFamilyvalues");
     if (description == null || description == 0)
@@ -876,7 +906,6 @@ public class PrivateBean
       throw e;
     }
     LOGGER.finer("exiting updateFamilyvalues");
-    return Response.ok().build();
   }
 
   /**
@@ -894,7 +923,13 @@ public class PrivateBean
     {
       MediaType.APPLICATION_JSON
     })
-  public Response deleteFamilyvalues(@PathParam("name") String name, @PathParam("toname") String toname)
+  public Response deleteFamilyvaluesRest(@PathParam("name") String name, @PathParam("toname") String toname)
+  {
+    deleteFamilyvalues(name, toname);
+    return Response.ok().build();
+  }
+
+  public void deleteFamilyvalues(String name, String toname)
   {
     LOGGER.finer("entering deleteFamilyValues");
     Person person = authenticate(name);
@@ -908,7 +943,6 @@ public class PrivateBean
     }
     getEntityManager().remove(family);
     LOGGER.finer("exiting deleteFamilyValues");
-    return Response.ok().build();
   }
 
   /**

@@ -25,7 +25,6 @@ import mmud.rest.services.PersonBean;
 import mmud.testing.TestingConstants;
 import mmud.testing.tests.LogBeanStub;
 import mmud.testing.tests.MudTest;
-import mockit.Mocked;
 import org.testng.annotations.*;
 
 import java.io.File;
@@ -48,8 +47,7 @@ public class CommandFactoryTest extends MudTest
 
   private LogBeanStub logBean;
 
-  @Mocked
-  private CommandRunner commandRunner;
+  private CommandRunner commandRunner = new CommandRunner();
 
   private PersonBean personBean;
 
@@ -90,16 +88,6 @@ public class CommandFactoryTest extends MudTest
     assertThat(commands.get(0).getClass().getSimpleName()).isEqualTo("TitleCommand");
   }
 
-  @BeforeClass
-  public static void setUpClass() throws Exception
-  {
-  }
-
-  @AfterClass
-  public static void tearDownClass() throws Exception
-  {
-  }
-
   @BeforeMethod
   public void setUpMethod() throws Exception
   {
@@ -138,11 +126,6 @@ public class CommandFactoryTest extends MudTest
     file = new File(Constants.getMudfilepath() + File.separator + "Marvin.log");
     writer = new PrintWriter(file);
     writer.close();
-  }
-
-  @AfterMethod
-  public void tearDownMethod() throws Exception
-  {
   }
 
 }

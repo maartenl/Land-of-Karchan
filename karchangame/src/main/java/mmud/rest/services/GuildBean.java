@@ -34,7 +34,6 @@ import javax.ejb.LocalBean;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
-import javax.persistence.Query;
 import javax.persistence.TypedQuery;
 import javax.validation.ConstraintViolation;
 import javax.validation.ConstraintViolationException;
@@ -48,6 +47,8 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+
+import com.google.common.annotations.VisibleForTesting;
 import mmud.database.Attributes;
 import mmud.database.entities.characters.Person;
 import mmud.database.entities.characters.User;
@@ -71,9 +72,9 @@ import mmud.rest.webentities.PrivateRank;
  * @author maartenl
  */
 @DeclareRoles(
-        {
-          "player", "guildmaster", "guildmember"
-        })
+  {
+    "player", "guildmaster", "guildmember"
+  })
 @RolesAllowed("player")
 @Stateless
 @LocalBean
@@ -100,6 +101,7 @@ public class GuildBean
   {
     return em;
   }
+
   private static final Logger LOGGER = Logger.getLogger(GuildBean.class.getName());
 
   /**
@@ -117,8 +119,8 @@ public class GuildBean
   /**
    * returns a list of persons that wish to become a member of a guild.
    *
-   * @return list of guild hopefuls.
    * @param aGuild the guild
+   * @return list of guild hopefuls.
    * @throws MudException if something goes wrong.
    */
   public List<User> getGuildHopefuls(Guild aGuild)
@@ -129,9 +131,9 @@ public class GuildBean
     query.setParameter("valuetype", "string");
 
     return query.getResultList().stream()
-            .filter(person -> person.isUser())
-            .map(person -> (User) person)
-            .collect(Collectors.toList());
+      .filter(Person::isUser)
+      .map(person -> (User) person)
+      .collect(Collectors.toList());
   }
 
   /**
@@ -143,9 +145,9 @@ public class GuildBean
   @GET
   @RolesAllowed("guildmember")
   @Consumes(
-          {
-            MediaType.APPLICATION_JSON
-          })
+    {
+      MediaType.APPLICATION_JSON
+    })
   public PrivateGuild getGuildInfo(@PathParam("name") String name)
   {
     LOGGER.finer("entering getGuild");
@@ -172,18 +174,18 @@ public class GuildBean
   /**
    * Updates the guild.
    *
-   * @param name the name of the user
+   * @param name  the name of the user
    * @param cinfo the guild object containing the new stuff to update.
    * @return Response.ok if everything is okay.
    * @throws WebApplicationException UNAUTHORIZED, if the authorisation failed.
-   * BAD_REQUEST if an unexpected exception crops up.
+   *                                 BAD_REQUEST if an unexpected exception crops up.
    */
   @PUT
   @RolesAllowed("guildmaster")
   @Consumes(
-          {
-            MediaType.APPLICATION_JSON
-          })
+    {
+      MediaType.APPLICATION_JSON
+    })
   public Response updateGuild(@PathParam("name") String name, PrivateGuild cinfo)
   {
     LOGGER.finer("entering updateGuild");
@@ -210,18 +212,18 @@ public class GuildBean
   /**
    * Creates a new guild.
    *
-   * @param name the name of the user
+   * @param name  the name of the user
    * @param cinfo the guild object containing the new stuff to create.
    * @return Response.ok if everything is okay.
    * @throws WebApplicationException UNAUTHORIZED, if the authorisation failed.
-   * BAD_REQUEST if an unexpected exception crops up.
+   *                                 BAD_REQUEST if an unexpected exception crops up.
    */
   @POST
   @RolesAllowed("player")
   @Consumes(
-          {
-            MediaType.APPLICATION_JSON
-          })
+    {
+      MediaType.APPLICATION_JSON
+    })
   public Response createGuild(@PathParam("name") String name, PrivateGuild cinfo)
   {
     LOGGER.finer("entering createGuild");
@@ -266,15 +268,21 @@ public class GuildBean
    * @param name the name of the user
    * @return Response.ok if everything is okay.
    * @throws WebApplicationException UNAUTHORIZED, if the authorisation failed.
-   * BAD_REQUEST if an unexpected exception crops up.
+   *                                 BAD_REQUEST if an unexpected exception crops up.
    */
   @DELETE
   @RolesAllowed("guildmaster")
   @Consumes(
-          {
-            MediaType.APPLICATION_JSON
-          })
-  public Response deleteGuild(@PathParam("name") String name)
+    {
+      MediaType.APPLICATION_JSON
+    })
+  public Response deleteGuildRest(@PathParam("name") String name)
+  {
+    deleteGuild(name);
+    return Response.ok().build();
+  }
+
+  public void deleteGuild(String name)
   {
     LOGGER.finer("entering deleteGuild");
     User person = authenticateGuildMaster(name);
@@ -292,7 +300,6 @@ public class GuildBean
     SortedSet<Guildrank> emptyRanks = new TreeSet<>();
     guild.setGuildrankCollection(emptyRanks);
     getEntityManager().remove(guild);
-    return Response.ok().build();
   }
 
   /**
@@ -305,9 +312,9 @@ public class GuildBean
   @Path("members")
   @RolesAllowed("guildmember")
   @Consumes(
-          {
-            MediaType.APPLICATION_JSON
-          })
+    {
+      MediaType.APPLICATION_JSON
+    })
   public List<PrivatePerson> getMembers(@PathParam("name") String name)
   {
     LOGGER.finer("entering getGuildMembers");
@@ -332,18 +339,18 @@ public class GuildBean
    * Get the member of the guild of the user.
    *
    * @param membername the name of the guild member
-   * @param name the name of the user
+   * @param name       the name of the user
    * @return member
    */
   @GET
   @Path("members/{membername}")
   @RolesAllowed("guildmember")
   @Consumes(
-          {
-            MediaType.APPLICATION_JSON
-          })
+    {
+      MediaType.APPLICATION_JSON
+    })
   public PrivatePerson getMember(@PathParam("name") String name,
-          @PathParam("membername") String membername)
+                                 @PathParam("membername") String membername)
   {
     LOGGER.finer("entering getMember");
     Guild guild = authenticate(name);
@@ -365,18 +372,18 @@ public class GuildBean
    * Removes a member from the guild.
    *
    * @param membername the name of the guild member to remove
-   * @param name the name of the user
+   * @param name       the name of the user
    * @return member
    */
   @DELETE
   @Path("members/{membername}")
   @RolesAllowed("guildmaster")
   @Consumes(
-          {
-            MediaType.APPLICATION_JSON
-          })
+    {
+      MediaType.APPLICATION_JSON
+    })
   public Response deleteMember(@PathParam("name") String name,
-          @PathParam("membername") String membername)
+                               @PathParam("membername") String membername)
   {
     LOGGER.finer("entering deleteMember");
     User person = authenticateGuildMaster(name);
@@ -402,18 +409,18 @@ public class GuildBean
    * <li>should have a guildwish corresponding to the name of the guild>/li>
    * </ul>
    *
-   * @param name the name of the user
+   * @param name   the name of the user
    * @param member the member to add, really should contain only the name,
-   * that's enough
+   *               that's enough
    * @return Response.ok if everything is okay.
    */
   @POST
   @Path("members")
   @RolesAllowed("guildmaster")
   @Consumes(
-          {
-            MediaType.APPLICATION_JSON
-          })
+    {
+      MediaType.APPLICATION_JSON
+    })
   public Response createMember(@PathParam("name") String name, PrivatePerson member)
   {
     LOGGER.finer("entering createMember");
@@ -442,19 +449,19 @@ public class GuildBean
    * Set or deletes the rank of a member of the guild of the user.
    *
    * @param membername the name of the guild member, to set the guild rank for
-   * @param member the member object that contains the changes
-   * @param name the name of the user
+   * @param member     the member object that contains the changes
+   * @param name       the name of the user
    * @return Response.ok() if everything's okay.
    */
   @PUT
   @Path("members/{membername}")
   @RolesAllowed("guildmaster")
   @Consumes(
-          {
-            MediaType.APPLICATION_JSON
-          })
+    {
+      MediaType.APPLICATION_JSON
+    })
   public Response updateMember(@PathParam("name") String name,
-          @PathParam("membername") String membername, PrivatePerson member)
+                               @PathParam("membername") String membername, PrivatePerson member)
   {
     LOGGER.finer("entering updateMember");
     User person = authenticateGuildMaster(name);
@@ -489,9 +496,9 @@ public class GuildBean
   @Path("hopefuls")
   @RolesAllowed("guildmember")
   @Consumes(
-          {
-            MediaType.APPLICATION_JSON
-          })
+    {
+      MediaType.APPLICATION_JSON
+    })
   public List<PrivatePerson> getGuildHopefuls(@PathParam("name") String name)
   {
     LOGGER.finer("entering getGuildHopefuls");
@@ -527,7 +534,7 @@ public class GuildBean
   /**
    * Remove a hopeful of the guild of the user.
    *
-   * @param name the name of the user
+   * @param name        the name of the user
    * @param hopefulname the name of the hopeful to reject
    * @return Response.Status.ok if everything's okay.
    */
@@ -535,11 +542,11 @@ public class GuildBean
   @Path("hopefuls/{hopefulname}")
   @RolesAllowed("guildmaster")
   @Consumes(
-          {
-            MediaType.APPLICATION_JSON
-          })
+    {
+      MediaType.APPLICATION_JSON
+    })
   public Response deleteGuildHopeful(@PathParam("name") String name,
-          @PathParam("hopefulname") String hopefulname)
+                                     @PathParam("hopefulname") String hopefulname)
   {
     LOGGER.finer("entering getGuildHopefuls");
     User person = authenticateGuildMaster(name);
@@ -563,9 +570,9 @@ public class GuildBean
   @Path("ranks")
   @RolesAllowed("guildmember")
   @Consumes(
-          {
-            MediaType.APPLICATION_JSON
-          })
+    {
+      MediaType.APPLICATION_JSON
+    })
   public List<PrivateRank> getGuildRanks(@PathParam("name") String name)
   {
     LOGGER.finer("entering getGuildRanks");
@@ -601,7 +608,7 @@ public class GuildBean
   /**
    * Get the ranks of the guild of the user.
    *
-   * @param name the name of the user
+   * @param name       the name of the user
    * @param guildlevel the id of the guild rank
    * @return list of hopefuls
    */
@@ -609,9 +616,9 @@ public class GuildBean
   @Path("ranks/{guildlevel}")
   @RolesAllowed("guildmember")
   @Consumes(
-          {
-            MediaType.APPLICATION_JSON
-          })
+    {
+      MediaType.APPLICATION_JSON
+    })
   public PrivateRank getGuildRank(@PathParam("name") String name, @PathParam("guildlevel") Integer guildlevel)
   {
     LOGGER.finer("entering getGuildRank");
@@ -641,9 +648,9 @@ public class GuildBean
   @RolesAllowed("guildmaster")
   @Path("ranks")
   @Consumes(
-          {
-            MediaType.APPLICATION_JSON
-          })
+    {
+      MediaType.APPLICATION_JSON
+    })
   public Response createGuildRank(@PathParam("name") String name, PrivateRank rank)
   {
     LOGGER.finer("entering createGuildRank");
@@ -678,18 +685,18 @@ public class GuildBean
   /**
    * Update a rank of the guild of the user.
    *
-   * @param name the name of the user
+   * @param name       the name of the user
    * @param guildlevel the guildlevel of the rank
-   * @param rank the rank to update
+   * @param rank       the rank to update
    * @return Response.ok if everything is okay.
    */
   @PUT
   @RolesAllowed("guildmaster")
   @Path("ranks/{guildlevel}")
   @Consumes(
-          {
-            MediaType.APPLICATION_JSON
-          })
+    {
+      MediaType.APPLICATION_JSON
+    })
   public Response updateGuildRank(@PathParam("name") String name, @PathParam("guildlevel") Integer guildlevel, PrivateRank rank)
   {
     LOGGER.finer("entering updateGuildRank");
@@ -716,7 +723,7 @@ public class GuildBean
   /**
    * Delete a rank of the guild of the user.
    *
-   * @param name the name of the user
+   * @param name       the name of the user
    * @param guildlevel the guildlevel of the rank
    * @return Response.ok if everything is okay.
    */
@@ -724,9 +731,9 @@ public class GuildBean
   @RolesAllowed("guildmaster")
   @Path("ranks/{guildlevel}")
   @Consumes(
-          {
-            MediaType.APPLICATION_JSON
-          })
+    {
+      MediaType.APPLICATION_JSON
+    })
   public Response deleteGuildRank(@PathParam("name") String name, @PathParam("guildlevel") Integer guildlevel)
   {
     LOGGER.finer("entering deleteGuildRank");
@@ -753,14 +760,15 @@ public class GuildBean
     if (guild == null)
     {
       throw new MudWebException(name,
-              "User is not a member of a guild.",
-              "User is not a member of a guild (" + name + ")",
-              Response.Status.NOT_FOUND);
+        "User is not a member of a guild.",
+        "User is not a member of a guild (" + name + ")",
+        Response.Status.NOT_FOUND);
     }
     return guild;
   }
 
-  private User authenticateGuildMaster(String name)
+  @VisibleForTesting
+  protected User authenticateGuildMaster(String name)
   {
     return privateBean.authenticateGuildMaster(name);
   }

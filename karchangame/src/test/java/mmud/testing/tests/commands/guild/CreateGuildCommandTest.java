@@ -25,9 +25,8 @@ import mmud.database.entities.game.DisplayInterface;
 import mmud.database.entities.game.Guild;
 import mmud.database.entities.game.Room;
 import mmud.rest.services.LogBean;
+import mmud.testing.tests.LogBeanStub;
 import mmud.testing.tests.MudTest;
-import mockit.Expectations;
-import mockit.Mocked;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
@@ -48,11 +47,9 @@ public class CreateGuildCommandTest extends MudTest
   private User karn;
   private Room room1;
 
-  @Mocked
-  private LogBean logBean;
+  private LogBean logBean = new LogBeanStub();
 
-  @Mocked
-  private CommandRunner commandRunner;
+  private CommandRunner commandRunner = new CommandRunner();
 
   public CreateGuildCommandTest()
   {
@@ -67,14 +64,7 @@ public class CreateGuildCommandTest extends MudTest
     CreateGuildCommand rankCommand = new CreateGuildCommand("createguild (\\w)+ .+");
     rankCommand.setCallback(commandRunner);
     assertThat(rankCommand.getRegExpr()).isEqualTo("createguild (\\w)+ .+");
-    new Expectations() // an "expectation block"
-    {
-
-      {
-        commandRunner.getLogBean();
-        result = logBean;
-      }
-    };
+commandRunner.setBeans(null, logBean, null, null, null, null, null);
     DisplayInterface display = rankCommand.run("createguild deputies The Royal Club Of Deputies", karn);
     assertThat(display).isNotNull();
     assertThat(display.getBody()).isEqualTo("You are in a small room.");
