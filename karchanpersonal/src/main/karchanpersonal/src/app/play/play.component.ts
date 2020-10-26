@@ -142,11 +142,27 @@ export class PlayComponent implements OnInit {
     const formModel = this.commandForm.value;
     const command = formModel.command as string;
     if (this.karchan.bigEntry) {
-      if (window.console) { console.log('play ' + command + ' ' + this.karchan.editor); }
-      this.processCall(command + ' ' + this.karchan.editor, true);
+      let totalcommand;
+      if (command === undefined || command.trim() === '') {
+        // there is no command, hopefully only big talk editor contents
+        if (this.karchan.editor === undefined) {
+          totalcommand = '';
+        } else {
+          if (this.karchan.editor.startsWith('<p>')) {
+            totalcommand = this.karchan.editor.substr(3);
+          } else {
+            totalcommand = this.karchan.editor;
+          }
+        }
+      } else {
+        // a command was entered, perhaps with a big talk component
+        totalcommand = this.karchan.editor === undefined || this.karchan.editor === '' ? command : command + ' ' + this.karchan.editor;
+      }
+      if (window.console) { console.log('play: "' + totalcommand + '"'); }
+      this.processCall(totalcommand, true);
       return false;
     }
-    if (window.console) { console.log('play ' + command); }
+    if (window.console) { console.log('play: "' + command + '"'); }
     this.processCall(command, true);
     return false;
   }
@@ -298,11 +314,11 @@ export class PlayComponent implements OnInit {
 
   public getLog(): string {
     if (this.display.log === undefined) {
-      console.log('empty log');
+      if (window.console) { console.log('empty log'); }
       return '';
     }
     const log = this.display.log.log.substr(this.display.log.offset);
-    console.log('log ui:' + log);
+    if (window.console) { console.log('log ui:' + log); }
     return log;
   }
 
