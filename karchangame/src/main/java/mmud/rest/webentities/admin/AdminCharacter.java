@@ -31,7 +31,7 @@ import java.time.LocalDateTime;
  */
 public class AdminCharacter
 {
-  public static final String GET_QUERY = "select json_object(\"name\", name, \"room\", room, \"race\", race, \"sex\", sex, \"age\", age, \"owner\", owner, \"creation\", creation_date) from mm_usertable order by name";
+  public static final String GET_QUERY = "select json_object(\"name\", name, \"room\", room, \"race\", race, \"sex\", sex, \"address\", address, \"owner\", owner, \"creation\", creation_date) from mm_usertable order by name";
 
   public String name;
   public String address;
