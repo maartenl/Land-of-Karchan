@@ -15,6 +15,14 @@ import { CharactersRestService } from '../characters-rest.service';
 export class CharactersComponent extends AdminComponent<MudCharacter, string> implements OnInit {
   form: FormGroup;
 
+  SearchTerms = class {
+    owner: string;
+    ip: string;
+    room: string;
+  };
+
+  searchTerms = new this.SearchTerms();
+
   constructor(
     private charactersRestService: CharactersRestService,
     private formBuilder: FormBuilder,
@@ -25,17 +33,49 @@ export class CharactersComponent extends AdminComponent<MudCharacter, string> im
     this.getItems();
   }
 
+  updateOwnerSearch(value: string) {
+    if (value.trim() === '') {
+      value = null;
+    }
+    this.searchTerms.owner = value;
+    this.getItems();
+  }
+
+  updateIpSearch(value: string) {
+    if (value.trim() === '') {
+      value = null;
+    }
+    this.searchTerms.ip = value;
+    this.getItems();
+  }
+
+  updateRoomSearch(value: string) {
+    if (value.trim() === '') {
+      value = null;
+    }
+    this.searchTerms.room = value;
+    this.getItems();
+  }
+
   ngOnInit() {
   }
 
   getItems() {
-    this.charactersRestService.getAll()
-      .subscribe({
-        next: data => {
-          this.items = data;
-        }
-      });
-  }
+    this.charactersRestService.getAll().subscribe({
+    next: data => {
+      const ownerFilter = character => this.searchTerms.owner === undefined ||
+        this.searchTerms.owner === null ||
+        this.searchTerms.owner === character.owner;
+      const ipFilter = character => this.searchTerms.ip === undefined ||
+        this.searchTerms.ip === null ||
+        (character.address !== null && character.address.includes(this.searchTerms.ip));
+      const roomFilter = character => this.searchTerms.room === undefined ||
+        this.searchTerms.room === null ||
+        character.room == this.searchTerms.room;
+      this.items = data.filter(ownerFilter).filter(ipFilter).filter(roomFilter);
+    }
+  });
+}
 
   getRestService(): AdminRestService<MudCharacter, string> {
     return this.charactersRestService;
