@@ -18,6 +18,7 @@ export class CharactersComponent extends AdminComponent<MudCharacter, string> im
   SearchTerms = class {
     owner: string;
     ip: string;
+    name: string;
     room: string;
   };
 
@@ -38,6 +39,14 @@ export class CharactersComponent extends AdminComponent<MudCharacter, string> im
       value = null;
     }
     this.searchTerms.owner = value;
+    this.getItems();
+  }
+
+  updateNameSearch(value: string) {
+    if (value.trim() === '') {
+      value = null;
+    }
+    this.searchTerms.name = value;
     this.getItems();
   }
 
@@ -66,13 +75,16 @@ export class CharactersComponent extends AdminComponent<MudCharacter, string> im
       const ownerFilter = character => this.searchTerms.owner === undefined ||
         this.searchTerms.owner === null ||
         this.searchTerms.owner === character.owner;
+      const nameFilter = character => this.searchTerms.name === undefined ||
+        this.searchTerms.name === null ||
+        character.name.includes(this.searchTerms.name);
       const ipFilter = character => this.searchTerms.ip === undefined ||
         this.searchTerms.ip === null ||
         (character.address !== null && character.address.includes(this.searchTerms.ip));
       const roomFilter = character => this.searchTerms.room === undefined ||
         this.searchTerms.room === null ||
         character.room == this.searchTerms.room;
-      this.items = data.filter(ownerFilter).filter(ipFilter).filter(roomFilter);
+      this.items = data.filter(ownerFilter).filter(nameFilter).filter(ipFilter).filter(roomFilter);
     }
   });
 }

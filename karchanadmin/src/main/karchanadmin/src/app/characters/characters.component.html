@@ -8,6 +8,11 @@
                         (blur)="updateOwnerSearch(searchowner.value)">
                 </fieldset>
                 <fieldset class="form-group">
+                    <input type="text" class="form-control" id="nameSearch" name="nameSearch" placeholder="Name"
+                        #searchname (keyup.enter)="updateNameSearch(searchname.value)"
+                        (blur)="updateNameSearch(searchname.value)">
+                </fieldset>
+                <fieldset class="form-group">
                     <input type="text" class="form-control" id="ipSearch" name="ipSearch" placeholder="Address"
                         #searchip (keyup.enter)="updateIpSearch(searchip.value)"
                         (blur)="updateIpSearch(searchip.value)">
