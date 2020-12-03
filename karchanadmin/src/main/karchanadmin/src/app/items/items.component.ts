@@ -71,12 +71,12 @@ export class ItemsComponent extends AdminComponent<Item, number> implements OnIn
     this.itemsRestService.getAll()
       .subscribe({
         next: data => {
-        const ownerFilter = method => this.searchTerms.owner === undefined ||
-          this.searchTerms.owner === null ||
-          this.searchTerms.owner === method.owner;
-        const nameFilter = character => this.searchTerms.name === undefined ||
-          this.searchTerms.name === null ||
-          character.name.includes(this.searchTerms.name);
+          const ownerFilter = method => this.searchTerms.owner === undefined ||
+            this.searchTerms.owner === null ||
+            this.searchTerms.owner === method.owner;
+          const nameFilter = character => this.searchTerms.name === undefined ||
+            this.searchTerms.name === null ||
+            character.name.includes(this.searchTerms.name);
           this.items = data.filter(ownerFilter).filter(nameFilter);
         }
       });
@@ -175,7 +175,7 @@ export class ItemsComponent extends AdminComponent<Item, number> implements OnIn
       bound: item.bound,
       owner: item.owner,
       creation: item.creation
-      });
+    });
   }
 
   getForm(): Item {
@@ -232,6 +232,84 @@ export class ItemsComponent extends AdminComponent<Item, number> implements OnIn
 
   makeItem(): Item {
     return new Item();
+  }
+
+  sortById() {
+    if (window.console) {
+      console.log('sortById');
+    }
+    this.items = this.items.sort((a, b) => a.id - b.id);
+    this.items = [...this.items];
+    return false;
+  }
+
+  sortByAdject1() {
+    if (window.console) {
+      console.log('sortByAdject1');
+    }
+    this.items = this.items.sort((a, b) => { 
+      if (a.adject1 === b.adject1) {
+        return 0;
+      }
+      else if (a.adject1 === null) {
+        return 1;
+      } 
+      else if (b.adject1 === null) {
+        return -1;
+      }
+      return a.adject1.localeCompare(b.adject1) 
+    });
+    this.items = [...this.items];
+    return false;
+  }
+
+  sortByAdject2() {
+    if (window.console) {
+      console.log('sortByAdject2');
+    }
+    this.items = this.items.sort((a, b) => { 
+      if (a.adject2 === b.adject2) {
+        return 0;
+      }
+      else if (a.adject2 === null) {
+        return 1;
+      } 
+      else if (b.adject2 === null) {
+        return -1;
+      }
+      return a.adject2.localeCompare(b.adject2) 
+    });
+    this.items = [...this.items];
+    return false;
+  }
+
+  sortByAdject3() {
+    if (window.console) {
+      console.log('sortByAdject3');
+    }
+    this.items = this.items.sort((a, b) => { 
+      if (a.adject3 === b.adject3) {
+        return 0;
+      }
+      else if (a.adject3 === null) {
+        return 1;
+      } 
+      else if (b.adject3 === null) {
+        return -1;
+      }
+      return a.adject3.localeCompare(b.adject3) 
+    });
+    this.items = [...this.items];
+    return false;
+  }
+
+  sortByName() {
+    if (window.console) {
+      console.log('sortByName');
+    }
+    this.items = this.items.sort((a, b) => a.name.localeCompare(b.name));
+    this.items = [...this.items];
+    return false;
   }
 
 }
