@@ -1,5 +1,21 @@
 <div class="container-fluid">
     <div class="row row-content">
+        <div class="col-xs-12">
+            <form>
+                <fieldset class="form-group">
+                    <input type="text" class="form-control" id="owner" name="owner" placeholder="Owner" #searchowner
+                        (keyup.enter)="updateOwner(searchowner.value)" (blur)="updateOwner(searchowner.value)">
+                </fieldset>
+                <fieldset class="form-group">
+                    <input type="text" class="form-control" id="name" name="name" placeholder="Methodname" #searchname
+                        (keyup.enter)="updateName(searchname.value)" (blur)="updateName(searchname.value)">
+                </fieldset>
+            </form>
+        </div>
+    </div>
+</div>
+<div class="container-fluid">
+    <div class="row row-content">
         <div class="col-xs-12 col-xl-6">
             <h1>Item {{ item === undefined ? '-' : item.id }}</h1>
             <form [formGroup]="form" novalidate>

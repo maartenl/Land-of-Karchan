@@ -18,6 +18,29 @@ export class ItemsComponent extends AdminComponent<Item, number> implements OnIn
 
   form: FormGroup;
 
+  SearchTerms = class {
+    owner: string;
+    name: string;
+  };
+
+  searchTerms = new this.SearchTerms();
+
+  updateOwner(value: string) {
+    if (value.trim() === '') {
+      value = null;
+    }
+    this.searchTerms.owner = value;
+    this.getItems();
+  }
+
+  updateName(value: string) {
+    if (value.trim() === '') {
+      value = null;
+    }
+    this.searchTerms.name = value;
+    this.getItems();
+  }
+
   constructor(
     private itemsRestService: ItemsRestService,
     private route: ActivatedRoute,
@@ -48,7 +71,13 @@ export class ItemsComponent extends AdminComponent<Item, number> implements OnIn
     this.itemsRestService.getAll()
       .subscribe({
         next: data => {
-          this.items = data;
+        const ownerFilter = method => this.searchTerms.owner === undefined ||
+          this.searchTerms.owner === null ||
+          this.searchTerms.owner === method.owner;
+        const nameFilter = character => this.searchTerms.name === undefined ||
+          this.searchTerms.name === null ||
+          character.name.includes(this.searchTerms.name);
+          this.items = data.filter(ownerFilter).filter(nameFilter);
         }
       });
   }
@@ -159,13 +188,37 @@ export class ItemsComponent extends AdminComponent<Item, number> implements OnIn
     const owner = this.item === undefined ? null : this.item.owner;
     const saveItem: Item = new Item({
       id,
-      callable: formModel.callable as boolean,
-      item: formModel.item as string,
+      adject1: formModel.adject1 as string,
+      adject2: formModel.adject2 as string,
+      adject3: formModel.adject3 as string,
+      name: formModel.name as string,
       room: formModel.room as number,
-      methodName: formModel.methodName as string,
+      eatable: formModel.eatable as string,
+      drinkable: formModel.drinkable as string,
+      lightable: formModel.lightable as boolean,
+      getable: formModel.getable as boolean,
+      dropable: formModel.dropable as boolean,
+      visible: formModel.visible as boolean,
+      wieldable: formModel.wieldable as boolean,
+      description: formModel.description as string,
+      readdescr: formModel.readdescr as string,
+      wearable: formModel.wearable as number,
+      copper: formModel.copper as number,
+      weight: formModel.weight as number,
+      container: formModel.container as number,
+      capacity: formModel.capacity as number,
+      isopenable: formModel.isopenable as boolean,
+      keyid: formModel.keyid as number,
+      containtype: formModel.containtype as number,
+      notes: formModel.notes as string,
+      image: formModel.image as string,
+      title: formModel.title as string,
+      discriminator: formModel.discriminator as number,
+      bound: formModel.bound as boolean,
       creation,
       owner
     });
+    console.log(saveItem);
     return saveItem;
   }
 

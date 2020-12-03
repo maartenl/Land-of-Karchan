@@ -74,10 +74,12 @@ public class ItemsBean //implements AdminRestService<String>
     item.setAdject1(adminItem.adject1);
     item.setAdject2(adminItem.adject2);
     item.setAdject3(adminItem.adject3);
-    item.setManaincrease(adminItem.manaincrease);
-    item.setHitincrease(adminItem.hitincrease);
-    item.setVitalincrease(adminItem.vitalincrease);
-    item.setMovementincrease(adminItem.movementincrease);
+//    item.setManaincrease(adminItem.manaincrease);
+//    item.setHitincrease(adminItem.hitincrease);
+//    item.setVitalincrease(adminItem.vitalincrease);
+//    item.setMovementincrease(adminItem.movementincrease);
+//    item.setPasdefense(adminItem.pasdefense);
+//    item.setDamageresistance(adminItem.damageresistance);
     item.setEatable(adminItem.eatable);
     item.setDrinkable(adminItem.drinkable);
     item.setLightable(adminItem.lightable);
@@ -90,8 +92,6 @@ public class ItemsBean //implements AdminRestService<String>
 //    item.setWearable()
     item.setCopper(adminItem.copper);
     item.setWeight(adminItem.weight);
-    item.setPasdefense(adminItem.pasdefense);
-    item.setDamageresistance(adminItem.damageresistance);
     item.setContainer(adminItem.container);
     item.setCapacity(adminItem.capacity);
     item.setOpenable(adminItem.isopenable);
@@ -142,10 +142,12 @@ public class ItemsBean //implements AdminRestService<String>
     item.setAdject1(adminItem.adject1);
     item.setAdject2(adminItem.adject2);
     item.setAdject3(adminItem.adject3);
-    item.setManaincrease(adminItem.manaincrease);
-    item.setHitincrease(adminItem.hitincrease);
-    item.setVitalincrease(adminItem.vitalincrease);
-    item.setMovementincrease(adminItem.movementincrease);
+//    item.setManaincrease(adminItem.manaincrease);
+//    item.setHitincrease(adminItem.hitincrease);
+//    item.setVitalincrease(adminItem.vitalincrease);
+//    item.setMovementincrease(adminItem.movementincrease);
+//    item.setPasdefense(adminItem.pasdefense);
+//    item.setDamageresistance(adminItem.damageresistance);
     item.setEatable(adminItem.eatable);
     item.setDrinkable(adminItem.drinkable);
     item.setLightable(adminItem.lightable);
@@ -158,8 +160,6 @@ public class ItemsBean //implements AdminRestService<String>
 //    item.setWearable()
     item.setCopper(adminItem.copper);
     item.setWeight(adminItem.weight);
-    item.setPasdefense(adminItem.pasdefense);
-    item.setDamageresistance(adminItem.damageresistance);
     item.setContainer(adminItem.container);
     item.setCapacity(adminItem.capacity);
     item.setOpenable(adminItem.isopenable);
