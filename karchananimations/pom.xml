@@ -4,7 +4,7 @@
   <parent>
     <artifactId>karchanparent</artifactId>
     <groupId>mmud</groupId>
-    <version>1.0.3-SNAPSHOT</version>
+    <version>1.0.3</version>
   </parent>
     <groupId>mmud</groupId>
     <artifactId>karchananimations</artifactId>
