@@ -19,11 +19,12 @@ package mmud.testing.tests;
 import java.text.ParseException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-
+import java.util.Collections;
 import java.util.List;
 import java.util.logging.Logger;
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
+
 import mmud.database.entities.characters.Person;
 import mmud.database.entities.characters.User;
 import mmud.database.entities.game.Area;
@@ -31,7 +32,6 @@ import mmud.database.entities.game.BoardMessage;
 import mmud.database.entities.game.Guild;
 import mmud.database.entities.game.Room;
 import mmud.database.entities.web.CharacterInfo;
-import mmud.exceptions.ErrorDetails;
 import mmud.exceptions.MudException;
 import mmud.exceptions.MudWebException;
 import mmud.rest.services.BoardBean;
@@ -43,20 +43,22 @@ import mmud.rest.webentities.PublicGuild;
 import mmud.rest.webentities.PublicPerson;
 import mmud.testing.TestingConstants;
 import mmud.testing.TestingUtils;
-import mockit.Deencapsulation;
-import mockit.Expectations;
-import mockit.Mocked;
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertNotNull;
-import static org.testng.Assert.fail;
+import org.mockito.ArgumentMatchers;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertNotNull;
 
 /**
- *
  * @author maartenl
  */
 public class PublicBeanTest
@@ -64,18 +66,6 @@ public class PublicBeanTest
 
   // Obtain a suitable LOGGER.
   private static final Logger LOGGER = Logger.getLogger(PublicBeanTest.class.getName());
-
-  @Mocked
-  EntityManager entityManager;
-
-  @Mocked
-  Query query;
-
-  @Mocked
-  MudWebException webApplicationException;
-
-  @Mocked
-  ErrorDetails errorDetails;
 
   private User hotblack;
   private User marvin;
@@ -100,20 +90,14 @@ public class PublicBeanTest
     Area aArea = TestingConstants.getSpecialArea();
     Room aRoom = TestingConstants.getRoom(aArea);
 
-    hotblack = (User) TestingConstants.getHotblack(aRoom);
-    marvin = (User) TestingConstants.getMarvin(aRoom);
+    hotblack = TestingConstants.getHotblack(aRoom);
+    marvin = TestingConstants.getMarvin(aRoom);
     marvin.setSleep(true);
   }
 
   @AfterMethod
   public void tearDown()
   {
-  }
-
-  @Test
-  public void hello()
-  {
-    assertEquals(2, 2);
   }
 
   private void compare(Fortune actual, Fortune expected)
@@ -183,20 +167,17 @@ public class PublicBeanTest
   public void fortunesEmptyTest()
   {
     LOGGER.fine("fortunesEmptyTest");
+    Query query = mock(Query.class);
+    EntityManager entityManager = mock(EntityManager.class);
+    when(entityManager.createNamedQuery("User.fortunes")).thenReturn(query);
+    when(query.getResultList()).thenReturn(Collections.emptyList());
+
     PublicBean publicBean = new PublicBean()
     {
       @Override
       protected EntityManager getEntityManager()
       {
         return entityManager;
-      }
-    };
-    new Expectations() // an "expectation block"
-    {
-
-      {
-        entityManager.createNamedQuery("User.fortunes");
-        result = query;
       }
     };
     // Unit under test is exercised.
@@ -209,6 +190,23 @@ public class PublicBeanTest
   public void fortunesTest()
   {
     LOGGER.fine("fortunesTest");
+    final Object[] one =
+      {
+        "Hotblack", 34567
+      };
+    final Object[] two =
+      {
+        "Marvin",
+        345674
+      };
+    final List<Object[]> list = new ArrayList<>();
+    list.add(one);
+    list.add(two);
+
+    Query query = mock(Query.class);
+    EntityManager entityManager = mock(EntityManager.class);
+    when(entityManager.createNamedQuery("User.fortunes")).thenReturn(query);
+    when(query.getResultList()).thenReturn(list);
     PublicBean publicBean = new PublicBean()
     {
       @Override
@@ -217,33 +215,10 @@ public class PublicBeanTest
         return entityManager;
       }
     };
-
-    final Object[] one =
-    {
-      "Hotblack", Integer.valueOf(34567)
-    };
-    final Object[] two =
-    {
-      "Marvin",
-      Integer.valueOf(345674)
-    };
-    final List<Object[]> list = new ArrayList<>();
-    list.add(one);
-    list.add(two);
-    new Expectations() // an "expectation block"
-    {
-
-      {
-        entityManager.createNamedQuery("User.fortunes");
-        result = query;
-        query.setMaxResults(100);
-        query.getResultList();
-        result = list;
-      }
-    };
     // Unit under test is exercised.
     List<Fortune> result = publicBean.fortunes();
     // Verification code (JUnit/TestNG asserts), if any.
+    verify(query, times(1)).setMaxResults(100);
     assertEquals(result.size(), 2);
     Fortune expected = new Fortune();
     expected.name = "Hotblack";
@@ -263,6 +238,10 @@ public class PublicBeanTest
   public void whoEmptyTest()
   {
     LOGGER.fine("whoEmptyTest");
+    Query query = mock(Query.class);
+    EntityManager entityManager = mock(EntityManager.class);
+    when(entityManager.createNamedQuery("User.who")).thenReturn(query);
+    when(query.getResultList()).thenReturn(Collections.emptyList());
 
     PublicBean publicBean = new PublicBean()
     {
@@ -272,7 +251,7 @@ public class PublicBeanTest
         return entityManager;
       }
     };
-    Deencapsulation.setField(publicBean, "personBean", new PersonBean()
+    publicBean.setPersonBean(new PersonBean()
     {
       @Override
       protected EntityManager getEntityManager()
@@ -280,14 +259,6 @@ public class PublicBeanTest
         return entityManager;
       }
     });
-    new Expectations() // an "expectation block"
-    {
-
-      {
-        entityManager.createNamedQuery("User.who");
-        result = query;
-      }
-    };
     // Unit under test is exercised.
     List<PublicPerson> result = publicBean.who();
     // Verification code (JUnit/TestNG asserts), if any.
@@ -302,6 +273,11 @@ public class PublicBeanTest
     final List<Person> list = new ArrayList<>();
     list.add(hotblack);
     list.add(marvin);
+    Query query = mock(Query.class);
+    EntityManager entityManager = mock(EntityManager.class);
+    when(entityManager.createNamedQuery("User.who")).thenReturn(query);
+    when(query.getResultList()).thenReturn(list);
+
     PublicBean publicBean = new PublicBean()
     {
       @Override
@@ -310,7 +286,7 @@ public class PublicBeanTest
         return entityManager;
       }
     };
-    Deencapsulation.setField(publicBean, "personBean", new PersonBean()
+    publicBean.setPersonBean(new PersonBean()
     {
       @Override
       protected EntityManager getEntityManager()
@@ -318,16 +294,6 @@ public class PublicBeanTest
         return entityManager;
       }
     });
-    new Expectations() // an "expectation block"
-    {
-
-      {
-        entityManager.createNamedQuery("User.who");
-        result = query;
-        query.getResultList();
-        result = list;
-      }
-    };
     // Unit under test is exercised.
     List<PublicPerson> result = publicBean.who();
     // Verification code (JUnit/TestNG asserts), if any.
@@ -337,24 +303,28 @@ public class PublicBeanTest
     expected.name = "Hotblack";
     expected.sleep = "";
     expected.area = "On board the Starship Heart of Gold";
-    expected.min = 16l;
-    expected.sec = 40l;
+    expected.min = 16L;
+    expected.sec = 40L;
     expected.title = "Guitar keyboard player of the rock group Disaster Area";
     compare(result.get(0), expected);
     expected = new PublicPerson();
     expected.name = "Marvin";
     expected.sleep = "sleeping";
     expected.area = "On board the Starship Heart of Gold";
-    expected.min = 33l;
-    expected.sec = 20l;
+    expected.min = 33L;
+    expected.sec = 20L;
     expected.title = "The Paranoid Android";
     compare(result.get(1), expected);
   }
 
   @Test
-  public void newsEmptyTest() throws ParseException
+  public void newsEmptyTest()
   {
     LOGGER.fine("newsEmptyTest");
+    Query query = mock(Query.class);
+    EntityManager entityManager = mock(EntityManager.class);
+    when(entityManager.createNamedQuery("BoardMessage.news")).thenReturn(query);
+    when(query.getResultList()).thenReturn(Collections.emptyList());
     PublicBean publicBean = new PublicBean()
     {
       @Override
@@ -363,7 +333,7 @@ public class PublicBeanTest
         return entityManager;
       }
     };
-    Deencapsulation.setField(publicBean, "boardBean", new BoardBean()
+    publicBean.setBoardBean(new BoardBean()
     {
       @Override
       protected EntityManager getEntityManager()
@@ -371,29 +341,20 @@ public class PublicBeanTest
         return entityManager;
       }
     });
-    new Expectations() // an "expectation block"
-    {
-
-      {
-        entityManager.createNamedQuery("BoardMessage.news");
-        result = query;
-        query.setParameter("lastSunday", any);
-        query.getResultList();
-      }
-    };
     // Unit under test is exercised.
     List<News> result = publicBean.news();
     // Verification code (JUnit/TestNG asserts), if any.
+    verify(query, times(1)).setParameter(ArgumentMatchers.eq("lastSunday"), any(LocalDateTime.class));
     assertNotNull(result, "list expected");
     assertEquals(result.size(), 0);
   }
 
   @Test
-  public void newsTest() throws ParseException
+  public void newsTest()
   {
     LOGGER.fine("newsTest");
     LocalDateTime secondDate = LocalDateTime.now();
-    LocalDateTime firstDate = secondDate.plusSeconds(- 1_000L);
+    LocalDateTime firstDate = secondDate.plusSeconds(-1_000L);
     final List<BoardMessage> list = new ArrayList<>();
     BoardMessage message = new BoardMessage();
     message.setId(1L);
@@ -409,6 +370,10 @@ public class PublicBeanTest
     message.setPosttime(secondDate);
     message.setRemoved(Boolean.FALSE);
     list.add(message);
+    Query query = mock(Query.class);
+    EntityManager entityManager = mock(EntityManager.class);
+    when(entityManager.createNamedQuery("BoardMessage.news")).thenReturn(query);
+    when(query.getResultList()).thenReturn(list);
     PublicBean publicBean = new PublicBean()
     {
       @Override
@@ -417,7 +382,7 @@ public class PublicBeanTest
         return entityManager;
       }
     };
-    Deencapsulation.setField(publicBean, "boardBean", new BoardBean()
+    publicBean.setBoardBean(new BoardBean()
     {
       @Override
       protected EntityManager getEntityManager()
@@ -425,20 +390,10 @@ public class PublicBeanTest
         return entityManager;
       }
     });
-    new Expectations() // an "expectation block"
-    {
-
-      {
-        entityManager.createNamedQuery("BoardMessage.news");
-        result = query;
-        query.setParameter("lastSunday", any);
-        query.getResultList();
-        result = list;
-      }
-    };
     // Unit under test is exercised.
     List<News> result = publicBean.news();
     // Verification code (JUnit/TestNG asserts), if any.
+    verify(query, times(1)).setParameter(ArgumentMatchers.eq("lastSunday"), any(LocalDateTime.class));
     assertNotNull(result, "list expected");
     assertEquals(result.size(), 2);
     News expected = new News();
@@ -457,21 +412,16 @@ public class PublicBeanTest
   public void statusEmptyTest()
   {
     LOGGER.fine("statusEmptyTest");
+    Query query = mock(Query.class);
+    EntityManager entityManager = mock(EntityManager.class);
+    when(entityManager.createNamedQuery("User.status")).thenReturn(query);
+    when(query.getResultList()).thenReturn(Collections.emptyList());
     PublicBean publicBean = new PublicBean()
     {
       @Override
       protected EntityManager getEntityManager()
       {
         return entityManager;
-      }
-    };
-    new Expectations() // an "expectation block"
-    {
-
-      {
-        entityManager.createNamedQuery("User.status");
-        result = query;
-        query.getResultList();
       }
     };
     // Unit under test is exercised.
@@ -488,22 +438,16 @@ public class PublicBeanTest
     final List<Person> list = new ArrayList<>();
     list.add(hotblack);
     list.add(marvin);
+    Query query = mock(Query.class);
+    EntityManager entityManager = mock(EntityManager.class);
+    when(entityManager.createNamedQuery("User.status")).thenReturn(query);
+    when(query.getResultList()).thenReturn(list);
     PublicBean publicBean = new PublicBean()
     {
       @Override
       protected EntityManager getEntityManager()
       {
         return entityManager;
-      }
-    };
-    new Expectations() // an "expectation block"
-    {
-
-      {
-        entityManager.createNamedQuery("User.status");
-        result = query;
-        query.getResultList();
-        result = list;
       }
     };
     // Unit under test is exercised.
@@ -525,21 +469,16 @@ public class PublicBeanTest
   public void guildsEmptyTest()
   {
     LOGGER.fine("guildsEmptyTest");
+    Query query = mock(Query.class);
+    EntityManager entityManager = mock(EntityManager.class);
+    when(entityManager.createNamedQuery("Guild.findAll")).thenReturn(query);
+    when(query.getResultList()).thenReturn(Collections.emptyList());
     PublicBean publicBean = new PublicBean()
     {
       @Override
       protected EntityManager getEntityManager()
       {
         return entityManager;
-      }
-    };
-    new Expectations() // an "expectation block"
-    {
-
-      {
-        entityManager.createNamedQuery("Guild.findAll");
-        result = query;
-        query.getResultList();
       }
     };
     // Unit under test is exercised.
@@ -554,7 +493,7 @@ public class PublicBeanTest
   {
     LOGGER.fine("guildsTest");
     LocalDateTime secondDate = LocalDateTime.now();
-    LocalDateTime firstDate = secondDate.plusSeconds(- 1_000L);
+    LocalDateTime firstDate = secondDate.plusSeconds(-1_000L);
     final List<Guild> list = new ArrayList<>();
     Guild guild = new Guild();
     guild.setName("disasterarea");
@@ -572,22 +511,16 @@ public class PublicBeanTest
     guild.setHomepage("http://www.scc.com");
     guild.setDescription("This is just a description");
     list.add(guild);
+    Query query = mock(Query.class);
+    EntityManager entityManager = mock(EntityManager.class);
+    when(entityManager.createNamedQuery("Guild.findAll")).thenReturn(query);
+    when(query.getResultList()).thenReturn(list);
     PublicBean publicBean = new PublicBean()
     {
       @Override
       protected EntityManager getEntityManager()
       {
         return entityManager;
-      }
-    };
-    new Expectations() // an "expectation block"
-    {
-
-      {
-        entityManager.createNamedQuery("Guild.findAll");
-        result = query;
-        query.getResultList();
-        result = list;
       }
     };
     // Unit under test is exercised.
@@ -615,6 +548,9 @@ public class PublicBeanTest
   public void charactersheetNotFoundTest()
   {
     LOGGER.fine("charactersheetNotFoundTest");
+
+    EntityManager entityManager = mock(EntityManager.class);
+    when(entityManager.find(User.class, "Marvin")).thenReturn(null);
     PublicBean publicBean = new PublicBean()
     {
       @Override
@@ -623,23 +559,10 @@ public class PublicBeanTest
         return entityManager;
       }
     };
-    new Expectations() // an "expectation block"
-    {
-
-      {
-        entityManager.find(User.class, "Marvin");
-        result = null;
-      }
-    };
     // Unit under test is exercised.
-    try
-    {
-      PublicPerson person = publicBean.charactersheet("Marvin");
-      fail("We expected a not found exception");
-    } catch (MudWebException e)
-    {
-      // Yay! We get an exception!
-    }
+    assertThatThrownBy(() -> publicBean.charactersheet("Marvin"))
+      .isInstanceOf(MudWebException.class)
+      .hasMessage("Charactersheet not found.");
     // Verification code (JUnit/TestNG asserts), if any.
   }
 
@@ -648,7 +571,7 @@ public class PublicBeanTest
   {
     LOGGER.fine("charactersheetTest");
     LocalDateTime secondDate = LocalDateTime.now();
-    LocalDateTime firstDate = secondDate.plusSeconds(- 1_000L);
+    LocalDateTime firstDate = secondDate.plusSeconds(-1_000L);
     final CharacterInfo charinfo = new CharacterInfo();
     charinfo.setImageurl("http://www.images.com/imageurl.jpg");
     charinfo.setHomepageurl("http://www.homepage.com/");
@@ -656,6 +579,14 @@ public class PublicBeanTest
     charinfo.setCityofbirth("Sirius");
     charinfo.setStoryline("An android");
     charinfo.setName("Marvin");
+
+    Query query = mock(Query.class);
+    EntityManager entityManager = mock(EntityManager.class);
+    when(entityManager.find(User.class, "Marvin")).thenReturn(marvin);
+    when(entityManager.find(CharacterInfo.class, marvin.getName())).thenReturn(charinfo);
+    when(entityManager.createNamedQuery("Family.findByName")).thenReturn(query);
+    when(query.getResultList()).thenReturn(Collections.emptyList());
+
     PublicBean publicBean = new PublicBean()
     {
       @Override
@@ -664,23 +595,10 @@ public class PublicBeanTest
         return entityManager;
       }
     };
-    new Expectations() // an "expectation block"
-    {
-
-      {
-        entityManager.find(User.class, "Marvin");
-        result = marvin;
-        entityManager.find(CharacterInfo.class, marvin.getName());
-        result = charinfo;
-        entityManager.createNamedQuery("Family.findByName");
-        result = query;
-        query.setParameter("name", marvin.getName());
-        query.getResultList();
-      }
-    };
     // Unit under test is exercised.
     PublicPerson person = publicBean.charactersheet("Marvin");
     // Verification code (JUnit/TestNG asserts), if any.
+    verify(query, times(1)).setParameter("name", marvin.getName());
     assertNotNull(person, "person expected");
     PublicPerson expected = new PublicPerson();
     expected.name = "Marvin";
@@ -699,21 +617,17 @@ public class PublicBeanTest
   public void charactersheetsEmptyTest()
   {
     LOGGER.fine("charactersheetsEmptyTest");
+    Query query = mock(Query.class);
+    EntityManager entityManager = mock(EntityManager.class);
+    when(entityManager.createNamedQuery("CharacterInfo.charactersheets")).thenReturn(query);
+    when(query.getResultList()).thenReturn(Collections.emptyList());
+
     PublicBean publicBean = new PublicBean()
     {
       @Override
       protected EntityManager getEntityManager()
       {
         return entityManager;
-      }
-    };
-    new Expectations() // an "expectation block"
-    {
-
-      {
-        entityManager.createNamedQuery("CharacterInfo.charactersheets");
-        result = query;
-        query.getResultList();
       }
     };
     // Unit under test is exercised.
@@ -730,22 +644,16 @@ public class PublicBeanTest
     final List<String> list = new ArrayList<>();
     list.add("Marvin");
     list.add("Hotblack");
+    Query query = mock(Query.class);
+    EntityManager entityManager = mock(EntityManager.class);
+    when(entityManager.createNamedQuery("CharacterInfo.charactersheets")).thenReturn(query);
+    when(query.getResultList()).thenReturn(list);
     PublicBean publicBean = new PublicBean()
     {
       @Override
       protected EntityManager getEntityManager()
       {
         return entityManager;
-      }
-    };
-    new Expectations() // an "expectation block"
-    {
-
-      {
-        entityManager.createNamedQuery("CharacterInfo.charactersheets");
-        result = query;
-        query.getResultList();
-        result = list;
       }
     };
     // Unit under test is exercised.

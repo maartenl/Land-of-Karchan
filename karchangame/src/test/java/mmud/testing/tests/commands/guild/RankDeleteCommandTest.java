@@ -23,9 +23,8 @@ import mmud.database.entities.characters.Person;
 import mmud.database.entities.characters.User;
 import mmud.database.entities.game.*;
 import mmud.rest.services.LogBean;
+import mmud.testing.tests.LogBeanStub;
 import mmud.testing.tests.MudTest;
-import mockit.Expectations;
-import mockit.Mocked;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
@@ -51,11 +50,9 @@ public class RankDeleteCommandTest extends MudTest
   private User marvin;
   private Room room1;
 
-  @Mocked
-  private LogBean logBean;
+  private LogBean logBean = new LogBeanStub();
 
-  @Mocked
-  private CommandRunner commandRunner;
+  private CommandRunner commandRunner = new CommandRunner();
   private Guild deputy;
   private Guildrank boss;
   private Guildrank minion;
@@ -74,14 +71,7 @@ public class RankDeleteCommandTest extends MudTest
     RankDeleteCommand rankCommand = new RankDeleteCommand("guilddelrank (\\d){1,3} (\\w)+");
     rankCommand.setCallback(commandRunner);
     assertThat(rankCommand.getRegExpr()).isEqualTo("guilddelrank (\\d){1,3} (\\w)+");
-    new Expectations() // an "expectation block"
-    {
-
-      {
-        commandRunner.getLogBean();
-        result = logBean;
-      }
-    };
+commandRunner.setBeans(null, logBean, null, null, null, null, null);
     DisplayInterface display = rankCommand.run("guilddelrank 100", karn);
     assertThat(display).isNotNull();
     assertThat(display.getBody()).isEqualTo("You are in a small room.");
@@ -103,14 +93,7 @@ public class RankDeleteCommandTest extends MudTest
     RankDeleteCommand rankCommand = new RankDeleteCommand("guilddelrank (\\d){1,3} (\\w)+");
     rankCommand.setCallback(commandRunner);
     assertThat(rankCommand.getRegExpr()).isEqualTo("guilddelrank (\\d){1,3} (\\w)+");
-    new Expectations() // an "expectation block"
-    {
-
-      {
-        commandRunner.getLogBean();
-        result = logBean;
-      }
-    };
+commandRunner.setBeans(null, logBean, null, null, null, null, null);
     DisplayInterface display = rankCommand.run("guilddelrank 50", karn);
     assertThat(display).isNotNull();
     assertThat(display.getBody()).isEqualTo("You are in a small room.");
@@ -145,24 +128,19 @@ public class RankDeleteCommandTest extends MudTest
     deputy = new Guild();
     deputy.setName("deputy");
     deputy.setBoss(karn);
-    final SortedSet<Guildrank> guildranks = new TreeSet<>(new Comparator<Guildrank>()
+    final SortedSet<Guildrank> guildranks = new TreeSet<>((arg0, arg1) ->
     {
-
-      @Override
-      public int compare(Guildrank arg0, Guildrank arg1)
+      if (arg0.getGuildrankPK() == null)
       {
-        if (arg0.getGuildrankPK() == null)
+        if (arg1.getGuildrankPK() == null)
         {
-          if (arg1.getGuildrankPK() == null)
-          {
-            return 0;
-          }
-          return 1;
+          return 0;
         }
-        int arg0level = arg0.getGuildrankPK().getGuildlevel();
-        int arg1level = arg1.getGuildrankPK().getGuildlevel();
-        return arg0level - arg1level;
+        return 1;
       }
+      int arg0level = arg0.getGuildrankPK().getGuildlevel();
+      int arg1level = arg1.getGuildrankPK().getGuildlevel();
+      return arg0level - arg1level;
     });
 
     boss = new Guildrank();
@@ -184,16 +162,7 @@ public class RankDeleteCommandTest extends MudTest
     guildranks.add(minion);
     deputy.setGuildrankCollection(guildranks);
 
-    final SortedSet<User> members = new TreeSet<>(new Comparator<User>()
-    {
-
-      @Override
-      public int compare(User arg0, User arg1)
-      {
-        return arg0.getName().compareTo(arg1.getName());
-      }
-
-    });
+    final SortedSet<User> members = new TreeSet<>((arg0, arg1) -> arg0.getName().compareTo(arg1.getName()));
     members.add(karn);
     members.add(marvin);
     deputy.setMembers(members);

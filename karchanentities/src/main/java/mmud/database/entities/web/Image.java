@@ -50,6 +50,7 @@ import mmud.database.entities.characters.User;
   @NamedQuery(name = "Image.findAll", query = "SELECT i FROM Image i"),
   @NamedQuery(name = "Image.findByOwner", query = "SELECT i FROM Image i WHERE i.owner = :player order by i.url"),
   @NamedQuery(name = "Image.findByOwnerAndUrl", query = "SELECT i FROM Image i WHERE i.owner = :player and i.url = :url"),
+  @NamedQuery(name = "Image.findByOwnerAndId", query = "SELECT i FROM Image i WHERE i.owner = :player and i.id = :id"),
 })
 public class Image implements Serializable
 {
@@ -61,7 +62,7 @@ public class Image implements Serializable
   @Basic(optional = false)
   @Column(name = "id")
   private Long id;
-  
+
   @Basic(optional = false)
   @NotNull
   @Size(min = 1, max = 200)
@@ -94,7 +95,7 @@ public class Image implements Serializable
   @JoinColumn(name = "owner", nullable = false, referencedColumnName = "name")
   @ManyToOne(optional = false)
   private User owner;
-  
+
   public Image()
   {
   }
@@ -174,8 +175,8 @@ public class Image implements Serializable
   {
     this.owner = owner;
   }
-  
-  
+
+
 
   @Override
   public int hashCode()
@@ -206,5 +207,5 @@ public class Image implements Serializable
   {
     return "mmud.database.entities.web.Image[ id=" + id + " ]";
   }
-  
+
 }

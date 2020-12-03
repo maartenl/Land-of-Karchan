@@ -16,28 +16,20 @@
  */
 package mmud.testing.tests;
 
+import mmud.database.entities.characters.Person;
 import mmud.database.entities.characters.User;
 import mmud.database.entities.game.Area;
 import mmud.database.entities.game.Guild;
 import mmud.database.entities.game.Room;
-import mmud.exceptions.ErrorDetails;
 import mmud.exceptions.MudException;
 import mmud.exceptions.MudWebException;
 import mmud.rest.services.GuildBean;
 import mmud.rest.services.PrivateBean;
-import mmud.rest.webentities.PrivateMail;
 import mmud.rest.webentities.PrivatePerson;
 import mmud.testing.TestingConstants;
-import mmud.testing.TestingUtils;
-import mockit.Expectations;
-import mockit.Mocked;
 import org.testng.annotations.*;
 
 import javax.persistence.EntityManager;
-import javax.persistence.Query;
-import javax.ws.rs.WebApplicationException;
-import javax.ws.rs.core.Response;
-import javax.ws.rs.core.Response.ResponseBuilder;
 import java.lang.reflect.Field;
 import java.util.Comparator;
 import java.util.List;
@@ -46,11 +38,10 @@ import java.util.TreeSet;
 import java.util.logging.Logger;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.fail;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.mockito.Mockito.mock;
 
 /**
- *
  * @author maartenl
  */
 public class GuildBeanTest
@@ -58,26 +49,6 @@ public class GuildBeanTest
 
   // Obtain a suitable LOGGER.
   private static final Logger LOGGER = Logger.getLogger(GuildBeanTest.class.getName());
-  @Mocked
-  EntityManager entityManager;
-
-  @Mocked(
-          {
-            "ok", "status"
-          })
-  javax.ws.rs.core.Response response;
-
-  @Mocked
-  MudWebException webApplicationException;
-
-  @Mocked
-  ErrorDetails errorDetails;
-
-  @Mocked
-  ResponseBuilder responseBuilder;
-
-  @Mocked
-  Query query;
 
   private User hotblack;
   private User marvin;
@@ -127,31 +98,14 @@ public class GuildBeanTest
   {
   }
 
-  private void compare(PrivateMail actual, PrivateMail expected)
-  {
-    if (TestingUtils.compareBase(actual, expected))
-    {
-      return;
-    }
-    assertEquals(actual.body, expected.body, "body:");
-    assertEquals(actual.deleted, expected.deleted, "deleted");
-    assertEquals(actual.haveread, expected.haveread, "haveread");
-    assertEquals(actual.id, expected.id, "id");
-    assertEquals(actual.item_id, expected.item_id, "item_id");
-    assertEquals(actual.name, expected.name, "name");
-    assertEquals(actual.newmail, expected.newmail, "newmail");
-    assertEquals(actual.subject, expected.subject, "subject");
-    assertEquals(actual.toname, expected.toname, "toname");
-    assertEquals(actual.whensent, expected.whensent, "whensent");
-  }
-
   /**
    * Marvin isn't member of a guild.
    */
-  @Test(expectedExceptions = MudWebException.class)
+  @Test
   public void getMembersButNotInAGuild() throws NoSuchFieldException, IllegalArgumentException, IllegalAccessException
   {
     LOGGER.fine("getMembersButNotInAGuild");
+    EntityManager entityManager = mock(EntityManager.class);
     GuildBean guildBean = new GuildBean()
     {
       @Override
@@ -164,7 +118,9 @@ public class GuildBeanTest
     field.setAccessible(true);
     field.set(guildBean, privateBean);
     // Unit under test is exercised.
-    List<PrivatePerson> result = guildBean.getMembers("Marvin");
+    assertThatThrownBy(() -> guildBean.getMembers("Marvin"))
+      .isInstanceOf(MudWebException.class)
+      .hasMessage("User is not a member of a guild (Marvin)");
   }
 
   /**
@@ -174,17 +130,10 @@ public class GuildBeanTest
   public void getMembers() throws NoSuchFieldException, IllegalArgumentException, IllegalAccessException
   {
     LOGGER.fine("getMembers");
+    EntityManager entityManager = mock(EntityManager.class);
     final Guild guild = TestingConstants.getGuild();
     marvin.setGuild(guild);
-    SortedSet<User> members = new TreeSet<>(new Comparator<User>()
-    {
-
-      @Override
-      public int compare(User arg0, User arg1)
-      {
-        return arg0.getName().compareTo(arg1.getName());
-      }
-    });
+    SortedSet<User> members = new TreeSet<>(Comparator.comparing(Person::getName));
     members.add(marvin);
     members.add(hotblack);
     guild.setMembers(members);
@@ -210,17 +159,10 @@ public class GuildBeanTest
   public void getNoMembers() throws NoSuchFieldException, IllegalArgumentException, IllegalAccessException
   {
     LOGGER.fine("getNoMembers");
+    EntityManager entityManager = mock(EntityManager.class);
     final Guild guild = TestingConstants.getGuild();
     marvin.setGuild(guild);
-    SortedSet<User> members = new TreeSet<>(new Comparator<User>()
-    {
-
-      @Override
-      public int compare(User arg0, User arg1)
-      {
-        return arg0.getName().compareTo(arg1.getName());
-      }
-    });
+    SortedSet<User> members = new TreeSet<>(Comparator.comparing(Person::getName));
     guild.setMembers(members);
     GuildBean guildBean = new GuildBean()
     {
@@ -236,32 +178,6 @@ public class GuildBeanTest
     // Unit under test is exercised.
     List<PrivatePerson> result = guildBean.getMembers("Marvin");
     // Verification code (JUnit/TestNG asserts), if any.
-    assertThat(result).hasSize(0);
-  }
-
-  private void responseOkExpectations()
-  {
-    new Expectations() // an "expectation block"
-    {
-
-      {
-        Response.ok();
-        result = responseBuilder;
-        responseBuilder.build();
-      }
-    };
-  }
-
-  private void responseNoContentExpectations()
-  {
-    new Expectations() // an "expectation block"
-    {
-
-      {
-        Response.noContent();
-        result = responseBuilder;
-        responseBuilder.build();
-      }
-    };
+    assertThat(result).isEmpty();
   }
 }

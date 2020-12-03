@@ -57,6 +57,7 @@ export class GuildMasterComponent implements OnInit {
         those.guildMembers = new GuildMembers(result);
       });
     }
+    return false;
   }
 
   public checkRanks() {
@@ -66,6 +67,7 @@ export class GuildMasterComponent implements OnInit {
         those.guildRanks = new GuildRanks(result);
       });
     }
+    return false;
   }
 
   public checkHopefuls() {
@@ -75,6 +77,7 @@ export class GuildMasterComponent implements OnInit {
         those.guildHopefuls = new GuildHopefuls(result);
       });
     }
+    return false;
   }
 
   public getStyle() {

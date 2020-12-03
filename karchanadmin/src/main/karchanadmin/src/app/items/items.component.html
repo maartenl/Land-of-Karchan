@@ -1,5 +1,21 @@
 <div class="container-fluid">
     <div class="row row-content">
+        <div class="col-xs-12">
+            <form>
+                <fieldset class="form-group">
+                    <input type="text" class="form-control" id="owner" name="owner" placeholder="Owner" #searchowner
+                        (keyup.enter)="updateOwner(searchowner.value)" (blur)="updateOwner(searchowner.value)">
+                </fieldset>
+                <fieldset class="form-group">
+                    <input type="text" class="form-control" id="name" name="name" placeholder="Methodname" #searchname
+                        (keyup.enter)="updateName(searchname.value)" (blur)="updateName(searchname.value)">
+                </fieldset>
+            </form>
+        </div>
+    </div>
+</div>
+<div class="container-fluid">
+    <div class="row row-content">
         <div class="col-xs-12 col-xl-6">
             <h1>Item {{ item === undefined ? '-' : item.id }}</h1>
             <form [formGroup]="form" novalidate>
@@ -158,11 +174,11 @@
                 <table class="table table-sm table-hover">
                     <thead>
                         <tr>
-                            <th scope="col">Id</th>
-                            <th scope="col">Adject1</th>
-                            <th scope="col">Adject2</th>
-                            <th scope="col">Adject3</th>
-                            <th scope="col">Name</th>
+                            <th scope="col"><a href="#" (click)="sortById()">Id</a></th>
+                            <th scope="col"><a href="#" (click)="sortByAdject1()">Adject1</a></th>
+                            <th scope="col"><a href="#" (click)="sortByAdject2()">Adject2</a></th>
+                            <th scope="col"><a href="#" (click)="sortByAdject3()">Adject3</a></th>
+                            <th scope="col"><a href="#" (click)="sortByName()">Name</a></th>
                             <th scope="col">Owner</th>
                             <th scope="col">Creation</th>
                         </tr>

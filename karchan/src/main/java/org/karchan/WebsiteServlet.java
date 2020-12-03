@@ -16,11 +16,6 @@
  */
 package org.karchan;
 
-import com.google.common.annotations.VisibleForTesting;
-import org.karchan.menus.Menu;
-import freemarker.template.Template;
-import freemarker.template.TemplateException;
-import freemarker.template.TemplateNotFoundException;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.time.LocalDateTime;
@@ -35,21 +30,28 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.annotation.security.DeclareRoles;
 import javax.inject.Inject;
+import org.eclipse.microprofile.config.inject.ConfigProperty;
 import javax.security.enterprise.SecurityContext;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
+import com.google.common.annotations.VisibleForTesting;
+import freemarker.template.Template;
+import freemarker.template.TemplateException;
+import freemarker.template.TemplateNotFoundException;
+import org.karchan.menus.Menu;
 import org.karchan.menus.MenuFactory;
 import org.karchan.security.Roles;
 
 @DeclareRoles(
-        {
-          Roles.PLAYER, Roles.DEPUTY, Roles.GUILDMEMBER, Roles.GUILDMASTER, Roles.GOD
-        }
+  {
+    Roles.PLAYER, Roles.DEPUTY, Roles.GUILDMEMBER, Roles.GUILDMASTER, Roles.GOD
+  }
 )
-@WebServlet("*.html")
+@WebServlet({"*.html"})
 public class WebsiteServlet extends HttpServlet
 {
 
@@ -57,7 +59,14 @@ public class WebsiteServlet extends HttpServlet
 
   private static final String VERSION_COOKIENAME = "karchanversion";
 
-  private static final String CURRENT_VERSION = "2.0.7-SNAPSHOT";
+  private static final String CURRENT_VERSION = "2.0.7";
+
+  /**
+   * For example: https://www.karchan.org. If it isn't configured, then no redirect takes place.
+   */
+  @Inject
+  @ConfigProperty(name = "karchan.redirect.url", defaultValue = "")
+  private String redirectHttps;
 
   @Inject
   private SecurityContext securityContext;
@@ -92,12 +101,26 @@ public class WebsiteServlet extends HttpServlet
   @Override
   protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException
   {
+    final String url = getUrl(request);
+
+    if (!request.isSecure() && !"".equals(redirectHttps))
+    {
+      response.setStatus(301);
+      response.setHeader("Location", redirectHttps);
+      return;
+    }
+
     // Set response content type
-    response.setContentType("text/html;charset=UTF-8");
+    if (url.endsWith(".js"))
+    {
+      response.setContentType("application/javascript;charset=UTF-8");
+    } else
+    {
+      response.setContentType("text/html;charset=UTF-8");
+    }
 
     Cookies cookies = new Cookies(request, response);
 
-    final String url = getUrl(request);
     PrintWriter out = response.getWriter();
 
     // Actual logic goes here.
@@ -161,9 +184,9 @@ public class WebsiteServlet extends HttpServlet
     foundMenu.ifPresent(menu ->
     {
       LOGGER.log(Level.FINEST, "Menu {0} found with url {1}.", new Object[]
-      {
-        menu, url
-      });
+        {
+          menu, url
+        });
       menuFactory.setDatamodel(menu, root, request.getParameterMap());
       root.put("lastBreadcrumb", menu);
       breadcrumbs.addAll(createBreadcrumbs(menu));
@@ -171,7 +194,7 @@ public class WebsiteServlet extends HttpServlet
     });
     root.put("breadcrumbs", breadcrumbs);
 
-    String templateName = foundMenu.map(menu -> menu.getTemplate()).orElse(url.replace(".html", ""));
+    String templateName = foundMenu.map(menu -> menu.getTemplate()).orElse(url.replace(".html", "").replace(".js", ""));
     root.put("template", templateName);
 
     /* Get the template (uses cache internally) */

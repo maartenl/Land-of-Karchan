@@ -400,6 +400,7 @@ public class GameBean
       person.setArm(pperson.arm);
       person.setLeg(pperson.leg);
       person.setBirth(LocalDateTime.now());
+      person.setOoc(true);
       person.setCreation(LocalDateTime.now());
       person.setRoom(getEntityManager().find(Room.class, Room.STARTERS_ROOM));
 
@@ -906,7 +907,7 @@ public class GameBean
     try
     {
       String message = "You have left the game. (" + LocalDateTime.now().format(DATETIME_FORMAT) + ")<br>";
-      CommunicationService.getCommunicationService(person.getRoom()).sendMessage(person, message);
+      CommunicationService.getCommunicationService(person).writeMessage(person, message);
       person.deactivate();
       logBean.writeLog(person, "left the game.");
     } catch (WebApplicationException e)

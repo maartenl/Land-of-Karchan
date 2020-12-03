@@ -27,6 +27,11 @@
               <td (click)="setPicture(picture)">{{ picture.url }}</td>
               <td (click)="setPicture(picture)">{{ picture.mimeType }}</td>
               <td (click)="setPicture(picture)">{{ picture.createDate | date:'medium' }}</td>
+              <td>
+              <button type="button" class="close" aria-label="Close" (click)="deletePicture(picture)">
+                <i class="material-icons" aria-hidden="true">delete</i>
+              </button>            
+              </td>
             </tr>
           </tbody>
         </table>

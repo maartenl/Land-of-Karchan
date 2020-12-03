@@ -29,7 +29,6 @@ import mmud.rest.services.ItemBean;
 import mmud.rest.services.admin.AdminBean;
 import mmud.testing.tests.LogBeanStub;
 import mmud.testing.tests.MudTest;
-import mockit.Mocked;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
@@ -57,8 +56,7 @@ public class DeputiesCommandTest extends MudTest
 
     private LogBeanStub logBean;
 
-    @Mocked
-    private CommandRunner commandRunner;
+    private CommandRunner commandRunner = new CommandRunner();
     private AdminBean adminBean;
     private Admin karnAdmin;
     private Admin mideviaAdmin;
@@ -121,8 +119,4 @@ public class DeputiesCommandTest extends MudTest
         writer.close();
     }
 
-    @AfterMethod
-    public void tearDownMethod() throws Exception
-    {
-    }
 }

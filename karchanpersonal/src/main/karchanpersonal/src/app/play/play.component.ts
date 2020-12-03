@@ -80,21 +80,6 @@ export class PlayComponent implements OnInit {
         () => { // on completion
         }
       );
-    this.gameService.getLog()
-      .subscribe(
-        (result: string) => { // on success
-          this.display.log = new Log();
-          this.display.log.log = result;
-          this.display.log.size = result.length;
-          this.display.log.offset = 0;
-          console.log('log rest:' + result);
-        },
-        (err: any) => { // error
-          // console.log('error', err);
-        },
-        () => { // on completion
-        }
-      );
   }
 
   public playInit(): void {
@@ -121,12 +106,22 @@ export class PlayComponent implements OnInit {
     return false;
   }
 
+  public reconnect(): boolean {
+    this.chatlogService.reconnect();
+    return false;
+  }
+
   public quit(): boolean {
     if (window.console) { console.log('quit'); }
     this.gameService.quitGame()
       .subscribe(
         (result: any) => { // on success
+          this.display.log = new Log();
+          this.display.log.log = "";
+          this.display.log.size = 0;
+          this.display.log.offset = 0;
           this.gameService.setIsGaming(false);
+          this.chatlogService.clearMessages();
           this.chatlogService.close();
           this.router.navigate(['/']);
         },
@@ -147,11 +142,27 @@ export class PlayComponent implements OnInit {
     const formModel = this.commandForm.value;
     const command = formModel.command as string;
     if (this.karchan.bigEntry) {
-      if (window.console) { console.log('play ' + command + ' ' + this.karchan.editor); }
-      this.processCall(command + ' ' + this.karchan.editor, true);
+      let totalcommand;
+      if (command === undefined || command.trim() === '') {
+        // there is no command, hopefully only big talk editor contents
+        if (this.karchan.editor === undefined) {
+          totalcommand = '';
+        } else {
+          if (this.karchan.editor.startsWith('<p>')) {
+            totalcommand = this.karchan.editor.substr(3);
+          } else {
+            totalcommand = this.karchan.editor;
+          }
+        }
+      } else {
+        // a command was entered, perhaps with a big talk component
+        totalcommand = this.karchan.editor === undefined || this.karchan.editor === '' ? command : command + ' ' + this.karchan.editor;
+      }
+      if (window.console) { console.log('play: "' + totalcommand + '"'); }
+      this.processCall(totalcommand, true);
       return false;
     }
-    if (window.console) { console.log('play ' + command); }
+    if (window.console) { console.log('play: "' + command + '"'); }
     this.processCall(command, true);
     return false;
   }
@@ -282,18 +293,32 @@ export class PlayComponent implements OnInit {
 
   public resetLog(): boolean {
     if (window.console) { console.log('resetLog'); }
-    this.display.log.offset = 0;
-    this.display.log.size = this.display.log.log.length;
+    this.gameService.getLog()
+      .subscribe(
+        (result: string) => { // on success
+          this.display.log = new Log();
+          this.display.log.log = result;
+          this.display.log.size = result.length;
+          this.display.log.offset = 0;
+          this.chatlogService.clearMessages();
+          console.log('log rest:' + result);
+        },
+        (err: any) => { // error
+          // console.log('error', err);
+        },
+        () => { // on completion
+        }
+      );
     return false;
   }
 
   public getLog(): string {
     if (this.display.log === undefined) {
-      console.log('empty log');
+      if (window.console) { console.log('empty log'); }
       return '';
     }
     const log = this.display.log.log.substr(this.display.log.offset);
-    console.log('log ui:' + log);
+    if (window.console) { console.log('log ui:' + log); }
     return log;
   }
 
@@ -305,4 +330,8 @@ export class PlayComponent implements OnInit {
     return this.chatlogService.getMessages();
   }
 
+  public ping(): boolean {
+    this.chatlogService.ping();
+    return false;
+  }
 }

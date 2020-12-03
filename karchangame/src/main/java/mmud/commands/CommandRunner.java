@@ -23,11 +23,11 @@ import java.util.logging.Logger;
 import javax.ejb.EJB;
 import javax.ejb.LocalBean;
 import javax.ejb.Stateless;
+
+import com.google.common.annotations.VisibleForTesting;
 import mmud.database.entities.characters.User;
 import mmud.database.entities.game.DisplayInterface;
-import mmud.database.entities.game.Room;
 import mmud.database.entities.game.UserCommand;
-import mmud.database.entities.items.Item;
 import mmud.exceptions.MudException;
 import mmud.rest.services.EventsBean;
 import mmud.rest.services.GameBean;
@@ -38,13 +38,10 @@ import mmud.rest.services.LogBean;
 import mmud.rest.services.PersonBean;
 import mmud.rest.services.admin.AdminBean;
 import mmud.scripting.Items;
-import mmud.scripting.ItemsInterface;
 import mmud.scripting.Persons;
 import mmud.scripting.Rooms;
-import mmud.scripting.RoomsInterface;
 import mmud.scripting.RunScript;
 import mmud.scripting.World;
-import mmud.scripting.WorldInterface;
 import mmud.services.CommunicationService;
 
 /**
@@ -97,7 +94,7 @@ public class CommandRunner
    * @return DisplayInterface object containing the result of the command
    * executed.
    */
-  public DisplayInterface runCommand(User aUser, String aCommand, List<UserCommand> userCommands) throws MudException
+  public DisplayInterface runCommand(User aUser, String aCommand, List<UserCommand> userCommands)
   {
     LOGGER.log(Level.FINER, " entering {0}.runCommand {1}:{2}", new Object[]
     {
@@ -119,29 +116,9 @@ public class CommandRunner
       }
       List<NormalCommand> myCol = new ArrayList<>();
       Persons persons = new Persons(personBean);
-      Rooms rooms = new Rooms(new RoomsInterface()
-      {
-        @Override
-        public Room find(Long id)
-        {
-          return gameBean.find(id);
-        }
-      });
-      Items items = new Items(new ItemsInterface()
-      {
-        @Override
-        public Item createItem(long itemdefnr)
-        {
-          return itemBean.createItem(itemdefnr);
-        }
-      });
-      World world = new World(new WorldInterface(){
-        @Override
-        public String getAttribute(String name)
-        {
-          return gameBean.getAttribute(name);
-        }
-      });
+      Rooms rooms = new Rooms(id -> gameBean.find(id));
+      Items items = new Items(itemdefnr -> itemBean.createItem(itemdefnr));
+      World world = new World(name -> gameBean.getAttribute(name));
       RunScript runScript = new RunScript(persons, rooms, items, world);
       for (UserCommand myCom : userCommands)
       {
@@ -175,7 +152,7 @@ public class CommandRunner
     }
   }
 
-  private DisplayInterface determineSleep(String aCommand, User aUser) throws MudException
+  private DisplayInterface determineSleep(String aCommand, User aUser)
   {
     NormalCommand command;
     if (aCommand.trim().equalsIgnoreCase("awaken"))
@@ -189,7 +166,7 @@ public class CommandRunner
     return command.start(aCommand, aUser);
   }
 
-  private DisplayInterface determineFrogging(String aCommand, User aUser) throws MudException
+  private DisplayInterface determineFrogging(String aCommand, User aUser)
   {
     NormalCommand command = CommandFactory.getBogusCommand();
     if (aCommand.trim().equalsIgnoreCase("ribbit"))
@@ -200,7 +177,7 @@ public class CommandRunner
     return command.start(aCommand, aUser);
   }
 
-  private DisplayInterface determineJackassing(String aCommand, User aUser) throws MudException
+  private DisplayInterface determineJackassing(String aCommand, User aUser)
   {
     NormalCommand command = CommandFactory.getBogusCommand();
     if (aCommand.trim().equalsIgnoreCase("heehaw"))
@@ -244,6 +221,17 @@ public class CommandRunner
   AdminBean getAdminBean()
   {
     return adminBean;
+  }
+
+  @VisibleForTesting
+  public void setBeans(PersonBean personBean, LogBean logBean, GuildBean guildBean, ItemBean itemBean, EventsBean eventsBean, AdminBean adminBean, HelpBean helpBean) {
+    this.personBean = personBean;
+    this.logBean = logBean;
+    this.guildBean = guildBean;
+    this.itemBean = itemBean;
+    this.eventsBean = eventsBean;
+    this.adminBean = adminBean;
+    this.helpBean = helpBean;
   }
 
 }

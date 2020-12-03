@@ -24,6 +24,7 @@ export class MethodsComponent extends AdminComponent<Method, string> implements 
 
   SearchTerms = class {
     owner: string;
+    name: string;
   };
 
   searchTerms = new this.SearchTerms();
@@ -33,6 +34,14 @@ export class MethodsComponent extends AdminComponent<Method, string> implements 
       value = null;
     }
     this.searchTerms.owner = value;
+    this.getItems();
+  }
+
+  updateName(value: string) {
+    if (value.trim() === '') {
+      value = null;
+    }
+    this.searchTerms.name = value;
     this.getItems();
   }
 
@@ -117,7 +126,10 @@ export class MethodsComponent extends AdminComponent<Method, string> implements 
         const ownerFilter = method => this.searchTerms.owner === undefined ||
           this.searchTerms.owner === null ||
           this.searchTerms.owner === method.owner;
-        this.items = data.filter(ownerFilter);
+        const nameFilter = character => this.searchTerms.name === undefined ||
+          this.searchTerms.name === null ||
+          character.name.includes(this.searchTerms.name);
+          this.items = data.filter(ownerFilter).filter(nameFilter);
       }
     });
   }

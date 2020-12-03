@@ -16,202 +16,83 @@
  */
 package mmud.testing.tests.database.entities.characters;
 
-import java.io.FileWriter;
-import java.io.IOException;
 import mmud.database.entities.characters.Person;
 import mmud.database.entities.characters.User;
-import mmud.exceptions.MudException;
 import mmud.services.CommunicationService;
-import mockit.Delegate;
-import mockit.Mocked;
-import mockit.NonStrictExpectations;
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertNotNull;
-import static org.testng.Assert.fail;
-import org.testng.annotations.AfterClass;
-import org.testng.annotations.AfterMethod;
-import org.testng.annotations.BeforeClass;
-import org.testng.annotations.BeforeMethod;
-import org.testng.annotations.Test;
+import org.testng.annotations.*;
+
+import java.io.IOException;
+import java.util.function.Consumer;
+
+import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
 /**
- *
  * @author maartenl
  */
 public class PersonTest
 {
 
-    @Mocked
-    FileWriter fileWriter;
+  public PersonTest()
+  {
+  }
 
-    public PersonTest()
-    {
-    }
+  @BeforeClass
+  public void setUpClass()
+  {
+  }
 
-    @BeforeClass
-    public void setUpClass()
-    {
-    }
+  @AfterClass
+  public void tearDownClass()
+  {
+  }
 
-    @AfterClass
-    public void tearDownClass()
-    {
-    }
+  @BeforeMethod
+  public void setUp()
+  {
+  }
 
-    @BeforeMethod
-    public void setUp()
-    {
-    }
+  @AfterMethod
+  public void tearDown()
+  {
+  }
 
-    @AfterMethod
-    public void tearDown()
-    {
-    }
+  @Test
+  public void writeMessageTest()
+  {
+    Person person = new User();
+    person.setName("Marvin");
+    // Unit under test is exercised.
+    Consumer<String> consumer = s -> assertThat(s).isEqualTo("Marvin:Hello, world!");
+    CommunicationService.getCommunicationService(person, consumer).writeMessage("Hello, world!");
+  }
 
-    @Test
-    public void writeMessageTest() throws IOException
-    {
-        Person person = new User();
-        new NonStrictExpectations() // an "expectation block"
-        {
+  @Test
+  public void writeStrangeMessageTest()
+  {
+    Person person = new User();
+    person.setName("Marvin");
+    // Unit under test is exercised.
+    Consumer<String> consumer = s -> assertThat(s).isEqualTo("Marvin:Hello, world!");
+    CommunicationService.getCommunicationService(person, consumer).writeMessage("Hello,<try me> world!");
+  }
 
+  @Test
+  public void writeStrangeMessageManyTagsTest()
+  {
+    Person person = new User();
+    person.setName("Marvin");
+    // Unit under test is exercised.
+    Consumer<String> consumer = s -> assertThat(s).isEqualTo("Marvin:Hello, world!");
+    CommunicationService.getCommunicationService(person, consumer).writeMessage("Hello,<try me> wor<or>ld<this too>!");
+  }
 
-            {
-                fileWriter.write((String) any, 0, 13);
-                result = new Delegate()
-                {
-                    // The name of this method can actually be anything.
-                    public void write(String s, int off, int len)
-                    {
-                        assertNotNull(s);
-                        assertEquals(off, 0);
-                        assertEquals(s.length(), len);
-                        assertEquals(s, "Hello, world!");
-                    }
-                };
-                times = 1;
-                fileWriter.close();
-                times = 1;
-            }
-        };
-        // Unit under test is exercised.
-        try
-        {
-            CommunicationService.getCommunicationService(person).writeMessage("Hello, world!");
-        } catch (MudException ex)
-        {
-            fail("unexpected exception", ex);
-        }
-    }
-
-    @Test
-    public void writeStrangeMessageTest() throws IOException
-    {
-        Person person = new User();
-        new NonStrictExpectations() // an "expectation block"
-        {
-
-
-            {
-                fileWriter.write((String) any, 0, 13);
-                result = new Delegate()
-                {
-                    // The name of this method can actually be anything.
-                    public void write(String s, int off, int len)
-                    {
-                        assertNotNull(s);
-                        assertEquals(off, 0);
-                        assertEquals(s.length(), len);
-                        assertEquals(s, "Hello, world!");
-                    }
-                };
-                times = 1;
-                fileWriter.close();
-                times = 1;
-            }
-        };
-        // Unit under test is exercised.
-        try
-        {
-            CommunicationService.getCommunicationService(person).writeMessage("Hello,<try me> world!");
-        } catch (MudException ex)
-        {
-            fail("unexpected exception", ex);
-        }
-
-    }
-
-    @Test
-    public void writeStrangeMessageManyTagsTest() throws IOException
-    {
-        Person person = new User();
-        new NonStrictExpectations() // an "expectation block"
-        {
-
-
-            {
-                fileWriter.write((String) any, 0, 13);
-                result = new Delegate()
-                {
-                    // The name of this method can actually be anything.
-                    public void write(String s, int off, int len)
-                    {
-                        assertNotNull(s);
-                        assertEquals(off, 0);
-                        assertEquals(s.length(), len);
-                        assertEquals(s, "Hello, world!");
-                    }
-                };
-                times = 1;
-                fileWriter.close();
-                times = 1;
-            }
-        };
-        // Unit under test is exercised.
-        try
-        {
-            CommunicationService.getCommunicationService(person).writeMessage("Hello,<try me> wor<or>ld<this too>!");
-        } catch (MudException ex)
-        {
-            fail("unexpected exception", ex);
-        }
-
-    }
-
-    @Test
-    public void writeStrangeOpenTagMessageTest() throws IOException
-    {
-        Person person = new User();
-        new NonStrictExpectations() // an "expectation block"
-        {
-
-
-            {
-                fileWriter.write((String) any, 0, 6);
-                result = new Delegate()
-                {
-                    // The name of this method can actually be anything.
-                    public void write(String s, int off, int len)
-                    {
-                        assertNotNull(s);
-                        assertEquals(off, 0);
-                        assertEquals(s.length(), len);
-                        assertEquals(s, "Hello,");
-                    }
-                };
-                times = 1;
-                fileWriter.close();
-                times = 1;
-            }
-        };
-        // Unit under test is exercised.
-        try
-        {
-            CommunicationService.getCommunicationService(person).writeMessage("hello,<try me world!");
-        } catch (MudException ex)
-        {
-            fail("unexpected exception", ex);
-        }
-
-    }
+  @Test
+  public void writeStrangeOpenTagMessageTest()
+  {
+    Person person = new User();
+    person.setName("Marvin");
+    // Unit under test is exercised.
+    Consumer<String> consumer = s -> assertThat(s).isEqualTo("Marvin:Hello,");
+    CommunicationService.getCommunicationService(person, consumer).writeMessage("hello,<try me world!");
+  }
 }

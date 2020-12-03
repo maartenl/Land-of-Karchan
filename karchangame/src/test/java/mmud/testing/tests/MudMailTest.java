@@ -16,12 +16,24 @@
  */
 package mmud.testing.tests;
 
-import mmud.database.entities.characters.Person;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+import java.util.logging.Logger;
+import javax.persistence.EntityManager;
+import javax.persistence.TypedQuery;
+import javax.ws.rs.WebApplicationException;
+import javax.ws.rs.core.Response;
+
 import mmud.database.entities.characters.User;
-import mmud.database.entities.game.*;
-import mmud.database.entities.items.Item;
+import mmud.database.entities.game.Admin;
+import mmud.database.entities.game.Area;
+import mmud.database.entities.game.Mail;
+import mmud.database.entities.game.MailReceiver;
+import mmud.database.entities.game.Room;
 import mmud.database.entities.items.ItemDefinition;
-import mmud.exceptions.ErrorDetails;
 import mmud.exceptions.MudException;
 import mmud.exceptions.MudWebException;
 import mmud.rest.services.PrivateBean;
@@ -29,24 +41,23 @@ import mmud.rest.services.PublicBean;
 import mmud.rest.webentities.PrivateMail;
 import mmud.testing.TestingConstants;
 import mmud.testing.TestingUtils;
-import mockit.Delegate;
-import mockit.Expectations;
-import mockit.Mocked;
-import org.testng.annotations.*;
-
-import javax.persistence.EntityManager;
-import javax.persistence.Query;
-import javax.persistence.TypedQuery;
-import javax.ws.rs.WebApplicationException;
-import javax.ws.rs.core.Response;
-import javax.ws.rs.core.Response.ResponseBuilder;
-import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.logging.Logger;
-
-import static org.testng.Assert.*;
+import org.mockito.invocation.InvocationOnMock;
+import org.testng.annotations.AfterClass;
+import org.testng.annotations.AfterMethod;
+import org.testng.annotations.BeforeClass;
+import org.testng.annotations.BeforeMethod;
+import org.testng.annotations.Test;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.doAnswer;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertNotNull;
+import static org.testng.Assert.fail;
 
 /**
  * @author maartenl
@@ -57,32 +68,8 @@ public class MudMailTest
   // Obtain a suitable LOGGER.
   private static final Logger LOGGER = Logger.getLogger(MudMailTest.class.getName());
 
-  @Mocked
-  EntityManager entityManager;
-
-  @Mocked(
-    {
-      "ok", "status"
-    })
-  javax.ws.rs.core.Response response;
-
-  @Mocked
-  MudWebException webApplicationException;
-
-  @Mocked
-  ErrorDetails errorDetails;
-
-  @Mocked
-  ResponseBuilder responseBuilder;
-
-  @Mocked
-  Query query;
-
-  @Mocked
-  TypedQuery typedquery;
-
-  private Person hotblack;
-  private Person marvin;
+  private User hotblack;
+  private User marvin;
 
   public MudMailTest()
   {
@@ -133,10 +120,12 @@ public class MudMailTest
   /**
    * Person not found, cannot authenticate. WebApplicationException expected.
    */
-  @Test(expectedExceptions = MudWebException.class)
+  @Test
   public void listMailAuthenticate2()
   {
     LOGGER.fine("listMailAuthenticate2");
+    EntityManager entityManager = mock(EntityManager.class);
+    when(entityManager.find(User.class, "Marvin")).thenReturn(null);
     PrivateBean privateBean = new PrivateBean()
     {
       @Override
@@ -151,22 +140,26 @@ public class MudMailTest
         return "Marvin";
       }
     };
-    new Expectations() // an "expectation block"
-    {
-
-      {
-        entityManager.find(User.class, "Marvin");
-        result = null;
-      }
-    };
     // Unit under test is exercised.
-    List<PrivateMail> result = privateBean.listMail("Marvin", null);
+    assertThatThrownBy(() -> privateBean.listMail("Marvin", null)).isInstanceOf(MudWebException.class)
+      .hasMessage("User was not found  (Marvin)");
   }
 
   @Test
   public void listMailEmpty()
   {
     LOGGER.fine("listMailEmpty");
+    EntityManager entityManager = mock(EntityManager.class);
+    when(entityManager.find(User.class, "Marvin")).thenReturn(marvin);
+
+    TypedQuery listMailQuery = mock(TypedQuery.class);
+    when(entityManager.createNamedQuery("Mail.listmail", MailReceiver.class)).thenReturn(listMailQuery);
+    when(listMailQuery.getResultList()).thenReturn(Collections.emptyList());
+
+    TypedQuery nonewmailQuery = mock(TypedQuery.class);
+    when(entityManager.createNamedQuery("Mail.nonewmail")).thenReturn(nonewmailQuery);
+    when(nonewmailQuery.setParameter("name", marvin)).thenReturn(nonewmailQuery);
+
     PrivateBean privateBean = new PrivateBean()
     {
       @Override
@@ -181,27 +174,9 @@ public class MudMailTest
         return "Marvin";
       }
     };
-    new Expectations() // an "expectation block"
-    {
-
-      {
-        entityManager.find(User.class, "Marvin");
-        result = marvin;
-        entityManager.createNamedQuery("Mail.listmail", MailReceiver.class);
-        result = typedquery;
-        typedquery.setParameter("name", marvin);
-        typedquery.setMaxResults(20);
-        typedquery.getResultList();
-
-        entityManager.createNamedQuery("Mail.nonewmail");
-        result = query;
-        query.setParameter("name", marvin);
-        result = query;
-        query.executeUpdate();
-      }
-    };
     // Unit under test is exercised.
     List<PrivateMail> result = privateBean.listMail("Marvin", null);
+    verify(nonewmailQuery, times(1)).executeUpdate();
     // Verification code (JUnit/TestNG asserts), if any.
     assertEquals(result.size(), 0);
   }
@@ -214,7 +189,7 @@ public class MudMailTest
     LocalDateTime firstDate = secondDate.plusSeconds(-1_000L);
     final List<MailReceiver> list = new ArrayList<>();
     Mail mail = new Mail();
-    mail.setId(1l);
+    mail.setId(1L);
     mail.setSubject("Subject");
     mail.setBody("First mail");
     mail.setToname("hotblack");
@@ -245,6 +220,18 @@ public class MudMailTest
     mailreceiver.setToname(hotblack);
     mailreceiver.setNewmail(false);
     list.add(mailreceiver);
+
+    EntityManager entityManager = mock(EntityManager.class);
+    when(entityManager.find(User.class, "Marvin")).thenReturn(marvin);
+
+    TypedQuery listMailQuery = mock(TypedQuery.class);
+    when(entityManager.createNamedQuery("Mail.listmail", MailReceiver.class)).thenReturn(listMailQuery);
+    when(listMailQuery.getResultList()).thenReturn(list);
+
+    TypedQuery nonewmailQuery = mock(TypedQuery.class);
+    when(entityManager.createNamedQuery("Mail.nonewmail")).thenReturn(nonewmailQuery);
+    when(nonewmailQuery.setParameter("name", marvin)).thenReturn(nonewmailQuery);
+
     PrivateBean privateBean = new PrivateBean()
     {
       @Override
@@ -259,30 +246,11 @@ public class MudMailTest
         return "Marvin";
       }
     };
-    new Expectations() // an "expectation block"
-    {
 
-      {
-        entityManager.find(User.class, "Marvin");
-        result = marvin;
-        entityManager.createNamedQuery("Mail.listmail", MailReceiver.class);
-        result = typedquery;
-        typedquery.setParameter("name", marvin);
-        typedquery.setMaxResults(20);
-        typedquery.getResultList();
-        result = list;
-
-        entityManager.createNamedQuery("Mail.nonewmail");
-        result = query;
-        query.setParameter("name", marvin);
-        result = query;
-        query.executeUpdate();
-        result = 1;
-      }
-    };
     // Unit under test is exercised.
     List<PrivateMail> result = privateBean.listMail("Marvin", null);
     // Verification code (JUnit/TestNG asserts), if any.
+    verify(nonewmailQuery, times(1)).executeUpdate();
     assertEquals(result.size(), 2);
     PrivateMail expected = new PrivateMail();
     expected.body = "First mail";
@@ -321,6 +289,9 @@ public class MudMailTest
     privateMail.toname = "Hotblack";
     // all other props are ignored by the method under test
 
+    EntityManager entityManager = mock(EntityManager.class);
+    when(entityManager.find(User.class, "Marvin")).thenReturn(marvin);
+    when(entityManager.find(User.class, "Hotblack")).thenReturn(hotblack);
     PrivateBean privateBean = new PrivateBean()
     {
       @Override
@@ -335,55 +306,35 @@ public class MudMailTest
         return "Marvin";
       }
     };
-    new Expectations() // an "expectation block"
+
+    // Unit under test is exercised.
+    doAnswer((InvocationOnMock invocation) ->
     {
+      Mail mail = (Mail) invocation.getArguments()[0];
+      assertThat(mail).isNotNull();
+      assertThat(mail.getBody()).isEqualTo("First mail");
+      assertThat(mail.getSubject()).isEqualTo("Subject");
+      assertThat(mail.getId()).isNull();
+      assertThat(mail.getName()).isEqualTo(marvin);
+      assertThat(mail.getToname()).isEqualTo("Hotblack");
+      // unable to assertEquals getWhensent. As it is using the current date/time.
+      assertThat(mail.getDeleted()).isFalse();
+      return null;
+    }).when(entityManager).persist(any(Mail.class));
+    doAnswer((InvocationOnMock invocation) ->
+    {
+      MailReceiver mail = (MailReceiver) invocation.getArguments()[0];
+      assertThat(mail).isNotNull();
+      assertThat(mail.getHaveread()).isFalse();
+      assertThat(mail.getId()).isNull();
 
-      {
-        entityManager.find(User.class, "Marvin");
-        result = marvin;
-        entityManager.find(User.class, "Hotblack");
-        result = hotblack;
-        entityManager.persist((Mail) any);
-        result = new Delegate()
-        {
-          // The name of this method can actually be anything.
-          void persist(Mail mail)
-          {
-            assertNotNull(mail);
-            assertEquals(mail.getBody(), "First mail");
-            assertEquals(mail.getSubject(), "Subject");
-            assertEquals(mail.getId(), null);
-
-            assertEquals(mail.getName(), marvin);
-            assertEquals(mail.getToname(), "Hotblack");
-            // unable to assertEquals getWhensent. As it is using the current date/time.
-            assertEquals(mail.getDeleted(), Boolean.FALSE);
-
-          }
-        };
-        entityManager.persist((MailReceiver) any);
-        result = new Delegate()
-        {
-          // The name of this method can actually be anything.
-          void persist(MailReceiver mail)
-          {
-            assertNotNull(mail);
-            assertEquals(mail.getHaveread(), Boolean.FALSE);
-            assertEquals(mail.getId(), null);
-
-            assertEquals(mail.getNewmail(), Boolean.TRUE);
-            assertEquals(mail.getToname(), hotblack);
-            // unable to assertEquals getWhensent. As it is using the current date/time.
-            assertEquals(mail.getDeleted(), Boolean.FALSE);
-
-          }
-        };
-
-      }
-    };
-    responseOkExpectations();
-// Unit under test is exercised.
-    Response result = privateBean.newMail(privateMail, "Marvin");
+      assertThat(mail.getNewmail()).isTrue();
+      assertThat(mail.getToname()).isEqualTo(hotblack);
+      // unable to assertEquals getWhensent. As it is using the current date/time.
+      assertThat(mail.getDeleted()).isFalse();
+      return null;
+    }).when(entityManager).persist(any(MailReceiver.class));
+    privateBean.newMail(privateMail, "Marvin");
     // Verification code (JUnit/TestNG asserts), if any.
   }
 
@@ -410,6 +361,8 @@ public class MudMailTest
         return Arrays.asList(karn, ephinie, mya);
       }
     };
+    EntityManager entityManager = mock(EntityManager.class);
+    when(entityManager.find(User.class, "Marvin")).thenReturn(marvin);
 
     // all other props are ignored by the method under test
     PrivateBean privateBean = new PrivateBean()
@@ -433,89 +386,49 @@ public class MudMailTest
       }
 
     };
-    new Expectations() // an "expectation block"
+    // Unit under test is exercised.
+
+    List<Object> persisted = new ArrayList<>();
+    doAnswer((InvocationOnMock invocation) ->
     {
+      Object mail = invocation.getArguments()[0];
+      persisted.add(mail);
+      return null;
+    }).when(entityManager).persist(any(Object.class));
 
-      {
-        entityManager.find(User.class, "Marvin");
-        result = marvin;
-        entityManager.persist((Mail) any);
-        result = new Delegate()
-        {
-          // The name of this method can actually be anything.
-          void persist(Mail mail)
-          {
-            assertNotNull(mail);
-            assertEquals(mail.getBody(), "First mail");
-            assertEquals(mail.getSubject(), "Subject");
-            assertEquals(mail.getId(), null);
-            assertEquals(mail.getName(), marvin);
-            // unable to assertEquals getWhensent. As it is using the current date/time.
-            assertEquals(mail.getDeleted(), Boolean.FALSE);
-
-          }
-        };
-        entityManager.persist((MailReceiver) any);
-        result = new Delegate()
-        {
-          // The name of this method can actually be anything.
-          void persist(MailReceiver mail)
-          {
-            assertNotNull(mail);
-            assertEquals(mail.getHaveread(), Boolean.FALSE);
-            assertEquals(mail.getId(), null);
-
-            assertEquals(mail.getNewmail(), Boolean.TRUE);
-            assertEquals(mail.getToname().getName(), "Karn");
-            // unable to assertEquals getWhensent. As it is using the current date/time.
-            assertEquals(mail.getDeleted(), Boolean.FALSE);
-
-          }
-        };
-        entityManager.persist((MailReceiver) any);
-        result = new Delegate()
-        {
-          // The name of this method can actually be anything.
-          void persist(MailReceiver mail)
-          {
-            assertNotNull(mail);
-            assertEquals(mail.getHaveread(), Boolean.FALSE);
-            assertEquals(mail.getId(), null);
-
-            assertEquals(mail.getNewmail(), Boolean.TRUE);
-            assertEquals(mail.getToname().getName(), "Mya");
-//             unable to assertEquals getWhensent. As it is using the current date/time.
-            assertEquals(mail.getDeleted(), Boolean.FALSE);
-
-          }
-        };
-        entityManager.persist((MailReceiver) any);
-        result = new Delegate()
-        {
-          // The name of this method can actually be anything.
-          void persist(MailReceiver mail)
-          {
-            assertNotNull(mail);
-            assertEquals(mail.getHaveread(), Boolean.FALSE);
-            assertEquals(mail.getId(), null);
-
-            assertEquals(mail.getNewmail(), Boolean.TRUE);
-            assertEquals(mail.getToname().getName(), "Ephinie");
-            // unable to assertEquals getWhensent. As it is using the current date/time.
-            assertEquals(mail.getDeleted(), Boolean.FALSE);
-
-          }
-        };
-
-      }
-    };
-    responseOkExpectations();
-// Unit under test is exercised.
-    Response result = privateBean.newMail(privateMail, "Marvin");
+    privateBean.newMail(privateMail, "Marvin");
     // Verification code (JUnit/TestNG asserts), if any.
+    assertThat(persisted).hasSize(4);
+    assertThat(persisted.get(0)).isInstanceOf(Mail.class);
+    Mail mail = (Mail) persisted.get(0);
+    assertThat(mail).isNotNull();
+    assertThat(mail.getBody()).isEqualTo("First mail");
+    assertThat(mail.getSubject()).isEqualTo("Subject");
+    assertThat(mail.getId()).isNull();
+
+    assertThat(mail.getName()).isEqualTo(marvin);
+    // unable to assertEquals getWhensent. As it is using the current date/time.
+    assertThat(mail.getDeleted()).isFalse();
+    assertMailReceiver(persisted.get(1), "Karn");
+    assertMailReceiver(persisted.get(2), "Mya");
+    assertMailReceiver(persisted.get(3), "Ephinie");
+
   }
 
-  @Test(expectedExceptions = MudWebException.class)
+  private void assertMailReceiver(Object o, String name)
+  {
+    assertThat(o)
+      .isInstanceOf(MailReceiver.class);
+    MailReceiver mailreceiver = (MailReceiver) o;
+    assertThat(mailreceiver.getHaveread()).isFalse();
+    assertThat(mailreceiver.getId()).isNull();
+    assertThat(mailreceiver.getNewmail()).isTrue();
+    assertThat(mailreceiver.getToname().getName()).isEqualTo(name);
+    // unable to assertEquals getWhensent. As it is using the current date/time.
+    assertThat(mailreceiver.getDeleted()).isFalse();
+  }
+
+  @Test
   public void newMailToUnknownUser()
   {
     LOGGER.fine("newMailToUnknownUser");
@@ -524,6 +437,8 @@ public class MudMailTest
     privateMail.subject = "Subject";
     privateMail.toname = "Unknown";
     // all other props are ignored by the method under test
+    EntityManager entityManager = mock(EntityManager.class);
+    when(entityManager.find(User.class, "Marvin")).thenReturn(marvin);
     PrivateBean privateBean = new PrivateBean()
     {
       @Override
@@ -538,26 +453,19 @@ public class MudMailTest
         return "Marvin";
       }
     };
-    new Expectations() // an "expectation block"
-    {
-
-      {
-        entityManager.find(User.class, "Marvin");
-        result = marvin;
-        entityManager.find(User.class, "Unknown");
-        result = null;
-
-      }
-    };
     // Unit under test is exercised.
-    Response result = privateBean.newMail(privateMail, "Marvin");
+    assertThatThrownBy(() -> privateBean.newMail(privateMail, "Marvin"))
+      .isInstanceOf(MudWebException.class)
+      .hasMessage("User was not found (Unknown)");
   }
 
-  @Test(expectedExceptions = MudWebException.class)
+  @Test
   public void getMailDoesnotExist()
   {
     LOGGER.fine("getMailDoesnotExist");
     // all other props are ignored by the method under test
+    EntityManager entityManager = mock(EntityManager.class);
+    when(entityManager.find(User.class, "Marvin")).thenReturn(marvin);
 
     PrivateBean privateBean = new PrivateBean()
     {
@@ -574,21 +482,13 @@ public class MudMailTest
       }
 
     };
-    new Expectations() // an "expectation block"
-    {
-
-      {
-        entityManager.find(User.class, "Marvin");
-        result = marvin;
-        entityManager.find(MailReceiver.class, 1l);
-        result = null;
-      }
-    };
     // Unit under test is exercised.
-    PrivateMail actual = privateBean.getMailInfo("Marvin", 1l);
+    assertThatThrownBy(() -> privateBean.getMailInfo("Marvin", 1L))
+      .isInstanceOf(MudWebException.class)
+      .hasMessage("mmud.exceptions.MudWebException: Mail 1 not found.");
   }
 
-  @Test(expectedExceptions = MudWebException.class)
+  @Test
   public void getMailSomeoneElse()
   {
     LOGGER.fine("getMailSomeoneElse");
@@ -605,6 +505,9 @@ public class MudMailTest
     mailreceiver.setToname(hotblack);
     mailreceiver.setNewmail(true);
     // all other props are ignored by the method under test
+    EntityManager entityManager = mock(EntityManager.class);
+    when(entityManager.find(User.class, "Marvin")).thenReturn(marvin);
+    when(entityManager.find(MailReceiver.class, 1L)).thenReturn(mailreceiver);
 
     PrivateBean privateBean = new PrivateBean()
     {
@@ -621,21 +524,13 @@ public class MudMailTest
       }
 
     };
-    new Expectations() // an "expectation block"
-    {
-
-      {
-        entityManager.find(User.class, "Marvin");
-        result = marvin;
-        entityManager.find(MailReceiver.class, 1l);
-        result = mailreceiver;
-      }
-    };
     // Unit under test is exercised.
-    PrivateMail actual = privateBean.getMailInfo("Marvin", 1l);
+    assertThatThrownBy(() -> privateBean.getMailInfo("Marvin", 1L))
+      .isInstanceOf(MudWebException.class)
+      .hasMessage("mmud.exceptions.MudWebException: Mail with id 1 was not for Marvin.");
   }
 
-  @Test(expectedExceptions = MudWebException.class)
+  @Test
   public void getMailDeleted()
   {
     LOGGER.fine("getMailDeleted");
@@ -652,6 +547,9 @@ public class MudMailTest
     mailreceiver.setToname(marvin);
     mailreceiver.setNewmail(true);
     // all other props are ignored by the method under test
+    EntityManager entityManager = mock(EntityManager.class);
+    when(entityManager.find(User.class, "Marvin")).thenReturn(marvin);
+    when(entityManager.find(MailReceiver.class, 1L)).thenReturn(mailreceiver);
 
     PrivateBean privateBean = new PrivateBean()
     {
@@ -668,18 +566,10 @@ public class MudMailTest
       }
 
     };
-    new Expectations() // an "expectation block"
-    {
-
-      {
-        entityManager.find(User.class, "Marvin");
-        result = marvin;
-        entityManager.find(MailReceiver.class, 1l);
-        result = mailreceiver;
-      }
-    };
     // Unit under test is exercised.
-    PrivateMail actual = privateBean.getMailInfo("Marvin", 1l);
+    assertThatThrownBy(() -> privateBean.getMailInfo("Marvin", 1L))
+      .isInstanceOf(MudWebException.class)
+      .hasMessage("mmud.exceptions.MudWebException: Mail with id 1 was deleted.");
   }
 
   @Test
@@ -699,6 +589,9 @@ public class MudMailTest
     mailreceiver.setToname(marvin);
     mailreceiver.setNewmail(true);
     // all other props are ignored by the method under test
+    EntityManager entityManager = mock(EntityManager.class);
+    when(entityManager.find(User.class, "Marvin")).thenReturn(marvin);
+    when(entityManager.find(MailReceiver.class, 1L)).thenReturn(mailreceiver);
 
     PrivateBean privateBean = new PrivateBean()
     {
@@ -715,18 +608,8 @@ public class MudMailTest
       }
 
     };
-    new Expectations() // an "expectation block"
-    {
-
-      {
-        entityManager.find(User.class, "Marvin");
-        result = marvin;
-        entityManager.find(MailReceiver.class, 1l);
-        result = mailreceiver;
-      }
-    };
     // Unit under test is exercised.
-    PrivateMail actual = privateBean.getMailInfo("Marvin", 1l);
+    PrivateMail actual = privateBean.getMailInfo("Marvin", 1L);
     // Verification code (JUnit/TestNG asserts), if any.
     assertNotNull(actual);
     PrivateMail expected = new PrivateMail();
@@ -741,7 +624,7 @@ public class MudMailTest
   }
 
   // TODO : Fix this!
-  //@Test
+  @Test(enabled = false)
   public void createMailItem()
   {
     LOGGER.fine("createMailItem");
@@ -768,6 +651,8 @@ public class MudMailTest
     mail.setSubject("Subject");
     mail.setDeleted(Boolean.FALSE);
 //    mail.setHaveread(Boolean.FALSE);
+    EntityManager entityManager = mock(EntityManager.class);
+    when(entityManager.find(User.class, "Marvin")).thenReturn(marvin);
     PrivateBean privateBean = new PrivateBean()
     {
       @Override
@@ -776,72 +661,72 @@ public class MudMailTest
         return entityManager;
       }
     };
-    new Expectations() // an "expectation block"
-    {
-
-      {
-        entityManager.find(User.class, "Marvin");
-        result = marvin;
-        entityManager.find(Mail.class, 1l);
-        result = mail;
-        entityManager.find(ItemDefinition.class, 8009);
-        result = itemDef;
-        entityManager.createNamedQuery("ItemDefinition.maxid");
-        result = query;
-        query.getSingleResult();
-        result = Integer.valueOf(5);
-        entityManager.persist((ItemDefinition) any);
-        result = new Delegate()
-        {
-          // The name of this method can actually be anything.
-          void persist(ItemDefinition newItemDef)
-          {
-            assertNotNull(newItemDef);
-            assertEquals(newItemDef.getId(), Integer.valueOf(6));
-            assertEquals(newItemDef.getShortDescription(), itemDef.getShortDescription());
-            assertEquals(newItemDef.getReaddescription(), "this is <div id=\"karchan_letterhead\">Subject</div>.</p><p><div id=\"karchan_letterbody\">First mail</div></p><p>letterfoot</p>");
-            assertEquals(newItemDef.getName(), itemDef.getName());
-            assertEquals(newItemDef.getAdject1(), itemDef.getAdject1());
-            assertEquals(newItemDef.getAdject2(), itemDef.getAdject2());
-            assertEquals(newItemDef.getAdject3(), itemDef.getAdject3());
-            assertEquals(newItemDef.getGetable(), itemDef.getGetable());
-            assertEquals(newItemDef.getDropable(), itemDef.getDropable());
-            assertEquals(newItemDef.getVisible(), itemDef.getVisible());
-
-            assertEquals(newItemDef.getCopper(), itemDef.getCopper());
-            assertEquals(newItemDef.getOwner(), itemDef.getOwner());
-            assertEquals(newItemDef.getNotes(), itemDef.getNotes());
-          }
-        };
-
-        entityManager.find(Admin.class, Admin.DEFAULT_OWNER);
-        result = TestingConstants.getAdmin();
-
-        entityManager.persist((Item) any);
-        result = new Delegate()
-        {
-          // The name of this method can actually be anything.
-          void persist(Item item)
-          {
-            assertNotNull(item);
-            // assertEquals(item.getCreation(), LocalDateTime.now());
-            assertNull(item.getId());
-            assertEquals(item.getItemDefinition().getId(), Integer.valueOf(6));
-            assertEquals(item.getOwner(), admin);
-          }
-        };
-
-      }
-    };
+//    new Expectations() // an "expectation block"
+//    {
+//
+//      {
+//        entityManager.find(User.class, "Marvin");
+//        result = marvin;
+//        entityManager.find(Mail.class, 1l);
+//        result = mail;
+//        entityManager.find(ItemDefinition.class, 8009);
+//        result = itemDef;
+//        entityManager.createNamedQuery("ItemDefinition.maxid");
+//        result = query;
+//        query.getSingleResult();
+//        result = Integer.valueOf(5);
+//        entityManager.persist((ItemDefinition) any);
+//        result = new Delegate()
+//        {
+//          // The name of this method can actually be anything.
+//          void persist(ItemDefinition newItemDef)
+//          {
+//            assertNotNull(newItemDef);
+//            assertEquals(newItemDef.getId(), Integer.valueOf(6));
+//            assertEquals(newItemDef.getShortDescription(), itemDef.getShortDescription());
+//            assertEquals(newItemDef.getReaddescription(), "this is <div id=\"karchan_letterhead\">Subject</div>.</p><p><div id=\"karchan_letterbody\">First mail</div></p><p>letterfoot</p>");
+//            assertEquals(newItemDef.getName(), itemDef.getName());
+//            assertEquals(newItemDef.getAdject1(), itemDef.getAdject1());
+//            assertEquals(newItemDef.getAdject2(), itemDef.getAdject2());
+//            assertEquals(newItemDef.getAdject3(), itemDef.getAdject3());
+//            assertEquals(newItemDef.getGetable(), itemDef.getGetable());
+//            assertEquals(newItemDef.getDropable(), itemDef.getDropable());
+//            assertEquals(newItemDef.getVisible(), itemDef.getVisible());
+//
+//            assertEquals(newItemDef.getCopper(), itemDef.getCopper());
+//            assertEquals(newItemDef.getOwner(), itemDef.getOwner());
+//            assertEquals(newItemDef.getNotes(), itemDef.getNotes());
+//          }
+//        };
+//
+//        entityManager.find(Admin.class, Admin.DEFAULT_OWNER);
+//        result = TestingConstants.getAdmin();
+//
+//        entityManager.persist((Item) any);
+//        result = new Delegate()
+//        {
+//          // The name of this method can actually be anything.
+//          void persist(Item item)
+//          {
+//            assertNotNull(item);
+//            // assertEquals(item.getCreation(), LocalDateTime.now());
+//            assertNull(item.getId());
+//            assertEquals(item.getItemDefinition().getId(), Integer.valueOf(6));
+//            assertEquals(item.getOwner(), admin);
+//          }
+//        };
+//
+//      }
+//    };
     // Unit under test is exercised.
-    Response response = privateBean.createMailItem("Marvin", 1l, 1);
+    Response response = privateBean.createMailItem("Marvin", 1L, 1);
     // Verification code (JUnit/TestNG asserts), if any.
     assertNotNull(response);
     assertEquals(response.getStatus(), Response.Status.OK.getStatusCode());
   }
 
   // TODO : Fix this!
-  //@Test
+  @Test(enabled = false)
   public void createSecondMailItem() throws MudException
   {
     LOGGER.fine("createSecondMailItem");
@@ -869,6 +754,8 @@ public class MudMailTest
     mail.setDeleted(Boolean.FALSE);
 //    mail.setHaveread(Boolean.FALSE);
 //    mail.setItemDefinition(itemDef);
+    EntityManager entityManager = mock(EntityManager.class);
+    when(entityManager.find(User.class, "Marvin")).thenReturn(marvin);
     PrivateBean privateBean = new PrivateBean()
     {
       @Override
@@ -877,41 +764,41 @@ public class MudMailTest
         return entityManager;
       }
     };
-    new Expectations() // an "expectation block"
-    {
-
-      {
-        entityManager.find(User.class, "Marvin");
-        result = marvin;
-        entityManager.find(Mail.class, 1l);
-        result = mail;
-        entityManager.find(Admin.class, Admin.DEFAULT_OWNER);
-        result = TestingConstants.getAdmin();
-        entityManager.persist((Item) any);
-        result = new Delegate()
-        {
-          // The name of this method can actually be anything.
-          void persist(Item item)
-          {
-            assertNotNull(item);
-            // assertEquals(item.getCreation(), LocalDateTime.now());
-            assertNull(item.getId());
-            assertEquals(item.getItemDefinition().getId(), Integer.valueOf(12));
-            assertEquals(item.getOwner(), admin);
-          }
-        };
-
-      }
-    };
+//    new Expectations() // an "expectation block"
+//    {
+//
+//      {
+//        entityManager.find(User.class, "Marvin");
+//        result = marvin;
+//        entityManager.find(Mail.class, 1l);
+//        result = mail;
+//        entityManager.find(Admin.class, Admin.DEFAULT_OWNER);
+//        result = TestingConstants.getAdmin();
+//        entityManager.persist((Item) any);
+//        result = new Delegate()
+//        {
+//          // The name of this method can actually be anything.
+//          void persist(Item item)
+//          {
+//            assertNotNull(item);
+//            // assertEquals(item.getCreation(), LocalDateTime.now());
+//            assertNull(item.getId());
+//            assertEquals(item.getItemDefinition().getId(), Integer.valueOf(12));
+//            assertEquals(item.getOwner(), admin);
+//          }
+//        };
+//
+//      }
+//    };
     // Unit under test is exercised.
-    Response response = privateBean.createMailItem("Marvin", 1l, 1);
+    Response response = privateBean.createMailItem("Marvin", 1L, 1);
     // Verification code (JUnit/TestNG asserts), if any.
     assertNotNull(response);
     assertEquals(response.getStatus(), Response.Status.OK.getStatusCode());
   }
 
   // TODO : Fix this!
-  //@Test
+  @Test(enabled = false)
   public void createMailItemError1() throws MudException
   {
     LOGGER.fine("createMailItemError1");
@@ -922,6 +809,8 @@ public class MudMailTest
     mail.setSubject("Subject");
     mail.setDeleted(Boolean.FALSE);
 //    mail.setHaveread(Boolean.FALSE);
+    EntityManager entityManager = mock(EntityManager.class);
+    when(entityManager.find(User.class, "Marvin")).thenReturn(marvin);
     PrivateBean privateBean = new PrivateBean()
     {
       @Override
@@ -930,20 +819,20 @@ public class MudMailTest
         return entityManager;
       }
     };
-    new Expectations() // an "expectation block"
-    {
-
-      {
-        entityManager.find(User.class, "Marvin");
-        result = marvin;
-        entityManager.find(Mail.class, 1l);
-        result = mail;
-      }
-    };
+//    new Expectations() // an "expectation block"
+//    {
+//
+//      {
+//        entityManager.find(User.class, "Marvin");
+//        result = marvin;
+//        entityManager.find(Mail.class, 1l);
+//        result = mail;
+//      }
+//    };
     try
     {
       // Unit under test is exercised.
-      Response response = privateBean.createMailItem("Marvin", 1l, -1);
+      privateBean.createMailItem("Marvin", 1L, -1);
       fail("Exception expected");
     } catch (WebApplicationException result)
     {
@@ -954,7 +843,7 @@ public class MudMailTest
   }
 
   // TODO : Fix this!
-  //@Test
+  @Test(enabled = false)
   public void createMailItemError2() throws MudException
   {
     LOGGER.fine("createMailItemError1");
@@ -965,6 +854,8 @@ public class MudMailTest
     mail.setSubject("Subject");
     mail.setDeleted(Boolean.FALSE);
 //    mail.setHaveread(Boolean.FALSE);
+    EntityManager entityManager = mock(EntityManager.class);
+    when(entityManager.find(User.class, "Marvin")).thenReturn(marvin);
     PrivateBean privateBean = new PrivateBean()
     {
       @Override
@@ -973,20 +864,20 @@ public class MudMailTest
         return entityManager;
       }
     };
-    new Expectations() // an "expectation block"
-    {
-
-      {
-        entityManager.find(User.class, "Marvin");
-        result = marvin;
-        entityManager.find(Mail.class, 1l);
-        result = mail;
-      }
-    };
+//    new Expectations() // an "expectation block"
+//    {
+//
+//      {
+//        entityManager.find(User.class, "Marvin");
+//        result = marvin;
+//        entityManager.find(Mail.class, 1l);
+//        result = mail;
+//      }
+//    };
     try
     {
       // Unit under test is exercised.
-      Response response = privateBean.createMailItem("Marvin", 1l, 8);
+      privateBean.createMailItem("Marvin", 1l, 8);
       fail("Exception expected");
     } catch (WebApplicationException result)
     {
@@ -1001,7 +892,7 @@ public class MudMailTest
   {
     LOGGER.fine("deleteMail");
     final Mail mail = new Mail();
-    mail.setId(1l);
+    mail.setId(1L);
     mail.setToname("marvin");
     mail.setName(hotblack);
     mail.setBody("First mail");
@@ -1013,6 +904,9 @@ public class MudMailTest
     mailreceiver.setHaveread(false);
     mailreceiver.setToname(marvin);
     mailreceiver.setNewmail(true);
+    EntityManager entityManager = mock(EntityManager.class);
+    when(entityManager.find(User.class, "Marvin")).thenReturn(marvin);
+    when(entityManager.find(MailReceiver.class, 1L)).thenReturn(mailreceiver);
     PrivateBean privateBean = new PrivateBean()
     {
       @Override
@@ -1028,19 +922,8 @@ public class MudMailTest
       }
 
     };
-    new Expectations() // an "expectation block"
-    {
-
-      {
-        entityManager.find(User.class, "Marvin");
-        result = marvin;
-        entityManager.find(MailReceiver.class, 1l);
-        result = mailreceiver;
-      }
-    };
-    responseOkExpectations();
     // Unit under test is exercised.
-    Response response = privateBean.deleteMail("Marvin", 1l);
+    privateBean.deleteMail("Marvin", 1L);
     // Verification code (JUnit/TestNG asserts), if any.
     assertEquals(mailreceiver.getDeleted(), Boolean.TRUE);
   }
@@ -1050,7 +933,7 @@ public class MudMailTest
   {
     LOGGER.fine("deleteMail");
     final Mail mail = new Mail();
-    mail.setId(1l);
+    mail.setId(1L);
     mail.setToname("hotblack");
     mail.setName(marvin);
     mail.setBody("First mail");
@@ -1062,6 +945,9 @@ public class MudMailTest
     mailreceiver.setHaveread(false);
     mailreceiver.setToname(hotblack);
     mailreceiver.setNewmail(true);
+    EntityManager entityManager = mock(EntityManager.class);
+    when(entityManager.find(User.class, "Marvin")).thenReturn(marvin);
+    when(entityManager.find(MailReceiver.class, 1L)).thenReturn(mailreceiver);
     PrivateBean privateBean = new PrivateBean()
     {
       @Override
@@ -1077,33 +963,21 @@ public class MudMailTest
       }
 
     };
-    new Expectations() // an "expectation block"
-    {
-
-      {
-        entityManager.find(User.class, "Marvin");
-        result = marvin;
-        entityManager.find(MailReceiver.class, 1l);
-        result = mailreceiver;
-      }
-    };
-
     // Unit under test is exercised.
-    try
-    {
-      privateBean.deleteMail("Marvin", 1l);
-      fail("Exception expected");
-    } catch (MudWebException result)
-    {
-      // Yay! We get an exception!
-    }// Verification code (JUnit/TestNG asserts), if any.
+    assertThatThrownBy(() -> privateBean.deleteMail("Marvin", 1L))
+      .isInstanceOf(MudWebException.class)
+      .hasMessage("Mail with id 1 was not for Marvin.");
+    // Verification code (JUnit/TestNG asserts), if any.
     assertEquals(mailreceiver.getDeleted(), Boolean.FALSE);
   }
 
-  @Test(expectedExceptions = MudWebException.class)
+  @Test
   public void deleteMailNotFound() throws MudException
   {
     LOGGER.fine("deleteMail");
+    EntityManager entityManager = mock(EntityManager.class);
+    when(entityManager.find(User.class, "Marvin")).thenReturn(marvin);
+    when(entityManager.find(MailReceiver.class, 1L)).thenReturn(null);
     PrivateBean privateBean = new PrivateBean()
     {
       @Override
@@ -1119,31 +993,10 @@ public class MudMailTest
       }
 
     };
-    new Expectations() // an "expectation block"
-    {
-
-      {
-        entityManager.find(User.class, "Marvin");
-        result = marvin;
-        entityManager.find(MailReceiver.class, 1L);
-        result = null;
-      }
-    };
     // Unit under test is exercised.
-    Response response = privateBean.deleteMail("Marvin", 1L);
-  }
-
-  private void responseOkExpectations()
-  {
-    new Expectations() // an "expectation block"
-    {
-
-      {
-        Response.ok();
-        result = responseBuilder;
-        responseBuilder.build();
-      }
-    };
+    assertThatThrownBy(() -> privateBean.deleteMail("Marvin", 1L))
+      .isInstanceOf(MudWebException.class)
+      .hasMessage("Mail 1 not found.");
   }
 
 }

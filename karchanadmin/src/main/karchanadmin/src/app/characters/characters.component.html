@@ -1,5 +1,33 @@
 <div class="container-fluid">
     <div class="row row-content">
+        <div class="col-xs-12">
+            <form>
+                <fieldset class="form-group">
+                    <input type="text" class="form-control" id="ownerSearch" name="ownerSearch" placeholder="Owner"
+                        #searchowner (keyup.enter)="updateOwnerSearch(searchowner.value)"
+                        (blur)="updateOwnerSearch(searchowner.value)">
+                </fieldset>
+                <fieldset class="form-group">
+                    <input type="text" class="form-control" id="nameSearch" name="nameSearch" placeholder="Name"
+                        #searchname (keyup.enter)="updateNameSearch(searchname.value)"
+                        (blur)="updateNameSearch(searchname.value)">
+                </fieldset>
+                <fieldset class="form-group">
+                    <input type="text" class="form-control" id="ipSearch" name="ipSearch" placeholder="Address"
+                        #searchip (keyup.enter)="updateIpSearch(searchip.value)"
+                        (blur)="updateIpSearch(searchip.value)">
+                </fieldset>
+                <fieldset class="form-group">
+                    <input type="text" class="form-control" id="roomSearch" name="roomSearch"
+                        placeholder="Roomnr" #searchroom
+                        (keyup.enter)="updateRoomSearch(searchroom.value)"
+                        (blur)="updateRoomSearch(searchroom.value)">
+                </fieldset>
+            </form>
+        </div>
+    </div>
+</div><div class="container-fluid">
+    <div class="row row-content">
         <div class="col-xs-12 col-xl-6">
             <h1>Character {{ item === undefined ? '-' : item.name }}</h1>
             <form [formGroup]="form" novalidate>
@@ -132,7 +160,7 @@
                             <th scope="col">Room</th>
                             <th scope="col">Race</th>
                             <th scope="col">Sex</th>
-                            <th scope="col">Age</th>
+                            <th scope="col">Address</th>
                             <th scope="col">Owner</th>
                             <th scope="col">Creation</th>
                         </tr>
@@ -144,7 +172,7 @@
                             <td *ngIf="character">{{ character.room }}</td>
                             <td *ngIf="character">{{ character.race }}</td>
                             <td *ngIf="character">{{ character.sex }}</td>
-                            <td *ngIf="character">{{ character.age }}</td>
+                            <td *ngIf="character">{{ character.address }}</td>
                             <td *ngIf="character">{{ character.owner }}</td>
                             <td *ngIf="character">{{ character.creation }}</td>
                         </tr>

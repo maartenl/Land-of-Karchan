@@ -23,22 +23,29 @@ import mmud.database.entities.characters.Person;
 import mmud.database.entities.characters.User;
 import mmud.database.entities.game.DisplayInterface;
 import mmud.database.entities.game.Guild;
+import mmud.database.entities.game.Guildrank;
 import mmud.database.entities.game.Room;
+import mmud.exceptions.MudWebException;
+import mmud.rest.services.GameBean;
 import mmud.rest.services.GuildBean;
 import mmud.rest.services.LogBean;
+import mmud.testing.tests.LogBeanStub;
 import mmud.testing.tests.MudTest;
-import mockit.Expectations;
-import mockit.Mocked;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
 import java.io.File;
 import java.io.PrintWriter;
-import java.util.HashSet;
+import java.util.*;
+
 import mmud.services.CommunicationService;
 
+import javax.persistence.EntityManager;
+import javax.ws.rs.core.Response;
+
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+import static org.mockito.Mockito.mock;
 
 /**
  *
@@ -50,14 +57,31 @@ public class DeleteGuildCommandTest extends MudTest
   private User karn;
   private Room room1;
 
-  @Mocked
-  private GuildBean guildBean;
+  private GuildBean guildBean = new GuildBean(){
+    @Override
+    protected User authenticateGuildMaster(String name)
+    {
+      if (!karn.getName().equals(name))
+      {
+        throw new MudWebException(name, "You are not logged in as " + name, Response.Status.UNAUTHORIZED);
+      }
+      User person = karn;
+      if (person.getGuild() == null)
+      {
+        throw new MudWebException(name, name + " is not a member of a guild.", "Person (" + name + ") is not a member of a guild", Response.Status.NOT_FOUND);
+      }
+      if (!person.getGuild().getBoss().getName().equals(person.getName()))
+      {
+        throw new MudWebException(name, name + " is not the guild master of " + person.getGuild().getTitle() + ".", "Person (" + name + ") is not the guild master of " + person.getGuild().getName(), Response.Status.UNAUTHORIZED);
+      }
+      return person;
+    }
 
-  @Mocked
-  private LogBean logBean;
+  };
 
-  @Mocked
-  private CommandRunner commandRunner;
+  private LogBean logBean = new LogBeanStub();
+
+  private CommandRunner commandRunner = new CommandRunner();
 
   public DeleteGuildCommandTest()
   {
@@ -87,25 +111,24 @@ public class DeleteGuildCommandTest extends MudTest
   @Test
   public void deleteGuild()
   {
+    EntityManager entityManager = mock(EntityManager.class);
+    setField(GuildBean.class, "em", guildBean, entityManager);
+
     karn.setGuild(new Guild());
     karn.getGuild().setName("oldguild");
     karn.getGuild().setTitle("oldtitle");
+    karn.getGuild().setBoss(karn);
+    SortedSet<User> users = new TreeSet<>(Comparator.comparing(User::getName));
+    users.add(karn);
+    karn.getGuild().setMembers(users);
+    karn.getGuild().setActiveMembers(users);
+    SortedSet<Guildrank> ranks = new TreeSet<>();
+    karn.getGuild().setGuildrankCollection(ranks);
+
     DeleteGuildCommand deleteguildCommand = new DeleteGuildCommand("deleteguild");
     deleteguildCommand.setCallback(commandRunner);
     assertThat(deleteguildCommand.getRegExpr()).isEqualTo("deleteguild");
-    new Expectations() // an "expectation block"
-    {
-
-      {
-        commandRunner.getLogBean();
-        result = logBean;
-
-        commandRunner.getGuildBean();
-        result = guildBean;
-
-        guildBean.deleteGuild("Karn");
-      }
-    };
+    commandRunner.setBeans(null, logBean, guildBean, null, null, null, null);
     DisplayInterface display = deleteguildCommand.run("deleteguild", karn);
     assertThat(display).isNotNull();
     assertThat(display.getBody()).isEqualTo("You are in a small room.");

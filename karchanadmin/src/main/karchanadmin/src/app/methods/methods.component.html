@@ -6,6 +6,10 @@
                     <input type="text" class="form-control" id="owner" name="owner" placeholder="Owner" #searchowner
                         (keyup.enter)="updateOwner(searchowner.value)" (blur)="updateOwner(searchowner.value)">
                 </fieldset>
+                <fieldset class="form-group">
+                    <input type="text" class="form-control" id="name" name="name" placeholder="Methodname" #searchname
+                        (keyup.enter)="updateName(searchname.value)" (blur)="updateName(searchname.value)">
+                </fieldset>
             </form>
         </div>
     </div>

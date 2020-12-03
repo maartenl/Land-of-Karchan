@@ -28,7 +28,6 @@ import mmud.rest.services.PersonBean;
 import mmud.testing.TestingConstants;
 import mmud.testing.tests.LogBeanStub;
 import mmud.testing.tests.MudTest;
-import mockit.Mocked;
 import org.testng.annotations.*;
 
 import java.io.File;
@@ -53,8 +52,7 @@ public class HeehawCommandTest extends MudTest
 
   private LogBeanStub logBean;
 
-  @Mocked
-  private CommandRunner commandRunner;
+  private CommandRunner commandRunner = new CommandRunner();
 
   private PersonBean personBean;
 
@@ -76,7 +74,7 @@ public class HeehawCommandTest extends MudTest
     DisplayInterface display = heehawCommand.run("heehaw", marvin);
     assertThat(display).isNull();
     String log = CommunicationService.getCommunicationService(marvin).getLog(0);
-    assertThat(log).isEqualTo("");
+    assertThat(log).isEmpty();
   }
 
   /**
@@ -96,7 +94,7 @@ public class HeehawCommandTest extends MudTest
     String log = CommunicationService.getCommunicationService(marvin).getLog(0);
     assertThat(log).isEqualTo("A jackass called Marvin says &#34;Heeehaw!&#34;.<br />\nYou feel the need to say &#39;Heehaw&#39; just 4 times.<br />\r\n");
     assertThat(marvin.getJackassing()).isEqualTo(4);
-    assertThat(logBean.getLog()).isEqualTo("");
+    assertThat(logBean.getLog()).isEmpty();
   }
 
   /**
@@ -116,17 +114,7 @@ public class HeehawCommandTest extends MudTest
     String log = CommunicationService.getCommunicationService(marvin).getLog(0);
     assertThat(log).isEqualTo("You cannot say &#39;Heehaw&#39; that fast! You will get tongue tied!<br />\r\n");
     assertThat(marvin.getJackassing()).isEqualTo(5);
-    assertThat(logBean.getLog()).isEqualTo("");
-  }
-
-  @BeforeClass
-  public static void setUpClass() throws Exception
-  {
-  }
-
-  @AfterClass
-  public static void tearDownClass() throws Exception
-  {
+    assertThat(logBean.getLog()).isEmpty();
   }
 
   @BeforeMethod
@@ -168,11 +156,6 @@ public class HeehawCommandTest extends MudTest
     file = new File(Constants.getMudfilepath() + File.separator + "Marvin.log");
     writer = new PrintWriter(file);
     writer.close();
-  }
-
-  @AfterMethod
-  public void tearDownMethod() throws Exception
-  {
   }
 
 }

@@ -18,6 +18,29 @@ export class ItemsComponent extends AdminComponent<Item, number> implements OnIn
 
   form: FormGroup;
 
+  SearchTerms = class {
+    owner: string;
+    name: string;
+  };
+
+  searchTerms = new this.SearchTerms();
+
+  updateOwner(value: string) {
+    if (value.trim() === '') {
+      value = null;
+    }
+    this.searchTerms.owner = value;
+    this.getItems();
+  }
+
+  updateName(value: string) {
+    if (value.trim() === '') {
+      value = null;
+    }
+    this.searchTerms.name = value;
+    this.getItems();
+  }
+
   constructor(
     private itemsRestService: ItemsRestService,
     private route: ActivatedRoute,
@@ -48,7 +71,13 @@ export class ItemsComponent extends AdminComponent<Item, number> implements OnIn
     this.itemsRestService.getAll()
       .subscribe({
         next: data => {
-          this.items = data;
+          const ownerFilter = method => this.searchTerms.owner === undefined ||
+            this.searchTerms.owner === null ||
+            this.searchTerms.owner === method.owner;
+          const nameFilter = character => this.searchTerms.name === undefined ||
+            this.searchTerms.name === null ||
+            character.name.includes(this.searchTerms.name);
+          this.items = data.filter(ownerFilter).filter(nameFilter);
         }
       });
   }
@@ -146,7 +175,7 @@ export class ItemsComponent extends AdminComponent<Item, number> implements OnIn
       bound: item.bound,
       owner: item.owner,
       creation: item.creation
-      });
+    });
   }
 
   getForm(): Item {
@@ -159,13 +188,37 @@ export class ItemsComponent extends AdminComponent<Item, number> implements OnIn
     const owner = this.item === undefined ? null : this.item.owner;
     const saveItem: Item = new Item({
       id,
-      callable: formModel.callable as boolean,
-      item: formModel.item as string,
+      adject1: formModel.adject1 as string,
+      adject2: formModel.adject2 as string,
+      adject3: formModel.adject3 as string,
+      name: formModel.name as string,
       room: formModel.room as number,
-      methodName: formModel.methodName as string,
+      eatable: formModel.eatable as string,
+      drinkable: formModel.drinkable as string,
+      lightable: formModel.lightable as boolean,
+      getable: formModel.getable as boolean,
+      dropable: formModel.dropable as boolean,
+      visible: formModel.visible as boolean,
+      wieldable: formModel.wieldable as boolean,
+      description: formModel.description as string,
+      readdescr: formModel.readdescr as string,
+      wearable: formModel.wearable as number,
+      copper: formModel.copper as number,
+      weight: formModel.weight as number,
+      container: formModel.container as number,
+      capacity: formModel.capacity as number,
+      isopenable: formModel.isopenable as boolean,
+      keyid: formModel.keyid as number,
+      containtype: formModel.containtype as number,
+      notes: formModel.notes as string,
+      image: formModel.image as string,
+      title: formModel.title as string,
+      discriminator: formModel.discriminator as number,
+      bound: formModel.bound as boolean,
       creation,
       owner
     });
+    console.log(saveItem);
     return saveItem;
   }
 
@@ -179,6 +232,84 @@ export class ItemsComponent extends AdminComponent<Item, number> implements OnIn
 
   makeItem(): Item {
     return new Item();
+  }
+
+  sortById() {
+    if (window.console) {
+      console.log('sortById');
+    }
+    this.items = this.items.sort((a, b) => a.id - b.id);
+    this.items = [...this.items];
+    return false;
+  }
+
+  sortByAdject1() {
+    if (window.console) {
+      console.log('sortByAdject1');
+    }
+    this.items = this.items.sort((a, b) => { 
+      if (a.adject1 === b.adject1) {
+        return 0;
+      }
+      else if (a.adject1 === null) {
+        return 1;
+      } 
+      else if (b.adject1 === null) {
+        return -1;
+      }
+      return a.adject1.localeCompare(b.adject1) 
+    });
+    this.items = [...this.items];
+    return false;
+  }
+
+  sortByAdject2() {
+    if (window.console) {
+      console.log('sortByAdject2');
+    }
+    this.items = this.items.sort((a, b) => { 
+      if (a.adject2 === b.adject2) {
+        return 0;
+      }
+      else if (a.adject2 === null) {
+        return 1;
+      } 
+      else if (b.adject2 === null) {
+        return -1;
+      }
+      return a.adject2.localeCompare(b.adject2) 
+    });
+    this.items = [...this.items];
+    return false;
+  }
+
+  sortByAdject3() {
+    if (window.console) {
+      console.log('sortByAdject3');
+    }
+    this.items = this.items.sort((a, b) => { 
+      if (a.adject3 === b.adject3) {
+        return 0;
+      }
+      else if (a.adject3 === null) {
+        return 1;
+      } 
+      else if (b.adject3 === null) {
+        return -1;
+      }
+      return a.adject3.localeCompare(b.adject3) 
+    });
+    this.items = [...this.items];
+    return false;
+  }
+
+  sortByName() {
+    if (window.console) {
+      console.log('sortByName');
+    }
+    this.items = this.items.sort((a, b) => a.name.localeCompare(b.name));
+    this.items = [...this.items];
+    return false;
   }
 
 }

@@ -30,7 +30,6 @@ import mmud.rest.services.LogBean;
 import mmud.rest.services.admin.AdminBean;
 import mmud.testing.tests.LogBeanStub;
 import mmud.testing.tests.MudTest;
-import mockit.Mocked;
 import org.testng.annotations.*;
 
 import java.io.File;
@@ -56,8 +55,7 @@ public class OwnerCommandTest extends MudTest
 
     private LogBeanStub logBean;
 
-    @Mocked
-    private CommandRunner commandRunner;
+    private CommandRunner commandRunner = new CommandRunner();
     private AdminBean adminBean;
     private Admin karnAdmin;
     private Admin mideviaAdmin;

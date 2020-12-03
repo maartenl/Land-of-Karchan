@@ -187,6 +187,6 @@ public class MailReceiver implements Serializable {
 
   @Override
   public String toString() {
-    return "mmud.database.entities.game.Mail[ id=" + id + " ]";
+    return "mmud.database.entities.game.MailReceiver[ id=" + id + " ]";
   }
 }

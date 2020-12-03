@@ -30,8 +30,6 @@ import mmud.rest.services.PersonBean;
 import mmud.testing.TestingConstants;
 import mmud.testing.tests.LogBeanStub;
 import mmud.testing.tests.MudTest;
-import mockit.Expectations;
-import mockit.Mocked;
 import org.testng.annotations.*;
 
 import java.io.File;
@@ -56,8 +54,7 @@ public class AdminCommandTest extends MudTest
 
   private LogBeanStub logBean;
 
-  @Mocked
-  private CommandRunner commandRunner;
+  private CommandRunner commandRunner = new CommandRunner();
 
   private PersonBean personBean;
 
@@ -90,17 +87,10 @@ public class AdminCommandTest extends MudTest
     AdminCommand adminCommand = new AdminCommand("admin .+");
     adminCommand.setCallback(commandRunner);
     assertThat(adminCommand.getRegExpr()).isEqualTo("admin .+");
-    new Expectations() // an "expectation block"
-    {
-
-      {
-        commandRunner.getLogBean();
-        result = logBean;
-      }
-    };
+commandRunner.setBeans(null, logBean, null, null, null, null, null);
     DisplayInterface display = adminCommand.run("admin visible on", karn);
     assertThat(display).isNotNull();
-    assertThat(karn.getVisible()).isEqualTo(true);
+    assertThat(karn.getVisible()).isTrue();
     String log = CommunicationService.getCommunicationService(karn).getLog(0);
     assertThat(log).isEqualTo("Setting visibility to true.<br />\r\n");
     assertThat(logBean.getLog()).isEqualTo("Karn: turned visible.\n");
@@ -113,17 +103,10 @@ public class AdminCommandTest extends MudTest
     AdminCommand adminCommand = new AdminCommand("admin .+");
     adminCommand.setCallback(commandRunner);
     assertThat(adminCommand.getRegExpr()).isEqualTo("admin .+");
-    new Expectations() // an "expectation block"
-    {
-
-      {
-        commandRunner.getLogBean();
-        result = logBean;
-      }
-    };
+commandRunner.setBeans(null, logBean, null, null, null, null, null);
     DisplayInterface display = adminCommand.run("admin visible off", karn);
     assertThat(display).isNotNull();
-    assertThat(karn.getVisible()).isEqualTo(false);
+    assertThat(karn.getVisible()).isFalse();
     String log = CommunicationService.getCommunicationService(karn).getLog(0);
     assertThat(log).isEqualTo("Setting visibility to false.<br />\r\n");
     assertThat(logBean.getLog()).isEqualTo("Karn: turned invisible.\n");
@@ -135,22 +118,13 @@ public class AdminCommandTest extends MudTest
     AdminCommand adminCommand = new AdminCommand("admin .+");
     adminCommand.setCallback(commandRunner);
     assertThat(adminCommand.getRegExpr()).isEqualTo("admin .+");
-    assertThat(marvin.getFrogging()).isEqualTo(0);
-    assertThat(marvin.getJackassing()).isEqualTo(0);
-    new Expectations() // an "expectation block"
-    {
-
-      {
-        commandRunner.getPersonBean();
-        result = personBean;
-        commandRunner.getLogBean();
-        result = logBean;
-      }
-    };
+    assertThat(marvin.getFrogging()).isZero();
+    assertThat(marvin.getJackassing()).isZero();
+commandRunner.setBeans(personBean, logBean, null, null, null, null, null);
     DisplayInterface display = adminCommand.run("admin frog marvin 5", karn);
     assertThat(display).isNotNull();
     assertThat(marvin.getFrogging()).isEqualTo(5);
-    assertThat(marvin.getJackassing()).isEqualTo(0);
+    assertThat(marvin.getJackassing()).isZero();
     assertThat(CommunicationService.getCommunicationService(karn).getLog(0)).isEqualTo("Changed Marvin into frog (5).<br />\r\nMarvin is suddenly changed into a frog!<br />\r\n");
     assertThat(CommunicationService.getCommunicationService(marvin).getLog(0)).isEqualTo("You are suddenly changed into a frog!<br />\r\n");
     assertThat(logBean.getLog()).isEqualTo("Marvin: was changed into a frog by Karn for 5.\n");
@@ -162,21 +136,12 @@ public class AdminCommandTest extends MudTest
     AdminCommand adminCommand = new AdminCommand("admin .+");
     adminCommand.setCallback(commandRunner);
     assertThat(adminCommand.getRegExpr()).isEqualTo("admin .+");
-    assertThat(marvin.getFrogging()).isEqualTo(0);
-    assertThat(marvin.getJackassing()).isEqualTo(0);
-    new Expectations() // an "expectation block"
-    {
-
-      {
-        commandRunner.getPersonBean();
-        result = personBean;
-        commandRunner.getLogBean();
-        result = logBean;
-      }
-    };
+    assertThat(marvin.getFrogging()).isZero();
+    assertThat(marvin.getJackassing()).isZero();
+commandRunner.setBeans(personBean, logBean, null, null, null, null, null);
     DisplayInterface display = adminCommand.run("admin jackass marvin 5", karn);
     assertThat(display).isNotNull();
-    assertThat(marvin.getFrogging()).isEqualTo(0);
+    assertThat(marvin.getFrogging()).isZero();
     assertThat(marvin.getJackassing()).isEqualTo(5);
     assertThat(CommunicationService.getCommunicationService(karn).getLog(0)).isEqualTo("Changed Marvin into jackass (5).<br />\r\nMarvin is suddenly changed into a jackass!<br />\r\n");
     assertThat(CommunicationService.getCommunicationService(marvin).getLog(0)).isEqualTo("You are suddenly changed into a jackass!<br />\r\n");
@@ -189,17 +154,9 @@ public class AdminCommandTest extends MudTest
     AdminCommand adminCommand = new AdminCommand("admin .+");
     adminCommand.setCallback(commandRunner);
     assertThat(adminCommand.getRegExpr()).isEqualTo("admin .+");
-    assertThat(marvin.getFrogging()).isEqualTo(0);
-    assertThat(marvin.getJackassing()).isEqualTo(0);
-    new Expectations() // an "expectation block"
-    {
-
-      {
-        commandRunner.getPersonBean();
-        result = personBean;
-
-      }
-    };
+    assertThat(marvin.getFrogging()).isZero();
+    assertThat(marvin.getJackassing()).isZero();
+commandRunner.setBeans(personBean, null, null, null, null, null, null);
     try
     {
       DisplayInterface display = adminCommand.run("admin frog slartibartfast 5", karn);
@@ -215,17 +172,9 @@ public class AdminCommandTest extends MudTest
     AdminCommand adminCommand = new AdminCommand("admin .+");
     adminCommand.setCallback(commandRunner);
     assertThat(adminCommand.getRegExpr()).isEqualTo("admin .+");
-    assertThat(marvin.getFrogging()).isEqualTo(0);
-    assertThat(marvin.getJackassing()).isEqualTo(0);
-    new Expectations() // an "expectation block"
-    {
-
-      {
-        commandRunner.getPersonBean();
-        result = personBean;
-
-      }
-    };
+    assertThat(marvin.getFrogging()).isZero();
+    assertThat(marvin.getJackassing()).isZero();
+commandRunner.setBeans(personBean, null, null, null, null, null, null);
     try
     {
       DisplayInterface display = adminCommand.run("admin jackass slartibartfast 5", karn);
@@ -243,17 +192,9 @@ public class AdminCommandTest extends MudTest
     AdminCommand adminCommand = new AdminCommand("admin .+");
     adminCommand.setCallback(commandRunner);
     assertThat(adminCommand.getRegExpr()).isEqualTo("admin .+");
-    assertThat(marvin.getFrogging()).isEqualTo(0);
-    assertThat(marvin.getJackassing()).isEqualTo(0);
-    new Expectations() // an "expectation block"
-    {
-
-      {
-        commandRunner.getPersonBean();
-        result = personBean;
-
-      }
-    };
+    assertThat(marvin.getFrogging()).isZero();
+    assertThat(marvin.getJackassing()).isZero();
+commandRunner.setBeans(personBean, null, null, null, null, null, null);
     try
     {
       DisplayInterface display = adminCommand.run("admin frog marvin jimminy", karn);
@@ -269,17 +210,9 @@ public class AdminCommandTest extends MudTest
     AdminCommand adminCommand = new AdminCommand("admin .+");
     adminCommand.setCallback(commandRunner);
     assertThat(adminCommand.getRegExpr()).isEqualTo("admin .+");
-    assertThat(marvin.getFrogging()).isEqualTo(0);
-    assertThat(marvin.getJackassing()).isEqualTo(0);
-    new Expectations() // an "expectation block"
-    {
-
-      {
-        commandRunner.getPersonBean();
-        result = personBean;
-
-      }
-    };
+    assertThat(marvin.getFrogging()).isZero();
+    assertThat(marvin.getJackassing()).isZero();
+commandRunner.setBeans(personBean, null, null, null, null, null, null);
     try
     {
       DisplayInterface display = adminCommand.run("admin jackass marvin jimminy", karn);
@@ -298,14 +231,7 @@ public class AdminCommandTest extends MudTest
     AdminCommand adminCommand = new AdminCommand("admin .+");
     adminCommand.setCallback(commandRunner);
     assertThat(adminCommand.getRegExpr()).isEqualTo("admin .+");
-    new Expectations() // an "expectation block"
-    {
-
-      {
-        commandRunner.getPersonBean();
-        result = personBean;
-      }
-    };
+commandRunner.setBeans(personBean, null, null, null, null, null, null);
     DisplayInterface display = adminCommand.run("admin kick", karn);
 
   }
@@ -317,22 +243,12 @@ public class AdminCommandTest extends MudTest
     AdminCommand adminCommand = new AdminCommand("admin .+");
     adminCommand.setCallback(commandRunner);
     assertThat(adminCommand.getRegExpr()).isEqualTo("admin .+");
-    new Expectations() // an "expectation block"
-    {
-
-      {
-        commandRunner.getPersonBean();
-        result = personBean;
-
-        commandRunner.getLogBean();
-        result = logBean;
-      }
-    };
+commandRunner.setBeans(personBean, logBean, null, null, null, null, null);
     DisplayInterface display = adminCommand.run("admin kick marvin", karn);
 
     // check for deactivation
-    assertThat(marvin.isActive()).isEqualTo(false);
-    assertThat(marvin.getTimeout()).isEqualTo(0);
+    assertThat(marvin.isActive()).isFalse();
+    assertThat(marvin.getTimeout()).isZero();
 
     assertThat(display).isNotNull();
     String log = CommunicationService.getCommunicationService(karn).getLog(0);
@@ -349,21 +265,11 @@ public class AdminCommandTest extends MudTest
     AdminCommand adminCommand = new AdminCommand("admin .+");
     adminCommand.setCallback(commandRunner);
     assertThat(adminCommand.getRegExpr()).isEqualTo("admin .+");
-    new Expectations() // an "expectation block"
-    {
-
-      {
-        commandRunner.getPersonBean();
-        result = personBean;
-
-        commandRunner.getLogBean();
-        result = logBean;
-      }
-    };
+commandRunner.setBeans(personBean, logBean, null, null, null, null, null);
     DisplayInterface display = adminCommand.run("admin kick marvin 60", karn);
 
     // check for deactivation
-    assertThat(marvin.isActive()).isEqualTo(false);
+    assertThat(marvin.isActive()).isFalse();
     long timeout = marvin.getTimeout();
     assertThat(timeout == 59 || timeout == 60)
             .as("timeout was " + timeout)
@@ -384,14 +290,7 @@ public class AdminCommandTest extends MudTest
     AdminCommand adminCommand = new AdminCommand("admin .+");
     adminCommand.setCallback(commandRunner);
     assertThat(adminCommand.getRegExpr()).isEqualTo("admin .+");
-    new Expectations() // an "expectation block"
-    {
-
-      {
-        commandRunner.getPersonBean();
-        result = personBean;
-      }
-    };
+commandRunner.setBeans(personBean, null, null, null, null, null, null);
     DisplayInterface display = adminCommand.run("admin kick marvin -5", karn);
 
   }
@@ -403,14 +302,7 @@ public class AdminCommandTest extends MudTest
     AdminCommand adminCommand = new AdminCommand("admin .+");
     adminCommand.setCallback(commandRunner);
     assertThat(adminCommand.getRegExpr()).isEqualTo("admin .+");
-    new Expectations() // an "expectation block"
-    {
-
-      {
-        commandRunner.getPersonBean();
-        result = personBean;
-      }
-    };
+commandRunner.setBeans(personBean, null, null, null, null, null, null);
     DisplayInterface display = adminCommand.run("admin kick marvin boogey", karn);
 
   }
@@ -422,26 +314,9 @@ public class AdminCommandTest extends MudTest
     AdminCommand adminCommand = new AdminCommand("admin .+");
     adminCommand.setCallback(commandRunner);
     assertThat(adminCommand.getRegExpr()).isEqualTo("admin .+");
-    new Expectations() // an "expectation block"
-    {
-
-      {
-        commandRunner.getPersonBean();
-        result = personBean;
-      }
-    };
+commandRunner.setBeans(personBean, null, null, null, null, null, null);
     DisplayInterface display = adminCommand.run("admin kick janedoe 60", karn);
 
-  }
-
-  @BeforeClass
-  public static void setUpClass() throws Exception
-  {
-  }
-
-  @AfterClass
-  public static void tearDownClass() throws Exception
-  {
   }
 
   @BeforeMethod
@@ -488,11 +363,6 @@ public class AdminCommandTest extends MudTest
     file = new File(Constants.getMudfilepath() + File.separator + "Marvin.log");
     writer = new PrintWriter(file);
     writer.close();
-  }
-
-  @AfterMethod
-  public void tearDownMethod() throws Exception
-  {
   }
 
 }

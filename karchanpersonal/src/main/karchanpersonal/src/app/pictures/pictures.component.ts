@@ -91,7 +91,21 @@ export class PicturesComponent implements OnInit {
   }
 
   setPicture(picture: Picture) {
-    this.picture = picture;
+    this.playerService.getPicture(picture.id).subscribe({
+      next:
+        (result: Picture) => { // on success
+          this.picture = result;
+        }
+    });
+  }
+
+  deletePicture(picture: Picture) {
+    this.playerService.deletePicture(picture).subscribe({
+      next:
+        (result: any) => { // on success
+          this.pictures = this.pictures.filter(pic => pic.id !== picture.id);
+        }
+    });
   }
 
   onFileChange(event) {

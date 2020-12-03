@@ -16,42 +16,39 @@
  */
 package mmud.testing.tests;
 
+import java.util.logging.Logger;
+import javax.persistence.EntityManager;
+
 import mmud.database.entities.characters.Person;
 import mmud.database.entities.characters.User;
-import mmud.database.entities.game.*;
-import mmud.database.entities.items.Item;
-import mmud.database.entities.items.ItemDefinition;
+import mmud.database.entities.game.Area;
+import mmud.database.entities.game.Room;
 import mmud.database.entities.web.CharacterInfo;
 import mmud.database.entities.web.Family;
 import mmud.database.entities.web.FamilyPK;
 import mmud.database.entities.web.FamilyValue;
-import mmud.exceptions.ErrorDetails;
 import mmud.exceptions.MudException;
 import mmud.exceptions.MudWebException;
 import mmud.rest.services.PrivateBean;
-import mmud.rest.services.PublicBean;
-import mmud.rest.webentities.PrivateMail;
 import mmud.rest.webentities.PrivatePerson;
 import mmud.testing.TestingConstants;
-import mmud.testing.TestingUtils;
-import mockit.Delegate;
-import mockit.Expectations;
-import mockit.Mocked;
-import org.testng.annotations.*;
-
-import javax.persistence.EntityManager;
-import javax.persistence.Query;
-import javax.persistence.TypedQuery;
-import javax.ws.rs.WebApplicationException;
-import javax.ws.rs.core.Response;
-import javax.ws.rs.core.Response.ResponseBuilder;
-import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.logging.Logger;
-
-import static org.testng.Assert.*;
+import org.mockito.invocation.InvocationOnMock;
+import org.testng.annotations.AfterClass;
+import org.testng.annotations.AfterMethod;
+import org.testng.annotations.BeforeClass;
+import org.testng.annotations.BeforeMethod;
+import org.testng.annotations.Test;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.doAnswer;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertNotNull;
 
 /**
  * @author maartenl
@@ -62,32 +59,8 @@ public class PrivateBeanTest
   // Obtain a suitable LOGGER.
   private static final Logger LOGGER = Logger.getLogger(PrivateBeanTest.class.getName());
 
-  @Mocked
-  EntityManager entityManager;
-
-  @Mocked(
-    {
-      "ok", "status"
-    })
-  javax.ws.rs.core.Response response;
-
-  @Mocked
-  MudWebException webApplicationException;
-
-  @Mocked
-  ErrorDetails errorDetails;
-
-  @Mocked
-  ResponseBuilder responseBuilder;
-
-  @Mocked
-  Query query;
-
-  @Mocked
-  TypedQuery typedquery;
-
-  private Person hotblack;
-  private Person marvin;
+  private User hotblack;
+  private User marvin;
 
   public PrivateBeanTest()
   {
@@ -121,6 +94,7 @@ public class PrivateBeanTest
   public void updateCharacterSheet() throws MudException
   {
     LOGGER.fine("updateCharacterSheet");
+
     final CharacterInfo cinfo = new CharacterInfo();
     cinfo.setName("Marvin");
     cinfo.setImageurl("http://www.images.com/image.jpg");
@@ -129,6 +103,10 @@ public class PrivateBeanTest
     cinfo.setCityofbirth("none");
     cinfo.setStoryline("none");
 
+    EntityManager entityManager = mock(EntityManager.class);
+    when(entityManager.find(CharacterInfo.class, "Marvin")).thenReturn(cinfo);
+    when(entityManager.find(User.class, "Marvin")).thenReturn(marvin);
+
     PrivateBean privateBean = new PrivateBean()
     {
       @Override
@@ -143,18 +121,7 @@ public class PrivateBeanTest
         return "Marvin";
       }
     };
-    new Expectations() // an "expectation block"
-    {
-
-      {
-        entityManager.find(User.class, "Marvin");
-        result = marvin;
-        entityManager.find(CharacterInfo.class, "Marvin");
-        result = cinfo;
-      }
-    };
-    responseOkExpectations();
-// Unit under test is exercised.
+    // Unit under test is exercised.
     final PrivatePerson person = new PrivatePerson();
     person.name = "Marvin";
     person.imageurl = "http://www.images.com/newimage.jpg";
@@ -162,7 +129,7 @@ public class PrivateBeanTest
     person.dateofbirth = "Beginning of time";
     person.cityofbirth = "Sirius";
     person.storyline = "Life, don&#39;t talk to me about life.";
-    Response response = privateBean.updateCharacterSheet("Marvin", person);
+    privateBean.updateCharacterSheet("Marvin", person);
     // Verification code (JUnit/TestNG asserts), if any.
     assertEquals(cinfo.getName(), person.name);
     assertEquals(cinfo.getImageurl(), person.imageurl);
@@ -170,13 +137,16 @@ public class PrivateBeanTest
     assertEquals(cinfo.getDateofbirth(), person.dateofbirth);
     assertEquals(cinfo.getCityofbirth(), person.cityofbirth);
     assertEquals(cinfo.getStoryline(), person.storyline);
-
   }
 
   @Test
   public void newCharacterSheet() throws MudException
   {
     LOGGER.fine("newCharacterSheet");
+    EntityManager entityManager = mock(EntityManager.class);
+    when(entityManager.find(User.class, "Marvin")).thenReturn(marvin);
+    when(entityManager.find(CharacterInfo.class, "Marvin")).thenReturn(null);
+
     PrivateBean privateBean = new PrivateBean()
     {
       @Override
@@ -191,33 +161,6 @@ public class PrivateBeanTest
         return "Marvin";
       }
     };
-    new Expectations() // an "expectation block"
-    {
-
-      {
-        entityManager.find(User.class, "Marvin");
-        result = marvin;
-        entityManager.find(CharacterInfo.class, "Marvin");
-        result = null;
-
-        entityManager.persist((CharacterInfo) any);
-        result = new Delegate()
-        {
-          // The name of this method can actually be anything.
-          void persist(CharacterInfo cinfo)
-          {
-            assertNotNull(cinfo);
-            assertEquals(cinfo.getName(), "Marvin");
-            assertEquals(cinfo.getImageurl(), "http://www.images.com/newimage.jpg");
-            assertEquals(cinfo.getHomepageurl(), "http://www.homepages.com/homepage.html");
-            assertEquals(cinfo.getDateofbirth(), "Beginning of time");
-            assertEquals(cinfo.getCityofbirth(), "Sirius");
-            assertEquals(cinfo.getStoryline(), "Life, don&#39;t talk to me about life.");
-          }
-        };
-      }
-    };
-    responseOkExpectations();
     // Unit under test is exercised.
     final PrivatePerson person = new PrivatePerson();
     person.name = "Marvin";
@@ -226,6 +169,18 @@ public class PrivateBeanTest
     person.dateofbirth = "Beginning of time";
     person.cityofbirth = "Sirius";
     person.storyline = "Life, don't talk to me about life.";
+    doAnswer((InvocationOnMock invocation) ->
+    {
+      CharacterInfo cinfo = (CharacterInfo) invocation.getArguments()[0];
+      assertNotNull(cinfo);
+      assertEquals(cinfo.getName(), "Marvin");
+      assertEquals(cinfo.getImageurl(), "http://www.images.com/newimage.jpg");
+      assertEquals(cinfo.getHomepageurl(), "http://www.homepages.com/homepage.html");
+      assertEquals(cinfo.getDateofbirth(), "Beginning of time");
+      assertEquals(cinfo.getCityofbirth(), "Sirius");
+      assertEquals(cinfo.getStoryline(), "Life, don&#39;t talk to me about life.");
+      return null;
+    }).when(entityManager).persist(any(CharacterInfo.class));
     privateBean.updateCharacterSheet("Marvin", person);
     // Verification code (JUnit/TestNG asserts), if any.
   }
@@ -242,6 +197,10 @@ public class PrivateBeanTest
     cinfo.setCityofbirth("none");
     cinfo.setStoryline("none");
 
+    EntityManager entityManager = mock(EntityManager.class);
+    when(entityManager.find(CharacterInfo.class, "Marvin")).thenReturn(cinfo);
+    when(entityManager.find(User.class, "Marvin")).thenReturn(marvin);
+
     PrivateBean privateBean = new PrivateBean()
     {
       @Override
@@ -256,17 +215,6 @@ public class PrivateBeanTest
         return "Marvin";
       }
     };
-    new Expectations() // an "expectation block"
-    {
-
-      {
-        entityManager.find(User.class, "Marvin");
-        result = marvin;
-        entityManager.find(CharacterInfo.class, "Marvin");
-        result = cinfo;
-      }
-    };
-    responseOkExpectations();        // Unit under test is exercised.
     final PrivatePerson person = new PrivatePerson();
     person.name = "Marvin";
     person.imageurl = "http://www.images.com/newimage.jpg";
@@ -274,7 +222,7 @@ public class PrivateBeanTest
     person.dateofbirth = "Beginning of time";
     person.cityofbirth = "Sirius";
     person.storyline = "Life, don't talk to me about <script>alert('woaj');</script>life.";
-    Response response = privateBean.updateCharacterSheet("Marvin", person);
+    privateBean.updateCharacterSheet("Marvin", person);
     // Verification code (JUnit/TestNG asserts), if any.
 
     assertEquals(cinfo.getName(), person.name);
@@ -298,6 +246,9 @@ public class PrivateBeanTest
     cinfo.setCityofbirth("none");
     cinfo.setStoryline("none");
 
+    EntityManager entityManager = mock(EntityManager.class);
+    when(entityManager.find(User.class, "Marvin")).thenReturn(marvin);
+
     PrivateBean privateBean = new PrivateBean()
     {
       @Override
@@ -312,14 +263,6 @@ public class PrivateBeanTest
         return "Marvin";
       }
     };
-    new Expectations() // an "expectation block"
-    {
-
-      {
-        entityManager.find(User.class, "Marvin");
-        result = marvin;
-      }
-    };
     // Unit under test is exercised.
     final PrivatePerson person = new PrivatePerson();
     person.name = "Hotblack";
@@ -328,7 +271,7 @@ public class PrivateBeanTest
     person.dateofbirth = "Beginning of time";
     person.cityofbirth = "Sirius";
     person.storyline = "Life, don't talk to me about <script>alert('woaj');</script>life.";
-    Response response = privateBean.updateCharacterSheet("Marvin", person);
+    privateBean.updateCharacterSheet("Marvin", person);
   }
 
   @Test
@@ -347,6 +290,11 @@ public class PrivateBeanTest
     pk.setName("Marvin");
     pk.setToname("Hotblack");
     family.setFamilyPK(pk);
+    EntityManager entityManager = mock(EntityManager.class);
+    when(entityManager.find(User.class, "Marvin")).thenReturn(marvin);
+    when(entityManager.find(Person.class, "Hotblack")).thenReturn(hotblack);
+    when(entityManager.find(FamilyValue.class, 2)).thenReturn(value2);
+    when(entityManager.find(eq(Family.class), any(FamilyPK.class))).thenReturn(family);
     PrivateBean privateBean = new PrivateBean()
     {
       @Override
@@ -361,43 +309,20 @@ public class PrivateBeanTest
         return "Marvin";
       }
     };
-    new Expectations() // an "expectation block"
-    {
-
-      {
-        entityManager.find(User.class, "Marvin");
-        result = marvin;
-        entityManager.find(Person.class, "Hotblack");
-        result = hotblack;
-        entityManager.find(FamilyValue.class, 2);
-        result = value2;
-        entityManager.find(Family.class, (FamilyPK) any);
-        result = family;
-      }
-    };
-    responseOkExpectations();        // Unit under test is exercised.
-    Response response = privateBean.updateFamilyvalues("Marvin", "Hotblack", 2);
+    // Unit under test is exercised.
+    privateBean.updateFamilyvalues("Marvin", "Hotblack", 2);
     // Verification code (JUnit/TestNG asserts), if any.
     assertEquals(family.getDescription(), value2);
-
   }
 
-  @Test(expectedExceptions = MudWebException.class)
+  @Test
   public void updateFamilyvaluesNotFound() throws MudException
   {
     LOGGER.fine("updateFamilyvaluesNotFound");
-    final FamilyValue value = new FamilyValue();
-    value.setDescription("friend");
-    value.setId(1);
-    final FamilyValue value2 = new FamilyValue();
-    value2.setDescription("bff");
-    value2.setId(2);
-    final Family family = new Family();
-    family.setDescription(value);
-    FamilyPK pk = new FamilyPK();
-    pk.setName("Marvin");
-    pk.setToname("Hotblack");
-    family.setFamilyPK(pk);
+    EntityManager entityManager = mock(EntityManager.class);
+    when(entityManager.find(User.class, "Marvin")).thenReturn(marvin);
+    when(entityManager.find(Person.class, "Hotblack")).thenReturn(hotblack);
+    when(entityManager.find(FamilyValue.class, 12)).thenReturn(null);
     PrivateBean privateBean = new PrivateBean()
     {
       @Override
@@ -412,19 +337,9 @@ public class PrivateBeanTest
         return "Marvin";
       }
     };
-    new Expectations() // an "expectation block"
-    {
-
-      {
-        entityManager.find(User.class, "Marvin");
-        result = marvin;
-        entityManager.find(Person.class, "Hotblack");
-        result = hotblack;
-        entityManager.find(FamilyValue.class, 12);
-        result = null;
-      }
-    };
-    Response response = privateBean.updateFamilyvalues("Marvin", "Hotblack", 12);
+    assertThatThrownBy(() -> privateBean.updateFamilyvalues("Marvin", "Hotblack", 12))
+      .isInstanceOf(MudWebException.class)
+      .hasMessage("Family value 12 was not found.");
   }
 
   @Test
@@ -434,6 +349,11 @@ public class PrivateBeanTest
     final FamilyValue value = new FamilyValue();
     value.setDescription("friend");
     value.setId(1);
+    EntityManager entityManager = mock(EntityManager.class);
+    when(entityManager.find(User.class, "Marvin")).thenReturn(marvin);
+    when(entityManager.find(Person.class, "Hotblack")).thenReturn(hotblack);
+    when(entityManager.find(FamilyValue.class, 1)).thenReturn(value);
+    when(entityManager.find(eq(Family.class), any(FamilyPK.class))).thenReturn(null);
     PrivateBean privateBean = new PrivateBean()
     {
       @Override
@@ -448,35 +368,18 @@ public class PrivateBeanTest
         return "Marvin";
       }
     };
-    new Expectations() // an "expectation block"
-    {
 
-      {
-        entityManager.find(User.class, "Marvin");
-        result = marvin;
-        entityManager.find(Person.class, "Hotblack");
-        result = hotblack;
-        entityManager.find(FamilyValue.class, 1);
-        result = value;
-        entityManager.find(Family.class, (FamilyPK) any);
-        result = null;
-        entityManager.persist((Family) any);
-        result = new Delegate()
-        {
-          // The name of this method can actually be anything.
-          void persist(Family fam)
-          {
-            assertNotNull(fam);
-            assertEquals(fam.getDescription(), value);
-            assertEquals(fam.getFamilyPK().getName(), "Marvin");
-            assertEquals(fam.getFamilyPK().getToname(), "Hotblack");
-          }
-        };
-      }
-    };
-    responseOkExpectations();
+    doAnswer((InvocationOnMock invocation) ->
+    {
+      Family fam = (Family) invocation.getArguments()[0];
+      assertThat(fam).isNotNull();
+      assertThat(fam.getDescription()).isEqualTo(value);
+      assertThat(fam.getFamilyPK().getName()).isEqualTo( "Marvin");
+      assertThat(fam.getFamilyPK().getToname()).isEqualTo( "Hotblack");
+      return null;
+    }).when(entityManager).persist(any(Family.class));
     // Unit under test is exercised.
-    Response response = privateBean.updateFamilyvalues("Marvin", "Hotblack", 1);
+    privateBean.updateFamilyvalues("Marvin", "Hotblack", 1);
     // Verification code (JUnit/TestNG asserts), if any.
   }
 
@@ -496,6 +399,9 @@ public class PrivateBeanTest
     pk.setName("Marvin");
     pk.setToname("Hotblack");
     family.setFamilyPK(pk);
+    EntityManager entityManager = mock(EntityManager.class);
+    when(entityManager.find(User.class, "Marvin")).thenReturn(marvin);
+    when(entityManager.find(eq(Family.class), any(FamilyPK.class))).thenReturn(family);
     PrivateBean privateBean = new PrivateBean()
     {
       @Override
@@ -511,46 +417,10 @@ public class PrivateBeanTest
       }
 
     };
-    new Expectations() // an "expectation block"
-    {
-
-      {
-        entityManager.find(User.class, "Marvin");
-        result = marvin;
-        entityManager.find(Family.class, (FamilyPK) any);
-        result = family;
-        entityManager.remove(family);
-      }
-    };
-    responseOkExpectations();
     // Unit under test is exercised.
     privateBean.deleteFamilyvalues("Marvin", "Hotblack");
     // Verification code (JUnit/TestNG asserts), if any.
+    verify(entityManager, times(1)).remove(any(Family.class));
   }
 
-  private void responseOkExpectations()
-  {
-    new Expectations() // an "expectation block"
-    {
-
-      {
-        Response.ok();
-        result = responseBuilder;
-        responseBuilder.build();
-      }
-    };
-  }
-
-  private void responseNoContentExpectations()
-  {
-    new Expectations() // an "expectation block"
-    {
-
-      {
-        Response.noContent();
-        result = responseBuilder;
-        responseBuilder.build();
-      }
-    };
-  }
 }

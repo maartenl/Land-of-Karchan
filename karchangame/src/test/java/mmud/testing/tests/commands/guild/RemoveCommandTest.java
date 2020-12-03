@@ -26,9 +26,8 @@ import mmud.database.entities.game.Guild;
 import mmud.database.entities.game.Guildrank;
 import mmud.database.entities.game.Room;
 import mmud.rest.services.LogBean;
+import mmud.testing.tests.LogBeanStub;
 import mmud.testing.tests.MudTest;
-import mockit.Expectations;
-import mockit.Mocked;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
@@ -54,11 +53,10 @@ public class RemoveCommandTest extends MudTest
   private User marvin;
   private Room room1;
 
-  @Mocked
-  private LogBean logBean;
 
-  @Mocked
-  private CommandRunner commandRunner;
+  private LogBean logBean = new LogBeanStub();
+
+  private CommandRunner commandRunner = new CommandRunner();
   private Guild deputy;
   private User hotblack;
 
@@ -75,21 +73,14 @@ public class RemoveCommandTest extends MudTest
     RemoveCommand removeCommand = new RemoveCommand("guildremove (\\w)+");
     removeCommand.setCallback(commandRunner);
     assertThat(removeCommand.getRegExpr()).isEqualTo("guildremove (\\w)+");
-    new Expectations() // an "expectation block"
-    {
-
-      {
-        commandRunner.getLogBean();
-        result = logBean;
-      }
-    };
+    commandRunner.setBeans(null, logBean, null, null, null, null, null);
     DisplayInterface display = removeCommand.run("guildremove hotblack", karn);
     assertThat(display).isNotNull();
     assertThat(display.getBody()).isEqualTo("You are in a small room.");
     String karnLog = CommunicationService.getCommunicationService(karn).getLog(0);
     assertThat(karnLog).isEqualTo("Cannot find that person.<br />\r\n");
     String hotblackLog = CommunicationService.getCommunicationService(hotblack).getLog(0);
-    assertThat(hotblackLog).isEqualTo("");
+    assertThat(hotblackLog).isEmpty();
     // the important bit
     assertThat(karn.getGuild()).isEqualTo(deputy);
     assertThat(hotblack.getGuild()).isNull();
@@ -105,14 +96,7 @@ public class RemoveCommandTest extends MudTest
     RemoveCommand removeCommand = new RemoveCommand("guildremove (\\w)+");
     removeCommand.setCallback(commandRunner);
     assertThat(removeCommand.getRegExpr()).isEqualTo("guildremove (\\w)+");
-    new Expectations() // an "expectation block"
-    {
-
-      {
-        commandRunner.getLogBean();
-        result = logBean;
-      }
-    };
+    commandRunner.setBeans(null, logBean, null, null, null, null, null);
     DisplayInterface display = removeCommand.run("guildremove karcas", karn);
     assertThat(display).isNotNull();
     assertThat(display.getBody()).isEqualTo("You are in a small room.");
@@ -131,14 +115,7 @@ public class RemoveCommandTest extends MudTest
     RemoveCommand removeCommand = new RemoveCommand("guildremove (\\w)+");
     removeCommand.setCallback(commandRunner);
     assertThat(removeCommand.getRegExpr()).isEqualTo("guildremove (\\w)+");
-    new Expectations() // an "expectation block"
-    {
-
-      {
-        commandRunner.getLogBean();
-        result = logBean;
-      }
-    };
+    commandRunner.setBeans(null, logBean, null, null, null, null, null);
     DisplayInterface display = removeCommand.run("guildremove karn", karn);
     assertThat(display).isNotNull();
     assertThat(display.getBody()).isEqualTo("You are in a small room.");
@@ -157,14 +134,7 @@ public class RemoveCommandTest extends MudTest
     RemoveCommand removeCommand = new RemoveCommand("guildremove (\\w)+");
     removeCommand.setCallback(commandRunner);
     assertThat(removeCommand.getRegExpr()).isEqualTo("guildremove (\\w)+");
-    new Expectations() // an "expectation block"
-    {
-
-      {
-        commandRunner.getLogBean();
-        result = logBean;
-      }
-    };
+    commandRunner.setBeans(null, logBean, null, null, null, null, null);
     DisplayInterface display = removeCommand.run("guildremove marvin", karn);
     assertThat(display).isNotNull();
     assertThat(display.getBody()).isEqualTo("You are in a small room.");
@@ -200,49 +170,26 @@ public class RemoveCommandTest extends MudTest
     deputy = new Guild();
     deputy.setName("deputy");
     deputy.setBoss(karn);
-    final SortedSet<Guildrank> guildranks = new TreeSet<>(new Comparator<Guildrank>()
+    final SortedSet<Guildrank> guildranks = new TreeSet<>((arg0, arg1) ->
     {
-
-      @Override
-      public int compare(Guildrank arg0, Guildrank arg1)
+      if (arg0.getGuildrankPK() == null)
       {
-        if (arg0.getGuildrankPK() == null)
+        if (arg1.getGuildrankPK() == null)
         {
-          if (arg1.getGuildrankPK() == null)
-          {
-            return 0;
-          }
-          return 1;
+          return 0;
         }
-        int arg0level = arg0.getGuildrankPK().getGuildlevel();
-        int arg1level = arg1.getGuildrankPK().getGuildlevel();
-        return arg0level - arg1level;
+        return 1;
       }
+      int arg0level = arg0.getGuildrankPK().getGuildlevel();
+      int arg1level = arg1.getGuildrankPK().getGuildlevel();
+      return arg0level - arg1level;
     });
 
-    final SortedSet<User> members = new TreeSet<>(new Comparator<User>()
-    {
-
-      @Override
-      public int compare(User arg0, User arg1)
-      {
-        return arg0.getName().compareTo(arg1.getName());
-      }
-
-    });
+    final SortedSet<User> members = new TreeSet<>((arg0, arg1) -> arg0.getName().compareTo(arg1.getName()));
     members.add(karn);
     members.add(marvin);
     deputy.setMembers(members);
-    final SortedSet<User> activeMembers = new TreeSet<>(new Comparator<User>()
-    {
-
-      @Override
-      public int compare(User arg0, User arg1)
-      {
-        return arg0.getName().compareTo(arg1.getName());
-      }
-
-    });
+    final SortedSet<User> activeMembers = new TreeSet<>((arg0, arg1) -> arg0.getName().compareTo(arg1.getName()));
     activeMembers.add(karn);
     activeMembers.add(marvin);
     deputy.setActiveMembers(activeMembers);
@@ -266,8 +213,4 @@ public class RemoveCommandTest extends MudTest
 
   }
 
-  @AfterMethod
-  public void tearDownMethod() throws Exception
-  {
-  }
 }

@@ -25,6 +25,7 @@ export class GuildMemberComponent implements OnInit {
         this.guildMembers = new GuildMembers(result);
       });
     }
+    return false;
   }
 
   public checkRanks() {
@@ -33,6 +34,7 @@ export class GuildMemberComponent implements OnInit {
         this.guildRanks = new GuildRanks(result);
       });
     }
+    return false;
   }
 
   public checkHopefuls() {
@@ -41,6 +43,7 @@ export class GuildMemberComponent implements OnInit {
         this.guildHopefuls = new GuildHopefuls(result);
       });
     }
+    return false;
   }
 
 }

@@ -16,10 +16,13 @@
  */
 package mmud.services;
 
+import com.google.common.annotations.VisibleForTesting;
 import mmud.database.entities.characters.Person;
 import mmud.database.entities.game.Guild;
 import mmud.database.entities.game.Room;
 import mmud.exceptions.MudException;
+
+import java.util.function.Consumer;
 
 /**
  *
@@ -35,7 +38,18 @@ public interface CommunicationService
    */
   static PersonCommunicationService getCommunicationService(Person person)
   {
-    return new PersonCommunicationService(person);
+    return new PersonCommunicationService(person, null);
+  }
+
+  /**
+   * Returns the communication service, based on a person.
+   * @param person the person to base the communication on.
+   * @return the service
+   */
+  @VisibleForTesting
+  static PersonCommunicationService getCommunicationService(Person person, Consumer<String> consumer)
+  {
+    return new PersonCommunicationService(person, consumer);
   }
 
   /**
@@ -53,7 +67,7 @@ public interface CommunicationService
    * @param guild the guild to base the communication on.
    * @return the service
    */
-  public static GuildCommunicationService getCommunicationService(Guild guild)
+  static GuildCommunicationService getCommunicationService(Guild guild)
   {
     return new GuildCommunicationService(guild);
   }

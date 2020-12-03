@@ -20,11 +20,11 @@ import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
+import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
 import java.util.Base64;
 import java.util.List;
 import java.util.logging.Logger;
-import java.util.stream.Collectors;
 import javax.annotation.security.DeclareRoles;
 import javax.annotation.security.RolesAllowed;
 import javax.ejb.LocalBean;
@@ -38,6 +38,7 @@ import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 import javax.security.enterprise.SecurityContext;
 import javax.ws.rs.Consumes;
+import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
@@ -46,13 +47,13 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-import mmud.Constants;
+
 import mmud.database.RegularExpressions;
 import mmud.database.entities.characters.User;
 import mmud.database.entities.web.Image;
 import mmud.exceptions.MudWebException;
-import org.karchan.security.Roles;
 import mmud.rest.webentities.PrivateImage;
+import org.karchan.security.Roles;
 
 /**
  * <p>
@@ -109,20 +110,21 @@ public class PicturesBean
   }
 
   /**
-   * Returns all images of a player.
+   * Returns all images of a player. Not all fields are provided, as that would swamp the server.
+   * For example, the actual images are not transferred.
    *
    * @param name the player in question
    * @return a list of images in json format
    * @throws WebApplicationException <ul>
-   * <li>UNAUTHORIZED, if the authorization failed.</li>
-   * <li>NOT_FOUND if this wikipage does not exist.</li>
-   * <li>BAD_REQUEST if an unexpected exception crops up.</li></ul>
+   *                                 <li>UNAUTHORIZED, if the authorization failed.</li>
+   *                                 <li>NOT_FOUND if this wikipage does not exist.</li>
+   *                                 <li>BAD_REQUEST if an unexpected exception crops up.</li></ul>
    */
   @GET
   @Produces(
-          {
-            MediaType.APPLICATION_JSON
-          })
+    {
+      MediaType.APPLICATION_JSON
+    })
   public String getPictures(@PathParam("name") String name)
   {
     String userName = securityContext.getCallerPrincipal().getName();
@@ -133,16 +135,65 @@ public class PicturesBean
 
     try
     {
+      List<String> items = getEntityManager().createNativeQuery(PrivateImage.GET_QUERY).setParameter(1, name)
+        .getResultList();
+      return "[" + String.join(",", items) + "]";
+
+    } catch (WebApplicationException e)
+    {
+      //ignore
+      throw e;
+    } catch (Exception e)
+    {
+      throw new MudWebException(name, e, Response.Status.BAD_REQUEST);
+    }
+  }
+
+  /**
+   * Returns a single image and its stats of a player.
+   *
+   * @param name the player in question
+   * @param id   the id of the picture to retrieve
+   * @return an image in json format
+   * @throws WebApplicationException <ul>
+   *                                 <li>UNAUTHORIZED, if the authorization failed.</li>
+   *                                 <li>NOT_FOUND if this wikipage does not exist.</li>
+   *                                 <li>BAD_REQUEST if an unexpected exception crops up.</li></ul>
+   */
+  @GET
+  @Path("/{id}")
+  @Produces(
+    {
+      MediaType.APPLICATION_JSON
+    })
+  public String getPicture(@PathParam("name") String name, @PathParam("id") Long id)
+  {
+    LOGGER.fine("getPicture");
+    String userName = securityContext.getCallerPrincipal().getName();
+    if (userName == null || !userName.equals(name))
+    {
+      throw new MudWebException(name, "Unauthorized", Response.Status.UNAUTHORIZED);
+    }
+    if (id == null)
+    {
+      throw new MudWebException(name, "Image id expected.", Response.Status.NOT_FOUND);
+    }
+    try
+    {
       User owner = getUser(name);
 
-      Query query = getEntityManager().createNamedQuery("Image.findByOwner");
-      query.setParameter("player", owner);
+      Image image = getEntityManager().find(Image.class, id);
+      if (image.getOwner() != owner)
+      {
+        throw new MudWebException(name, "Not your image.", Response.Status.UNAUTHORIZED);
+      }
 
-      List<Image> list = query.getResultList();
-
-      List<PrivateImage> result = list.stream().map(f -> new PrivateImage(f)).collect(Collectors.toList());
-
-      return JsonbBuilder.create().toJson(result);
+      String result;
+      try (Jsonb jsonb = JsonbBuilder.create())
+      {
+        result = jsonb.toJson(new PrivateImage(image));
+      }
+      return result;
 
     } catch (WebApplicationException e)
     {
@@ -157,23 +208,29 @@ public class PicturesBean
   /**
    * Create a new picture.
    *
-   * @param json the new picture to store in json format.
+   * @param json   the new picture to store in json format.
    * @param player the name of the player
    * @return Response.ok if everything's okay.
    * @throws java.io.UnsupportedEncodingException in case the content cannot be
-   * decoded into a byte array.
-   * @throws WebApplicationException UNAUTHORIZED, if the authorization failed.
-   * BAD_REQUEST if an unexpected exception crops up.
+   *                                              decoded into a byte array.
+   * @throws WebApplicationException              UNAUTHORIZED, if the authorization failed.
+   *                                              BAD_REQUEST if an unexpected exception crops up.
    */
   @POST
   @Consumes(
-          {
-            MediaType.APPLICATION_JSON
-          })
+    {
+      MediaType.APPLICATION_JSON
+    })
   public Response createPicture(@PathParam("name") String player, String json) throws UnsupportedEncodingException
   {
-    Jsonb jsonb = JsonbBuilder.create();
-    PrivateImage newImage = jsonb.fromJson(json, PrivateImage.class);
+    PrivateImage newImage;
+    try (Jsonb jsonb = JsonbBuilder.create())
+    {
+      newImage = jsonb.fromJson(json, PrivateImage.class);
+    } catch (Exception e)
+    {
+      throw new MudWebException(player, e, Response.Status.BAD_REQUEST);
+    }
 
     String name = securityContext.getCallerPrincipal().getName();
     if (name == null)
@@ -210,7 +267,7 @@ public class PicturesBean
     Image image = new Image();
     image.setUrl(newImage.url);
     image.setOwner(user);
-    byte[] decodedString = Base64.getDecoder().decode(newImage.content.getBytes("UTF-8"));
+    byte[] decodedString = Base64.getDecoder().decode(newImage.content.getBytes(StandardCharsets.UTF_8));
     if (decodedString == null)
     {
       throw new MudWebException(name, "No content.", Response.Status.BAD_REQUEST);
@@ -235,6 +292,54 @@ public class PicturesBean
     image.setMimeType(newImage.mimeType);
     getEntityManager().persist(image);
     logBean.writeLog(user, "Picture added with url " + image.getUrl());
+    return Response.ok().build();
+  }
+
+
+  /**
+   * Delete an existing picture. Due to the way this was setup, there is a lot of browser caching involved.
+   * This means a picture is cached in your browser, therefore a deleted picture might still be available (in your
+   * browser).
+   *
+   * @param player the name of the player
+   * @return Response.ok if everything's okay.
+   * @throws WebApplicationException UNAUTHORIZED, if the authorization failed.
+   *                                 BAD_REQUEST if an unexpected exception crops up.
+   */
+  @DELETE
+  @Path("{id}")
+  public Response deletePicture(@PathParam("name") String player, @PathParam("id") Long id)
+  {
+    String name = securityContext.getCallerPrincipal().getName();
+    if (name == null)
+    {
+      throw new MudWebException(name, "Unauthorized", Response.Status.UNAUTHORIZED);
+    }
+    if (!name.equals(player))
+    {
+      throw new MudWebException(name, "Unauthorized", Response.Status.UNAUTHORIZED);
+    }
+    if (id == null)
+    {
+      throw new MudWebException(name, "Id of image invalid.", Response.Status.NOT_FOUND);
+    }
+
+    User user = getUser(name);
+
+    Query queryCheckExistence = getEntityManager().createNamedQuery("Image.findByOwnerAndId");
+    queryCheckExistence.setParameter("id", id);
+    queryCheckExistence.setParameter("player", user);
+
+    List<Image> list = queryCheckExistence.getResultList();
+
+    if (list.isEmpty())
+    {
+      throw new MudWebException(name, "Image with id " + id + " not found.", Response.Status.FORBIDDEN);
+    }
+
+    Image image = list.get(0);
+    getEntityManager().remove(image);
+    logBean.writeLog(user, "Picture " + image.getId() + " removed. (" + image.getUrl() + ")");
     return Response.ok().build();
   }
 }

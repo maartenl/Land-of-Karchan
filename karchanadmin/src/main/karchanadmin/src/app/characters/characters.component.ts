@@ -15,6 +15,15 @@ import { CharactersRestService } from '../characters-rest.service';
 export class CharactersComponent extends AdminComponent<MudCharacter, string> implements OnInit {
   form: FormGroup;
 
+  SearchTerms = class {
+    owner: string;
+    ip: string;
+    name: string;
+    room: string;
+  };
+
+  searchTerms = new this.SearchTerms();
+
   constructor(
     private charactersRestService: CharactersRestService,
     private formBuilder: FormBuilder,
@@ -25,17 +34,60 @@ export class CharactersComponent extends AdminComponent<MudCharacter, string> im
     this.getItems();
   }
 
+  updateOwnerSearch(value: string) {
+    if (value.trim() === '') {
+      value = null;
+    }
+    this.searchTerms.owner = value;
+    this.getItems();
+  }
+
+  updateNameSearch(value: string) {
+    if (value.trim() === '') {
+      value = null;
+    }
+    this.searchTerms.name = value;
+    this.getItems();
+  }
+
+  updateIpSearch(value: string) {
+    if (value.trim() === '') {
+      value = null;
+    }
+    this.searchTerms.ip = value;
+    this.getItems();
+  }
+
+  updateRoomSearch(value: string) {
+    if (value.trim() === '') {
+      value = null;
+    }
+    this.searchTerms.room = value;
+    this.getItems();
+  }
+
   ngOnInit() {
   }
 
   getItems() {
-    this.charactersRestService.getAll()
-      .subscribe({
-        next: data => {
-          this.items = data;
-        }
-      });
-  }
+    this.charactersRestService.getAll().subscribe({
+    next: data => {
+      const ownerFilter = character => this.searchTerms.owner === undefined ||
+        this.searchTerms.owner === null ||
+        this.searchTerms.owner === character.owner;
+      const nameFilter = character => this.searchTerms.name === undefined ||
+        this.searchTerms.name === null ||
+        character.name.includes(this.searchTerms.name);
+      const ipFilter = character => this.searchTerms.ip === undefined ||
+        this.searchTerms.ip === null ||
+        (character.address !== null && character.address.includes(this.searchTerms.ip));
+      const roomFilter = character => this.searchTerms.room === undefined ||
+        this.searchTerms.room === null ||
+        character.room == this.searchTerms.room;
+      this.items = data.filter(ownerFilter).filter(nameFilter).filter(ipFilter).filter(roomFilter);
+    }
+  });
+}
 
   getRestService(): AdminRestService<MudCharacter, string> {
     return this.charactersRestService;
@@ -89,8 +141,8 @@ export class CharactersComponent extends AdminComponent<MudCharacter, string> im
       name: formModel.name as string,
       image: formModel.image as string,
       title: formModel.title as string,
-      god: formModel.title as string,
-      room: formModel.title as number,
+      god: formModel.god as string,
+      room: formModel.room as number,
       race: formModel.race as string,
       sex: formModel.sex as string,
       age: formModel.age as string,

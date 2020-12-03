@@ -19,12 +19,9 @@ package mmud.rest.services;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.annotation.security.PermitAll;
-import javax.annotation.security.RolesAllowed;
 import javax.ejb.EJB;
 import javax.ejb.LocalBean;
 import javax.ejb.Stateless;
@@ -37,6 +34,8 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+
+import com.google.common.annotations.VisibleForTesting;
 import mmud.database.entities.characters.Person;
 import mmud.database.entities.characters.User;
 import mmud.database.entities.game.BoardMessage;
@@ -82,6 +81,7 @@ public class PublicBean
   {
     return em;
   }
+
   private static final Logger LOGGER = Logger.getLogger(PublicBean.class.getName());
 
   /**
@@ -94,9 +94,9 @@ public class PublicBean
   @GET
   @Path("fortunes")
   @Produces(
-          {
-            MediaType.APPLICATION_JSON
-          })
+    {
+      MediaType.APPLICATION_JSON
+    })
   public List<Fortune> fortunes()
   {
     LOGGER.finer("entering fortunes");
@@ -130,9 +130,9 @@ public class PublicBean
   @GET
   @Path("who")
   @Produces(
-          {
-            MediaType.APPLICATION_JSON
-          })
+    {
+      MediaType.APPLICATION_JSON
+    })
   public List<PublicPerson> who()
   {
     LOGGER.finer("entering who");
@@ -159,13 +159,13 @@ public class PublicBean
         }
         publicPerson.name = name;
         publicPerson.title = person.getTitle();
-        publicPerson.sleep = person.getSleep() ? "sleeping" : "";
+        publicPerson.sleep = (person.getSleep() != null && person.getSleep()) ? "sleeping" : "";
         publicPerson.area = person.getRoom().getArea().getShortdescription();
         if (person.getLastlogin() == null)
         {
           continue;
         }
-        Duration between = Duration.between(person.getLastlogin(),LocalDateTime.now());
+        Duration between = Duration.between(person.getLastlogin(), LocalDateTime.now());
         publicPerson.min = between.getSeconds() / 60;
         publicPerson.sec = between.getSeconds() % 60;
         res.add(publicPerson);
@@ -188,9 +188,9 @@ public class PublicBean
   @GET
   @Path("news")
   @Produces(
-          {
-            MediaType.APPLICATION_JSON
-          })
+    {
+      MediaType.APPLICATION_JSON
+    })
   public List<News> news()
   {
     LOGGER.finer("entering news");
@@ -228,9 +228,9 @@ public class PublicBean
   @GET
   @Path("status")
   @Produces(
-          {
-            MediaType.APPLICATION_JSON
-          })
+    {
+      MediaType.APPLICATION_JSON
+    })
   public List<PublicPerson> status()
   {
     LOGGER.finer("entering status");
@@ -258,8 +258,7 @@ public class PublicBean
   public List<User> getDeputies()
   {
     Query query = getEntityManager().createNamedQuery("User.status");
-    List<User> list = query.getResultList();
-    return list;
+    return (List<User>) query.getResultList();
   }
 
   /**
@@ -271,9 +270,9 @@ public class PublicBean
   @GET
   @Path("guilds")
   @Produces(
-          {
-            MediaType.APPLICATION_JSON
-          })
+    {
+      MediaType.APPLICATION_JSON
+    })
   public List<PublicGuild> guilds()
   {
     LOGGER.finer("entering guilds");
@@ -319,9 +318,9 @@ public class PublicBean
   @GET
   @Path("charactersheets/{name}")
   @Produces(
-          {
-            MediaType.APPLICATION_JSON
-          })
+    {
+      MediaType.APPLICATION_JSON
+    })
   public PublicPerson charactersheet(@PathParam("name") String name)
   {
     LOGGER.finer("entering charactersheet");
@@ -362,7 +361,6 @@ public class PublicBean
       res.familyvalues.add(pfam);
     }
 
-    // ResponseBuilder rb = request.evaluatePreconditions(lastModified, et);
     LOGGER.finer("exiting charactersheet");
     return res;
   }
@@ -377,9 +375,9 @@ public class PublicBean
   @GET
   @Path("charactersheets")
   @Produces(
-          {
-            MediaType.APPLICATION_JSON
-          })
+    {
+      MediaType.APPLICATION_JSON
+    })
   public List<PublicPerson> charactersheets()
   {
 
@@ -404,5 +402,17 @@ public class PublicBean
     }
     LOGGER.finer("exiting charactersheets");
     return res;
+  }
+
+  @VisibleForTesting
+  public void setPersonBean(PersonBean personBean)
+  {
+    this.personBean = personBean;
+  }
+
+  @VisibleForTesting
+  public void setBoardBean(BoardBean boardBean)
+  {
+    this.boardBean = boardBean;
   }
 }
