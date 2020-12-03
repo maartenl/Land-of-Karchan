@@ -51,7 +51,7 @@ import org.karchan.security.Roles;
     Roles.PLAYER, Roles.DEPUTY, Roles.GUILDMEMBER, Roles.GUILDMASTER, Roles.GOD
   }
 )
-@WebServlet({"*.html", "*.js"})
+@WebServlet({"*.html"})
 public class WebsiteServlet extends HttpServlet
 {
 
