@@ -30,6 +30,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.annotation.security.DeclareRoles;
 import javax.inject.Inject;
+import org.eclipse.microprofile.config.inject.ConfigProperty;
 import javax.security.enterprise.SecurityContext;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -59,6 +60,13 @@ public class WebsiteServlet extends HttpServlet
   private static final String VERSION_COOKIENAME = "karchanversion";
 
   private static final String CURRENT_VERSION = "2.0.7-SNAPSHOT";
+
+  /**
+   * For example: https://www.karchan.org. If it isn't configured, then no redirect takes place.
+   */
+  @Inject
+  @ConfigProperty(name = "karchan.redirect.url", defaultValue = "")
+  private String redirectHttps;
 
   @Inject
   private SecurityContext securityContext;
@@ -94,6 +102,13 @@ public class WebsiteServlet extends HttpServlet
   protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException
   {
     final String url = getUrl(request);
+
+    if (!request.isSecure() && !"".equals(redirectHttps))
+    {
+      response.setStatus(301);
+      response.setHeader("Location", redirectHttps);
+      return;
+    }
 
     // Set response content type
     if (url.endsWith(".js"))
