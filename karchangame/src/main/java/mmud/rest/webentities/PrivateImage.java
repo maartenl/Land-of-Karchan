@@ -26,6 +26,7 @@ import mmud.database.entities.web.Image;
  */
 public class PrivateImage
 {
+  public static final String GET_QUERY = "select json_object(\"id\", id, \"url\", url, \"mimeType\", mimeType, \"createDate\", createDate) from images where owner = ? order by id";
 
   /**
    * Base 64 encoded content for the image.
