@@ -5,6 +5,6 @@ export interface Picture {
   content: string;
   length: number;
   mimeType: string;
-  createDate: string;
+  createDate: string;  
 }
 

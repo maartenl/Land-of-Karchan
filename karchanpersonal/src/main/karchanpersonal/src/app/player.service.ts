@@ -26,6 +26,7 @@ import { catchError, map, tap } from 'rxjs/operators';
   providedIn: 'root'
 })
 export class PlayerService {
+
   name: string;
 
   charactersheetUrl: string;
@@ -459,6 +460,17 @@ export class PlayerService {
       );
   }
 
+  public getPicture(id: number): Observable<any> {
+    return this.http.get<Picture>(this.getPicturesUrl() + '/' + id)
+      .pipe(
+        catchError(err => {
+          this.handleError(err);
+          return [];
+        })
+      );
+  }
+
+
   public createPicture(picture: Picture): Observable<any> {
     return this.http.post(this.getPicturesUrl(), picture)
       .pipe(
@@ -468,6 +480,16 @@ export class PlayerService {
         })
       );
   }
+
+  public deletePicture(picture: Picture): Observable<any> {
+    return this.http.delete(this.getPicturesUrl() + '/' + picture.id)
+      .pipe(
+        catchError(err => {
+          this.handleError(err);
+          return [];
+        })
+      );
+    }
 
   /**
    * Handles error, delivers them to the errorService.
