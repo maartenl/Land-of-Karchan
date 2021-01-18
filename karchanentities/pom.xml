@@ -63,7 +63,7 @@
     </dependency>
     <dependency>
       <groupId>jakarta.platform</groupId>
-      <artifactId>jakarta.jakartaee-api</artifactId>
+      <artifactId>jakarta.jakartaee-web-api</artifactId>
       <version>${jakartaee.version}</version>
       <type>jar</type>
       <scope>provided</scope>
