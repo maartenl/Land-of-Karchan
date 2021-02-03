@@ -17,14 +17,10 @@
 package org.karchan.images;
 
 import java.io.IOException;
-import java.util.List;
 import java.util.Optional;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.inject.Inject;
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
-import javax.persistence.TypedQuery;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.ServletOutputStream;
@@ -32,13 +28,14 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
 import mmud.database.entities.web.Image;
 
 /**
- *
+ * Provides images stored by players in the database.
  * @author maartenl
  */
-@WebServlet("/player/*")
+@WebServlet("/*")
 public class ImageServlet extends HttpServlet
 {
 
@@ -85,12 +82,12 @@ public class ImageServlet extends HttpServlet
     }
 
     response.addHeader("Cache-Control","private, max-age=31536000");
-    
+
     Image image = optionalImage.get();
-    
+
     // Set response content type
     response.setContentType(image.getMimeType());
-    
+
     response.setContentLength(image.getContent().length);
     ServletOutputStream outputStream = response.getOutputStream();
 

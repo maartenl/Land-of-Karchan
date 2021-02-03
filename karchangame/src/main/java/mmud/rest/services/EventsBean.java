@@ -162,7 +162,6 @@ public class EventsBean
    * @throws java.lang.InstantiationException
    * @throws java.lang.reflect.InvocationTargetException
    */
-  @Schedule(hour = "*", minute = "*/1")
   public void events() throws IllegalAccessException, InstantiationException, InvocationTargetException
   {
     // LOGGER.log(Level.INFO, "Events scheduled at time {0}.", LocalDateTime.now());
@@ -258,7 +257,6 @@ public class EventsBean
   /**
    * Started once an hour, and computes who has been idle too long.
    */
-  @Schedule(hour = "*", minute = "1")
   private void executeIdleCleanup()
   {
     logBean.writeLog("executeIdleCleanup(): scheduled at time " + LocalDateTime.now() + ".");
