@@ -14,9 +14,5 @@ List
 * karchan - the new website
 * karchanadmin - angular app for admin to change settings (in a WAR wrapper)
 * karchanpersonal - angular app for user to change settings (in a WAR wrapper)
-* karchananimations - a WAR wrapper for animations
-* karchandocs - a WAR wrapper for javadocs
-* karchanimages - a WAR wrapper for images
+* karchanimages - retrieves images from the database
 * karchanscripts - a WAR wrapper for javascript files
-* karchansound - a WAR wrapper for sound files
-* karchantest - a REST testing project, uses RestAssured.
