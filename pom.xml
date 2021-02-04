@@ -84,6 +84,5 @@
     <module>karchanadmin</module>
     <module>karchanimages</module>
     <module>karchanpersonal</module>
-    <module>karchanscripts</module>
   </modules>
 </project>

@@ -34,6 +34,7 @@ import org.eclipse.microprofile.config.inject.ConfigProperty;
 import javax.security.enterprise.SecurityContext;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -131,7 +132,7 @@ public class WebsiteServlet extends HttpServlet
     root.put("url", url);
     root.put("darkmode", cookies.contains("karchandarkmode"));
     root.put("hideToc", cookies.contains("karchanhidetoc"));
-    root.put("version", cookies.get(VERSION_COOKIENAME).map(cookie -> cookie.getValue()).orElse(CURRENT_VERSION));
+    root.put("version", cookies.get(VERSION_COOKIENAME).map(Cookie::getValue).orElse(CURRENT_VERSION));
     if (request.getParameter("logout") != null && !cookies.isEmpty())
     {
       cookies.remove("JREMEMBERMEID");
@@ -166,7 +167,7 @@ public class WebsiteServlet extends HttpServlet
       root.put("activeMenu", "none");
     }
     Optional<Menu> foundMenu = MenuFactory.findMenu(url);
-    if (!foundMenu.isPresent())
+    if (foundMenu.isEmpty())
     {
       LOGGER.log(Level.FINEST, "Menu with url {0} not found.", url);
       if (url.startsWith("/blogs/"))
@@ -194,7 +195,7 @@ public class WebsiteServlet extends HttpServlet
     });
     root.put("breadcrumbs", breadcrumbs);
 
-    String templateName = foundMenu.map(menu -> menu.getTemplate()).orElse(url.replace(".html", "").replace(".js", ""));
+    String templateName = foundMenu.map(Menu::getTemplate).orElse(url.replace(".html", "").replace(".js", ""));
     root.put("template", templateName);
 
     /* Get the template (uses cache internally) */

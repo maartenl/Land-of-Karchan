@@ -15,4 +15,3 @@ List
 * karchanadmin - angular app for admin to change settings (in a WAR wrapper)
 * karchanpersonal - angular app for user to change settings (in a WAR wrapper)
 * karchanimages - retrieves images from the database
-* karchanscripts - a WAR wrapper for javascript files
