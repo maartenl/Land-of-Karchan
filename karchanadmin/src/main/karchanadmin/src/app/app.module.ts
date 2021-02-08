@@ -37,6 +37,7 @@ import { CharactersComponent } from './characters/characters.component';
 import { environment } from 'src/environments/environment';
 import { BoardsComponent } from './boards/boards.component';
 import { GuildsComponent } from './guilds/guilds.component';
+import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 
 export const isMock = environment.mock;
 
@@ -72,7 +73,8 @@ export const isMock = environment.mock;
     AppRoutingModule,
     HttpClientModule,
     ScrollingModule,
-    NgbModule
+    NgbModule,
+    NoopAnimationsModule
   ],
   providers: [CookieService, {
     provide: HTTP_INTERCEPTORS,

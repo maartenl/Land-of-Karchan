@@ -9,13 +9,13 @@ import { ToastService } from '../toast.service';
  */
 export abstract class AdminComponent<T extends AdminObject<U>, U> {
 
-  item: T;
+  item: T | null = null;
 
-  items: T[];
+  items: T[] = new Array<T>(0);
 
   abstract getRestService(): AdminRestService<T, U>;
 
-  abstract setForm();
+  abstract setForm(item?: T): void;
 
   abstract makeItem(): T;
 
@@ -39,7 +39,7 @@ export abstract class AdminComponent<T extends AdminObject<U>, U> {
     if (!this.isSelected()) {
       return '';
     }
-    return (this.item.getIdentifier() === item.getIdentifier()) ? 'table-active' : '';
+    return (this.item?.getIdentifier() === item?.getIdentifier()) ? 'table-active' : '';
   }
 
   refresh() {
@@ -48,6 +48,9 @@ export abstract class AdminComponent<T extends AdminObject<U>, U> {
   }
 
   public deleteItem(): void {
+    if (this.item === null) {
+      return;
+    }
     if (window.console) {
       console.log('delete item ' + this.item.getIdentifier());
     }
@@ -55,9 +58,9 @@ export abstract class AdminComponent<T extends AdminObject<U>, U> {
       (result: any) => { // on success
         this.items = this.items
           .filter((bl) => bl === undefined ||
-            bl.getIdentifier() !== this.item.getIdentifier());
+            bl.getIdentifier() !== this.item?.getIdentifier());
         this.items = [...this.items];
-        this.getToastService().show(this.item.getType() + ' ' + this.item.getIdentifier() + ' successfully deleted.', {
+        this.getToastService().show(this.item?.getType() + ' ' + this.item?.getIdentifier() + ' successfully deleted.', {
           delay: 3000,
           autohide: true,
           headertext: 'Deleted...'
@@ -74,7 +77,7 @@ export abstract class AdminComponent<T extends AdminObject<U>, U> {
 
   abstract getForm(): T;
 
-  abstract setItemById(id: U);
+  abstract setItemById(id: U | undefined | null) : boolean;
 
   public createItem(): void {
     const itemFromForm = this.getForm();
@@ -84,7 +87,7 @@ export abstract class AdminComponent<T extends AdminObject<U>, U> {
         this.items.push(itemFromForm);
         this.items = [...this.items];
         this.setItemById(result);
-        this.getToastService().show(this.item.getType() + ' ' + this.item.getIdentifier() + ' successfully created.', {
+        this.getToastService().show(this.item?.getType() + ' ' + this.item?.getIdentifier() + ' successfully created.', {
           delay: 3000,
           autohide: true,
           headertext: 'Created...'
@@ -106,7 +109,7 @@ export abstract class AdminComponent<T extends AdminObject<U>, U> {
       (result: any) => { // on success
         this.items[index] = itemFromForm;
         this.items = [...this.items];
-        this.getToastService().show(this.item.getType() + ' ' + this.item.getIdentifier() + ' successfully updated.', {
+        this.getToastService().show(this.item?.getType() + ' ' + this.item?.getIdentifier() + ' successfully updated.', {
           delay: 3000,
           autohide: true,
           headertext: 'Updated...'

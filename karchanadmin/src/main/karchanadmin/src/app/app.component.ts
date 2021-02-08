@@ -10,7 +10,7 @@ import { ChristmasUtils } from './christmas.utils';
   styleUrls: ['./app.component.css']
 })
 export class AppComponent implements OnInit {
-  darkmode: boolean;
+  darkmode: boolean = false;
 
   collapsed = true;
 
@@ -23,7 +23,7 @@ export class AppComponent implements OnInit {
     // check darkmode
     this.darkmode = this.cookieService.check('karchandarkmode');
     if (this.darkmode) {
-      document.getElementById('pagestyle').setAttribute('href', 'assets/css/bootstrap.darkmode.min.css');
+      document.getElementById('pagestyle')?.setAttribute('href', 'assets/css/bootstrap.darkmode.min.css');
     }
   }
 

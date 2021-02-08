@@ -18,7 +18,7 @@ export class CharactersRestService implements AdminRestService<MudCharacter, str
 
   url: string;
 
-  cache$: Observable<MudCharacter[]>;
+  cache$: Observable<MudCharacter[]> | null = null;
 
   constructor(
     private http: HttpClient,
@@ -65,7 +65,7 @@ export class CharactersRestService implements AdminRestService<MudCharacter, str
   }
 
   clearCache() {
-    this.cache$ = undefined;
+    this.cache$ = null;
   }
 
   delete(character: MudCharacter): Observable<any> {

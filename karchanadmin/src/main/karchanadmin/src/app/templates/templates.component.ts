@@ -11,15 +11,19 @@ import { TemplateService } from '../template.service';
 })
 export class TemplatesComponent implements OnInit {
 
-  templates: Template[];
+  templates: Template[] = new Array<Template>(0);
 
-  template: Template;
+  template: Template | null = null;
 
   templateForm: FormGroup;
 
   constructor(private templateService: TemplateService,
-              private formBuilder: FormBuilder) {
-    this.createForm();
+    private formBuilder: FormBuilder) {
+    this.templateForm = this.formBuilder.group({
+      name: '',
+      content: '',
+      comment: ''
+    });
   }
 
   ngOnInit() {
@@ -28,8 +32,12 @@ export class TemplatesComponent implements OnInit {
       (result: Template[]) => { // on success
         if (result !== undefined && result.length !== 0) {
           result.forEach((value) => {
-            value.created = value.created.replace('[UTC]', '');
-            value.modified = value.modified.replace('[UTC]', '');
+            if (value.created !== null) {
+              value.created = value.created.replace('[UTC]', '');
+            }
+            if (value.modified !== null) {
+              value.modified = value.modified.replace('[UTC]', '');
+            }
           });
           this.templates = result;
         }
@@ -73,11 +81,14 @@ export class TemplatesComponent implements OnInit {
   }
 
   public saveTemplate(): void {
-    if (this.template.id === undefined) {
+    if (this.template === null || this.template.id === undefined) {
       return;
     }
     const index = this.templates.indexOf(this.template);
     const template = this.prepareSave();
+    if (template === null) {
+      return;
+    }
     this.templateService.updateTemplate(template).subscribe(
       (result: any) => { // on success
         this.templates[index] = template;
@@ -89,9 +100,12 @@ export class TemplatesComponent implements OnInit {
       });
   }
 
-  prepareSave(): Template {
+  prepareSave(): Template | null {
+    if (this.template === null) {
+      return null;
+    }
     const formModel = this.templateForm.value;
-
+  
     // return new `Template` object containing a combination of original template value(s)
     // and deep copies of changed form model values
     const saveTemplate: Template = {

@@ -1,12 +1,12 @@
 import { AdminObject } from '../admin/admin-object.model';
 
 export class Board implements AdminObject<number> {
-    id: number;
-    name: string;
-    description: string;
-    room: number;
-    owner: string;
-    creation: Date;
+    id: number | null = null;
+    name: string | null = null;
+    description: string | null = null;
+    room: number | null = null;
+    owner: string | null = null;
+    creation: Date | null = null;
 
     constructor(object?: any) {
         if (object === undefined) {
@@ -21,7 +21,7 @@ export class Board implements AdminObject<number> {
 
     }
 
-    getIdentifier(): number {
+    getIdentifier(): number | null {
         return this.id;
     }
 
@@ -36,12 +36,12 @@ export class Board implements AdminObject<number> {
 }
 
 export class BoardMessage implements AdminObject<number> {
-    id: number;
-    boardid: number;
-    name: string;
-    posttime: string;
-    message: string;
-    removed: boolean;
+    id: number | null = null;
+    boardid: number | null = null;
+    name: string | null = null;
+    posttime: string | null = null;
+    message: string | null = null;
+    removed: boolean | null = null;
 
     constructor(object?: any) {
         if (object === undefined) {
@@ -55,7 +55,7 @@ export class BoardMessage implements AdminObject<number> {
         this.removed = object.removed;
     }
 
-    getIdentifier(): number {
+    getIdentifier(): number| null {
         return this.id;
     }
 

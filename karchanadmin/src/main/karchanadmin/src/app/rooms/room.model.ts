@@ -1,19 +1,19 @@
 import { AdminObject } from '../admin/admin-object.model';
 
 export class Room implements AdminObject<number> {
-    id: number;
-    west: number;
-    east: number;
-    north: number;
-    south: number;
-    up: number;
-    down: number;
-    contents: string;
-    owner: string;
-    creation: string;
-    area: string;
-    title: string;
-    picture: string;
+    id: number | null = null;
+    west: number | null = null;
+    east: number | null = null;
+    north: number | null = null;
+    south: number | null = null;
+    up: number | null = null;
+    down: number | null = null;
+    contents: string | null = null;
+    owner: string | null = null;
+    creation: string | null = null;
+    area: string | null = null;
+    title: string | null = null;
+    picture: string | null = null;
 
     constructor(object?: any) {
         if (object === undefined) {
@@ -34,7 +34,7 @@ export class Room implements AdminObject<number> {
         this.picture = object.picture;
     }
 
-    public getIdentifier(): number {
+    public getIdentifier(): number | null {
         return this.id;
     }
 

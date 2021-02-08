@@ -1,17 +1,17 @@
 import { AdminObject } from '../admin/admin-object.model';
 
 export class Manpage implements AdminObject<string> {
-    command: string;
-    contents: string;
-    synopsis: string;
-    seealso: string;
-    example1: string;
-    example1a: string;
-    example1b: string;
-    example2: string;
-    example2a: string;
-    example2b: string;
-    example2c: string;
+    command: string | null = null;
+    contents: string | null = null;
+    synopsis: string | null = null;
+    seealso: string | null = null;
+    example1: string | null = null;
+    example1a: string | null = null;
+    example1b: string | null = null;
+    example2: string | null = null;
+    example2a: string | null = null;
+    example2b: string | null = null;
+    example2c: string | null = null;
 
     constructor(object?: any) {
         if (object === undefined) {
@@ -30,7 +30,7 @@ export class Manpage implements AdminObject<string> {
         this.example2c = object.example2c;
         }
 
-    getIdentifier(): string {
+    getIdentifier(): string | null {
         return this.command;
     }
 

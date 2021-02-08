@@ -24,7 +24,14 @@ export class AreasComponent extends AdminComponent<Area, string> implements OnIn
     private formBuilder: FormBuilder,
     private toastService: ToastService) {
     super();
-    this.setForm();
+    const object = {
+      area: '',
+      description: '',
+      shortdesc: '',
+      owner: null,
+      creation: null
+    };
+    this.form = this.formBuilder.group(object);
     this.makeItem();
     this.getItems();
   }
@@ -33,8 +40,8 @@ export class AreasComponent extends AdminComponent<Area, string> implements OnIn
     if (window.console) {
       console.log('ngOnInit');
     }
-    const id: string = this.route.snapshot.paramMap.get('id');
-    if (id === undefined || id === null) {
+    const id: string | null = this.route.snapshot.paramMap.get('id');
+    if (id === null) {
       return;
     }
     this.setItemById(id);
@@ -81,20 +88,22 @@ export class AreasComponent extends AdminComponent<Area, string> implements OnIn
 
     // return new `Area` object containing a combination of original blog value(s)
     // and deep copies of changed form model values
-    const area = this.item === undefined ? null : this.item.area;
-    const creation = this.item === undefined ? null : this.item.creation;
-    const owner = this.item === undefined ? null : this.item.owner;
+    const area = this.item === undefined || this.item === null ? null : this.item.area;
+    const owner = this.item === undefined || this.item === null ? null : this.item.owner;
     const saveArea: Area = new Area({
       area: formModel.area as string,
       description: formModel.description as string,
       shortdesc: formModel.shortdesc as string,
-      creation,
+      creation: null,
       owner: formModel.owner as string,
     });
     return saveArea;
   }
 
-  setItemById(id: string) {
+  setItemById(id: string | undefined | null) {
+    if (id === undefined || id === null) {
+      return false;
+    }
     this.areasRestService.get(id).subscribe({
       next: (data) => {
         if (data !== undefined) { this.setArea(data); }

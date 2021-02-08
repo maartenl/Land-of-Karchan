@@ -11,9 +11,9 @@ import { BanRestService } from 'src/app/ban-rest.service';
   styleUrls: ['./banned.component.css']
 })
 export class BannedComponent implements OnInit {
-  items: BannedIP[];
+  items: BannedIP[] = new Array<BannedIP>(0);
 
-  item: BannedIP;
+  item: BannedIP | null = null;
 
   form: FormGroup;
 
@@ -21,7 +21,16 @@ export class BannedComponent implements OnInit {
     private banRestService: BanRestService,
     private formBuilder: FormBuilder,
     private toastService: ToastService) {
-    this.setForm();
+    const object = {
+      address: '',
+      days: null,
+      IP: null,
+      name: null,
+      deputy: null,
+      date: null,
+      reason: null
+    };
+    this.form = this.formBuilder.group(object);
     this.item = this.makeItem();
     this.getItems();
   }
@@ -91,7 +100,7 @@ export class BannedComponent implements OnInit {
         itemFromForm.setIdentifier(result);
         this.items.push(itemFromForm);
         this.items = [...this.items];
-        this.toastService.show(this.item.getType() + ' ' + this.item.getIdentifier() + ' successfully created.', {
+        this.toastService.show(this.item?.getType() + ' ' + this.item?.getIdentifier() + ' successfully created.', {
           delay: 3000,
           autohide: true,
           headertext: 'Created...'
@@ -117,9 +126,9 @@ export class BannedComponent implements OnInit {
       (result: any) => { // on success
         this.items = this.items
           .filter((bl) => bl === undefined ||
-            bl.getIdentifier() !== this.item.getIdentifier());
+            bl?.getIdentifier() !== this.item?.getIdentifier());
         this.items = [...this.items];
-        this.toastService.show(this.item.getType() + ' ' + this.item.getIdentifier() + ' successfully deleted.', {
+        this.toastService.show(this.item?.getType() + ' ' + this.item?.getIdentifier() + ' successfully deleted.', {
           delay: 3000,
           autohide: true,
           headertext: 'Deleted...'

@@ -18,7 +18,7 @@ import { ToastService } from './toast.service';
 export class MethodsRestService implements AdminRestService<Method, string> {
   url: string;
 
-  cache$: Observable<Method[]>;
+  cache$: Observable<Method[]> | null = null;
 
   constructor(
     private http: HttpClient,
@@ -39,7 +39,7 @@ export class MethodsRestService implements AdminRestService<Method, string> {
   }
 
   public getCommands(name: string): Observable<Command[]> {
-    return this.http.get<Method>(this.url + '/' + name + '/commands')
+    return this.http.get<Command[]>(this.url + '/' + name + '/commands')
       .pipe(
         catchError(err => {
           this.handleError(err);
@@ -49,7 +49,7 @@ export class MethodsRestService implements AdminRestService<Method, string> {
   }
 
   public clearCache() {
-    this.cache$ = undefined;
+    this.cache$ = null;
   }
 
   public getAll(): Observable<Method[]> {

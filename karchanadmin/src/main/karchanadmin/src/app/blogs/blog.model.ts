@@ -1,9 +1,9 @@
 export class Blog {
-    contents: string;
-    creation: string;
-    id: number;
-    modification: string;
-    name: string;
-    title: string;
-    urlTitle: string;
+    contents: string | null = null;
+    creation: string | null = null;
+    id: number | null = null;
+    modification: string | null = null;
+    name: string | null = null;
+    title: string | null = null;
+    urlTitle: string | null = null;
 }

@@ -1,18 +1,18 @@
 import { AdminObject } from '../admin/admin-object.model';
 
 export class MudEvent implements AdminObject<number> {
-    eventid: number;
-    name: string;
-    month: number;
-    dayofmonth: number;
-    hour: number;
-    minute: number;
-    dayofweek: number;
-    callable: boolean;
-    methodname: string;
-    room: number;
-    owner: string;
-    creation: string;
+    eventid: number | null = null;
+    name: string | null = null;
+    month: number | null = null;
+    dayofmonth: number | null = null;
+    hour: number | null = null;
+    minute: number | null = null;
+    dayofweek: number | null = null;
+    callable: boolean | null = null;
+    methodname: string | null = null;
+    room: number | null = null;
+    owner: string | null = null;
+    creation: string | null = null;
 
     constructor(object?: any) {
         if (object === undefined) {
@@ -32,7 +32,7 @@ export class MudEvent implements AdminObject<number> {
         this.creation = object.creation;
     }
 
-    getIdentifier(): number {
+    getIdentifier(): number | null {
         return this.eventid;
     }
 

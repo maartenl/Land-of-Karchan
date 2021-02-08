@@ -1,7 +1,7 @@
 <div class="container-fluid">
     <div class="row row-content">
         <div class="col-xs-12 col-xl-6">
-            <h1>Board {{ item === undefined ? '-' : item.id }}</h1>
+            <h1>Board {{ item === undefined || item === null ? '-' : item?.id }}</h1>
             <form [formGroup]="form" novalidate>
                 <fieldset class="form-group">
                     <label for="id">Id</label>
@@ -38,20 +38,20 @@
                 <form novalidate>
                     <fieldset class="form-group">
                         <label for="id">Id</label>:
-                        {{ boardmessage.id }}
+                        {{ boardmessage?.id }}
                     </fieldset>
                     <fieldset class="form-group">
                         <label for="name">Name</label>:
-                        {{ boardmessage.name }}
+                        {{ boardmessage?.name }}
                     </fieldset>
                     <fieldset class="form-group">
                         <label for="description">Message</label>
                         <textarea class="form-control" id="message" name="description" rows="13"
-                            [value]="boardmessage.message" readonly></textarea>
+                            [value]="boardmessage?.message" readonly></textarea>
                     </fieldset>
                     <fieldset class="form-group">
                         <label for="posttime">Posttime</label>:
-                        {{ boardmessage.posttime }}
+                        {{ boardmessage?.posttime }}
                     </fieldset>
                 </form>
             </div>
@@ -66,12 +66,12 @@
                 </thead>
                 <tbody>
                     <tr *ngFor="let boardmessage of boardmessages" (click)="setBoardmessage(boardmessage)">
-                        <td>{{ boardmessage.id }}</td>
-                        <td>{{ boardmessage.name }}</td>
-                        <td>{{ boardmessage.posttime }}</td>
+                        <td>{{ boardmessage?.id }}</td>
+                        <td>{{ boardmessage?.name }}</td>
+                        <td>{{ boardmessage?.posttime }}</td>
                         <td>
                             <input type="checkbox" class="form-check-input" id="removed"
-                                (click)="removeMessage(boardmessage)" [checked]="boardmessage.removed">
+                                (click)="removeMessage(boardmessage)" [checked]="boardmessage?.removed">
                         </td>
                     </tr>
                 </tbody>

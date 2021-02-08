@@ -1,13 +1,13 @@
 import { AdminObject } from '../admin/admin-object.model';
 
 export class BannedIP implements AdminObject<string> {
-    address: string;
-    days: number;
-    IP: string;
-    name: string;
-    deputy: string;
-    date: string;
-    reason: string;
+    address: string | null = null;
+    days: number | null = null;
+    IP: string | null = null;
+    name: string | null = null;
+    deputy: string | null = null;
+    date: string | null = null;
+    reason: string | null = null;
 
     constructor(object?: any) {
         if (object === undefined) {
@@ -22,7 +22,7 @@ export class BannedIP implements AdminObject<string> {
         this.reason = object.reason;
     }
 
-    getIdentifier(): string {
+    getIdentifier(): string | null {
         return this.address;
     }
 

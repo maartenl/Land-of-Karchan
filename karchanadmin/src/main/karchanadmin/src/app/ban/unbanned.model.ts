@@ -1,7 +1,7 @@
 import { AdminObject } from '../admin/admin-object.model';
 
 export class Unbannedname implements AdminObject<string> {
-    name: string;
+    name: string | null = null;
 
     constructor(object?: any) {
         if (object === undefined) {
@@ -10,7 +10,7 @@ export class Unbannedname implements AdminObject<string> {
         this.name = object.name;
     }
 
-    getIdentifier(): string {
+    getIdentifier(): string | null {
         return this.name;
     }
 

@@ -1,43 +1,43 @@
 import { AdminObject } from '../admin/admin-object.model';
 
 export class Item implements AdminObject<number> {
-    id: number;
-    name: string;
-    adject1: string;
-    adject2: string;
-    adject3: string;
-    manaincrease: number;
-    hitincrease: number;
-    vitalincrease: number;
-    movementincrease: number;
-    pasdefense: number;
-    damageresistance: number;
-    eatable: string;
-    drinkable: string;
-    room: number;
-    lightable: number;
-    getable: boolean;
-    dropable: boolean;
-    visible: boolean;
-    wieldable: boolean;
-    description: string;
-    readdescr: string;
-    wearable: number;
-    copper: number;
-    weight: number;
-    container: number;
-    capacity: number;
-    isopenable: boolean;
-    keyid: number;
-    containtype: number;
-    notes: string;
-    image: string;
-    title: string;
-    discriminator: number;
-    bound: boolean;
+    id: number | null = null;
+    name: string | null = null;
+    adject1: string | null = null;
+    adject2: string | null = null;
+    adject3: string | null = null;
+    manaincrease: number | null = null;
+    hitincrease: number | null = null;
+    vitalincrease: number | null = null;
+    movementincrease: number | null = null;
+    pasdefense: number | null = null;
+    damageresistance: number | null = null;
+    eatable: string | null = null;
+    drinkable: string | null = null;
+    room: number | null = null;
+    lightable: number | null = null;
+    getable: boolean | null = null;
+    dropable: boolean | null = null;
+    visible: boolean | null = null;
+    wieldable: boolean | null = null;
+    description: string | null = null;
+    readdescr: string | null = null;
+    wearable: number | null = null;
+    copper: number | null = null;
+    weight: number | null = null;
+    container: number | null = null;
+    capacity: number | null = null;
+    isopenable: boolean | null = null;
+    keyid: number | null = null;
+    containtype: number | null = null;
+    notes: string | null = null;
+    image: string | null = null;
+    title: string | null = null;
+    discriminator: number | null = null;
+    bound: boolean | null = null;
 
-    creation: string;
-    owner: string;
+    creation: string | null = null;
+    owner: string | null = null;
 
     constructor(object?: any) {
         if (object === undefined) {
@@ -81,7 +81,7 @@ export class Item implements AdminObject<number> {
         this.owner = object.owner;
     }
 
-    getIdentifier(): number {
+    getIdentifier(): number | null {
         return this.id;
     }
 

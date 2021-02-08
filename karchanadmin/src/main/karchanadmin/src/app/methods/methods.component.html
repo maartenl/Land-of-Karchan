@@ -17,7 +17,7 @@
 <div class="container-fluid">
     <div class="row row-content">
         <div class="col-xs-12 col-xl-6">
-            <h1>Method {{ item === undefined ? '-' : item.name }}</h1>
+            <h1>Method {{ item === undefined || item === null ? '-' : item?.name }}</h1>
             <form [formGroup]="form" novalidate>
                 <fieldset class="form-group">
                     <label for="name">Name</label>

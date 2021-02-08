@@ -1,10 +1,10 @@
 import { AdminObject } from '../admin/admin-object.model';
 
 export class Method implements AdminObject<string> {
-    name: string;
-    src: string;
-    creation: string;
-    owner: string;
+    name: string | null = null;
+    src: string | null = null;
+    creation: string | null = null;
+    owner: string | null = null;
 
     constructor(object?: any) {
         if (object === undefined) {
@@ -16,7 +16,7 @@ export class Method implements AdminObject<string> {
         this.owner = object.owner;
     }
 
-    getIdentifier(): string {
+    getIdentifier(): string | null {
         return this.name;
     }
 

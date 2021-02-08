@@ -12,9 +12,9 @@ import { Unbannedname } from '../unbanned.model';
 })
 export class UnbannedComponent implements OnInit {
 
-  items: Unbannedname[];
+  items: Unbannedname[] = new Array<Unbannedname>(0);
 
-  item: Unbannedname;
+  item: Unbannedname | null = null;
 
   form: FormGroup;
 
@@ -22,7 +22,9 @@ export class UnbannedComponent implements OnInit {
     private banRestService: BanRestService,
     private formBuilder: FormBuilder,
     private toastService: ToastService) {
-    this.setForm();
+    this.form = this.formBuilder.group({
+      name: ''
+    });
     this.item = this.makeItem();
     this.getItems();
   }
@@ -80,7 +82,7 @@ export class UnbannedComponent implements OnInit {
         itemFromForm.setIdentifier(result);
         this.items.push(itemFromForm);
         this.items = [...this.items];
-        this.toastService.show(this.item.getType() + ' ' + this.item.getIdentifier() + ' successfully created.', {
+        this.toastService.show(this.item?.getType() + ' ' + this.item?.getIdentifier() + ' successfully created.', {
           delay: 3000,
           autohide: true,
           headertext: 'Created...'
@@ -106,9 +108,9 @@ export class UnbannedComponent implements OnInit {
       (result: any) => { // on success
         this.items = this.items
           .filter((bl) => bl === undefined ||
-            bl.getIdentifier() !== this.item.getIdentifier());
+            bl?.getIdentifier() !== this.item?.getIdentifier());
         this.items = [...this.items];
-        this.toastService.show(this.item.getType() + ' ' + this.item.getIdentifier() + ' successfully deleted.', {
+        this.toastService.show(this.item?.getType() + ' ' + this.item?.getIdentifier() + ' successfully deleted.', {
           delay: 3000,
           autohide: true,
           headertext: 'Deleted...'

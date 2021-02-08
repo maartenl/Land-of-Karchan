@@ -3,12 +3,12 @@
     <div class="col-xs-12 col-xl-6">
       <div class="card sticky-top" *ngIf="log !== undefined">
         <div class="card-body">
-          <h5 class="card-title" *ngIf="log.LogMessage !== undefined">Message</h5>
-          <h5 class="card-title" *ngIf="log.Throwable !== undefined">Exception</h5>
-          <p class="card-text" *ngIf="log.LogMessage !== undefined">{{ log.LogMessage }}</p>
-          <p class="card-text" *ngIf="log.Throwable !== undefined">{{ log.Throwable.Exception }}</p>
-          <p class="card-text" *ngIf="log.Throwable !== undefined">Stacktrace</p>
-          <p class="card-text" *ngIf="log.Throwable !== undefined">{{ log.Throwable.StackTrace }}</p>
+          <h5 class="card-title" *ngIf="log?.LogMessage !== undefined">Message</h5>
+          <h5 class="card-title" *ngIf="log?.Throwable !== undefined">Exception</h5>
+          <p class="card-text" *ngIf="log?.LogMessage !== undefined">{{ log?.LogMessage }}</p>
+          <p class="card-text" *ngIf="log?.Throwable !== undefined">{{ log?.Throwable?.Exception }}</p>
+          <p class="card-text" *ngIf="log?.Throwable !== undefined">Stacktrace</p>
+          <p class="card-text" *ngIf="log?.Throwable !== undefined">{{ log?.Throwable?.StackTrace }}</p>
         </div>
       </div>
     </div>
@@ -26,12 +26,12 @@
         </thead>
         <tbody>
           <tr *ngFor="let log of logs">
-            <td (click)="setLog(log)">{{ log.MessageID }}</td>
-            <td (click)="setLog(log)">{{ log.LoggerName }}</td>
-            <td (click)="setLog(log)">{{ log.Level }}</td>
-            <td (click)="setLog(log)">{{ log.ThreadName }}</td>
-            <td (click)="setLog(log)">{{ log.Timestamp }}</td>
-            <td (click)="setLog(log)" *ngIf="log.LogMessage !== undefined">{{ log.LogMessage.substring(0,40) }}</td>
+            <td (click)="setLog(log)">{{ log?.MessageID }}</td>
+            <td (click)="setLog(log)">{{ log?.LoggerName }}</td>
+            <td (click)="setLog(log)">{{ log?.Level }}</td>
+            <td (click)="setLog(log)">{{ log?.ThreadName }}</td>
+            <td (click)="setLog(log)">{{ log?.Timestamp }}</td>
+            <td (click)="setLog(log)" *ngIf="log.LogMessage !== undefined">{{ log.LogMessage?.substring(0,40) }}</td>
             <td (click)="setLog(log)" *ngIf="log.Throwable !== undefined">Exception</td>
           </tr>
         </tbody>

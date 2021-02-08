@@ -20,7 +20,21 @@ export class EventsComponent extends AdminComponent<MudEvent, number> implements
     private formBuilder: FormBuilder,
     private toastService: ToastService) {
     super();
-    this.setForm();
+    const object = {
+      eventid: null,
+      name: null,
+      month: null,
+      dayofmonth: null,
+      hour: null,
+      minute: null,
+      dayofweek: null,
+      callable: null,
+      methodname: null,
+      room: null,
+      owner: null,
+      creation: null
+    };
+    this.form = this.formBuilder.group(object);
     this.makeItem();
     this.getItems();
   }
@@ -90,7 +104,10 @@ export class EventsComponent extends AdminComponent<MudEvent, number> implements
     return saveEvent;
   }
 
-  setItemById(id: number) {
+  setItemById(id: number | undefined | null) {
+    if (id === undefined || id === null) {
+      return false;
+    }
     this.eventsRestService.get(id).subscribe({
       next: (data) => {
         if (data !== undefined) { this.setEvent(data); }

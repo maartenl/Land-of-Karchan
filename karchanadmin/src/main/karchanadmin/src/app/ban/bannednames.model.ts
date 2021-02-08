@@ -1,11 +1,11 @@
 import { AdminObject } from '../admin/admin-object.model';
 
 export class Bannedname implements AdminObject<string> {
-    name: string;
-    deputy: string;
-    creation: string;
-    days: number;
-    reason: string;
+    name: string | null = null;
+    deputy: string | null = null;
+    creation: string | null = null;
+    days: number | null = null;
+    reason: string | null = null;
 
     constructor(object?: any) {
         if (object === undefined) {
@@ -18,7 +18,7 @@ export class Bannedname implements AdminObject<string> {
         this.reason = object.reason;
     }
 
-    getIdentifier(): string {
+    getIdentifier(): string | null {
         return this.name;
     }
 

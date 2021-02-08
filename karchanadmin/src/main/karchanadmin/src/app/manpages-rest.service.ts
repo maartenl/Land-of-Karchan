@@ -18,7 +18,7 @@ export class ManpagesRestService implements AdminRestService<Manpage, string> {
 
   url: string;
 
-  cache$: Observable<Manpage[]>;
+  cache$: Observable<Manpage[]> | null = null;
 
   constructor(
     private http: HttpClient,
@@ -65,7 +65,7 @@ export class ManpagesRestService implements AdminRestService<Manpage, string> {
   }
 
   clearCache() {
-    this.cache$ = undefined;
+    this.cache$ = null;
   }
 
   delete(manpage: Manpage): Observable<any> {

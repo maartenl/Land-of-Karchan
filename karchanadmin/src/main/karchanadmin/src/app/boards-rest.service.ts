@@ -17,7 +17,7 @@ import { ToastService } from './toast.service';
 export class BoardsRestService implements AdminRestService<Board, number> {
   url: string;
 
-  cache$: Observable<Board[]>;
+  cache$: Observable<Board[]> | null = null;
 
   constructor(
     private http: HttpClient,
@@ -85,7 +85,7 @@ export class BoardsRestService implements AdminRestService<Board, number> {
   }
 
   clearCache() {
-    this.cache$ = undefined;
+    this.cache$ = null;
   }
 
   delete(board: Board): Observable<any> {

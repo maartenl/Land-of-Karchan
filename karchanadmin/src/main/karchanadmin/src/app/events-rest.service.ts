@@ -18,7 +18,7 @@ export class EventsRestService implements AdminRestService<MudEvent, number>  {
 
   url: string;
 
-  cache$: Observable<MudEvent[]>;
+  cache$: Observable<MudEvent[]> | null = null;
 
   constructor(
     private http: HttpClient,
@@ -65,7 +65,7 @@ export class EventsRestService implements AdminRestService<MudEvent, number>  {
   }
 
   clearCache() {
-    this.cache$ = undefined;
+    this.cache$ = null;
   }
 
   delete(event: MudEvent): Observable<any> {

@@ -1,16 +1,16 @@
 import { AdminObject } from '../admin/admin-object.model';
 
 export class Guild implements AdminObject<string> {
-    name: string;
-    title: string;
-    guilddescription: string;
-    guildurl: string;
-    bossname: string;
-    logonmessage: string;
-    imageurl: string;
-    colour: string;
-    owner: string;
-    creation: Date;
+    name: string | null = null;
+    title: string | null = null;
+    guilddescription: string | null = null;
+    guildurl: string | null = null;
+    bossname: string | null = null;
+    logonmessage: string | null = null;
+    imageurl: string | null = null;
+    colour: string | null = null;
+    owner: string | null = null;
+    creation: Date | null = null;
 
     constructor(object?: any) {
         if (object === undefined) {
@@ -29,7 +29,7 @@ export class Guild implements AdminObject<string> {
 
     }
 
-    getIdentifier(): string {
+    getIdentifier(): string | null {
         return this.name;
     }
 

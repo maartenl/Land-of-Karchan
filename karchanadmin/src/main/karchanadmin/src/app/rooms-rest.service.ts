@@ -18,7 +18,7 @@ import { ToastService } from './toast.service';
 export class RoomsRestService implements AdminRestService<Room, number> {
   url: string;
 
-  cache$: Observable<Room[]>;
+  cache$: Observable<Room[]> | null = null;
 
   constructor(
     private http: HttpClient,
@@ -45,9 +45,9 @@ export class RoomsRestService implements AdminRestService<Room, number> {
 
   public getCommands(id: number): Observable<Command[]> {
     if (!environment.production) {
-      return of(Command[0]);
+      return of(new Array<Command>(0));
     }
-    return this.http.get<Room>(this.url + '/' + id + '/commands')
+    return this.http.get<Command[]>(this.url + '/' + id + '/commands')
       .pipe(
         catchError(err => {
           this.handleError(err);
@@ -56,11 +56,11 @@ export class RoomsRestService implements AdminRestService<Room, number> {
       );
   }
 
-  public getAll(descriptionSearch: string): Observable<Room[]> {
+  public getAll(descriptionSearch: string | null): Observable<Room[]> {
     if (this.cache$) {
       return this.cache$;
     }
-    const localUrl = descriptionSearch === undefined ? this.url : this.url + '?description=' + descriptionSearch;
+    const localUrl = descriptionSearch === undefined || descriptionSearch === null ? this.url : this.url + '?description=' + descriptionSearch;
     this.toastService.show('Retrieving all rooms.', {
       delay: 5000,
       autohide: true,
@@ -85,7 +85,7 @@ export class RoomsRestService implements AdminRestService<Room, number> {
   }
 
   public clearCache() {
-    this.cache$ = undefined;
+    this.cache$ = null;
   }
 
   public delete(room: Room): Observable<any> {

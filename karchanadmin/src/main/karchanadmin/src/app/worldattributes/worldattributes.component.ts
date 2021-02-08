@@ -21,7 +21,12 @@ export class WorldattributesComponent extends AdminComponent<Worldattribute, str
     private formBuilder: FormBuilder,
     private toastService: ToastService) {
     super();
-    this.setForm();
+    this.form = this.formBuilder.group({
+      name: null,
+      type: null,
+      contents: null,
+      owner: null
+    });
     this.makeItem();
     this.getItems();
   }
@@ -76,7 +81,10 @@ export class WorldattributesComponent extends AdminComponent<Worldattribute, str
     return saveWorldattribute;
   }
 
-  setItemById(id: string) {
+  setItemById(id: string | undefined | null) {
+    if (id === undefined || id === null) {
+      return false;
+    }
     this.worldattributesRestService.get(id).subscribe({
       next: (data) => {
         if (data !== undefined) { this.setWorldattribute(data); }

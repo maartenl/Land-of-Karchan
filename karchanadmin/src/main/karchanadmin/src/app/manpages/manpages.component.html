@@ -1,31 +1,31 @@
 <div class="container-fluid">
     <div class="row row-content">
         <div class="col-xs-12 col-xl-6">
-            <h1>{{ item === undefined ? '-' : item.command }}</h1>
+            <h1>{{ item === undefined || item === null ? '-' : item?.command }}</h1>
             <div *ngIf="item !== undefined">
                 <p> </p>
                 <dl>
                     <dt><b>NAME</b></dt>
-                    <dd><b>{{ item.command }}</b> - formatted output</dd>
+                    <dd><b>{{ item?.command }}</b> - formatted output</dd>
                     <p></p>
                     <dt><b>SYNOPSIS</b></dt>
-                    <dd>{{ item.synopsis }}</dd>
+                    <dd>{{ item?.synopsis }}</dd>
                     <p></p>
                     <dt><b>DESCRIPTION</b></dt>
-                    <dd>{{ item.contents }}</dd>
+                    <dd>{{ item?.contents }}</dd>
                     <p></p>
                     <dt><b>EXAMPLES</b></dt>
-                    <dd>"{{ item.example1 }}"<p></p>
-                        You: <code>{{ item.example1a }}</code><br>
-                        Anybody: <code>{{ item.example1b }}</code>
-                        <p></p>"{{ item.example2}}"<p></p>
-                        You: <code>{{ item.example2a }}</code><br>
-                        Marvin: <code>{{ item.example2b }}</code><br>
-                        Anybody: <code>{{ item.example2c }}</code>
+                    <dd>"{{ item?.example1 }}"<p></p>
+                        You: <code>{{ item?.example1a }}</code><br>
+                        Anybody: <code>{{ item?.example1b }}</code>
+                        <p></p>"{{ item?.example2}}"<p></p>
+                        You: <code>{{ item?.example2a }}</code><br>
+                        Marvin: <code>{{ item?.example2b }}</code><br>
+                        Anybody: <code>{{ item?.example2c }}</code>
                         <p></p>
                     </dd>
                     <dt><b>SEE ALSO</b></dt>
-                    <dd>{{ item.seealso }}<p></p>
+                    <dd>{{ item?.seealso }}<p></p>
                     </dd>
                 </dl>
                 <p></p>

@@ -12,7 +12,7 @@ export class ToastService {
   }
 
   // Callback method to remove Toast DOM element from view
-  remove(toast) {
+  remove(toast: any) {
     this.toasts = this.toasts.filter(t => t !== toast);
   }
 }

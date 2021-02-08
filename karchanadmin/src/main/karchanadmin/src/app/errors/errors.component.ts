@@ -9,7 +9,7 @@ import { ErrorMessage } from './errormessage.model';
   styleUrls: ['./errors.component.css']
 })
 export class ErrorsComponent implements OnInit {
-  errors: ErrorMessage[] = [];
+  errors: ErrorMessage[] = [] = new Array<ErrorMessage>(0);
 
   constructor(private errorsService: ErrorsService) { }
 

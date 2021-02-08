@@ -10,9 +10,9 @@ import { SystemlogService } from '../systemlog.service';
 })
 export class SystemlogComponent implements OnInit {
 
-  logs: Systemlog[];
+  logs: Systemlog[] = new Array<Systemlog>(0);
 
-  log: Systemlog;
+  log: Systemlog | null = null;
 
   constructor(private systemlogService: SystemlogService) { }
 
@@ -22,7 +22,9 @@ export class SystemlogComponent implements OnInit {
       (result: Systemlog[]) => { // on success
         if (result !== undefined && result.length !== 0) {
           result.forEach((value) => {
-            value.Timestamp = value.Timestamp.replace('[UTC]', '');
+            if (value.Timestamp !== null) {
+              value.Timestamp = value.Timestamp.replace('[UTC]', '');
+            }
           });
           this.logs = result;
         }

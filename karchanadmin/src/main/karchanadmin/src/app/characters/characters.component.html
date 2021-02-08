@@ -29,7 +29,7 @@
 </div><div class="container-fluid">
     <div class="row row-content">
         <div class="col-xs-12 col-xl-6">
-            <h1>Character {{ item === undefined ? '-' : item.name }}</h1>
+            <h1>Character {{ item === undefined || item === null ? '-' : item?.name }}</h1>
             <form [formGroup]="form" novalidate>
                 <fieldset class="form-group">
                     <label for="name">Name</label>
@@ -41,7 +41,7 @@
                     <input type="text" class="form-control" id="image" name="image" formControlName="image">
                 </fieldset>
                 <fieldset class="form-group">
-                    <div class="card" *ngIf="item !== undefined && item.title !== undefined">
+                    <div class="card" *ngIf="item !== undefined && item !== null && item.title !== undefined">
                         <div class="card-text" [innerHTML]="item.title">
                         </div>
                     </div>
@@ -52,11 +52,11 @@
                     <label for="room">Room</label>
                     <input type="number" class="form-control" id="room" name="room" formControlName="room">
                 </fieldset>
-                <fieldset *ngIf="item !== undefined && item.name !== undefined" class="form-group">
+                <fieldset *ngIf="item !== undefined && item !== null && item.name !== undefined" class="form-group">
                     <label for="god">God</label>
                     <input readonly type="text" class="form-control" id="god" name="god" formControlName="god">
                 </fieldset>
-                <fieldset *ngIf="item === undefined || item.name === undefined" class="form-group">
+                <fieldset *ngIf="item === undefined || item === null || item.name === undefined" class="form-group">
                     <label for="god">God</label>
                     <select class="form-control" id="god" name="god" formControlName="god">
                         <option>GOD</option>

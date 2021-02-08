@@ -16,10 +16,10 @@ export class CharactersComponent extends AdminComponent<MudCharacter, string> im
   form: FormGroup;
 
   SearchTerms = class {
-    owner: string;
-    ip: string;
-    name: string;
-    room: string;
+    owner: string | null = null;
+    ip: string | null = null;
+    name: string | null = null;
+    room: string | null = null;
   };
 
   searchTerms = new this.SearchTerms();
@@ -29,40 +29,53 @@ export class CharactersComponent extends AdminComponent<MudCharacter, string> im
     private formBuilder: FormBuilder,
     private toastService: ToastService) {
     super();
-    this.setForm();
+    const object = {
+      name: null,
+      image: null,
+      title: null,
+      room: null,
+      god: null,
+      race: null,
+      sex: null,
+      age: null,
+      height: null,
+      width: null,
+      complexion: null,
+      eyes: null,
+      face: null,
+      hair: null,
+      beard: null,
+      arm: null,
+      leg: null,
+      copper: null,
+      notes: null,
+      address: null,
+      realname: null,
+      email: null,
+      owner: null
+    };
+    this.form = this.formBuilder.group(object);
     this.makeItem();
     this.getItems();
   }
 
   updateOwnerSearch(value: string) {
-    if (value.trim() === '') {
-      value = null;
-    }
-    this.searchTerms.owner = value;
+    this.searchTerms.owner = value.trim() === '' ? null : value;
     this.getItems();
   }
 
   updateNameSearch(value: string) {
-    if (value.trim() === '') {
-      value = null;
-    }
-    this.searchTerms.name = value;
+    this.searchTerms.name = value.trim() === '' ? null : value;
     this.getItems();
   }
 
   updateIpSearch(value: string) {
-    if (value.trim() === '') {
-      value = null;
-    }
-    this.searchTerms.ip = value;
+    this.searchTerms.ip = value.trim() === '' ? null : value;
     this.getItems();
   }
 
   updateRoomSearch(value: string) {
-    if (value.trim() === '') {
-      value = null;
-    }
-    this.searchTerms.room = value;
+    this.searchTerms.room = value.trim() === '' ? null : value;
     this.getItems();
   }
 
@@ -71,23 +84,23 @@ export class CharactersComponent extends AdminComponent<MudCharacter, string> im
 
   getItems() {
     this.charactersRestService.getAll().subscribe({
-    next: data => {
-      const ownerFilter = character => this.searchTerms.owner === undefined ||
-        this.searchTerms.owner === null ||
-        this.searchTerms.owner === character.owner;
-      const nameFilter = character => this.searchTerms.name === undefined ||
-        this.searchTerms.name === null ||
-        character.name.includes(this.searchTerms.name);
-      const ipFilter = character => this.searchTerms.ip === undefined ||
-        this.searchTerms.ip === null ||
-        (character.address !== null && character.address.includes(this.searchTerms.ip));
-      const roomFilter = character => this.searchTerms.room === undefined ||
-        this.searchTerms.room === null ||
-        character.room == this.searchTerms.room;
-      this.items = data.filter(ownerFilter).filter(nameFilter).filter(ipFilter).filter(roomFilter);
-    }
-  });
-}
+      next: data => {
+        const ownerFilter = (character: MudCharacter) => this.searchTerms.owner === undefined ||
+          this.searchTerms.owner === null ||
+          this.searchTerms.owner === character.owner;
+        const nameFilter = (character: MudCharacter) => this.searchTerms.name === undefined ||
+          this.searchTerms.name === null ||
+          (character.name !== null && character.name.includes(this.searchTerms.name));
+        const ipFilter = (character: MudCharacter) => this.searchTerms.ip === undefined ||
+          this.searchTerms.ip === null ||
+          (character.address !== null && character.address.includes(this.searchTerms.ip));
+        const roomFilter = (character: MudCharacter) => this.searchTerms.room === undefined ||
+          this.searchTerms.room === null ||
+          (character.room !== null && character.room === new Number(this.searchTerms.room));
+        this.items = data.filter(ownerFilter).filter(nameFilter).filter(ipFilter).filter(roomFilter);
+      }
+    });
+  }
 
   getRestService(): AdminRestService<MudCharacter, string> {
     return this.charactersRestService;
@@ -165,7 +178,10 @@ export class CharactersComponent extends AdminComponent<MudCharacter, string> im
     return saveCharacter;
   }
 
-  setItemById(id: string) {
+  setItemById(id: string | undefined | null) {
+    if (id === undefined || id === null) {
+      return false;
+    }
     this.charactersRestService.get(id).subscribe({
       next: (data) => {
         if (data !== undefined) { this.setCharacter(data); }

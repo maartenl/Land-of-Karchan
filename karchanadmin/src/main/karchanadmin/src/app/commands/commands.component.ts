@@ -19,25 +19,19 @@ export class CommandsComponent extends AdminComponent<Command, number> implement
   form: FormGroup;
 
   SearchTerms = class {
-    owner: string;
-    methodName: string;
+    owner: string | null = null;
+    methodName: string | null = null;
   };
 
   searchTerms = new this.SearchTerms();
 
   updateOwnerSearch(value: string) {
-    if (value.trim() === '') {
-      value = null;
-    }
-    this.searchTerms.owner = value;
+    this.searchTerms.owner = value.trim() === '' ? null : value;
     this.getItems();
   }
 
   updateMethodNameSearch(value: string) {
-    if (value.trim() === '') {
-      value = null;
-    }
-    this.searchTerms.methodName = value;
+    this.searchTerms.methodName = value.trim() === '' ? null : value;
     this.getItems();
   }
 
@@ -47,7 +41,14 @@ export class CommandsComponent extends AdminComponent<Command, number> implement
     private formBuilder: FormBuilder,
     private toastService: ToastService) {
     super();
-    this.setForm();
+    const object = {
+      callable: true,
+      command: '',
+      methodName: '',
+      room: null,
+      owner: null
+    };
+    this.form = this.formBuilder.group(object);
     this.makeItem();
     this.getItems();
   }
@@ -56,12 +57,12 @@ export class CommandsComponent extends AdminComponent<Command, number> implement
     this.commandsRestService.getAll()
       .subscribe({
         next: data => {
-          const ownerFilter = command => this.searchTerms.owner === undefined ||
+          const ownerFilter = (command: Command) => this.searchTerms.owner === undefined ||
             this.searchTerms.owner === null ||
             this.searchTerms.owner === command.owner;
-          const methodNameFilter = command => this.searchTerms.methodName === undefined ||
+          const methodNameFilter = (command: Command) => this.searchTerms.methodName === undefined ||
             this.searchTerms.methodName === null ||
-            command.methodName.includes(this.searchTerms.methodName);
+            (command.methodName !== null && command.methodName.includes(this.searchTerms.methodName));
           this.items = data.filter(ownerFilter).filter(methodNameFilter);
         }
       });
@@ -71,7 +72,7 @@ export class CommandsComponent extends AdminComponent<Command, number> implement
     if (window.console) {
       console.log('ngOnInit');
     }
-    const id: string = this.route.snapshot.paramMap.get('id');
+    const id: string | null = this.route.snapshot.paramMap.get('id');
     if (id === undefined || id === null) {
       return;
     }
@@ -97,7 +98,10 @@ export class CommandsComponent extends AdminComponent<Command, number> implement
     }
   }
 
-  setItemById(id: number) {
+  setItemById(id: number | undefined | null) {
+    if (id === undefined || id === null) {
+      return false;
+    }
     this.commandsRestService.get(id).subscribe({
       next: (data) => {
         if (data !== undefined) { this.setCommand(data); }
@@ -123,16 +127,15 @@ export class CommandsComponent extends AdminComponent<Command, number> implement
 
     // return new `Command` object containing a combination of original blog value(s)
     // and deep copies of changed form model values
-    const id = this.item === undefined ? null : this.item.id;
-    const creation = this.item === undefined ? null : this.item.creation;
-    const owner = this.item === undefined ? null : this.item.owner;
+    const id = this.item === undefined || this.item === null ? null : this.item.id;
+    const owner = this.item === undefined || this.item === null ? null : this.item.owner;
     const saveCommand: Command = new Command({
       id,
       callable: formModel.callable as boolean,
       command: formModel.command as string,
       room: formModel.room as number,
       methodName: formModel.methodName as string,
-      creation,
+      creation: null,
       owner
     });
     return saveCommand;
@@ -154,7 +157,11 @@ export class CommandsComponent extends AdminComponent<Command, number> implement
     if (window.console) {
       console.log('sortById');
     }
-    this.items = this.items.sort((a, b) => a.id - b.id);
+    this.items = this.items.sort((a, b) => {
+      const aid = a.id === null ? -1 : a.id;
+      const bid = b.id === null ? -1 : b.id;
+      return aid - bid;
+    });
     this.items = [...this.items];
     return false;
   }
@@ -163,7 +170,11 @@ export class CommandsComponent extends AdminComponent<Command, number> implement
     if (window.console) {
       console.log('sortByCommand');
     }
-    this.items = this.items.sort((a, b) => a.command.localeCompare(b.command));
+    this.items = this.items.sort((a, b) => {
+      const acommand = a.command === null ? '' : a.command;
+      const bcommand = b.command === null ? '' : b.command;
+      return acommand.localeCompare(bcommand);
+    });
     this.items = [...this.items];
     return false;
   }
@@ -172,7 +183,11 @@ export class CommandsComponent extends AdminComponent<Command, number> implement
     if (window.console) {
       console.log('sortByMethodName');
     }
-    this.items = this.items.sort((a, b) => a.methodName.localeCompare(b.methodName));
+    this.items = this.items.sort((a, b) => { 
+      const amethodName = a.methodName === null ? '' : a.methodName;
+      const bmethodName = b.methodName === null ? '' : b.methodName;
+      return amethodName.localeCompare(bmethodName); 
+    });
     this.items = [...this.items];
     return false;
   }

@@ -15,16 +15,23 @@ import { BoardsRestService } from '../boards-rest.service';
 export class BoardsComponent extends AdminComponent<Board, number> implements OnInit {
   form: FormGroup;
 
-  boardmessages: BoardMessage[];
+  boardmessages: BoardMessage[] = new Array<BoardMessage>(0);
 
-  boardmessage: BoardMessage;
+  boardmessage: BoardMessage | null = null;
 
   constructor(
     private boardsRestService: BoardsRestService,
     private formBuilder: FormBuilder,
     private toastService: ToastService) {
     super();
-    this.setForm();
+    const object = {
+      id: null,
+      name: null,
+      description: null,
+      room: null,
+      owner: null
+    };
+    this.form = this.formBuilder.group(object);
     this.makeItem();
     this.getItems();
   }
@@ -71,8 +78,8 @@ export class BoardsComponent extends AdminComponent<Board, number> implements On
   getForm(): Board {
     const formModel = this.form.value;
 
-    const id = this.item === undefined ? null : this.item.id;
-    const creation = this.item === undefined ? null : this.item.creation;
+    const id = this.item === undefined || this.item === null ? null : this.item.id;
+    const creation = this.item === undefined || this.item === null ? null : this.item.creation;
     const saveBoard: Board = new Board({
       id: formModel.id as number,
       name: formModel.name as string,
@@ -84,7 +91,10 @@ export class BoardsComponent extends AdminComponent<Board, number> implements On
     return saveBoard;
   }
 
-  setItemById(id: number) {
+  setItemById(id: number | undefined | null) {
+    if (id === undefined || id === null) {
+      return false;
+    }
     this.boardsRestService.get(id).subscribe({
       next: (data) => {
         if (data !== undefined) { this.setBoard(data); }
@@ -102,11 +112,13 @@ export class BoardsComponent extends AdminComponent<Board, number> implements On
       room: board.room,
       owner: board.owner
     });
-    this.boardsRestService.getMessages(board.id).subscribe({
-      next: (data: BoardMessage[]) => {
-        if (data !== undefined) { this.boardmessages = data.map(x => new BoardMessage(x)); }
-      }
-    });
+    if (board.id !== null) {
+      this.boardsRestService.getMessages(board.id).subscribe({
+        next: (data: BoardMessage[]) => {
+          if (data !== undefined) { this.boardmessages = data.map(x => new BoardMessage(x)); }
+        }
+      });
+    }
   }
 
   removeMessage(message: BoardMessage) {

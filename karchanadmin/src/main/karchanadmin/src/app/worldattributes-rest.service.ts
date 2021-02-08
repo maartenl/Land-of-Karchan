@@ -19,7 +19,7 @@ export class WorldattributesRestService implements AdminRestService<Worldattribu
 
   url: string;
 
-  cache$: Observable<Worldattribute[]>;
+  cache$: Observable<Worldattribute[]> | null = null;
 
   constructor(
     private http: HttpClient,
@@ -73,7 +73,7 @@ export class WorldattributesRestService implements AdminRestService<Worldattribu
   }
 
   public clearCache() {
-    this.cache$ = undefined;
+    this.cache$ = null;
   }
 
   public delete(worldattribute: Worldattribute): Observable<any> {

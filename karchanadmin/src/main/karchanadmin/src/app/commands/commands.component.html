@@ -17,7 +17,7 @@
 <div class="container-fluid">
     <div class="row row-content">
         <div class="col-xs-12 col-xl-6">
-            <h1>Command {{ item === undefined ? '-' : item.id }}</h1>
+            <h1>Command {{ item === undefined || item === null ? '-' : item?.id }}</h1>
             <form [formGroup]="form" novalidate>
                 <fieldset class="form-group form-check">
                     <input type="checkbox" class="form-check-input" id="callable" name="callable"
@@ -30,14 +30,14 @@
                 </fieldset>
                 <fieldset class="form-group">
                     <label for="methodName">Method name <a
-                            *ngIf="item !== undefined && item.methodName !== undefined"
-                            [routerLink]="['/methods', item.methodName]">{{ item.methodName }}</a></label>
+                            *ngIf="item !== undefined && item !== null && item.methodName !== undefined"
+                            [routerLink]="['/methods', item.methodName]">{{ item?.methodName }}</a></label>
                     <input type="text" class="form-control" id="methodName" name="methodName"
                         formControlName="methodName">
                 </fieldset>
                 <fieldset class="form-group">
-                    <label for="room">Room <a *ngIf="item !== undefined && item.room !== undefined"
-                        [routerLink]="['/rooms', item.room]">{{ item.room }}</a></label>
+                    <label for="room">Room <a *ngIf="item !== undefined && item !== null && item.room !== undefined"
+                        [routerLink]="['/rooms', item.room]">{{ item?.room }}</a></label>
                     <input type="number" class="form-control" id="room" name="room" formControlName="room">
                 </fieldset>
                 <fieldset class="form-group">

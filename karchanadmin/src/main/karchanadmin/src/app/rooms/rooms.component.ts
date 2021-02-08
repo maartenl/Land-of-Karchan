@@ -15,15 +15,15 @@ import { ToastService } from '../toast.service';
 })
 export class RoomsComponent extends AdminComponent<Room, number> implements OnInit {
 
-  commands: Command[] = [];
+  commands: Command[] = [] = new Array<Command>(0);
 
   form: FormGroup;
 
   SearchTerms = class {
-    owner: string;
-    title: string;
-    contents: string;
-    area: string;
+    owner: string | null = null;
+    title: string | null = null;
+    contents: string | null = null;
+    area: string | null = null;
   };
 
   searchTerms = new this.SearchTerms();
@@ -32,39 +32,27 @@ export class RoomsComponent extends AdminComponent<Room, number> implements OnIn
     return new Room();
   }
 
-  get room(): Room {
+  get room(): Room | null {
     return this.item;
   }
 
   updateOwnerSearch(value: string) {
-    if (value.trim() === '') {
-      value = null;
-    }
-    this.searchTerms.owner = value;
+    this.searchTerms.owner = value.trim() === '' ? null : value;
     this.getItems();
   }
 
   updateTitleSearch(value: string) {
-    if (value.trim() === '') {
-      value = null;
-    }
-    this.searchTerms.title = value;
+    this.searchTerms.title = value.trim() === '' ? null : value;
     this.getItems();
   }
 
   updateDescriptionSearch(value: string) {
-    if (value.trim() === '') {
-      value = null;
-    }
-    this.searchTerms.contents = value;
+    this.searchTerms.contents = value.trim() === '' ? null : value;
     this.getItems();
   }
 
   updateAreaSearch(value: string) {
-    if (value.trim() === '') {
-      value = null;
-    }
-    this.searchTerms.area = value;
+    this.searchTerms.area = value.trim() === '' ? null : value;
     this.getItems();
   }
 
@@ -74,8 +62,22 @@ export class RoomsComponent extends AdminComponent<Room, number> implements OnIn
     private formBuilder: FormBuilder,
     private toastService: ToastService) {
     super();
-    this.setForm();
-    this.item = this.makeItem();
+    const object = {
+      id: null,
+      title: '',
+      picture: null,
+      contents: null,
+      north: null,
+      south: null,
+      west: null,
+      east: null,
+      up: null,
+      down: null,
+      owner: null,
+      area: null
+    };
+      this.form = this.formBuilder.group(object);
+          this.item = this.makeItem();
     this.getItems();
   }
 
@@ -83,7 +85,7 @@ export class RoomsComponent extends AdminComponent<Room, number> implements OnIn
     if (window.console) {
       console.log('ngOnInit');
     }
-    const id: string = this.route.snapshot.paramMap.get('id');
+    const id: string | null = this.route.snapshot.paramMap.get('id');
     if (id === undefined || id === null) {
       return;
     }
@@ -124,8 +126,10 @@ export class RoomsComponent extends AdminComponent<Room, number> implements OnIn
     return this.toastService;
   }
 
-  setItemById(id: number) {
-    console.log('setitembyid' + id);
+  setItemById(id: number | undefined | null) {
+    if (id === undefined || id === null) {
+      return false;
+    }
     this.roomsRestService.get(id).subscribe({
       next: (data) => {
         if (data !== undefined) {
@@ -160,7 +164,7 @@ export class RoomsComponent extends AdminComponent<Room, number> implements OnIn
       east: formModel.east as number,
       up: formModel.up as number,
       down: formModel.down as number,
-      creation: this.item.creation as string,
+      creation: null,
       owner: formModel.owner as string
     });
     return saveRoom;
@@ -169,13 +173,13 @@ export class RoomsComponent extends AdminComponent<Room, number> implements OnIn
   getItems() {
     this.roomsRestService.getAll(this.searchTerms.contents).subscribe({
       next: data => {
-        const ownerFilter = room => this.searchTerms.owner === undefined ||
+        const ownerFilter = (room: Room) => this.searchTerms.owner === undefined ||
           this.searchTerms.owner === null ||
           this.searchTerms.owner === room.owner;
-        const titleFilter = room => this.searchTerms.title === undefined ||
+        const titleFilter = (room: Room) => this.searchTerms.title === undefined ||
           this.searchTerms.title === null ||
-          room.title.includes(this.searchTerms.title);
-        const areaFilter = room => this.searchTerms.area === undefined ||
+          (room.title !== null && room.title.includes(this.searchTerms.title));
+        const areaFilter = (room: Room) => this.searchTerms.area === undefined ||
           this.searchTerms.area === null ||
           room.area === this.searchTerms.area;
         this.items = data.filter(ownerFilter).filter(titleFilter).filter(areaFilter);

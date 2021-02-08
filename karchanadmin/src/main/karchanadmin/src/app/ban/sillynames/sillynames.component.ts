@@ -11,9 +11,9 @@ import { Sillyname } from '../sillynames.model';
   styleUrls: ['./sillynames.component.css']
 })
 export class SillynamesComponent implements OnInit {
-  items: Sillyname[];
+  items: Sillyname[] = new Array<Sillyname>(0);
 
-  item: Sillyname;
+  item: Sillyname | null = null;
 
   form: FormGroup;
 
@@ -21,7 +21,9 @@ export class SillynamesComponent implements OnInit {
     private banRestService: BanRestService,
     private formBuilder: FormBuilder,
     private toastService: ToastService) {
-    this.setForm();
+    this.form = this.formBuilder.group({
+      name: ''
+    });
     this.item = this.makeItem();
     this.getItems();
   }
@@ -79,7 +81,7 @@ export class SillynamesComponent implements OnInit {
         itemFromForm.setIdentifier(result);
         this.items.push(itemFromForm);
         this.items = [...this.items];
-        this.toastService.show(this.item.getType() + ' ' + this.item.getIdentifier() + ' successfully created.', {
+        this.toastService.show(this.item?.getType() + ' ' + this.item?.getIdentifier() + ' successfully created.', {
           delay: 3000,
           autohide: true,
           headertext: 'Created...'
@@ -105,9 +107,9 @@ export class SillynamesComponent implements OnInit {
       (result: any) => { // on success
         this.items = this.items
           .filter((bl) => bl === undefined ||
-            bl.getIdentifier() !== this.item.getIdentifier());
+            bl?.getIdentifier() !== this.item?.getIdentifier());
         this.items = [...this.items];
-        this.toastService.show(this.item.getType() + ' ' + this.item.getIdentifier() + ' successfully deleted.', {
+        this.toastService.show(this.item?.getType() + ' ' + this.item?.getIdentifier() + ' successfully deleted.', {
           delay: 3000,
           autohide: true,
           headertext: 'Deleted...'

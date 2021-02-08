@@ -31,7 +31,7 @@
 <div class="container-fluid">
     <div class="row row-content">
         <div class="col-xs-12 col-xl-6">
-            <h1>Room id {{ room === undefined ? '-' : room.id }}</h1>
+            <h1>Room id {{ room === undefined ? '-' : room?.id }}</h1>
             <form [formGroup]="form" novalidate>
                 <fieldset class="form-group">
                     <label for="id">Id</label>
@@ -54,29 +54,29 @@
                 <div class="form-row">
                     <div class="col">
                         <fieldset class="form-group">
-                            <label for="north">North <a href="#" *ngIf="isSelected() && item.north !== null"
-                                    (click)="setItemById(item.north)">{{ item.north }}</a></label>
+                            <label for="north">North <a href="#" *ngIf="isSelected() && item?.north !== null"
+                                    (click)="setItemById(item?.north)">{{ item?.north }}</a></label>
                             <input type="number" class="form-control" id="north" name="north" formControlName="north">
                         </fieldset>
                     </div>
                     <div class="col">
                         <fieldset class="form-group">
-                            <label for="south">South <a href="#" *ngIf="isSelected() && item.south !== null"
-                                    (click)="setItemById(item.south)">{{ item.south }}</a></label>
+                            <label for="south">South <a href="#" *ngIf="isSelected() && item?.south !== null"
+                                    (click)="setItemById(item?.south)">{{ item?.south }}</a></label>
                             <input type="number" class="form-control" id="south" name="south" formControlName="south">
                         </fieldset>
                     </div>
                     <div class="col">
                         <fieldset class="form-group">
-                            <label for="west">West <a href="#" *ngIf="isSelected() && item.west !== null"
-                                    (click)="setItemById(item.west)">{{ item.west }}</a></label>
+                            <label for="west">West <a href="#" *ngIf="isSelected() && item?.west !== null"
+                                    (click)="setItemById(item?.west)">{{ item?.west }}</a></label>
                             <input type="number" class="form-control" id="west" name="west" formControlName="west">
                         </fieldset>
                     </div>
                     <div class="col">
                         <fieldset class="form-group">
-                            <label for="east">East <a href="#" *ngIf="isSelected() && item.east !== null"
-                                    (click)="setItemById(item.east)">{{ item.east }}</a></label>
+                            <label for="east">East <a href="#" *ngIf="isSelected() && item?.east !== null"
+                                    (click)="setItemById(item?.east)">{{ item?.east }}</a></label>
                             <input type="number" class="form-control" id="east" name="east" formControlName="east">
                         </fieldset>
                     </div>
@@ -84,15 +84,15 @@
                 <div class="form-row">
                     <div class="col">
                         <fieldset class="form-group">
-                            <label for="up">Up <a href="#" *ngIf="isSelected() && item.up !== null"
-                                    (click)="setItemById(item.up)">{{ item.up }}</a></label>
+                            <label for="up">Up <a href="#" *ngIf="isSelected() && item?.up !== null"
+                                    (click)="setItemById(item?.up)">{{ item?.up }}</a></label>
                             <input type="number" class="form-control" id="up" name="up" formControlName="up">
                         </fieldset>
                     </div>
                     <div class="col">
                         <fieldset class="form-group">
-                            <label for="down">Down <a href="#" *ngIf="isSelected() && item.down !== null"
-                                    (click)="setItemById(item.down)">{{ item.down }}</a></label>
+                            <label for="down">Down <a href="#" *ngIf="isSelected() && item?.down !== null"
+                                    (click)="setItemById(item?.down)">{{ item?.down }}</a></label>
                             <input type="number" class="form-control" id="down" name="down" formControlName="down">
                         </fieldset>
                     </div>
@@ -101,7 +101,7 @@
                     <div class="card-header">
                         Contents
                     </div>
-                    <div class="card-text" [innerHTML]="form.get('contents').value">
+                    <div class="card-text" [innerHTML]="form.get('contents')?.value">
                     </div>
                 </div>
                 <fieldset class="form-group">

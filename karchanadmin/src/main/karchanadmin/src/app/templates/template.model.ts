@@ -1,10 +1,10 @@
 export class Template {
-    content: string;
-    created: string;
-    id: number;
-    modified: string;
-    name: string;
-    version: number;
-    editor: string;
-    comment: string;
+    content: string | null = null;
+    created: string | null = null;
+    id: number | null = null;
+    modified: string | null = null;
+    name: string | null = null;
+    version: number | null = null;
+    editor: string | null = null;
+    comment: string | null = null;
 }

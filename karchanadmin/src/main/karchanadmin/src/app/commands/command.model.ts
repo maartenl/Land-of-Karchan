@@ -1,13 +1,13 @@
 import { AdminObject } from '../admin/admin-object.model';
 
 export class Command implements AdminObject<number> {
-    id: number;
-    callable: boolean;
-    command: string;
-    methodName: string;
-    room: number;
-    creation: string;
-    owner: string;
+    id: number | null = null;
+    callable: boolean | null = null;
+    command: string | null = null;
+    methodName: string | null = null;
+    room: number | null = null;
+    creation: string | null = null;
+    owner: string | null = null;
 
     constructor(object?: any) {
         if (object === undefined) {
@@ -22,7 +22,7 @@ export class Command implements AdminObject<number> {
         this.owner = object.owner;
     }
 
-    getIdentifier(): number {
+    getIdentifier(): number | null {
         return this.id;
     }
 

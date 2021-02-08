@@ -20,7 +20,20 @@ export class ManpagesComponent extends AdminComponent<Manpage, string> implement
     private formBuilder: FormBuilder,
     private toastService: ToastService) {
     super();
-    this.setForm();
+    const object = {
+      command: null,
+      contents: null,
+      synopsis: null,
+      seealso: null,
+      example1: null,
+      example1a: null,
+      example1b: null,
+      example2: null,
+      example2a: null,
+      example2b: null,
+      example2c: null
+    };
+    this.form = this.formBuilder.group(object);
     this.makeItem();
     this.getItems();
   }
@@ -89,7 +102,10 @@ export class ManpagesComponent extends AdminComponent<Manpage, string> implement
     return saveManpage;
   }
 
-  setItemById(id: string) {
+  setItemById(id: string | undefined | null) {
+    if (id === undefined || id === null) {
+      return false;
+    }
     this.manpagesRestService.get(id).subscribe({
       next: (data) => {
         if (data !== undefined) { this.setManpage(data); }

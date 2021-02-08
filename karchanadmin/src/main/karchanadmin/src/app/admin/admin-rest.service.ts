@@ -10,7 +10,7 @@ export interface AdminRestService<T, U> {
 
   getAll(descriptionSearch: string): Observable<T[]>;
 
-  clearCache();
+  clearCache(): void;
 
   delete(item: T): Observable<any>;
 

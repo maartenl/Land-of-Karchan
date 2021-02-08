@@ -1,7 +1,7 @@
 <div class="container-fluid">
     <div class="row row-content">
         <div class="col-xs-12 col-xl-6">
-            <h1>Banned address {{ item === undefined ? '-' : item.address }}</h1>
+            <h1>Banned address {{ item === undefined || item === null ? '-' : item?.address }}</h1>
             <form [formGroup]="form" novalidate>
                 <fieldset class="form-group">
                     <label for="address">Address</label>

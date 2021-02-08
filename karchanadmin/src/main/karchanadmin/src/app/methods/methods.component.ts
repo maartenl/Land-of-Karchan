@@ -18,30 +18,24 @@ import { ToastService } from '../toast.service';
 })
 export class MethodsComponent extends AdminComponent<Method, string> implements OnInit {
 
-  commands: Command[] = [];
+  commands: Command[] = [] = new Array<Command>(0);
 
   form: FormGroup;
 
   SearchTerms = class {
-    owner: string;
-    name: string;
+    owner: string | null = null;
+    name: string | null = null;
   };
 
   searchTerms = new this.SearchTerms();
 
   updateOwner(value: string) {
-    if (value.trim() === '') {
-      value = null;
-    }
-    this.searchTerms.owner = value;
+    this.searchTerms.owner = value.trim() === '' ? null : value;
     this.getItems();
   }
 
   updateName(value: string) {
-    if (value.trim() === '') {
-      value = null;
-    }
-    this.searchTerms.name = value;
+    this.searchTerms.name = value.trim() === '' ? null : value;
     this.getItems();
   }
 
@@ -52,7 +46,12 @@ export class MethodsComponent extends AdminComponent<Method, string> implements 
     private toastService: ToastService
   ) {
     super();
-    this.setForm();
+    const object = {
+      name: '',
+      src: null,
+      owner: null
+    };
+    this.form = this.formBuilder.group(object);
     this.item = this.makeItem();
     this.getItems();
   }
@@ -61,8 +60,8 @@ export class MethodsComponent extends AdminComponent<Method, string> implements 
     if (window.console) {
       console.log('ngOnInit');
     }
-    const name: string = this.route.snapshot.paramMap.get('name');
-    if (name === undefined || name === null) {
+    const name: string | null = this.route.snapshot.paramMap.get('name');
+    if (name === null) {
       return;
     }
     this.setItemById(name);
@@ -89,7 +88,10 @@ export class MethodsComponent extends AdminComponent<Method, string> implements 
     }
   }
 
-  setItemById(name: string) {
+  setItemById(name: string | undefined | null) {
+    if (name === undefined || name === null) {
+      return false;
+    }
     this.methodsRestService.get(name).subscribe({
       next: (data) => {
         if (data !== undefined) {
@@ -114,8 +116,8 @@ export class MethodsComponent extends AdminComponent<Method, string> implements 
     const saveMethod: Method = new Method({
       name: formModel.name as string,
       src: formModel.src as string,
-      creation: this.item.creation as string,
-      owner: this.item.owner as string
+      creation: null,
+      owner: null
     });
     return saveMethod;
   }
@@ -123,13 +125,13 @@ export class MethodsComponent extends AdminComponent<Method, string> implements 
   getItems() {
     this.methodsRestService.getAll().subscribe({
       next: data => {
-        const ownerFilter = method => this.searchTerms.owner === undefined ||
+        const ownerFilter = (method: Method) => this.searchTerms.owner === undefined ||
           this.searchTerms.owner === null ||
           this.searchTerms.owner === method.owner;
-        const nameFilter = character => this.searchTerms.name === undefined ||
+        const nameFilter = (method: Method) => this.searchTerms.name === undefined ||
           this.searchTerms.name === null ||
-          character.name.includes(this.searchTerms.name);
-          this.items = data.filter(ownerFilter).filter(nameFilter);
+          (method.name !== null && method.name.includes(this.searchTerms.name));
+        this.items = data.filter(ownerFilter).filter(nameFilter);
       }
     });
   }

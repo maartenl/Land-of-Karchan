@@ -32,7 +32,7 @@ export class RestService {
         return this.result.find(x => x.getIdentifier() == this.getPartial(url));
     }
 
-    updateById(url: string, body) {
+    updateById(url: string, body: any) {
         this.result = this.result.map(x => {
             if (x.getIdentifier() == this.getPartial(url)) {
                 return this.creator(body);
@@ -46,7 +46,7 @@ export class RestService {
         this.result = this.result.filter(x => x.getIdentifier() != this.getPartial(url));
     }
 
-    add(body) {
+    add(body: any) {
         body.creation = new Date();
         body.owner = 'Karn';
         const newitem = this.creator(body);
@@ -80,7 +80,7 @@ export class RestServer {
         this.restservices.push(new RestService('/karchangame/resources/administration/guilds', (x: any) => new Guild(x)));
     }
 
-    getRestService(url: string): RestService {
+    getRestService(url: string): RestService | undefined {
         return this.restservices.find(x => url.search(x.urlRegExp) !== -1);
     }
 

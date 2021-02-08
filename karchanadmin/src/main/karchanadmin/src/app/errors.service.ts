@@ -8,15 +8,16 @@ import { ToastService } from './toast.service';
   providedIn: 'root'
 })
 export class ErrorsService {
-  private listener: (error: ErrorMessage) => void;
+  private listener: (error: ErrorMessage) => void = x => {};
 
   constructor(private toastService: ToastService) { }
+
   public setListener(listener: (error: ErrorMessage) => void): void {
     this.listener = listener;
   }
 
   public addError(error: ErrorMessage): void {
-    this.toastService.show(error.message, {
+    this.toastService.show(error.message === null ? 'Unknown message.' : error.message, {
       delay: 0,
       autohide: false,
       headertext: error.type,

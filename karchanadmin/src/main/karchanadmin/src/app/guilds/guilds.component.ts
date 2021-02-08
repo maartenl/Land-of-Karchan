@@ -20,7 +20,18 @@ export class GuildsComponent extends AdminComponent<Guild, string> implements On
     private formBuilder: FormBuilder,
     private toastService: ToastService) {
     super();
-    this.setForm();
+    const object = {
+      name: null,
+      title: null,
+      guilddescription: null,
+      guildurl: null,
+      bossname: null,
+      logonmessage: null,
+      colour: null,
+      imageurl: null,
+      owner: null
+    };
+    this.form = this.formBuilder.group(object);
     this.makeItem();
     this.getItems();
   }
@@ -71,7 +82,6 @@ export class GuildsComponent extends AdminComponent<Guild, string> implements On
   getForm(): Guild {
     const formModel = this.form.value;
 
-    const creation = this.item === undefined ? null : this.item.creation;
     const saveGuild: Guild = new Guild({
       name: formModel.name as string,
       title: formModel.title as string,
@@ -81,13 +91,16 @@ export class GuildsComponent extends AdminComponent<Guild, string> implements On
       colour: formModel.colour as string,
       logonmessage: formModel.logonmessage as string,
       imageurl: formModel.imageurl as string,
-      creation,
+      creation: null,
       owner: formModel.owner as string
     });
     return saveGuild;
   }
 
-  setItemById(id: string) {
+  setItemById(id: string | undefined | null) {
+    if (id === undefined || id === null) {
+      return false;
+    }
     this.guildsRestService.get(id).subscribe({
       next: (data) => {
         if (data !== undefined) { this.setGuild(data); }

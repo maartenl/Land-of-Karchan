@@ -3,6 +3,7 @@ import { FormControl, FormGroup, FormBuilder } from '@angular/forms';
 
 import { Blog } from './blog.model';
 import { BlogService } from '../blog.service';
+import { ReturnStatement } from '@angular/compiler';
 
 @Component({
   selector: 'app-blogs',
@@ -11,15 +12,19 @@ import { BlogService } from '../blog.service';
 })
 export class BlogsComponent implements OnInit {
 
-  blogs: Blog[];
+  blogs: Blog[] = new Array<Blog>(0);
 
-  blog: Blog;
+  blog: Blog | null = null;
 
   blogForm: FormGroup;
 
   constructor(private blogService: BlogService,
-              private formBuilder: FormBuilder) {
-    this.createForm();
+    private formBuilder: FormBuilder) {
+    this.blogForm = this.formBuilder.group({
+      title: '',
+      urlTitle: '',
+      contents: ''
+    });
     this.blog = new Blog();
   }
 
@@ -28,8 +33,12 @@ export class BlogsComponent implements OnInit {
       (result: Blog[]) => { // on success
         if (result !== undefined && result.length !== 0) {
           result.forEach((value) => {
-            value.creation = value.creation.replace('[UTC]', '');
-            value.modification = value.modification.replace('[UTC]', '');
+            if (value.creation !== null) {
+              value.creation = value.creation.replace('[UTC]', '');
+            }
+            if (value.modification !== null) {
+              value.modification = value.modification.replace('[UTC]', '');
+            }
           });
           this.blogs = result;
         }
@@ -86,8 +95,14 @@ export class BlogsComponent implements OnInit {
   }
 
   public saveBlog(): void {
+    if (this.blog === null) {
+      return;
+    }
     const index = this.blogs.indexOf(this.blog);
     const blog = this.prepareSave();
+    if (blog === null) {
+      return;
+    }
     this.blogService.updateBlog(blog).subscribe(
       (result: any) => { // on success
         if (blog.id === undefined) {
@@ -104,7 +119,10 @@ export class BlogsComponent implements OnInit {
     );
   }
 
-  prepareSave(): Blog {
+  prepareSave(): Blog  | null {
+    if (this.blog === null) {
+      return null;
+    }
     const formModel = this.blogForm.value;
 
     // return new `Blog` object containing a combination of original blog value(s)

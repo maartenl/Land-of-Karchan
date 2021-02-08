@@ -19,25 +19,19 @@ export class ItemsComponent extends AdminComponent<Item, number> implements OnIn
   form: FormGroup;
 
   SearchTerms = class {
-    owner: string;
-    name: string;
+    owner: string | null = null;
+    name: string | null = null;
   };
 
   searchTerms = new this.SearchTerms();
 
   updateOwner(value: string) {
-    if (value.trim() === '') {
-      value = null;
-    }
-    this.searchTerms.owner = value;
+    this.searchTerms.owner = value.trim() === '' ? null : value;
     this.getItems();
   }
 
   updateName(value: string) {
-    if (value.trim() === '') {
-      value = null;
-    }
-    this.searchTerms.name = value;
+    this.searchTerms.name = value.trim() === '' ? null : value;
     this.getItems();
   }
 
@@ -47,7 +41,44 @@ export class ItemsComponent extends AdminComponent<Item, number> implements OnIn
     private formBuilder: FormBuilder,
     private toastService: ToastService) {
     super();
-    this.setForm();
+    const object = {
+      id: null,
+      adject1: '',
+      adject2: '',
+      adject3: '',
+      name: '',
+      room: 0,
+      manaincrease: 0,
+      hitincrease: 0,
+      vitalincrease: 0,
+      movementincrease: 0,
+      pasdefense: 0,
+      damageresistance: 0,
+      eatable: '',
+      drinkable: '',
+      lightable: false,
+      getable: true,
+      dropable: true,
+      visible: true,
+      wieldable: 0,
+      description: '',
+      readdescr: '',
+      wearable: true,
+      copper: 0,
+      weight: 0,
+      container: 0,
+      capacity: 0,
+      isopenable: false,
+      keyid: null,
+      containtype: 0,
+      notes: '',
+      image: '',
+      title: '',
+      discriminator: 0,
+      bound: false,
+      owner: null
+    };
+    this.form = this.formBuilder.group(object);
     this.makeItem();
     this.getItems();
   }
@@ -56,8 +87,8 @@ export class ItemsComponent extends AdminComponent<Item, number> implements OnIn
     if (window.console) {
       console.log('ngOnInit');
     }
-    const id: string = this.route.snapshot.paramMap.get('id');
-    if (id === undefined || id === null) {
+    const id: string | null = this.route.snapshot.paramMap.get('id');
+    if (id === null) {
       return;
     }
     const idNumber: number = Number(id);
@@ -71,12 +102,12 @@ export class ItemsComponent extends AdminComponent<Item, number> implements OnIn
     this.itemsRestService.getAll()
       .subscribe({
         next: data => {
-          const ownerFilter = method => this.searchTerms.owner === undefined ||
+          const ownerFilter = (item: Item) => this.searchTerms.owner === undefined ||
             this.searchTerms.owner === null ||
-            this.searchTerms.owner === method.owner;
-          const nameFilter = character => this.searchTerms.name === undefined ||
+            this.searchTerms.owner === item.owner;
+          const nameFilter = (item: Item) => this.searchTerms.name === undefined ||
             this.searchTerms.name === null ||
-            character.name.includes(this.searchTerms.name);
+            (item.name !== null && item.name.includes(this.searchTerms.name));
           this.items = data.filter(ownerFilter).filter(nameFilter);
         }
       });
@@ -127,7 +158,10 @@ export class ItemsComponent extends AdminComponent<Item, number> implements OnIn
     }
   }
 
-  setItemById(id: number) {
+  setItemById(id: number | undefined | null) {
+    if (id === undefined || id === null) {
+      return false;
+    }
     this.itemsRestService.get(id).subscribe({
       next: (data) => {
         if (data !== undefined) { this.setItem(data); }
@@ -183,9 +217,9 @@ export class ItemsComponent extends AdminComponent<Item, number> implements OnIn
 
     // return new `Item` object containing a combination of original blog value(s)
     // and deep copies of changed form model values
-    const id = this.item === undefined ? null : this.item.id;
-    const creation = this.item === undefined ? null : this.item.creation;
-    const owner = this.item === undefined ? null : this.item.owner;
+    const id = this.item === undefined || this.item === null ? null : this.item.id;
+    const creation = this.item === undefined || this.item === null  ? null : this.item.creation;
+    const owner = this.item === undefined || this.item === null ? null : this.item.owner;
     const saveItem: Item = new Item({
       id,
       adject1: formModel.adject1 as string,
@@ -238,7 +272,11 @@ export class ItemsComponent extends AdminComponent<Item, number> implements OnIn
     if (window.console) {
       console.log('sortById');
     }
-    this.items = this.items.sort((a, b) => a.id - b.id);
+    this.items = this.items.sort((a, b) => {
+      const aid = a.id === null ? -1 : a.id;
+      const bid = b.id === null ? -1 : b.id;
+      return aid - bid;
+    });
     this.items = [...this.items];
     return false;
   }
@@ -247,17 +285,17 @@ export class ItemsComponent extends AdminComponent<Item, number> implements OnIn
     if (window.console) {
       console.log('sortByAdject1');
     }
-    this.items = this.items.sort((a, b) => { 
+    this.items = this.items.sort((a, b) => {
       if (a.adject1 === b.adject1) {
         return 0;
       }
       else if (a.adject1 === null) {
         return 1;
-      } 
+      }
       else if (b.adject1 === null) {
         return -1;
       }
-      return a.adject1.localeCompare(b.adject1) 
+      return a.adject1.localeCompare(b.adject1)
     });
     this.items = [...this.items];
     return false;
@@ -267,17 +305,17 @@ export class ItemsComponent extends AdminComponent<Item, number> implements OnIn
     if (window.console) {
       console.log('sortByAdject2');
     }
-    this.items = this.items.sort((a, b) => { 
+    this.items = this.items.sort((a, b) => {
       if (a.adject2 === b.adject2) {
         return 0;
       }
       else if (a.adject2 === null) {
         return 1;
-      } 
+      }
       else if (b.adject2 === null) {
         return -1;
       }
-      return a.adject2.localeCompare(b.adject2) 
+      return a.adject2.localeCompare(b.adject2)
     });
     this.items = [...this.items];
     return false;
@@ -287,17 +325,17 @@ export class ItemsComponent extends AdminComponent<Item, number> implements OnIn
     if (window.console) {
       console.log('sortByAdject3');
     }
-    this.items = this.items.sort((a, b) => { 
+    this.items = this.items.sort((a, b) => {
       if (a.adject3 === b.adject3) {
         return 0;
       }
       else if (a.adject3 === null) {
         return 1;
-      } 
+      }
       else if (b.adject3 === null) {
         return -1;
       }
-      return a.adject3.localeCompare(b.adject3) 
+      return a.adject3.localeCompare(b.adject3)
     });
     this.items = [...this.items];
     return false;
@@ -307,7 +345,11 @@ export class ItemsComponent extends AdminComponent<Item, number> implements OnIn
     if (window.console) {
       console.log('sortByName');
     }
-    this.items = this.items.sort((a, b) => a.name.localeCompare(b.name));
+    this.items = this.items.sort((a: Item, b: Item) => {
+      const aname = a.name === null ? '' : a.name;
+      const bname = b.name === null ? '' : b.name;
+      return aname.localeCompare(bname)
+    });
     this.items = [...this.items];
     return false;
   }

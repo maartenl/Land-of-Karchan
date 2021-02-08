@@ -1,7 +1,7 @@
 <div class="container-fluid">
     <div class="row row-content">
         <div class="col-xs-12 col-xl-6">
-            <h1>Event {{ item === undefined ? '-' : item.eventid }}</h1>            
+            <h1>Event {{ item === undefined || item === null ? '-' : item?.eventid }}</h1>            
             <form [formGroup]="form" novalidate>
                 <fieldset class="form-group">
                     <label for="eventid">Event id</label>
