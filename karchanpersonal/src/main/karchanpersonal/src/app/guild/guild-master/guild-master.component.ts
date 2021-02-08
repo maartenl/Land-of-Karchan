@@ -12,10 +12,10 @@ import { ToastService } from 'src/app/toast.service';
 })
 export class GuildMasterComponent implements OnInit {
 
-  @Input() guild: Guild;
-  guildMembers: GuildMembers;
-  guildRanks: GuildRanks;
-  guildHopefuls: GuildHopefuls;
+  @Input() guild: Guild | null = null;
+  guildMembers: GuildMembers = new GuildMembers(new Array<GuildMember>(0));
+  guildRanks: GuildRanks = new GuildRanks(new Array<GuildRank>(0));
+  guildHopefuls: GuildHopefuls = new GuildHopefuls(new Array<GuildHopeful>(0));
 
   guildForm: FormGroup;
   memberForm: FormGroup;
@@ -25,6 +25,21 @@ export class GuildMasterComponent implements OnInit {
     private playerService: PlayerService,
     private formBuilder: FormBuilder,
     private toastService: ToastService) {
+    this.guildForm = this.formBuilder.group({
+      title: "",
+      guildurl: "",
+      logonmessage: "",
+      guilddescription: "",
+      colour: ""
+    });
+    this.memberForm = this.formBuilder.group({
+      name: '',
+      rank: null
+    });
+    this.rankForm = this.formBuilder.group({
+      guildlevel: null,
+      title: ''
+    });
   }
 
   ngOnInit() {
@@ -32,13 +47,15 @@ export class GuildMasterComponent implements OnInit {
   }
 
   createForms() {
-    this.guildForm = this.formBuilder.group({
-      title: this.guild.title,
-      guildurl: this.guild.guildurl,
-      logonmessage: this.guild.logonmessage,
-      guilddescription: this.guild.guilddescription,
-      colour: this.guild.colour
-    });
+    if (this.guild !== null) {
+      this.guildForm = this.formBuilder.group({
+        title: this.guild.title,
+        guildurl: this.guild.guildurl,
+        logonmessage: this.guild.logonmessage,
+        guilddescription: this.guild.guilddescription,
+        colour: this.guild.colour
+      });
+    }
     this.memberForm = this.formBuilder.group({
       name: '',
       rank: null
@@ -52,31 +69,25 @@ export class GuildMasterComponent implements OnInit {
   public checkMembers() {
     this.checkRanks();
     const those = this;
-    if (this.guildMembers === undefined) {
-      this.playerService.getGuildmembers().subscribe((result: GuildMember[]) => {
-        those.guildMembers = new GuildMembers(result);
-      });
-    }
+    this.playerService.getGuildmembers().subscribe((result: GuildMember[]) => {
+      those.guildMembers = new GuildMembers(result);
+    });
     return false;
   }
 
   public checkRanks() {
     const those = this;
-    if (this.guildRanks === undefined) {
-      this.playerService.getGuildranks().subscribe((result: GuildRank[]) => {
-        those.guildRanks = new GuildRanks(result);
-      });
-    }
+    this.playerService.getGuildranks().subscribe((result: GuildRank[]) => {
+      those.guildRanks = new GuildRanks(result);
+    });
     return false;
   }
 
   public checkHopefuls() {
-    if (this.guildHopefuls === undefined) {
-      const those = this;
-      this.playerService.getGuildhopefuls().subscribe((result: GuildHopeful[]) => {
-        those.guildHopefuls = new GuildHopefuls(result);
-      });
-    }
+    const those = this;
+    this.playerService.getGuildhopefuls().subscribe((result: GuildHopeful[]) => {
+      those.guildHopefuls = new GuildHopefuls(result);
+    });
     return false;
   }
 
@@ -90,13 +101,19 @@ export class GuildMasterComponent implements OnInit {
   }
 
   save() {
-    const newGuild: Guild = this.prepareSaveGuild();
+    const newGuild: Guild | null = this.prepareSaveGuild();
     // TODO: add in the subscribe that the guild is updated.
-    this.playerService.updateGuild(newGuild).subscribe();
+    if (newGuild !== null) {
+      this.playerService.updateGuild(newGuild).subscribe();
+    }
   }
 
-  prepareSaveGuild(): Guild {
+  prepareSaveGuild(): Guild | null {
     const formModel = this.guildForm.value;
+
+    if (this.guild === null) {
+      return null;
+    }
 
     // return new `Guild` object containing a combination of original value(s)
     // and deep copies of changed form model values
@@ -138,7 +155,9 @@ export class GuildMasterComponent implements OnInit {
   }
 
   cancel() {
-    this.resetForm(this.guild);
+    if (this.guild !== null) {
+      this.resetForm(this.guild);
+    }
   }
 
   deleteRank(rank: GuildRank) {
@@ -180,8 +199,14 @@ export class GuildMasterComponent implements OnInit {
   }
 
   public saveMember(): void {
+    if (this.guildMembers.currentMember === null) {
+      return;
+    }
     const currentMember: GuildMember = this.guildMembers.currentMember;
-    const newMember: GuildMember = this.prepareSaveMember();
+    const newMember: GuildMember | null = this.prepareSaveMember();
+    if (newMember === null) {
+      return;
+    }
     this.playerService.updateGuildmember(newMember).subscribe(
       (result: any) => {
         currentMember.guildrank = newMember.guildrank;
@@ -194,13 +219,16 @@ export class GuildMasterComponent implements OnInit {
     );
   }
 
-  private prepareSaveMember(): GuildMember {
+  private prepareSaveMember(): GuildMember | null {
+    if (this.guildMembers.currentMember === null) {
+      return null;
+    }
     const formModel = this.memberForm.value;
-
     const guildlevel: number = formModel.rank as number;
-    let guildrank: GuildRank = null;
+    let guildrank: GuildRank | null = null;
     if (guildlevel !== -1) {
-      guildrank = this.guildRanks.findByGuildlevel(guildlevel);
+      const stuff = this.guildRanks.findByGuildlevel(guildlevel);
+      guildrank = stuff === undefined ? null : stuff;
     }
 
     // return new `GuildMember` object containing a combination of original value(s)
@@ -222,7 +250,7 @@ export class GuildMasterComponent implements OnInit {
 
     const guildlevel: number = formModel.guildlevel as number;
 
-    const oldRank: GuildRank = this.guildRanks.findByGuildlevel(guildlevel);
+    const oldRank: GuildRank | undefined = this.guildRanks.findByGuildlevel(guildlevel);
     const newRank: GuildRank = this.prepareSaveRank(oldRank);
     if (oldRank === undefined) {
       // new rank!
@@ -251,7 +279,7 @@ export class GuildMasterComponent implements OnInit {
     }
   }
 
-  private prepareSaveRank(oldRank: GuildRank): GuildRank {
+  private prepareSaveRank(oldRank: GuildRank | undefined): GuildRank {
     const formModel = this.rankForm.value;
 
     // return new `GuildRank` object containing a combination of original value(s)

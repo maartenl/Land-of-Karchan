@@ -15,7 +15,7 @@ export class GameComponent implements OnInit {
     private playerService: PlayerService,
     private toastService: ToastService) { }
 
-  hasNewMail: boolean;
+  hasNewMail: boolean = false;
 
   error = false;
 

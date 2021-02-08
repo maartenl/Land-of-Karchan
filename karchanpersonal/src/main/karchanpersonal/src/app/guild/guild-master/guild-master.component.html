@@ -4,7 +4,7 @@
       <form [formGroup]="guildForm" (ngSubmit)="save()" novalidate>
         <fieldset class="form-group">
           <label for="name">Name</label>
-          <input type="text" class="form-control" id="name" name="name" value="{{guild.name}}" readonly>
+          <input type="text" class="form-control" id="name" name="name" value="{{guild?.name}}" readonly>
         </fieldset>
         <fieldset class="form-group">
           <label for="title">Title</label>
@@ -12,18 +12,18 @@
         </fieldset>
         <fieldset class="form-group">
           <label for="bossname">Current boss</label>
-          <input type="text" class="form-control" id="bossname" name="bossname" value="{{guild.bossname}}" readonly>
+          <input type="text" class="form-control" id="bossname" name="bossname" value="{{guild?.bossname}}" readonly>
         </fieldset>
         <fieldset class="form-group">
           <label for="guildurl">Homepage - <a
-          href="{{guildForm.get('guildurl').value }}" target="_blank">{{guildForm.get('guildurl').value }}</a></label>
+          href="{{guildForm.get('guildurl')?.value }}" target="_blank">{{guildForm.get('guildurl')?.value }}</a></label>
           <input type="text" class="form-control" id="guildurl" name="guildurl" formControlName="guildurl">
         </fieldset>
         <div class="card" style="width: 100%;">
           <div class="card-header">
             Logonmessage
           </div>
-          <div class="card-text" [innerHTML]="guildForm.get('logonmessage').value">
+          <div class="card-text" [innerHTML]="guildForm.get('logonmessage')?.value">
           </div>
         </div>
         <fieldset class="form-group">
@@ -38,7 +38,7 @@
           <div class="card-header">
             Description
           </div>
-          <div class="card-text" [innerHTML]="guildForm.get('guilddescription').value">
+          <div class="card-text" [innerHTML]="guildForm.get('guilddescription')?.value">
           </div>
         </div>
         <fieldset class="form-group">
@@ -47,7 +47,7 @@
         </fieldset>
         <fieldset class="form-group">
           <label for="creation">Created</label>
-          <input type="text" class="form-control" id="creation" name="creation" value="{{guild.creation | date:'medium'}}" readonly>
+          <input type="text" class="form-control" id="creation" name="creation" value="{{guild?.creation | date:'medium'}}" readonly>
         </fieldset>
         <div class="col-xs-12 col-sm-12 text-right">
           <button type="submit" [disabled]="guildForm.pristine" class="btn btn-primary">Save</button>
@@ -76,7 +76,7 @@
             <div class="card-text" *ngIf="guildMembers !== undefined">
               <ul class="list-group">
                 <li class="list-group-item justify-content-between" *ngFor="let member of guildMembers.members" (click)="selectMember(member)">
-                  {{member.name}}{{ member.guildrank === undefined ? "" : ", " + member.guildrank.title }}
+                  {{member.name}}{{ member.guildrank === undefined ? "" : ", " + member.guildrank?.title }}
                   <button type="button" class="close" aria-label="Close" (click)="deleteMember(member)">
                     <i class="material-icons" aria-hidden="true">delete</i>
                   </button>

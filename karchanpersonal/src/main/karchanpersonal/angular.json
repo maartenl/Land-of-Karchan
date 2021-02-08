@@ -1,11 +1,18 @@
 {
   "$schema": "./node_modules/@angular/cli/lib/config/schema.json",
+  "cli": {
+    "analytics": "49d9a9fb-61f5-4e03-89b1-fe8b28d35fd6"
+  },
   "version": 1,
   "newProjectRoot": "projects",
   "projects": {
     "karchanpersonal": {
       "projectType": "application",
-      "schematics": {},
+      "schematics": {
+        "@schematics/angular:application": {
+          "strict": true
+        }
+      },
       "root": "",
       "sourceRoot": "src",
       "prefix": "app",
@@ -21,9 +28,7 @@
             "aot": true,
             "assets": [
               "src/favicon.ico",
-              "src/assets",
-              "src/assets/fonts",
-              "src/assets/images"
+              "src/assets"
             ],
             "styles": [
               "node_modules/material-icons/iconfont/material-icons.css",
@@ -42,7 +47,6 @@
               "optimization": true,
               "outputHashing": "all",
               "sourceMap": false,
-              "extractCss": true,
               "namedChunks": false,
               "extractLicenses": true,
               "vendorChunk": false,
@@ -50,12 +54,13 @@
               "budgets": [
                 {
                   "type": "initial",
-                  "maximumWarning": "2mb",
-                  "maximumError": "5mb"
+                  "maximumWarning": "1mb",
+                  "maximumError": "2mb"
                 },
                 {
                   "type": "anyComponentStyle",
-                  "maximumWarning": "6kb"
+                  "maximumWarning": "2kb",
+                  "maximumError": "4kb"
                 }
               ]
             }
@@ -123,8 +128,5 @@
       }
     }
   },
-  "defaultProject": "karchanpersonal",
-  "cli": {
-    "analytics": "c70b411f-2cfd-4e0c-be90-e0d53995b1f5"
-  }
+  "defaultProject": "karchanpersonal"
 }

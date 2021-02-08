@@ -27,7 +27,7 @@ import { catchError, map, tap } from 'rxjs/operators';
 })
 export class PlayerService {
 
-  name: string;
+  name: string | null = null;
 
   charactersheetUrl: string;
 
@@ -78,7 +78,7 @@ export class PlayerService {
    * Retrieves the name of the player from the karchanname cookie.
    */
   public getName(): string {
-    if (this.name != null) {
+    if (this.name !== null) {
       return this.name;
     }
     if (this.cookieService.check('karchanname')) {
@@ -89,6 +89,7 @@ export class PlayerService {
     error.type = '404';
     error.message = 'Character not found. Are you sure you are logged in?';
     this.errorsService.addError(error);
+    return 'unknown';
   }
 
   public isLoggedIn(): boolean {

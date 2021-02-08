@@ -105,7 +105,7 @@ export class InboxMailComponent implements OnInit {
   public next(): boolean {
     if (this.mails.page !== this.mails.getNumberOfPages() - 1) {
       this.mails.next();
-      return;
+      return true;
     }
     // retrieve the next page of mails starting from the last mail in the array
     this.playerService.getMail(this.mails.getNumberOfMails()).subscribe(

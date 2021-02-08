@@ -18,6 +18,9 @@ export class ComposeMailComponent implements OnInit {
     if (mail === undefined || mail === null) {
       return;
     }
+    if (mail.name === null || mail.body === null || mail.subject === null) {
+      return;
+    }
     this.mailForm.reset({
       toname: mail.name,
       subject: 'Re: ' + mail.subject,
@@ -34,7 +37,11 @@ export class ComposeMailComponent implements OnInit {
     private playerService: PlayerService,
     private formBuilder: FormBuilder,
     private toastService: ToastService) {
-    this.createForm();
+    this.mailForm = this.formBuilder.group({
+      toname: '',
+      subject: '',
+      body: ''
+    });
   }
 
   ngOnInit() {

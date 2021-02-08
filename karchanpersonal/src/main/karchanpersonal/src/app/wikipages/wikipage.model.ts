@@ -1,8 +1,8 @@
 export interface Wikipage {
   name: string;
   title: string;
-  createDate: string;
-  modifiedDate: string;
+  createDate: string | null;
+  modifiedDate: string | null;
   version: string;
   content: string;
   summary: string;

@@ -26,8 +26,8 @@ export class Family {
   description: string;
 
   constructor() {
-    this.toname = void 0;
-    this.description = void 0;
+    this.toname = '';
+    this.description = '';
 
   }
 

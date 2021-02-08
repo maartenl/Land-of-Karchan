@@ -14,5 +14,5 @@ export class ToastComponent implements OnInit {
   ngOnInit() {
   }
 
-  isTemplate(toast) { return toast.textOrTpl instanceof TemplateRef; }
+  isTemplate(toast: any) { return toast.textOrTpl instanceof TemplateRef; }
 }

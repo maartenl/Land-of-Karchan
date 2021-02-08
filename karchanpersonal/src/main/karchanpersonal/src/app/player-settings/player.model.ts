@@ -15,17 +15,17 @@ export class Player {
   familyvalues: Family[];
 
   constructor() {
-    this.name = void 0;
-    this.title = void 0; 
-    this.sex = void 0; 
-    this.description = void 0; 
-    this.imageurl = void 0; 
-    this.guild = void 0; 
-    this.homepageurl = void 0; 
-    this.dateofbirth = void 0; 
-    this.cityofbirth = void 0; 
-    this.storyline = void 0;
-    this.familyvalues = void 0;
+    this.name = '';
+    this.title = ''; 
+    this.sex = ''; 
+    this.description = ''; 
+    this.imageurl = ''; 
+    this.guild = ''; 
+    this.homepageurl = ''; 
+    this.dateofbirth = ''; 
+    this.cityofbirth = ''; 
+    this.storyline = '';
+    this.familyvalues = new Array<Family>(0);
   }
 
 }

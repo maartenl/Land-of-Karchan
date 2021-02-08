@@ -14,17 +14,21 @@ export class PicturesComponent implements OnInit {
 
   form: FormGroup;
 
-  pictures: Picture[];
+  pictures: Picture[] = new Array<Picture>(0);
 
-  picture: Picture;
+  picture: Picture | null = null;
 
-  player: string;
+  player: string = '';
 
   constructor(
     private playerService: PlayerService,
     private formBuilder: FormBuilder,
     private toastService: ToastService) {
-    this.createForm();
+    this.form = this.formBuilder.group({
+      url: '',
+      content: '',
+      mimeType: ''
+    });
   }
 
   ngOnInit() {
@@ -35,7 +39,9 @@ export class PicturesComponent implements OnInit {
         (result: Picture[]) => { // on success
           if (result !== undefined && result.length !== 0) {
             result.forEach(value => {
-              value.createDate = value.createDate.replace('[UTC]', '');
+              if (value.createDate !== null) {
+                value.createDate = value.createDate.replace('[UTC]', '');
+              }
             });
             this.pictures = result;
           }
@@ -72,14 +78,15 @@ export class PicturesComponent implements OnInit {
   prepareSavePicture(): Picture {
     const formModel = this.form.value;
 
-    // return new `Wikipage` object containing a combination of original value(s)
+    const mimeType = formModel.mimeType;
+    // return new `Picture` object containing a combination of original value(s)
     // and deep copies of changed form model values
     const savePicture: Picture = {
-      id: null,
+      id: 0,
       createDate: null,
-      length: null,
-      mimeType: formModel.mimeType,
-      owner: null,
+      length: 0,
+      mimeType: mimeType === null || mimeType === undefined || mimeType.trim() === '' ? null : mimeType,
+      owner: '',
       url: formModel.url,
       content: formModel.content
     };
@@ -108,7 +115,7 @@ export class PicturesComponent implements OnInit {
     });
   }
 
-  onFileChange(event) {
+  onFileChange(event: any) {
     const reader = new FileReader();
 
     if (event.target.files && event.target.files.length) {
@@ -116,13 +123,15 @@ export class PicturesComponent implements OnInit {
       reader.readAsDataURL(file);
       // data:image/jpeg;base64,/9j/4AAQSkZJRgABAQ
       reader.onload = () => {
-        const content: string = reader.result.toString();
-        if (!content.startsWith('data:')) { return; }
+        if (reader.result !== null) {
+          const content: string = reader.result.toString();
+          if (!content.startsWith('data:')) { return; }
 
-        this.form.patchValue({
-          mimeType: content.substring(5).split(';')[0],
-          content: content.split(',')[1]
-        });
+          this.form.patchValue({
+            mimeType: content.substring(5).split(';')[0],
+            content: content.split(',')[1]
+          });
+        }
       };
     }
   }

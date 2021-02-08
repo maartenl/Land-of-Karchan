@@ -23,15 +23,15 @@ import { ChatlogService, Message } from '../chatlog.service';
 export class PlayComponent implements OnInit {
   public Editor = ClassicEditor;
 
-  @ViewChild(LogonmessageComponent) logonmessageComponent: LogonmessageComponent;
+  @ViewChild(LogonmessageComponent) logonmessageComponent: LogonmessageComponent | null = null;
 
   Karchan = class {
-    name: string;
-    logOffset: number;
-    sleep: boolean;
-    bigEntry: boolean;
-    editor: string;
-    log: string;
+    name: string = "";
+    logOffset: number = 0;
+    sleep: boolean = false;
+    bigEntry: boolean = false;
+    editor: string = "";
+    log: string = "";
   };
 
   display: Display = new Display();
@@ -46,10 +46,9 @@ export class PlayComponent implements OnInit {
     private chatlogService: ChatlogService,
     private router: Router,
     private formBuilder: FormBuilder) {
-    this.karchan.bigEntry = false;
-    this.karchan.sleep = false;
-    this.karchan.logOffset = 0;
-    this.createForms();
+    this.commandForm = this.formBuilder.group({
+      command: ''
+    });
   }
 
   createForms() {
@@ -102,7 +101,9 @@ export class PlayComponent implements OnInit {
   }
 
   public showLogonmessage(): boolean {
-    this.logonmessageComponent.open();
+    if (this.logonmessageComponent !== null) {
+      this.logonmessageComponent.open();
+    }
     return false;
   }
 
@@ -139,8 +140,8 @@ export class PlayComponent implements OnInit {
   }
 
   public play(): boolean {
-    const formModel = this.commandForm.value;
-    const command = formModel.command as string;
+    const formModel = this.commandForm === null ? null : this.commandForm.value;
+    const command = formModel === null ? undefined : formModel.command as string;
     if (this.karchan.bigEntry) {
       let totalcommand;
       if (command === undefined || command.trim() === '') {
@@ -163,7 +164,9 @@ export class PlayComponent implements OnInit {
       return false;
     }
     if (window.console) { console.log('play: "' + command + '"'); }
-    this.processCall(command, true);
+    if (command !== undefined && command !== null) {
+      this.processCall(command, true);
+    }
     return false;
   }
 

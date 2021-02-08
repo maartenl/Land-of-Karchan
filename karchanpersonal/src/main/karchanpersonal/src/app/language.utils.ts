@@ -1,7 +1,7 @@
 import { Item } from './play/display.model';
 
 export class LanguageUtils {
-    public static isVowel(aChar) {
+    public static isVowel(aChar: string) {
         return aChar === 'a' ||
             aChar === 'e' ||
             aChar === 'u' ||

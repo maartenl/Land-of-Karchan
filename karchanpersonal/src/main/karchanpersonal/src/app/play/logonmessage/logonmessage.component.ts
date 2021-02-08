@@ -10,11 +10,11 @@ import {NgbModal, ModalDismissReasons} from '@ng-bootstrap/ng-bootstrap';
 })
 export class LogonmessageComponent implements OnInit {
 
-  @ViewChild('content') private content: TemplateRef<any>;
+  @ViewChild('content') private content: TemplateRef<any> | null = null;
 
   closeResult = '';
 
-  logonmessage: string;
+  logonmessage: string = '';
 
   constructor(
     private modalService: NgbModal,

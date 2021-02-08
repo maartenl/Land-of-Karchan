@@ -23,11 +23,11 @@
         </fieldset>
         <fieldset class="form-group">
           <label for="homepage">Homepage - <a
-          href="{{playerForm.get('homepageurl').value }}" target="_blank">{{playerForm.get('homepageurl').value }}</a></label>
+          href="{{playerForm.get('homepageurl')?.value }}" target="_blank">{{playerForm.get('homepageurl')?.value }}</a></label>
           <input type="text" class="form-control" id="homepage" name="homepage" formControlName="homepageurl">
         </fieldset>
         <fieldset class="form-group">
-          <p><img class="img-fluid" src="{{playerForm.get('imageurl').value }}" alt="{{player.name}}'s Image"></p>
+          <p><img class="img-fluid" src="{{playerForm.get('imageurl')?.value }}" alt="{{player.name}}'s Image"></p>
           <label for="image_url">Image</label>
           <input type="text" class="form-control" id="image_url" name="image_url" formControlName="imageurl">
         </fieldset>
@@ -43,7 +43,7 @@
           <div class="card-header">
             Storyline
           </div>
-          <div class="card-text" [innerHTML]="playerForm.get('storyline').value">
+          <div class="card-text" [innerHTML]="playerForm.get('storyline')?.value">
           </div>
         </div>
         <fieldset class="form-group">

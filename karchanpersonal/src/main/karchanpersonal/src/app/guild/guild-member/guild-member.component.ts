@@ -9,10 +9,10 @@ import { PlayerService } from '../../player.service';
   styleUrls: ['./guild-member.component.css']
 })
 export class GuildMemberComponent implements OnInit {
-  @Input() guild: Guild;
-  guildMembers: GuildMembers;
-  guildRanks: GuildRanks;
-  guildHopefuls: GuildHopefuls;
+  @Input() guild: Guild | null = null;
+  guildMembers: GuildMembers = new GuildMembers(new Array<GuildMember>(0));
+  guildRanks: GuildRanks = new GuildRanks(new Array<GuildRank>(0));
+  guildHopefuls: GuildHopefuls = new GuildHopefuls(new Array<GuildHopeful>(0));
 
   constructor(private playerService: PlayerService) { }
 
@@ -20,29 +20,23 @@ export class GuildMemberComponent implements OnInit {
   }
 
   public checkMembers() {
-    if (this.guildMembers === undefined) {
-      this.playerService.getGuildmembers().subscribe((result: GuildMember[]) => {
-        this.guildMembers = new GuildMembers(result);
-      });
-    }
+    this.playerService.getGuildmembers().subscribe((result: GuildMember[]) => {
+      this.guildMembers = new GuildMembers(result);
+    });
     return false;
   }
 
   public checkRanks() {
-    if (this.guildRanks === undefined) {
-      this.playerService.getGuildranks().subscribe((result: GuildRank[]) => {
-        this.guildRanks = new GuildRanks(result);
-      });
-    }
+    this.playerService.getGuildranks().subscribe((result: GuildRank[]) => {
+      this.guildRanks = new GuildRanks(result);
+    });
     return false;
   }
 
   public checkHopefuls() {
-    if (this.guildHopefuls === undefined) {
-      this.playerService.getGuildhopefuls().subscribe((result: GuildHopeful[]) => {
-        this.guildHopefuls = new GuildHopefuls(result);
-      });
-    }
+    this.playerService.getGuildhopefuls().subscribe((result: GuildHopeful[]) => {
+      this.guildHopefuls = new GuildHopefuls(result);
+    });
     return false;
   }
 

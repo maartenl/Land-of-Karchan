@@ -8,7 +8,7 @@ import { ErrorMessage } from './errors/errormessage.model';
   providedIn: 'root'
 })
 export class ErrorsService {
-  private listener: (error: ErrorMessage) => void;
+  private listener: (error: ErrorMessage) => void = x => {};
 
   constructor(private toastService: ToastService) { }
 

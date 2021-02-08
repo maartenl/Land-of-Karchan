@@ -23,7 +23,7 @@ export class WikipagesComponent implements OnInit {
 
   form: FormGroup;
 
-  previewHtml: string;
+  previewHtml: string = '';
 
   constructor(
     private playerService: PlayerService,
@@ -32,12 +32,22 @@ export class WikipagesComponent implements OnInit {
     private router: Router) {
     this.wikipage = this.createEmptyWikipage();
     this.isNew = true;
-    this.createForms();
+    this.form = this.formBuilder.group({
+      title: '',
+      content: '',
+      summary: '',
+      parentTitle: null,
+      administration: false,
+      comment: '',
+      ordering: 0
+    });
   }
 
   ngOnInit() {
-    const title: string = this.route.snapshot.paramMap.get('title');
-    this.setWikipage(title);
+    const title: string | null = this.route.snapshot.paramMap.get('title');
+    if (title !== null) {
+      this.setWikipage(title);
+    }
   }
 
   getWebsite(): string {
@@ -48,8 +58,12 @@ export class WikipagesComponent implements OnInit {
     this.playerService.getWikipage(title)
       .subscribe({
         next: (result: Wikipage) => { // on success
-          result.createDate = result.createDate.replace('[UTC]', '');
-          result.modifiedDate = result.modifiedDate.replace('[UTC]', '');
+          if (result.createDate !== null) {
+            result.createDate = result.createDate.replace('[UTC]', '');
+          }
+          if (result.modifiedDate !== null) {
+            result.modifiedDate = result.modifiedDate.replace('[UTC]', '');
+          }
           this.wikipage = result;
           this.isNew = false;
           this.resetForm(result);
@@ -142,10 +156,10 @@ export class WikipagesComponent implements OnInit {
       version: '1.0',
       content: '',
       summary: '',
-      parentTitle: null,
+      parentTitle: '',
       administration: false,
-      comment: undefined,
-      ordering: undefined
+      comment: '',
+      ordering: 0
     };
   }
 

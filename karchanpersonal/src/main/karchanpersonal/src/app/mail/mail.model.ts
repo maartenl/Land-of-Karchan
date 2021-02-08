@@ -13,15 +13,15 @@ export class Mail {
 
   constructor(object?: any) {
     if (object === undefined) {
-      this.name = void 0;
-      this.toname = void 0;
-      this.subject = void 0;
-      this.body = void 0;
-      this.id = void 0;
-      this.haveread = void 0;
-      this.newmail = void 0;
-      this.whensent = void 0;
-      this.deleted = void 0;
+      this.name = '';
+      this.toname = '';
+      this.subject = '';
+      this.body = '';
+      this.id = '';
+      this.haveread = false;
+      this.newmail = true;
+      this.whensent = '';
+      this.deleted = false;
       return;
     }
     this.name = object.name;
@@ -42,7 +42,7 @@ export class MailList {
   allSelected = false;
 
   constructor() {
-    this.mails = void 0;
+    this.mails = new Array<Mail>(0);
     this.page = 0;
   }
 

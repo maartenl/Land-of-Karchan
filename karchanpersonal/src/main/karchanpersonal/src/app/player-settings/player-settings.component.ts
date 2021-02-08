@@ -26,7 +26,18 @@ export class PlayerSettingsComponent implements OnInit {
     private formBuilder: FormBuilder,
     private toastService: ToastService) {
     this.player = new Player(); // dummy player
-    this.createForms();
+    this.playerForm = this.formBuilder.group({
+      title: '',
+      homepageurl: '',
+      imageurl: '',
+      dateofbirth: '',
+      cityofbirth: '',
+      storyline: ''
+    });
+    this.familyForm = this.formBuilder.group({
+      toname: '',
+      description: ''
+    });
   }
 
   ngOnInit() {
@@ -108,7 +119,7 @@ export class PlayerSettingsComponent implements OnInit {
     const formModel = this.familyForm.value;
     const toname = formModel.toname as string;
     const description = formModel.description as string;
-    let family: Family = this.getFamily(toname);
+    let family: Family | null = this.getFamily(toname);
     if (family === null) {
       family = new Family();
       family.toname = toname;
@@ -140,7 +151,7 @@ export class PlayerSettingsComponent implements OnInit {
     }
   }
 
-  private getFamily(toname: string): Family {
+  private getFamily(toname: string): Family | null {
     const found: Family[] = this.player.familyvalues.filter((fam) => fam.toname === toname);
     if (found.length === 0) {
       return null;

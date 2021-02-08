@@ -15,6 +15,7 @@ export class MailComponent implements OnInit {
   originalMail: Mail;
 
   constructor() {
+    this.originalMail = new Mail();
   }
 
   ngOnInit() {

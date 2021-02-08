@@ -8,7 +8,7 @@ import { Mail } from '../mail.model';
 })
 export class ShowMailComponent implements OnInit {
 
-  @Input() mail: Mail;
+  @Input() mail: Mail | null = null;
 
   constructor() { }
 

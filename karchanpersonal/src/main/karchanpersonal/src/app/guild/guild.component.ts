@@ -10,13 +10,12 @@ import { PlayerService } from '../player.service';
   styleUrls: ['./guild.component.css']
 })
 export class GuildComponent implements OnInit {
-  guild: Guild;
+  guild: Guild | null = null;
 
   hasGuild = false;
 
   constructor(private playerService: PlayerService,
     private formBuilder: FormBuilder) {
-    this.guild = null;
   }
 
   ngOnInit() {
@@ -37,6 +36,9 @@ export class GuildComponent implements OnInit {
 
   public isGuildMaster(): boolean {
     if (!this.hasGuild) {
+      return false;
+    }
+    if (this.guild === null) {
       return false;
     }
     return this.playerService.getName() === this.guild.bossname;

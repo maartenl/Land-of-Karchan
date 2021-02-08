@@ -8,18 +8,18 @@ export class GuildRank {
   logonmessage_access: boolean;
 
   constructor() {
-    this.title = void 0;
-    this.guildlevel = void 0;
-    this.accept_access = void 0;
-    this.reject_access = void 0;
-    this.settings_access = void 0;
-    this.logonmessage_access = void 0;
+    this.title = "";
+    this.guildlevel = 0;
+    this.accept_access = false;
+    this.reject_access = false;
+    this.settings_access = false;
+    this.logonmessage_access = false;
   }
 }
 
 export interface GuildMember {
   name: string;
-  guildrank: GuildRank;
+  guildrank: GuildRank | null;
 }
 
 export interface GuildHopeful {
@@ -46,7 +46,7 @@ export class GuildHopefuls {
 export class GuildMembers {
   members: GuildMember[];
 
-  currentMember: GuildMember;
+  currentMember: GuildMember | null = null;
 
   constructor(guildMembers: GuildMember[]) {
     this.members = guildMembers;
@@ -63,7 +63,7 @@ export class GuildMembers {
 export class GuildRanks {
   ranks: GuildRank[];
 
-  currentRank: GuildRank;
+  currentRank: GuildRank | null = null;
 
   constructor(guildRanks: GuildRank[]) {
     this.ranks = guildRanks;
@@ -76,7 +76,7 @@ export class GuildRanks {
     }
   }
 
-  public findByGuildlevel(guildlevel: number): GuildRank {
+  public findByGuildlevel(guildlevel: number): GuildRank | undefined {
     // cannot use triple equals here, guildlevel might be a string.
     return this.ranks.find((rank) => rank.guildlevel == guildlevel);
   }

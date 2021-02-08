@@ -4,7 +4,7 @@ export interface Picture {
   url: string;
   content: string;
   length: number;
-  mimeType: string;
-  createDate: string;  
+  mimeType: string | null;
+  createDate: string | null;  
 }
 

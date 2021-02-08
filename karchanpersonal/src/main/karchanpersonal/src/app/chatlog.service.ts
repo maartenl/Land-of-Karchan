@@ -3,10 +3,10 @@ import { webSocket, WebSocketSubject } from 'rxjs/webSocket';
 import { ToastService } from './toast.service';
 
 export class Message {
-  from: string;
-  to: string;
-  content: string;
-  type: string;
+  from: string = "";
+  to: string = "";
+  content: string = "";
+  type: string = "";
 
   constructor() { }
 
@@ -17,11 +17,11 @@ export class Message {
 })
 export class ChatlogService {
 
-  private connectionOpen: boolean;
+  private connectionOpen: boolean = false;
 
-  private myWebSocket: WebSocketSubject<Message>;
+  private myWebSocket: WebSocketSubject<Message> | null = null;
 
-  private username: string;
+  private username: string = "";
 
   private messages: Message[] = [];
 
@@ -90,7 +90,9 @@ export class ChatlogService {
   }
 
   send(data: Message) {
-    this.myWebSocket.next(data);
+    if (this.myWebSocket !== null) {
+      this.myWebSocket.next(data);
+    } 
   }
 
   /**
@@ -108,7 +110,7 @@ export class ChatlogService {
   /**
    * Called if WebSocket API signals some kind of error
    */
-  error(error) {
+  error(error: any) {
     if (window.console) { console.log(error); }
     this.toastService.show('An error occurred using a websocket...', {
       delay: 0,

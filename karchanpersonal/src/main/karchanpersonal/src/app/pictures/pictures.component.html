@@ -2,13 +2,13 @@
     <div class="row row-content">
       <div class="col-xs-12 col-sm-12">
         <div class="card" *ngIf="picture !== undefined">
-          <img src="/images/player/{{ player }}{{ picture.url }}" class="card-img-top" alt="{{ picture.url }}">
+          <img src="/images/player/{{ player }}{{ picture?.url }}" class="card-img-top" alt="{{ picture?.url }}">
           <div class="card-body">
-            <h4 class="card-title">{{ picture.url }}</h4>
-            <p class="card-text"><strong>Id:</strong> {{ picture.id }}</p>
-            <p class="card-text"><strong>Full url:</strong> <a target="_blank" href="/images/player/{{ player }}{{ picture.url }}">{{ getWebsite() }}/images/player/{{ player }}{{ picture.url }}</a></p>
-            <p class="card-text"><strong>MimeType:</strong> {{ picture.mimeType }}</p>
-            <p class="card-text"><strong>On:</strong> {{ picture.createDate | date:'medium' }}</p>          
+            <h4 class="card-title">{{ picture?.url }}</h4>
+            <p class="card-text"><strong>Id:</strong> {{ picture?.id }}</p>
+            <p class="card-text"><strong>Full url:</strong> <a target="_blank" href="/images/player/{{ player }}{{ picture?.url }}">{{ getWebsite() }}/images/player/{{ player }}{{ picture?.url }}</a></p>
+            <p class="card-text"><strong>MimeType:</strong> {{ picture?.mimeType }}</p>
+            <p class="card-text"><strong>On:</strong> {{ picture?.createDate | date:'medium' }}</p>          
           </div>
         </div>
         <table class="table table-sm table-striped table-bordered">
@@ -23,10 +23,10 @@
           </thead>
           <tbody>
             <tr *ngFor="let picture of pictures">
-              <td (click)="setPicture(picture)">{{ picture.id }}</td>
-              <td (click)="setPicture(picture)">{{ picture.url }}</td>
-              <td (click)="setPicture(picture)">{{ picture.mimeType }}</td>
-              <td (click)="setPicture(picture)">{{ picture.createDate | date:'medium' }}</td>
+              <td (click)="setPicture(picture)">{{ picture?.id }}</td>
+              <td (click)="setPicture(picture)">{{ picture?.url }}</td>
+              <td (click)="setPicture(picture)">{{ picture?.mimeType }}</td>
+              <td (click)="setPicture(picture)">{{ picture?.createDate | date:'medium' }}</td>
               <td>
               <button type="button" class="close" aria-label="Close" (click)="deletePicture(picture)">
                 <i class="material-icons" aria-hidden="true">delete</i>

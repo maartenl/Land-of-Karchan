@@ -3,17 +3,17 @@
     <div class="col-xs-12 col-sm-12">
       <dl>
         <dt>Current boss</dt>
-        <dd>{{guild.bossname}}</dd>
+        <dd>{{guild?.bossname}}</dd>
         <dt>Homepage</dt>
-        <dd><a href="{{guild.guildurl}}" target="_blank">{{guild.guildurl}}</a></dd>
+        <dd><a href="{{guild?.guildurl}}" target="_blank">{{guild?.guildurl}}</a></dd>
         <dt>Created</dt>
-        <dd>{{guild.creation | date:'medium'}}</dd>
+        <dd>{{guild?.creation | date:'medium'}}</dd>
       </dl>
         <div class="card" style="width: 100%;">
           <div class="card-header">
             Logonmessage
           </div>
-          <div class="card-block" [innerHTML]="guild.logonmessage">
+          <div class="card-block" [innerHTML]="guild?.logonmessage">
           </div>
         </div>
         <hr/>
@@ -21,7 +21,7 @@
           <div class="card-header">
             Description
           </div>
-          <div class="card-block" [innerHTML]="guild.guilddescription">
+          <div class="card-block" [innerHTML]="guild?.guilddescription">
           </div>
         </div>
     </div>
@@ -46,7 +46,7 @@
             <div class="card-block">
               <ul class="list-group" *ngIf="guildMembers !== undefined">
                 <li class="list-group-item justify-content-between" *ngFor="let member of guildMembers.members">
-                  {{member.name}}{{ member.guildrank === undefined ? "" : ", " + member.guildrank.title }}
+                  {{member.name}}{{ member.guildrank === undefined ? "" : ", " + member.guildrank?.title }}
                 </li>
               </ul>
             </div>

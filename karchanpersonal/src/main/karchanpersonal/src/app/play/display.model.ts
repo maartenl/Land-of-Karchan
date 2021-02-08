@@ -1,15 +1,15 @@
 
 export class Person {
-    name: string;
-    race: string;
+    name: string = '';
+    race: string = '';
 }
 
 export class Item {
-    adject1: string;
-    adject2: string;
-    adject3: string;
-    amount: number;
-    name: string;
+    adject1: string = '';
+    adject2: string = '';
+    adject3: string = '';
+    amount: number = 1;
+    name: string = '';
 }
 
 export class Log {
@@ -25,18 +25,18 @@ export class Log {
 }
 
 export class Display {
-    body: string;
-    image: string;
-    items: Array<Item>;
+    body: string = '';
+    image: string = '';
+    items: Array<Item> = new Array<Item>(0);
     log: Log;
-    persons: Array<Person>;
-    north: boolean;
-    south: boolean;
-    up: boolean;
-    down: boolean;
-    east: boolean;
-    west: boolean;
-    title: string;
+    persons: Array<Person> = new Array<Person>(0);
+    north: boolean = false;
+    south: boolean = false;
+    up: boolean = false;
+    down: boolean = false;
+    east: boolean = false;
+    west: boolean = false;
+    title: string = '';
 
     constructor() {
         this.log = new Log();
