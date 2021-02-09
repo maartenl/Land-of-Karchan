@@ -1,6 +1,7 @@
 export const environment = {
   production: true,
   mock: false,
+  ADMINISTRATORS_URL: '/karchangame/resources/administration/administrators',
   BLOGS_URL: '/karchangame/resources/administration/blogs',
   TEMPLATES_URL: '/karchangame/resources/administration/templates',
   SYSTEMLOG_URL: '/karchangame/resources/administration/systemlog',

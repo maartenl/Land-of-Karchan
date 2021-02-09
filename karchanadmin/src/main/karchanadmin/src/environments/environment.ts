@@ -5,6 +5,7 @@
 export const environment = {
   production: false,
   mock: true,
+  ADMINISTRATORS_URL: '/assets/administrators.json',
   BLOGS_URL: '/assets/blogs.json',
   TEMPLATES_URL: '/assets/templates.json',
   SYSTEMLOG_URL: '/assets/systemlog.json',

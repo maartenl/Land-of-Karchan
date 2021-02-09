@@ -22,6 +22,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.stream.Collectors;
 import javax.ejb.EJB;
 import javax.ejb.LocalBean;
 import javax.ejb.Stateless;
@@ -36,7 +37,6 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 import com.google.common.annotations.VisibleForTesting;
-import mmud.database.entities.characters.Person;
 import mmud.database.entities.characters.User;
 import mmud.database.entities.game.BoardMessage;
 import mmud.database.entities.game.Guild;
@@ -48,6 +48,7 @@ import mmud.rest.webentities.News;
 import mmud.rest.webentities.PublicFamily;
 import mmud.rest.webentities.PublicGuild;
 import mmud.rest.webentities.PublicPerson;
+import mmud.rest.webentities.admin.AdminAdmin;
 
 /**
  * Contains all rest calls that are available to the world, without
@@ -220,8 +221,7 @@ public class PublicBean
 
   /**
    * Returns a List of current active and paid up deputies. The URL:
-   * /karchangame/resources/public/status. Can produce both application/xml
-   * and application/json.
+   * /karchangame/resources/public/status. Can produce application/json.
    *
    * @return a List of public deputies.
    */
@@ -231,34 +231,25 @@ public class PublicBean
     {
       MediaType.APPLICATION_JSON
     })
-  public List<PublicPerson> status()
+  public String status()
   {
     LOGGER.finer("entering status");
-    List<PublicPerson> res = new ArrayList<>();
+    List<String> items;
     try
     {
-      List<User> list = getDeputies();
-
-      for (Person person : list)
-      {
-        PublicPerson publicPerson = new PublicPerson();
-        publicPerson.name = person.getName();
-        publicPerson.title = person.getTitle();
-        res.add(publicPerson);
-      }
+      items = getDeputies().stream().map(person -> new AdminAdmin(person).toJson()).collect(Collectors.toList());
     } catch (Exception e)
     {
       throw new MudWebException(e, Response.Status.BAD_REQUEST);
     }
 
     LOGGER.finer("exiting status");
-    return res;
+    return "[" + String.join(",", items) + "]";
   }
 
   public List<User> getDeputies()
   {
-    Query query = getEntityManager().createNamedQuery("User.status");
-    return (List<User>) query.getResultList();
+    return getEntityManager().createNamedQuery("User.status", User.class).getResultList();
   }
 
   /**

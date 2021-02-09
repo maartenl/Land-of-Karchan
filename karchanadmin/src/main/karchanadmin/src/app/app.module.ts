@@ -38,6 +38,7 @@ import { environment } from 'src/environments/environment';
 import { BoardsComponent } from './boards/boards.component';
 import { GuildsComponent } from './guilds/guilds.component';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
+import { AdministratorComponent } from './administrator/administrator.component';
 
 export const isMock = environment.mock;
 
@@ -64,7 +65,8 @@ export const isMock = environment.mock;
     WorldattributesComponent,
     CharactersComponent,
     BoardsComponent,
-    GuildsComponent
+    GuildsComponent,
+    AdministratorComponent
   ],
   imports: [
     BrowserModule,
