@@ -21,6 +21,7 @@ import java.time.LocalDateTime;
 import java.util.Calendar;
 
 import java.util.List;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.ejb.EJB;
 import javax.ejb.LocalBean;
@@ -30,7 +31,15 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 import javax.script.ScriptException;
+import javax.servlet.http.HttpServletRequest;
+import javax.ws.rs.GET;
+import javax.ws.rs.POST;
+import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
+import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Response;
+import javax.ws.rs.core.UriInfo;
+
 import mmud.database.entities.characters.Administrator;
 import mmud.database.entities.characters.User;
 import mmud.database.entities.game.Event;
@@ -53,12 +62,12 @@ import mmud.services.CommunicationService;
  * <img
  * src="doc-files/Eventsbean.png">
  *
+ * @author maartenl
  * @startuml doc-files/Eventsbean.png class EventsBean { +events() }
  * @enduml
- * @author maartenl
  */
 @Stateless
-@LocalBean
+@Path("/crontab/events")
 public class EventsBean
 {
 
@@ -83,12 +92,29 @@ public class EventsBean
   {
     return em;
   }
+
   private static final Logger LOGGER = Logger.getLogger(EventsBean.class.getName());
+
+  @GET
+  @Path("{eventid}")
+  public String runSingleEvent(@PathParam("eventid") Integer eventid, @Context HttpServletRequest request)
+  {
+    if (!request.getRequestURL().toString().contains("localhost")) {
+      throw new MudWebException("root", "Only localhost may access this.", Response.Status.FORBIDDEN);
+    }
+    Object[] objects = {eventid, request.getRequestURL()};
+    LOGGER.log(Level.INFO, "Run single event {0}. (accessed {1})", objects);
+    if (eventid >= 0)
+    {
+      runSingleEvent(null, eventid);
+    }
+    return "Ok";
+  }
 
   /**
    * Runs a single event, right now. Used by administrators for testing.
    *
-   * @param aUser the administrator running the event
+   * @param aUser   the administrator running the event
    * @param eventid an event id, a number.
    */
   public void runSingleEvent(Administrator aUser, Integer eventid)
@@ -150,21 +176,26 @@ public class EventsBean
       // log it but keep going with the next event.
       logBean.writeLogException(ex);
       LOGGER.throwing(EventsBean.class.getName(), "events()", ex);
-      throw new MudWebException(aUser.getName(), ex.getMessage(), ex, Response.Status.BAD_REQUEST);
+      throw new MudWebException(aUser == null ? null : aUser.getName(), ex.getMessage(), ex, Response.Status.BAD_REQUEST);
     }
   }
 
   /**
    * Runs every minute, looks up which user-defined event to execute now. So,
-   * this takes care of the events that have been dictates by the deputies.
+   * this takes care of the events that have been dictated by the deputies.
    *
    * @throws java.lang.IllegalAccessException
    * @throws java.lang.InstantiationException
    * @throws java.lang.reflect.InvocationTargetException
    */
-  public void events() throws IllegalAccessException, InstantiationException, InvocationTargetException
+  @GET
+  public void events(@Context HttpServletRequest request) throws IllegalAccessException, InstantiationException, InvocationTargetException
   {
-    // LOGGER.log(Level.INFO, "Events scheduled at time {0}.", LocalDateTime.now());
+    if (!request.getRequestURL().toString().contains("localhost")) {
+      throw new MudWebException("root", "Only localhost may access this.", Response.Status.FORBIDDEN);
+    }
+    Object[] objects = {LocalDateTime.now(), request.getRequestURL()};
+    LOGGER.log(Level.INFO, "Events scheduled at time {0}. (accessed {1})", objects);
     // logBean.writeLog(null, "Events scheduled at time " + LocalDateTime.now() + ".");
     Query query = getEntityManager().createNamedQuery("Event.list");
     Calendar calendar = Calendar.getInstance();
@@ -257,9 +288,14 @@ public class EventsBean
   /**
    * Started once an hour, and computes who has been idle too long.
    */
-  private void executeIdleCleanup()
+  @GET
+  @Path("idles")
+  public void executeIdleCleanup(@Context HttpServletRequest request)
   {
-    logBean.writeLog("executeIdleCleanup(): scheduled at time " + LocalDateTime.now() + ".");
+    if (!request.getRequestURL().toString().contains("localhost")) {
+      throw new MudWebException("root", "Only localhost may access this.", Response.Status.FORBIDDEN);
+    }
+    LOGGER.log(Level.INFO, "Idle cleanup. (accessed {0})", request.getRequestURL());
     Query query = getEntityManager().createNamedQuery("User.who");
     List<User> list = query.getResultList();
     for (User user : list)

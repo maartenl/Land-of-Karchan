@@ -42,11 +42,11 @@ import no.api.freemarker.java8.Java8ObjectWrapper;
 @LocalBean
 public class Freemarker implements TemplateLoader
 {
-  private final static Logger LOGGER = Logger.getLogger(Freemarker.class.getName());
+  private static final Logger LOGGER = Logger.getLogger(Freemarker.class.getName());
 
   @PersistenceUnit
   private EntityManagerFactory entityManagerFactory;
-  
+
   private Configuration configuration;
 
   public Configuration getConfiguration()
@@ -62,20 +62,20 @@ public class Freemarker implements TemplateLoader
     // version (here 2.3.27) do you want to apply the fixes that are not 100%
     // backward-compatible. See the Configuration JavaDoc for details.
     configuration = new Configuration(Configuration.VERSION_2_3_27);
-    
+
     // For java.time support.
     configuration.setObjectWrapper(new Java8ObjectWrapper(Configuration.VERSION_2_3_27));
-    
-    // Specify the source where the template files come from. 
+
+    // Specify the source where the template files come from.
     configuration.setTemplateLoader(this);
-    
+
     // Set the preferred charset template files are stored in. UTF-8 is
     // a good choice in most applications:
     configuration.setDefaultEncoding("UTF-8");
 
     configuration.setLocalizedLookup(false);
     configuration.setLocale(Locale.US);
-            
+
     // Sets how errors will appear.
     // During web page *development* TemplateExceptionHandler.HTML_DEBUG_HANDLER is better.
     configuration.setTemplateExceptionHandler(TemplateExceptionHandler.RETHROW_HANDLER);
@@ -88,7 +88,7 @@ public class Freemarker implements TemplateLoader
 
     LOGGER.info("Finished Freemarker initialization.");
   }
-  
+
   @Override
   public Object findTemplateSource(String name) throws IOException
   {
@@ -127,6 +127,6 @@ public class Freemarker implements TemplateLoader
   {
     return "Freemarker(database)";
   }
-  
-  
+
+
 }
