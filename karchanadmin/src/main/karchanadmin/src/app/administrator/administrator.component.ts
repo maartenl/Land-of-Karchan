@@ -15,7 +15,6 @@ export class AdministratorComponent implements OnInit {
 
   constructor(private administratorsRestService: AdministratorsRestService,
     private toastService: ToastService) {
-      this.administrator.name='Karn';
       this.administratorsRestService.get().subscribe({
         next: (data) => {
           if (data !== undefined) { this.setAdministrator(data); }
