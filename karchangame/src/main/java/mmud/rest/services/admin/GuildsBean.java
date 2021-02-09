@@ -126,8 +126,8 @@ public class GuildsBean
     {
       throw new MudWebException(name, "Guildmaster " + adminGuild.bossname + " not found.", Response.Status.NOT_FOUND);
     }
-    if (guildmaster.getGuild() != null) {
-      throw new MudWebException(name, adminGuild.bossname + " is already a guildmaster.", Response.Status.PRECONDITION_FAILED);
+    if (guildmaster.getGuild().getBoss() == guildmaster && guild != guildmaster.getGuild()) {
+      throw new MudWebException(name, adminGuild.bossname + " is already a guildmaster of guild " + guildmaster.getGuild().getName() + ".", Response.Status.PRECONDITION_FAILED);
     }
     guild.setBoss(guildmaster);
     guild.setColour(adminGuild.colour);
