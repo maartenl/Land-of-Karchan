@@ -133,7 +133,7 @@ public class GuildsBean
     guild.setColour(adminGuild.colour);
     guild.setLogonmessage(adminGuild.logonmessage);
     guild.setImage(adminGuild.imageurl);
-    guild.setOwner(admin);
+    guild.setOwner(OwnerHelper.getNewOwner(adminGuild.owner, admin, getEntityManager()));
     ValidationUtils.checkValidation(name, guild);
     logBean.writeDeputyLog(admin, "Guild '" + guild.getName() + "' updated.");
   }

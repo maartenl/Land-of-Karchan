@@ -155,7 +155,7 @@ public class UserCommandsBean //implements AdminRestService<String>
     userCommand.setMethodName(method);
     userCommand.setRoom(room);
     userCommand.setCallable(adminUserCommand.callable);
-    userCommand.setOwner(admin);
+    userCommand.setOwner(OwnerHelper.getNewOwner(adminUserCommand.owner, admin, getEntityManager()));
     ValidationUtils.checkValidation(name, userCommand);
   }
 

@@ -104,7 +104,7 @@ public class MethodsBean //implements AdminRestService<String>
     }
     Admin admin = (new OwnerHelper(getEntityManager())).authorize(name, method);
     method.setSrc(adminMethod.src);
-    method.setOwner(admin);
+    method.setOwner(OwnerHelper.getNewOwner(adminMethod.owner, admin, getEntityManager()));
     ValidationUtils.checkValidation(name, method);
   }
 

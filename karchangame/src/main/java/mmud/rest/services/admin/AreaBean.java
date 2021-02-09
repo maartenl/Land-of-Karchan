@@ -101,7 +101,7 @@ public class AreaBean // extends AbstractFacade<Area>
     Admin admin = (new OwnerHelper(getEntityManager())).authorize(name, area);
     area.setDescription(adminArea.description);
     area.setShortdescription(adminArea.shortdesc);
-    area.setOwner(admin);
+    area.setOwner(OwnerHelper.getNewOwner(adminArea.owner, admin, getEntityManager()));
     ValidationUtils.checkValidation(name, area);
     logBean.writeDeputyLog(admin, "Area '" + area.getArea() + "' updated.");
   }

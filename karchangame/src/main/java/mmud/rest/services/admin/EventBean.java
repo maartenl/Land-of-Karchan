@@ -164,7 +164,7 @@ public class EventBean // extends AbstractFacade<Event>
     event.setMonth(newEvent.getMonth());
     event.setPerson(newEvent.getPerson());
     event.setRoom(newEvent.getRoom());
-    event.setOwner(admin);
+    event.setOwner(OwnerHelper.getNewOwner(entity.owner, admin, getEntityManager()));
     checkValidation(name, event);
     logBean.writeDeputyLog(admin, "Event '" + event.getEventid() + "' updated.");
   }

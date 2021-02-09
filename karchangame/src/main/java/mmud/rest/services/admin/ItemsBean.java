@@ -37,7 +37,6 @@ import javax.ws.rs.core.UriInfo;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.logging.Logger;
-import java.util.stream.Collectors;
 
 /**
  * @author maartenl
@@ -180,7 +179,7 @@ public class ItemsBean //implements AdminRestService<String>
     {
       item.setBound(adminItem.bound);
     }
-    item.setOwner(admin);
+    item.setOwner(OwnerHelper.getNewOwner(adminItem.owner, admin, getEntityManager()));
     ValidationUtils.checkValidation(name, item);
     logBean.writeDeputyLog(admin, "Item definition '" + item.getId() + "' updated.");
   }

@@ -130,7 +130,7 @@ public class BoardsBean
     {
       board.setRoom(null);
     }
-    board.setOwner(admin);
+    board.setOwner(OwnerHelper.getNewOwner(adminBoard.owner, admin, getEntityManager()));
     ValidationUtils.checkValidation(name, board);
     logBean.writeDeputyLog(admin, "Board '" + board.getName() + "' updated.");
   }

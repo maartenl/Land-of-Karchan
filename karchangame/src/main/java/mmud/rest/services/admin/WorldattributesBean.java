@@ -18,13 +18,10 @@ package mmud.rest.services.admin;
 
 
 import mmud.database.entities.game.Admin;
-import mmud.database.entities.game.Help;
 import mmud.database.entities.game.Worldattribute;
 import mmud.exceptions.MudWebException;
 import mmud.rest.services.LogBean;
-import mmud.rest.webentities.admin.AdminManpage;
 import mmud.rest.webentities.admin.AdminWorldattribute;
-import mmud.scripting.World;
 
 import javax.annotation.security.DeclareRoles;
 import javax.annotation.security.RolesAllowed;
@@ -110,7 +107,7 @@ public class WorldattributesBean
     Admin admin = (new OwnerHelper(getEntityManager())).authorize(name, attribute);
     attribute.setContents(adminWorldattribute.contents);
     attribute.setType(adminWorldattribute.type);
-    attribute.setOwner(admin);
+    attribute.setOwner(OwnerHelper.getNewOwner(adminWorldattribute.owner, admin, getEntityManager()));
     ValidationUtils.checkValidation(name, attribute);
     logBean.writeDeputyLog(admin, "Worldattribute '" + id + "' updated.");
   }

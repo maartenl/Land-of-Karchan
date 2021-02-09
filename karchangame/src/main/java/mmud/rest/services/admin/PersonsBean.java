@@ -184,7 +184,7 @@ public class PersonsBean //implements AdminRestService<String>
       user.setEmail(adminCharacter.email);
       user.setOoc(adminCharacter.ooc);
     }
-    character.setOwner(admin);
+    character.setOwner(OwnerHelper.getNewOwner(adminCharacter.owner, admin, getEntityManager()));
     ValidationUtils.checkValidation(name, character);
     logBean.writeDeputyLog(admin, "Character '" + character.getName() + "' updated.");
   }

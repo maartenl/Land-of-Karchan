@@ -221,13 +221,7 @@ public class RoomsBean //implements AdminRestService<Long>
     }
     room.setPicture(adminRoom.picture);
     room.setTitle(adminRoom.title);
-    if (adminRoom.owner == null)
-    {
-      room.setOwner(null);
-    } else
-    {
-      room.setOwner(admin);
-    }
+    room.setOwner(OwnerHelper.getNewOwner(adminRoom.owner, admin, getEntityManager()));
     ValidationUtils.checkValidation(name, room);
   }
 

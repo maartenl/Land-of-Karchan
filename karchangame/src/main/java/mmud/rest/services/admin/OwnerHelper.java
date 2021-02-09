@@ -32,6 +32,20 @@ class OwnerHelper
 
   private EntityManager em;
 
+  public static Admin getNewOwner(String newowner, Admin admin, EntityManager entityManager)
+  {
+    if (newowner == null || newowner.trim().equals(""))
+    {
+      return null;
+    }
+    Admin newadmin = entityManager.find(Admin.class, newowner);
+    if (newadmin == null)
+    {
+      throw new MudWebException(admin.getName(), "Admin (" + newowner + ") was not found.", "Admin (" + newowner + ") was not found.", Response.Status.NOT_FOUND);
+    }
+    return admin;
+  }
+
   private EntityManager getEntityManager()
   {
     return em;
