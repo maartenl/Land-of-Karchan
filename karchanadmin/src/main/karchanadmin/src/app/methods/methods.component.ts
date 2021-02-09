@@ -117,7 +117,7 @@ export class MethodsComponent extends AdminComponent<Method, string> implements 
       name: formModel.name as string,
       src: formModel.src as string,
       creation: null,
-      owner: null
+      owner: formModel.owner as string
     });
     return saveMethod;
   }

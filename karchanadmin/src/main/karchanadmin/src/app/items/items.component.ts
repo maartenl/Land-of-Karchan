@@ -250,7 +250,7 @@ export class ItemsComponent extends AdminComponent<Item, number> implements OnIn
       discriminator: formModel.discriminator as number,
       bound: formModel.bound as boolean,
       creation,
-      owner
+      owner: formModel.owner as string
     });
     console.log(saveItem);
     return saveItem;

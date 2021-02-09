@@ -136,7 +136,7 @@ export class CommandsComponent extends AdminComponent<Command, number> implement
       room: formModel.room as number,
       methodName: formModel.methodName as string,
       creation: null,
-      owner
+      owner: formModel.owner as string
     });
     return saveCommand;
   }
