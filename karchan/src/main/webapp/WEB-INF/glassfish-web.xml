@@ -7,4 +7,5 @@
   <property name="alternatedocroot_3" value="from=/animations/* dir=${MPCONFIG=karchan.alternative.docroot}/"/>
   <property name="alternatedocroot_4" value="from=/karchandocs/* dir=${MPCONFIG=karchan.alternative.docroot}/"/>
   <property name="alternatedocroot_5" value="from=/javascripts/* dir=${MPCONFIG=karchan.alternative.docroot}/"/>
+  <property name="alternatedocroot_6" value="from=/.well-known/* dir=${MPCONFIG=karchan.alternative.docroot}/"/>
 </glassfish-web-app>
