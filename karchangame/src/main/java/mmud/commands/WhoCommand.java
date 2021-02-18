@@ -18,6 +18,7 @@ package mmud.commands;
 
 import java.util.ArrayList;
 import java.util.List;
+
 import mmud.database.entities.characters.User;
 import mmud.database.entities.game.Area;
 import mmud.database.entities.game.Display;
@@ -62,18 +63,18 @@ public class WhoCommand extends NormalCommand
         int count = 0;
         for (User player : persons)
         {
-            Area myArea = player.getRoom().getArea();
-            String name = player.getName();
-            if (player.getFrogging() > 0)
-            {
-                name = "a frog called " + name;
-            }
-            if (player.getJackassing() > 0)
-            {
-                name = "a jackass called " + name;
-            }
-            whoList.append("<li>").append(name).append(", ").append(player.getTitle()).append(!myArea.getArea().equals("Main")
-                    ? " in " + myArea.getShortdescription() : "").append(player.getSleep() ? ", sleeping " : " ").append(player.getIdleTimeInMinAndSeconds()).append("</li>\r\n");
+          Area myArea = player.getRoom().getArea();
+          String name = player.getName();
+          if (player.getFrogging() > 0)
+          {
+            name = "a frog called " + name;
+          }
+          if (player.getJackassing() > 0)
+          {
+            name = "a jackass called " + name;
+          }
+          whoList.append("<li>").append(name).append(", ").append(player.getTitle()).append(!myArea.getArea().equals("Main")
+            ? " in " + myArea.getShortdescription() : "").append(player.getSleep() ? ", sleeping " : " ").append("</li>\r\n");
         }
         whoList.append("</ul>");
         return new Display("Who", null, whoList.toString());

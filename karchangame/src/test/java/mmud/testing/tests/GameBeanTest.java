@@ -16,24 +16,32 @@
  */
 package mmud.testing.tests;
 
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.logging.Logger;
+import javax.persistence.EntityManager;
+import javax.persistence.TypedQuery;
+
 import mmud.commands.CommandRunner;
 import mmud.database.entities.characters.Administrator;
 import mmud.database.entities.characters.Person;
 import mmud.database.entities.characters.User;
-import mmud.database.entities.game.*;
+import mmud.database.entities.game.Area;
+import mmud.database.entities.game.Macro;
+import mmud.database.entities.game.MacroPK;
+import mmud.database.entities.game.Room;
+import mmud.database.entities.game.UserCommand;
 import mmud.exceptions.MudException;
 import mmud.rest.services.GameBean;
 import mmud.rest.webentities.PrivateDisplay;
+import mmud.services.IdleUsersService;
 import mmud.testing.TestingConstants;
 import org.mockito.invocation.InvocationOnMock;
-import org.testng.annotations.*;
-
-import javax.persistence.EntityManager;
-import javax.persistence.TypedQuery;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.logging.Logger;
-
+import org.testng.annotations.AfterClass;
+import org.testng.annotations.AfterMethod;
+import org.testng.annotations.BeforeClass;
+import org.testng.annotations.BeforeMethod;
+import org.testng.annotations.Test;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
@@ -121,6 +129,7 @@ public class GameBeanTest extends MudTest
     TypedQuery typedQuery = mock(TypedQuery.class);
     EntityManager entityManager = mock(EntityManager.class);
     setField(GameBean.class, "em", gameBean, entityManager);
+    setField(GameBean.class, "idleUsersService", gameBean, new IdleUsersService());
     when(entityManager.find(User.class, "Marvin")).thenReturn(marvin);
     when(entityManager.find(User.class, "Karn")).thenReturn(karn);
     when(entityManager.createNamedQuery("UserCommand.findActive", UserCommand.class)).thenReturn(typedQuery);
@@ -168,6 +177,7 @@ public class GameBeanTest extends MudTest
     TypedQuery typedQuery = mock(TypedQuery.class);
     EntityManager entityManager = mock(EntityManager.class);
     setField(GameBean.class, "em", gameBean, entityManager);
+    setField(GameBean.class, "idleUsersService", gameBean, new IdleUsersService());
     when(entityManager.find(User.class, "Marvin")).thenReturn(marvin);
     when(entityManager.find(User.class, "Karn")).thenReturn(karn);
     when(entityManager.createNamedQuery("UserCommand.findActive", UserCommand.class)).thenReturn(typedQuery);
@@ -217,6 +227,7 @@ public class GameBeanTest extends MudTest
     TypedQuery typedQuery = mock(TypedQuery.class);
     EntityManager entityManager = mock(EntityManager.class);
     setField(GameBean.class, "em", gameBean, entityManager);
+    setField(GameBean.class, "idleUsersService", gameBean, new IdleUsersService());
     when(entityManager.find(User.class, "Marvin")).thenReturn(marvin);
     when(entityManager.find(User.class, "Karn")).thenReturn(karn);
     when(entityManager.createNamedQuery("UserCommand.findActive", UserCommand.class)).thenReturn(typedQuery);
@@ -267,6 +278,7 @@ public class GameBeanTest extends MudTest
     TypedQuery typedQuery = mock(TypedQuery.class);
     EntityManager entityManager = mock(EntityManager.class);
     setField(GameBean.class, "em", gameBean, entityManager);
+    setField(GameBean.class, "idleUsersService", gameBean, new IdleUsersService());
     when(entityManager.find(User.class, "Marvin")).thenReturn(marvin);
     when(entityManager.find(User.class, "Karn")).thenReturn(karn);
     when(entityManager.createNamedQuery("UserCommand.findActive", UserCommand.class)).thenReturn(typedQuery);

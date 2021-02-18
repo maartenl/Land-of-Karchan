@@ -16,6 +16,11 @@
  */
 package mmud.testing.tests.commands;
 
+import java.io.File;
+import java.io.PrintWriter;
+import java.time.LocalDateTime;
+import java.util.HashSet;
+
 import mmud.Constants;
 import mmud.commands.CommandRunner;
 import mmud.commands.RibbitCommand;
@@ -25,23 +30,15 @@ import mmud.database.entities.characters.User;
 import mmud.database.entities.game.DisplayInterface;
 import mmud.database.entities.game.Room;
 import mmud.rest.services.PersonBean;
+import mmud.services.CommunicationService;
 import mmud.testing.TestingConstants;
 import mmud.testing.tests.LogBeanStub;
 import mmud.testing.tests.MudTest;
-import org.testng.annotations.*;
-
-import java.io.File;
-import java.io.PrintWriter;
-import java.time.LocalDateTime;
-import java.util.Calendar;
-import java.util.GregorianCalendar;
-import java.util.HashSet;
-import mmud.services.CommunicationService;
-
+import org.testng.annotations.BeforeMethod;
+import org.testng.annotations.Test;
 import static org.assertj.core.api.Assertions.assertThat;
 
 /**
- *
  * @author maartenl
  */
 public class RibbitCommandTest extends MudTest
@@ -84,8 +81,8 @@ public class RibbitCommandTest extends MudTest
   {
     marvin.setFrogging(5);
     LocalDateTime seventeenSecondsAgo = LocalDateTime.now().plusSeconds(-17L);
-    setField(User.class, "lastcommand", marvin, seventeenSecondsAgo);
     RibbitCommand ribbitCommand = new RibbitCommand("ribbit");
+    ribbitCommand.setRibbitTime("Marvin", seventeenSecondsAgo);
     ribbitCommand.setCallback(commandRunner);
     assertThat(ribbitCommand.getRegExpr()).isEqualTo("ribbit");
     DisplayInterface display = ribbitCommand.run("ribbit", marvin);
@@ -103,9 +100,9 @@ public class RibbitCommandTest extends MudTest
   public void runRibbitFast()
   {
     marvin.setFrogging(5);
-    marvin.setNow();
     RibbitCommand ribbitCommand = new RibbitCommand("ribbit");
     ribbitCommand.setCallback(commandRunner);
+    ribbitCommand.setRibbitTime("Marvin", LocalDateTime.now());
     assertThat(ribbitCommand.getRegExpr()).isEqualTo("ribbit");
     DisplayInterface display = ribbitCommand.run("ribbit", marvin);
     assertThat(display).isNotNull();

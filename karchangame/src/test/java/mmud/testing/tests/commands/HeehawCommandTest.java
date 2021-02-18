@@ -16,6 +16,11 @@
  */
 package mmud.testing.tests.commands;
 
+import java.io.File;
+import java.io.PrintWriter;
+import java.time.LocalDateTime;
+import java.util.HashSet;
+
 import mmud.Constants;
 import mmud.commands.CommandRunner;
 import mmud.commands.HeehawCommand;
@@ -25,23 +30,15 @@ import mmud.database.entities.characters.User;
 import mmud.database.entities.game.DisplayInterface;
 import mmud.database.entities.game.Room;
 import mmud.rest.services.PersonBean;
+import mmud.services.CommunicationService;
 import mmud.testing.TestingConstants;
 import mmud.testing.tests.LogBeanStub;
 import mmud.testing.tests.MudTest;
-import org.testng.annotations.*;
-
-import java.io.File;
-import java.io.PrintWriter;
-import java.time.LocalDateTime;
-import java.util.Calendar;
-import java.util.GregorianCalendar;
-import java.util.HashSet;
-import mmud.services.CommunicationService;
-
+import org.testng.annotations.BeforeMethod;
+import org.testng.annotations.Test;
 import static org.assertj.core.api.Assertions.assertThat;
 
 /**
- *
  * @author maartenl
  */
 public class HeehawCommandTest extends MudTest
@@ -85,8 +82,8 @@ public class HeehawCommandTest extends MudTest
   {
     marvin.setJackassing(5);
     LocalDateTime seventeenSecondsAgo = LocalDateTime.now().plusSeconds(-17L);
-    setField(User.class, "lastcommand", marvin, seventeenSecondsAgo);
     HeehawCommand heehawCommand = new HeehawCommand("heehaw");
+    heehawCommand.setHeehawTime("Marvin", seventeenSecondsAgo);
     heehawCommand.setCallback(commandRunner);
     assertThat(heehawCommand.getRegExpr()).isEqualTo("heehaw");
     DisplayInterface display = heehawCommand.run("heehaw", marvin);
@@ -105,9 +102,9 @@ public class HeehawCommandTest extends MudTest
   public void runHeehawFast()
   {
     marvin.setJackassing(5);
-    marvin.setNow();
     HeehawCommand heehawCommand = new HeehawCommand("heehaw");
     heehawCommand.setCallback(commandRunner);
+    heehawCommand.setHeehawTime("Marvin", LocalDateTime.now());
     assertThat(heehawCommand.getRegExpr()).isEqualTo("heehaw");
     DisplayInterface display = heehawCommand.run("heehaw", marvin);
     assertThat(display).isNotNull();

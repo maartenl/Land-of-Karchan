@@ -16,14 +16,8 @@
  */
 package mmud.rest.services.admin;
 
-import mmud.database.entities.game.*;
-import mmud.exceptions.MudWebException;
-import mmud.rest.services.LogBean;
-import mmud.rest.webentities.admin.bans.AdminBannedIP;
-import mmud.rest.webentities.admin.bans.AdminBannedName;
-import mmud.rest.webentities.admin.bans.AdminSillyName;
-import mmud.rest.webentities.admin.bans.AdminUnbannedName;
-
+import java.time.LocalDateTime;
+import java.util.logging.Logger;
 import javax.annotation.security.DeclareRoles;
 import javax.annotation.security.RolesAllowed;
 import javax.ejb.LocalBean;
@@ -31,14 +25,29 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
-import javax.ws.rs.*;
+import javax.ws.rs.Consumes;
+import javax.ws.rs.DELETE;
+import javax.ws.rs.GET;
+import javax.ws.rs.POST;
+import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
+import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.SecurityContext;
 import javax.ws.rs.core.UriInfo;
-import java.time.LocalDateTime;
-import java.util.List;
-import java.util.logging.Logger;
+
+import mmud.database.entities.game.Admin;
+import mmud.database.entities.game.BanTable;
+import mmud.database.entities.game.BannedName;
+import mmud.database.entities.game.SillyName;
+import mmud.database.entities.game.UnbanTable;
+import mmud.exceptions.MudWebException;
+import mmud.rest.services.LogBean;
+import mmud.rest.webentities.admin.bans.AdminBannedIP;
+import mmud.rest.webentities.admin.bans.AdminBannedName;
+import mmud.rest.webentities.admin.bans.AdminSillyName;
+import mmud.rest.webentities.admin.bans.AdminUnbannedName;
 
 /**
  * @author maartenl
@@ -64,11 +73,9 @@ public class BanBean
     {
       "application/json"
     })
-  public String findAllBannedIPS(@Context UriInfo info)
+  public Response findAllBannedIPS(@Context UriInfo info)
   {
-    List<String> items = getEntityManager().createNativeQuery(AdminBannedIP.GET_QUERY)
-      .getResultList();
-    return "[" + String.join(",", items) + "]";
+    return Response.ok(StreamerHelper.getStream(getEntityManager(), AdminBannedIP.GET_QUERY)).build();
   }
 
   @GET
@@ -77,11 +84,9 @@ public class BanBean
     {
       "application/json"
     })
-  public String findAllBannedNames(@Context UriInfo info)
+  public Response findAllBannedNames(@Context UriInfo info)
   {
-    List<String> items = getEntityManager().createNativeQuery(AdminBannedName.GET_QUERY)
-      .getResultList();
-    return "[" + String.join(",", items) + "]";
+    return Response.ok(StreamerHelper.getStream(getEntityManager(), AdminBannedName.GET_QUERY)).build();
   }
 
   @GET
@@ -90,11 +95,9 @@ public class BanBean
     {
       "application/json"
     })
-  public String findAllSillyNames(@Context UriInfo info)
+  public Response findAllSillyNames(@Context UriInfo info)
   {
-    List<String> items = getEntityManager().createNativeQuery(AdminSillyName.GET_QUERY)
-      .getResultList();
-    return "[" + String.join(",", items) + "]";
+    return Response.ok(StreamerHelper.getStream(getEntityManager(), AdminSillyName.GET_QUERY)).build();
   }
 
   @GET
@@ -103,11 +106,9 @@ public class BanBean
     {
       "application/json"
     })
-  public String findAllUnbannedNames(@Context UriInfo info)
+  public Response findAllUnbannedNames(@Context UriInfo info)
   {
-    List<String> items = getEntityManager().createNativeQuery(AdminUnbannedName.GET_QUERY)
-      .getResultList();
-    return "[" + String.join(",", items) + "]";
+    return Response.ok(StreamerHelper.getStream(getEntityManager(), AdminUnbannedName.GET_QUERY)).build();
   }
 
   @POST

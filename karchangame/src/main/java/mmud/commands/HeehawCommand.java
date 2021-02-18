@@ -17,11 +17,12 @@
 package mmud.commands;
 
 import java.time.LocalDateTime;
-import java.util.Calendar;
-import java.util.GregorianCalendar;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+
+import com.google.common.annotations.VisibleForTesting;
 import mmud.database.entities.characters.User;
 import mmud.database.entities.game.DisplayInterface;
-import mmud.exceptions.MudException;
 import mmud.services.CommunicationService;
 
 /**
@@ -34,36 +35,44 @@ import mmud.services.CommunicationService;
  */
 public class HeehawCommand extends NormalCommand
 {
+  private final Map<String, LocalDateTime> heehaws = new ConcurrentHashMap<>();
 
-    public HeehawCommand(String aRegExpr)
+  public HeehawCommand(String aRegExpr)
+  {
+    super(aRegExpr);
+  }
+
+  @Override
+  public DisplayInterface run(String command, User aUser)
+  {
+    if (aUser.getJackassing() == 0)
     {
-        super(aRegExpr);
+      return null;
     }
-
-    @Override
-    public DisplayInterface run(String command, User aUser) throws MudException
+    LocalDateTime tenSecondsAgo = LocalDateTime.now().plusSeconds(-10L);
+    if (heehaws.get(aUser.getName()) != null && tenSecondsAgo.isBefore(heehaws.get(aUser.getName())))
     {
-        if (aUser.getJackassing() == 0)
-        {
-            return null;
-        }
-      LocalDateTime tenSecondsAgo = LocalDateTime.now().plusSeconds(-10L);
-        if (tenSecondsAgo.isBefore(aUser.getLastcommand()))
-        {
-            CommunicationService.getCommunicationService(aUser).writeMessage("You cannot say 'Heehaw' that fast! You will get tongue tied!<br/>\r\n");
-            return aUser.getRoom();
-        }
-        CommunicationService.getCommunicationService(aUser.getRoom()).sendMessage(aUser, "A jackass called " + aUser.getName() + " says \"Heeehaw!\""
-                + ".<br/>\n");
-        aUser.lessJackassing();
-        if (aUser.getJackassing() == 0)
-        {
-            CommunicationService.getCommunicationService(aUser.getRoom()).sendMessage(aUser, "A jackass called " + aUser.getName() + " magically changes back to a " + aUser.getRace() + ".<br/>\n");
-        } else
-        {
-            CommunicationService.getCommunicationService(aUser).writeMessage("You feel the need to say 'Heehaw' just " + aUser.getJackassing() + " times.<br/>\r\n");
-        }
-        return aUser.getRoom();
+      CommunicationService.getCommunicationService(aUser).writeMessage("You cannot say 'Heehaw' that fast! You will get tongue tied!<br/>\r\n");
+      return aUser.getRoom();
     }
+    CommunicationService.getCommunicationService(aUser.getRoom()).sendMessage(aUser, "A jackass called " + aUser.getName() + " says \"Heeehaw!\""
+      + ".<br/>\n");
+    aUser.lessJackassing();
+    if (aUser.getJackassing() == 0)
+    {
+      CommunicationService.getCommunicationService(aUser.getRoom()).sendMessage(aUser, "A jackass called " + aUser.getName() + " magically changes back to a " + aUser.getRace() + ".<br/>\n");
+      heehaws.remove(aUser.getName());
+    } else
+    {
+      CommunicationService.getCommunicationService(aUser).writeMessage("You feel the need to say 'Heehaw' just " + aUser.getJackassing() + " times.<br/>\r\n");
+      heehaws.put(aUser.getName(), LocalDateTime.now());
+    }
+    return aUser.getRoom();
+  }
 
+  @VisibleForTesting
+  public void setHeehawTime(String name, LocalDateTime time)
+  {
+    heehaws.put(name, time);
+  }
 }

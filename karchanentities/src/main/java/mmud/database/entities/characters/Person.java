@@ -16,26 +16,59 @@
  */
 package mmud.database.entities.characters;
 
-import mmud.database.RegularExpressions;
-import mmud.database.entities.Ownage;
-import mmud.database.entities.game.*;
-import mmud.database.entities.items.Item;
-import mmud.database.entities.items.ItemWrangler;
-import mmud.database.enums.*;
-import mmud.exceptions.ItemException;
-import mmud.exceptions.MoneyException;
-import mmud.exceptions.MudException;
-
-import javax.persistence.*;
+import java.io.Serializable;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.persistence.Basic;
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
+import javax.persistence.Convert;
+import javax.persistence.DiscriminatorColumn;
+import javax.persistence.DiscriminatorType;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.Id;
+import javax.persistence.Inheritance;
+import javax.persistence.InheritanceType;
+import javax.persistence.JoinColumn;
+import javax.persistence.Lob;
+import javax.persistence.ManyToOne;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
+import javax.persistence.OneToMany;
+import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
-import java.io.*;
-import java.time.LocalDateTime;
-import java.util.*;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+
 import mmud.database.Attributes;
+import mmud.database.RegularExpressions;
+import mmud.database.entities.Ownage;
+import mmud.database.entities.game.Admin;
+import mmud.database.entities.game.Attribute;
+import mmud.database.entities.game.AttributeWrangler;
+import mmud.database.entities.game.Charattribute;
+import mmud.database.entities.game.DisplayInterface;
+import mmud.database.entities.game.Room;
+import mmud.database.entities.items.Item;
+import mmud.database.entities.items.ItemWrangler;
+import mmud.database.enums.Alignment;
+import mmud.database.enums.Appetite;
+import mmud.database.enums.God;
+import mmud.database.enums.Health;
+import mmud.database.enums.Movement;
+import mmud.database.enums.Sex;
+import mmud.database.enums.Sobriety;
+import mmud.database.enums.Wearing;
+import mmud.database.enums.Wielding;
+import mmud.exceptions.ItemException;
+import mmud.exceptions.MoneyException;
+import mmud.exceptions.MudException;
 
 /**
  * A character in the game. Might be both a bot, a shopkeeper, a user, or an
@@ -145,8 +178,8 @@ abstract public class Person implements Serializable, AttributeWrangler, Display
   @Size(max = 20)
   // TODO recursion into the same table
   @Column(name = "fightingwho")
-
   private String fightingwho;
+
   @Column(name = "sleep")
   private Boolean sleep;
 

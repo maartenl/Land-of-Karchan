@@ -27,6 +27,7 @@ import javax.ejb.Stateless;
 import javax.json.bind.JsonbBuilder;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
@@ -39,6 +40,7 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.SecurityContext;
 import javax.ws.rs.core.UriInfo;
+
 import mmud.database.entities.game.Admin;
 import mmud.database.entities.game.Area;
 import mmud.database.entities.game.Room;
@@ -46,9 +48,13 @@ import mmud.database.entities.game.UserCommand;
 import mmud.exceptions.MudWebException;
 import mmud.rest.webentities.admin.AdminRoom;
 import mmud.rest.webentities.admin.AdminUserCommand;
+import org.eclipse.persistence.config.HintValues;
+import org.eclipse.persistence.config.QueryHints;
+import org.eclipse.persistence.config.ResultSetConcurrency;
+import org.eclipse.persistence.config.ResultSetType;
+import org.eclipse.persistence.queries.ScrollableCursor;
 
 /**
- *
  * @author maartenl
  */
 @DeclareRoles("deputy")
@@ -56,19 +62,20 @@ import mmud.rest.webentities.admin.AdminUserCommand;
 @Stateless
 @Path("/administration/rooms")
 @LocalBean
-public class RoomsBean //implements AdminRestService<Long>
+public class RoomsBean
 {
 
   private static final Logger LOGGER = Logger.getLogger(RoomsBean.class.getName());
+  public static final String DESCRIPTION = "description";
 
   @PersistenceContext(unitName = "karchangamePU")
   private EntityManager em;
 
   @POST
   @Consumes(
-          {
-            "application/json"
-          })
+    {
+      "application/json"
+    })
 
   public Long create(String json, @Context SecurityContext sc)
   {
@@ -143,9 +150,9 @@ public class RoomsBean //implements AdminRestService<Long>
   @PUT
   @Path("{id}")
   @Consumes(
-          {
-            "application/json"
-          })
+    {
+      "application/json"
+    })
 
   public void edit(@PathParam("id") Long id, String json, @Context SecurityContext sc)
   {
@@ -229,7 +236,7 @@ public class RoomsBean //implements AdminRestService<Long>
   @Path("{id}")
 
   public void remove(@PathParam("id") Long id,
-          @Context SecurityContext sc
+                     @Context SecurityContext sc
   )
   {
     final String name = sc.getUserPrincipal().getName();
@@ -245,12 +252,12 @@ public class RoomsBean //implements AdminRestService<Long>
   @GET
   @Path("{id}")
   @Produces(
-          {
-            "application/json"
-          })
+    {
+      "application/json"
+    })
 
   public String find(@PathParam("id") Long id,
-          @Context SecurityContext sc)
+                     @Context SecurityContext sc)
   {
     final String name = sc.getUserPrincipal().getName();
     Room room = getEntityManager().find(Room.class, id);
@@ -264,12 +271,12 @@ public class RoomsBean //implements AdminRestService<Long>
   @GET
   @Path("{id}/commands")
   @Produces(
-          {
-            "application/json"
-          })
+    {
+      "application/json"
+    })
 
   public String getCommands(@PathParam("id") Long id,
-          @Context SecurityContext sc)
+                            @Context SecurityContext sc)
   {
     final String name = sc.getUserPrincipal().getName();
     final List<UserCommand> userCommands = getEntityManager().createNamedQuery("UserCommand.findByRoom").setParameter("room", id).getResultList();
@@ -279,44 +286,46 @@ public class RoomsBean //implements AdminRestService<Long>
 
   @GET
   @Produces(
-          {
-            "application/json"
-          })
+    {
+      "application/json"
+    })
 
-  public String findAll(@Context UriInfo info)
+  public Response findAll(@Context UriInfo info)
   {
     LOGGER.info("findAll");
-    String description = info.getQueryParameters().getFirst("description");
+    String description = info.getQueryParameters().getFirst(DESCRIPTION);
     if ("null".equals(description))
     {
       description = null;
     }
-    final List<String> rooms;
     if (description == null)
     {
-      rooms = getEntityManager().createNativeQuery(AdminRoom.GET_QUERY)
-              .getResultList();
-    } else
-    {
-      rooms = getEntityManager().createNativeQuery(AdminRoom.GET_SEARCH_QUERY)
-              .setParameter(1, "%" + description + "%")
-              .getResultList();
+      return Response.ok(StreamerHelper.getStream(getEntityManager(), AdminRoom.GET_QUERY)).build();
     }
-    return "[" + rooms.stream().collect(Collectors.joining(",")) + "]";
+    Query query = getEntityManager().createNativeQuery(AdminRoom.GET_SEARCH_QUERY);
+    query.setHint(QueryHints.CURSOR, HintValues.TRUE);
+    query.setHint(QueryHints.CURSOR_INITIAL_SIZE, 100);
+    query.setHint(QueryHints.CURSOR_PAGE_SIZE, 100);
+    query.setHint(QueryHints.RESULT_SET_CONCURRENCY, ResultSetConcurrency.ReadOnly);
+    query.setHint(QueryHints.RESULT_SET_TYPE, ResultSetType.ForwardOnly);
+    query.setParameter(1, "%" + description + "%");
+    @SuppressWarnings("unchecked")
+    ScrollableCursor cursor = (ScrollableCursor) query.getSingleResult();
+    return Response.ok(StreamerHelper.getStream(cursor)).build();
   }
 
   @GET
   @Path("{offset}/{pageSize}")
   @Produces(
-          {
-            "application/json"
-          })
+    {
+      "application/json"
+    })
 
   public String findRange(@Context UriInfo info, @PathParam("offset") Integer offset,
-          @PathParam("pageSize") Integer pageSize
+                          @PathParam("pageSize") Integer pageSize
   )
   {
-    String description = info.getQueryParameters().getFirst("description");
+    String description = info.getQueryParameters().getFirst(DESCRIPTION);
     if ("null".equals(description))
     {
       description = null;
@@ -325,16 +334,16 @@ public class RoomsBean //implements AdminRestService<Long>
     if (description == null)
     {
       rooms = getEntityManager().createNativeQuery(AdminRoom.GET_QUERY)
-              .setMaxResults(pageSize)
-              .setFirstResult(offset)
-              .getResultList();
+        .setMaxResults(pageSize)
+        .setFirstResult(offset)
+        .getResultList();
     } else
     {
       rooms = getEntityManager().createNativeQuery(AdminRoom.GET_SEARCH_QUERY)
-              .setParameter(1, "%" + description + "%")
-              .setMaxResults(pageSize)
-              .setFirstResult(offset)
-              .getResultList();
+        .setParameter(1, "%" + description + "%")
+        .setMaxResults(pageSize)
+        .setFirstResult(offset)
+        .getResultList();
     }
     return "[" + rooms.stream().collect(Collectors.joining(",")) + "]";
   }
@@ -345,7 +354,7 @@ public class RoomsBean //implements AdminRestService<Long>
 
   public String count(@Context UriInfo info)
   {
-    String description = info.getQueryParameters().getFirst("description");
+    String description = info.getQueryParameters().getFirst(DESCRIPTION);
     if ("null".equals(description))
     {
       description = null;
@@ -354,7 +363,7 @@ public class RoomsBean //implements AdminRestService<Long>
     {
       return String.valueOf(getEntityManager().createNamedQuery("Room.countAll").getSingleResult());
     }
-    return String.valueOf(getEntityManager().createNamedQuery("Room.countAllByDescription").setParameter("description", "%" + description + "%").getSingleResult());
+    return String.valueOf(getEntityManager().createNamedQuery("Room.countAllByDescription").setParameter(DESCRIPTION, "%" + description + "%").getSingleResult());
   }
 
   private EntityManager getEntityManager()

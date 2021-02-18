@@ -38,6 +38,7 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.SecurityContext;
 import javax.ws.rs.core.UriInfo;
+
 import mmud.database.entities.game.Admin;
 import mmud.database.entities.game.Method;
 import mmud.database.entities.game.Room;
@@ -46,7 +47,6 @@ import mmud.exceptions.MudWebException;
 import mmud.rest.webentities.admin.AdminUserCommand;
 
 /**
- *
  * @author maartenl
  */
 @DeclareRoles("deputy")
@@ -54,7 +54,7 @@ import mmud.rest.webentities.admin.AdminUserCommand;
 @Stateless
 @LocalBean
 @Path("/administration/commands")
-public class UserCommandsBean //implements AdminRestService<String>
+public class UserCommandsBean
 {
 
   private static final Logger LOGGER = Logger.getLogger(UserCommandsBean.class.getName());
@@ -64,7 +64,7 @@ public class UserCommandsBean //implements AdminRestService<String>
 
   @POST
   @Consumes(
-          {
+    {
             "application/json"
           })
 
@@ -196,15 +196,12 @@ public class UserCommandsBean //implements AdminRestService<String>
   @GET
 
   @Produces(
-          {
-            "application/json"
-          })
-  public String findAll(@Context UriInfo info)
+    {
+      "application/json"
+    })
+  public Response findAll(@Context UriInfo info)
   {
-    List<String> userCommands = null;
-    userCommands = getEntityManager().createNativeQuery(AdminUserCommand.GET_QUERY)
-            .getResultList();
-    return "[" + userCommands.stream().collect(Collectors.joining(",")) + "]";
+    return Response.ok(StreamerHelper.getStream(getEntityManager(), AdminUserCommand.GET_QUERY)).build();
   }
 
   @GET

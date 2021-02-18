@@ -18,10 +18,10 @@ package mmud.commands.items;
 
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
 import mmud.commands.Command;
 import mmud.database.entities.characters.User;
 import mmud.database.entities.game.DisplayInterface;
-import mmud.exceptions.MudException;
 
 /**
  * An abstract class for the most normal commands.
@@ -43,72 +43,65 @@ public abstract class ItemCommand implements Command
         return theRegExpr;
     }
 
-    /**
-     * Constructor.
-     *
-     * @param aRegExpr
-     * a regular expression to which the command should follow. For
-     * example "give [A..Za..z]*1-4 to [A..Za..z]*". %me is a
-     * parameter that can be used when the name of the character
-     * playing is requested.
-     */
-    public ItemCommand(String aRegExpr)
+  /**
+   * Constructor.
+   *
+   * @param aRegExpr a regular expression to which the command should follow. For
+   *                 example "give [A..Za..z]*1-4 to [A..Za..z]*". %me is a
+   *                 parameter that can be used when the name of the character
+   *                 playing is requested.
+   */
+  protected ItemCommand(String aRegExpr)
+  {
+    theRegExpr = aRegExpr;
+  }
+
+  /**
+   * Starts the command, this method is used for default behaviour that needs
+   * to take place before the run command is issued. This method starts the
+   * run command.
+   *
+   * @param command the command entered by the user
+   * @param aUser   the user that executed the command
+   * @return DisplayInterface for providing to the user, or null if the
+   * statement was not executed for some different reason.
+   */
+  DisplayInterface start(String command, User aUser)
+  {
+    LOGGER.log(Level.FINER, "{0}({1}) : {2}", new Object[]
+      {
+        aUser.getName(), this.getClass().getName(), command
+      });
+    String myregexpr = theRegExpr.replace("%s", aUser.getName());
+    boolean result;
+    if (myregexpr.endsWith(".+") && command.indexOf('\n') != -1)
     {
-        theRegExpr = aRegExpr;
+      String stuff = command.substring(0, command.indexOf('\n'));
+      result = stuff.matches(myregexpr);
+    } else
+    {
+      result = (command.matches(myregexpr));
     }
-
-    /**
-     * Starts the command, this method is used for default behaviour that needs
-     * to take place before the run command is issued. This method starts the
-     * run command.
-     *
-     * @param command the command entered by the user
-     * @param aUser
-     * the user that executed the command
-     * @return DisplayInterface for providing to the user, or null if the
-     * statement was not executed for some different reason.
-     * @throws MudException
-     * when anything goes wrong.
-     */
-    DisplayInterface start(String command, User aUser) throws MudException
+    if (!result)
     {
-        LOGGER.log(Level.FINER, "{0}({1}) : {2}", new Object[]
-        {
-            aUser.getName(), this.getClass().getName(), command
-        });
-        String myregexpr = theRegExpr.replaceAll("%s", aUser.getName());
-        boolean result;
-        if (myregexpr.endsWith(".+") && command.indexOf('\n') != -1)
-        {
-            String stuff = command.substring(0, command.indexOf('\n'));
-            result = stuff.matches(myregexpr);
-        } else
-        {
-            result = (command.matches(myregexpr));
-        }
-        if (!result)
-        {
-            /** didn't match the case, exiting */
-            return null;
-        }
-        /** continue with the actual command */
-        DisplayInterface displayInterface = run(command, aUser);
-        aUser.setNow();
-        return displayInterface;
+      /** didn't match the case, exiting */
+      return null;
     }
+    /** continue with the actual command */
+    return run(command, aUser);
+  }
 
-    @Override
-    public abstract DisplayInterface run(String command, User aUser) throws MudException;
+  @Override
+  public abstract DisplayInterface run(String command, User aUser);
 
-    /**
-     * split up the command into different words.
-     *
-     * @param aCommand
-     * String containing the command
-     * @return String array where each String contains a word from the command.
-     */
-    protected static String[] parseCommand(String aCommand)
-    {
+  /**
+   * split up the command into different words.
+   *
+   * @param aCommand String containing the command
+   * @return String array where each String contains a word from the command.
+   */
+  protected static String[] parseCommand(String aCommand)
+  {
         return aCommand.split("( )+", 50);
     }
 

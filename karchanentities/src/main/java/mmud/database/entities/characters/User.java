@@ -16,6 +16,27 @@
  */
 package mmud.database.entities.characters;
 
+import java.time.Duration;
+import java.time.LocalDateTime;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Set;
+import java.util.logging.Logger;
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
+import javax.persistence.DiscriminatorValue;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinColumns;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
+import javax.persistence.ManyToOne;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
+import javax.persistence.OneToMany;
+import javax.validation.constraints.Size;
+
 import mmud.database.Attributes;
 import mmud.database.RegularExpressions;
 import mmud.database.entities.game.DisplayInterface;
@@ -26,15 +47,6 @@ import mmud.database.enums.God;
 import mmud.encryption.Hash;
 import mmud.encryption.HexEncoder;
 import mmud.exceptions.MudException;
-
-import javax.persistence.*;
-import javax.validation.constraints.Size;
-import java.time.Duration;
-import java.time.LocalDateTime;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.Set;
-import java.util.logging.Logger;
 
 /**
  * A user in the game. Might be an administrator.
@@ -60,10 +72,7 @@ public class User extends Person
 
     private static final String PASSWORD_REGEXP = ".{5,}";
     private static final Logger LOGGER = java.util.logging.Logger.getLogger(User.class.getName());
-    /**
-     * Max idle time is currently set to 60 minutes.
-     */
-    private static final long MAX_IDLE_TIME = 60;
+
     @Size(min = 5, max = 200)
     @Column(name = "address")
     private String address;
@@ -125,32 +134,33 @@ public class User extends Person
     @Size(max = 40)
     @Column(name = "cgiRemoteIdent")
     private String cgiRemoteIdent;
-    @Size(max = 40)
-    @Column(name = "cgiContentType")
-    private String cgiContentType;
-    @Size(max = 40)
-    @Column(name = "cgiAccept")
-    private String cgiAccept;
-    @Size(max = 40)
-    @Column(name = "cgiUserAgent")
-    private String cgiUserAgent;
-    @Column(name = "lastcommand")
-    private LocalDateTime lastcommand;
-    @Column(name = "rrribbits")
-    private Integer rrribbits;
-    @Column(name = "heehaws")
-    private Integer heehaws;
-    @Column(name = "ooc")
-    private Boolean ooc;
+  @Size(max = 40)
+  @Column(name = "cgiContentType")
+  private String cgiContentType;
+  @Size(max = 40)
+  @Column(name = "cgiAccept")
+  private String cgiAccept;
+  @Size(max = 40)
+  @Column(name = "cgiUserAgent")
+  private String cgiUserAgent;
 
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "person", orphanRemoval = true)
-    private Set<Macro> macroCollection;
+  @Column(name = "rrribbits")
+  private Integer rrribbits;
 
-    /**
-     * The list of people that you are ignoring.
-     */
-    @ManyToMany(targetEntity = User.class, fetch = FetchType.LAZY, cascade =
-            {
+  @Column(name = "heehaws")
+  private Integer heehaws;
+
+  @Column(name = "ooc")
+  private Boolean ooc;
+
+  @OneToMany(cascade = CascadeType.ALL, mappedBy = "person", orphanRemoval = true)
+  private Set<Macro> macroCollection;
+
+  /**
+   * The list of people that you are ignoring.
+   */
+  @ManyToMany(targetEntity = User.class, fetch = FetchType.LAZY, cascade =
+    {
                     CascadeType.ALL
             })
     @JoinTable(name = "mm_ignore", joinColumns =
@@ -314,7 +324,6 @@ public class User extends Person
     public void setLastlogin(LocalDateTime lastlogin)
     {
         this.lastlogin = lastlogin;
-        this.lastcommand = lastlogin;
     }
 
     public String getCgiServerSoftware()
@@ -488,25 +497,6 @@ public class User extends Person
     }
 
     /**
-     * Returns the last time that a command was issued. Used for determining idle
-     * time.
-     *
-     * @return the date of the last time a command was entered.
-     */
-    public LocalDateTime getLastcommand()
-    {
-        return lastcommand;
-    }
-
-    /**
-     * Sets the last time that a command was issued to *now*.
-     */
-    public void setNow()
-    {
-        this.lastcommand = LocalDateTime.now();
-    }
-
-    /**
      * activate a character
      *
      * @see #deactivate()
@@ -514,32 +504,32 @@ public class User extends Person
      */
     public void activate() throws MudException
     {
-        if (!isUser())
-        {
-            throw new MudException("user not a user");
-        }
-        this.setLastlogin(LocalDateTime.now());
-        this.setActive(true);
+      if (!isUser())
+      {
+        throw new MudException("user not a user");
+      }
+      this.setLastlogin(LocalDateTime.now());
+      this.setActive(true);
     }
 
-    /**
-     * deactivate a character (usually because someone typed quit.)
-     *
-     * @see #activate(java.lang.String)
-     * @see #isActive()
-     */
-    public void deactivate()
-    {
-        setActive(false);
-        setLastlogin(LocalDateTime.now());
-    }
+  /**
+   * deactivate a character (usually because someone typed quit.)
+   *
+   * @see #activate
+   * @see #isActive()
+   */
+  public void deactivate()
+  {
+    setActive(false);
+    setLastlogin(LocalDateTime.now());
+  }
 
-    public boolean isNewUser()
-    {
-        return lastlogin == null;
-    }
+  public boolean isNewUser()
+  {
+    return lastlogin == null;
+  }
 
-    public DisplayInterface writeMacros()
+  public DisplayInterface writeMacros()
     {
         return new DisplayInterface()
         {
@@ -670,48 +660,6 @@ public class User extends Person
     public boolean isIgnoring(Person aPerson)
     {
         return ignoringSet.contains(aPerson);
-    }
-
-    /**
-     * Retrieves the idle time in minutes, i,e. between the last entered command
-     * and the current time. Returns null if the last command date/time is not
-     * available.
-     *
-     * @return Long containing minutes, or null.
-     */
-    public Long getIdleTime()
-    {
-        LocalDateTime date = getLastcommand();
-        LocalDateTime now = LocalDateTime.now();
-        if (date == null)
-        {
-            return null;
-        }
-        return Duration.between(date, now).toMinutes();
-    }
-
-    /**
-     * Check to see if the User was inactive for more than an hour.
-     *
-     * @return true if the User was inactive (i.e. has not entered a command) for
-     * more than an hour.
-     */
-    public boolean isIdleTooLong()
-    {
-        return this.getIdleTime() != null && this.getIdleTime() > MAX_IDLE_TIME;
-    }
-
-    /**
-     * Returns the time that a user was inactive.
-     *
-     * @return String the number of minutes and seconds that the player has been
-     * idle in the following format: "(&lt;min&gt; min, &lt;sec&gt; sec idle)".
-     */
-    public String getIdleTimeInMinAndSeconds()
-    {
-        LocalDateTime now = LocalDateTime.now();
-        Long timeDiff = Duration.between(getLastcommand(), now).toMillis() / 1000;
-        return "(" + timeDiff / 60 + " min, " + timeDiff % 60 + " sec idle)";
     }
 
     public Guild getGuild()

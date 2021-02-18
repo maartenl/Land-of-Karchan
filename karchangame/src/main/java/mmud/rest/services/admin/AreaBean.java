@@ -17,26 +17,33 @@
 package mmud.rest.services.admin;
 
 
-import mmud.database.entities.game.Admin;
-import mmud.database.entities.game.Area;
-import mmud.exceptions.MudWebException;
-import mmud.rest.services.LogBean;
-import mmud.rest.webentities.admin.AdminArea;
-
+import java.time.LocalDateTime;
+import java.util.List;
+import java.util.logging.Logger;
 import javax.annotation.security.DeclareRoles;
 import javax.annotation.security.RolesAllowed;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
-import javax.ws.rs.*;
+import javax.ws.rs.Consumes;
+import javax.ws.rs.DELETE;
+import javax.ws.rs.GET;
+import javax.ws.rs.POST;
+import javax.ws.rs.PUT;
+import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
+import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.SecurityContext;
 import javax.ws.rs.core.UriInfo;
-import java.time.LocalDateTime;
-import java.util.List;
-import java.util.logging.Logger;
+
+import mmud.database.entities.game.Admin;
+import mmud.database.entities.game.Area;
+import mmud.exceptions.MudWebException;
+import mmud.rest.services.LogBean;
+import mmud.rest.webentities.admin.AdminArea;
 
 /**
  * @author maartenl
@@ -143,11 +150,9 @@ public class AreaBean // extends AbstractFacade<Area>
     {
       "application/json"
     })
-  public String findAll(@Context UriInfo info)
+  public Response findAll(@Context UriInfo info)
   {
-    List<String> items = getEntityManager().createNativeQuery(AdminArea.GET_QUERY)
-      .getResultList();
-    return "[" + String.join(",", items) + "]";
+    return Response.ok(StreamerHelper.getStream(getEntityManager(), AdminArea.GET_QUERY)).build();
   }
 
   @GET

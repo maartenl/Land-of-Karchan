@@ -18,6 +18,7 @@ package mmud.commands;
 
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
 import mmud.database.entities.characters.User;
 import mmud.database.entities.game.DisplayInterface;
 import mmud.exceptions.MudException;
@@ -105,7 +106,6 @@ public abstract class NormalCommand implements Command
         }
         /** continue with the actual command */
         DisplayInterface displayInterface = run(command, aUser);
-        aUser.setNow();
         return displayInterface;
     }
 

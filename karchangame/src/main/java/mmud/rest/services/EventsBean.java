@@ -19,26 +19,22 @@ package mmud.rest.services;
 import java.lang.reflect.InvocationTargetException;
 import java.time.LocalDateTime;
 import java.util.Calendar;
-
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.ejb.EJB;
-import javax.ejb.LocalBean;
-import javax.ejb.Schedule;
 import javax.ejb.Stateless;
+import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 import javax.script.ScriptException;
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.GET;
-import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Response;
-import javax.ws.rs.core.UriInfo;
 
 import mmud.database.entities.characters.Administrator;
 import mmud.database.entities.characters.User;
@@ -56,6 +52,7 @@ import mmud.scripting.RunScript;
 import mmud.scripting.World;
 import mmud.scripting.WorldInterface;
 import mmud.services.CommunicationService;
+import mmud.services.IdleUsersService;
 
 /**
  * Takes care of all the events.
@@ -77,6 +74,10 @@ public class EventsBean
   private GameBean gameBean;
   @EJB
   private ItemBean itemBean;
+
+  @Inject
+  private IdleUsersService idleUsersService;
+
   @EJB
   private LogBean logBean;
   @PersistenceContext(unitName = "karchangamePU")
@@ -99,7 +100,8 @@ public class EventsBean
   @Path("{eventid}")
   public String runSingleEvent(@PathParam("eventid") Integer eventid, @Context HttpServletRequest request)
   {
-    if (!request.getRequestURL().toString().contains("localhost")) {
+    if (!request.getRequestURL().toString().contains("localhost"))
+    {
       throw new MudWebException("root", "Only localhost may access this.", Response.Status.FORBIDDEN);
     }
     Object[] objects = {eventid, request.getRequestURL()};
@@ -191,7 +193,8 @@ public class EventsBean
   @GET
   public void events(@Context HttpServletRequest request) throws IllegalAccessException, InstantiationException, InvocationTargetException
   {
-    if (!request.getRequestURL().toString().contains("localhost")) {
+    if (!request.getRequestURL().toString().contains("localhost"))
+    {
       throw new MudWebException("root", "Only localhost may access this.", Response.Status.FORBIDDEN);
     }
     Object[] objects = {LocalDateTime.now(), request.getRequestURL()};
@@ -292,17 +295,19 @@ public class EventsBean
   @Path("idles")
   public void executeIdleCleanup(@Context HttpServletRequest request)
   {
-    if (!request.getRequestURL().toString().contains("localhost")) {
+    if (!request.getRequestURL().toString().contains("localhost"))
+    {
       throw new MudWebException("root", "Only localhost may access this.", Response.Status.FORBIDDEN);
     }
     LOGGER.log(Level.INFO, "Idle cleanup. (accessed {0})", request.getRequestURL());
     Query query = getEntityManager().createNamedQuery("User.who");
     List<User> list = query.getResultList();
+    List<String> idleUsers = idleUsersService.getIdleUsers();
     for (User user : list)
     {
-      if (user.isIdleTooLong())
+      if (idleUsers.contains(user.getName()))
       {
-        final String message = "executeIdleCleanup(): " + user.getName() + " was idle for " + user.getIdleTime() + " minutes. Deactivated.";
+        final String message = "executeIdleCleanup(): " + user.getName() + " was idle for " + idleUsersService.getIdleTime(user.getName()) + " minutes. Deactivated.";
         LOGGER.info(message);
         logBean.writeLog(message);
         CommunicationService.getCommunicationService(user.getRoom()).sendMessageExcl(user, "%SNAME fade%VERB2 slowly from existence.<br/>\r\n");

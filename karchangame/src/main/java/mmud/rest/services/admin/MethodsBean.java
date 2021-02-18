@@ -16,14 +16,10 @@
  */
 package mmud.rest.services.admin;
 
-import mmud.database.entities.game.Admin;
-import mmud.database.entities.game.Method;
-import mmud.database.entities.game.UserCommand;
-import mmud.exceptions.MudWebException;
-import mmud.rest.services.LogBean;
-import mmud.rest.webentities.admin.AdminMethod;
-import mmud.rest.webentities.admin.AdminUserCommand;
-
+import java.time.LocalDateTime;
+import java.util.List;
+import java.util.logging.Logger;
+import java.util.stream.Collectors;
 import javax.annotation.security.DeclareRoles;
 import javax.annotation.security.RolesAllowed;
 import javax.ejb.LocalBean;
@@ -32,15 +28,26 @@ import javax.inject.Inject;
 import javax.json.bind.JsonbBuilder;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
-import javax.ws.rs.*;
+import javax.ws.rs.Consumes;
+import javax.ws.rs.DELETE;
+import javax.ws.rs.GET;
+import javax.ws.rs.POST;
+import javax.ws.rs.PUT;
+import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
+import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.SecurityContext;
 import javax.ws.rs.core.UriInfo;
-import java.time.LocalDateTime;
-import java.util.List;
-import java.util.logging.Logger;
-import java.util.stream.Collectors;
+
+import mmud.database.entities.game.Admin;
+import mmud.database.entities.game.Method;
+import mmud.database.entities.game.UserCommand;
+import mmud.exceptions.MudWebException;
+import mmud.rest.services.LogBean;
+import mmud.rest.webentities.admin.AdminMethod;
+import mmud.rest.webentities.admin.AdminUserCommand;
 
 /**
  * @author maartenl
@@ -50,7 +57,7 @@ import java.util.stream.Collectors;
 @Stateless
 @LocalBean
 @Path("/administration/methods")
-public class MethodsBean //implements AdminRestService<String>
+public class MethodsBean
 {
 
   private static final Logger LOGGER = Logger.getLogger(MethodsBean.class.getName());
@@ -163,11 +170,9 @@ public class MethodsBean //implements AdminRestService<String>
     {
       "application/json"
     })
-  public String findAll(@Context UriInfo info)
+  public Response findAll(@Context UriInfo info)
   {
-    List<String> methods = getEntityManager().createNativeQuery(AdminMethod.GET_QUERY)
-      .getResultList();
-    return "[" + String.join(",", methods) + "]";
+    return Response.ok(StreamerHelper.getStream(getEntityManager(), AdminMethod.GET_QUERY)).build();
   }
 
   @GET

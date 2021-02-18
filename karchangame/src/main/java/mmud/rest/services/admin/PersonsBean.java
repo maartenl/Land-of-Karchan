@@ -16,15 +16,8 @@
  */
 package mmud.rest.services.admin;
 
-import mmud.database.entities.characters.*;
-import mmud.database.entities.game.Admin;
-import mmud.database.entities.game.Room;
-import mmud.database.enums.God;
-import mmud.database.enums.Sex;
-import mmud.exceptions.MudWebException;
-import mmud.rest.services.LogBean;
-import mmud.rest.webentities.admin.AdminCharacter;
-
+import java.time.LocalDateTime;
+import java.util.List;
 import javax.annotation.security.DeclareRoles;
 import javax.annotation.security.RolesAllowed;
 import javax.ejb.LocalBean;
@@ -32,13 +25,31 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
-import javax.ws.rs.*;
+import javax.ws.rs.Consumes;
+import javax.ws.rs.DELETE;
+import javax.ws.rs.GET;
+import javax.ws.rs.POST;
+import javax.ws.rs.PUT;
+import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
+import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.SecurityContext;
 import javax.ws.rs.core.UriInfo;
-import java.time.LocalDateTime;
-import java.util.List;
+
+import mmud.database.entities.characters.Bot;
+import mmud.database.entities.characters.Mob;
+import mmud.database.entities.characters.Person;
+import mmud.database.entities.characters.Shopkeeper;
+import mmud.database.entities.characters.User;
+import mmud.database.entities.game.Admin;
+import mmud.database.entities.game.Room;
+import mmud.database.enums.God;
+import mmud.database.enums.Sex;
+import mmud.exceptions.MudWebException;
+import mmud.rest.services.LogBean;
+import mmud.rest.webentities.admin.AdminCharacter;
 
 /**
  * @author maartenl
@@ -48,7 +59,7 @@ import java.util.List;
 @Stateless
 @LocalBean
 @Path("/administration/characters")
-public class PersonsBean //implements AdminRestService<String>
+public class PersonsBean
 {
 
   @PersistenceContext(unitName = "karchangamePU")
@@ -228,12 +239,9 @@ public class PersonsBean //implements AdminRestService<String>
     {
       "application/json"
     })
-  public String findAll(@Context UriInfo info)
+  public Response findAll(@Context UriInfo info)
   {
-    @SuppressWarnings("unchecked")
-    List<String> items = getEntityManager().createNativeQuery(AdminCharacter.GET_QUERY)
-      .getResultList();
-    return "[" + String.join(",", items) + "]";
+    return Response.ok(StreamerHelper.getStream(getEntityManager(), AdminCharacter.GET_QUERY)).build();
   }
 
   @GET

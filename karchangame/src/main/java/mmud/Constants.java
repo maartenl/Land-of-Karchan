@@ -16,6 +16,19 @@
  */
 package mmud;
 
+import java.io.File;
+import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import javax.validation.ConstraintViolation;
+import javax.validation.Validation;
+import javax.validation.Validator;
+import javax.validation.ValidatorFactory;
+
 import com.google.common.escape.Escaper;
 import com.google.common.html.HtmlEscapers;
 import mmud.database.OutputFormatter;
@@ -23,21 +36,13 @@ import mmud.database.entities.items.Item;
 import mmud.database.entities.items.ItemDefinition;
 import mmud.rest.webentities.PrivateItem;
 
-import javax.validation.ConstraintViolation;
-import javax.validation.Validation;
-import javax.validation.Validator;
-import javax.validation.ValidatorFactory;
-import java.io.File;
-import java.time.format.DateTimeFormatter;
-import java.util.*;
-
 /**
  * @author maartenl
  */
 public class Constants
 {
 
-  private static final String BASEPATH = "/home/jelastic";
+  private static final String BASEPATH = "/Users/m.vanleunen";
 
   public static final String DEPUTIES_EMAILADDRESS = "deputiesofkarchan@outlook.com";
 

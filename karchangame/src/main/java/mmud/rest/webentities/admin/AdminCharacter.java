@@ -18,12 +18,12 @@
 package mmud.rest.webentities.admin;
 
 
-import mmud.database.entities.characters.Person;
-import mmud.database.entities.characters.User;
-
+import java.time.LocalDateTime;
 import javax.json.bind.Jsonb;
 import javax.json.bind.JsonbBuilder;
-import java.time.LocalDateTime;
+
+import mmud.database.entities.characters.Person;
+import mmud.database.entities.characters.User;
 
 /**
  * @author maartenl
@@ -165,7 +165,6 @@ public class AdminCharacter
     this.cgiContentType = item.getCgiContentType();
     this.cgiAccept = item.getCgiAccept();
     this.cgiUserAgent = item.getCgiUserAgent();
-    this.lastcommand = item.getLastcommand();
     this.rrribbits = item.getPunishment();
     this.heehaws = item.getPunishment();
     this.ooc = item.getOoc();

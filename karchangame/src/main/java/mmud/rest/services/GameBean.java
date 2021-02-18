@@ -16,25 +16,13 @@
  */
 package mmud.rest.services;
 
-import mmud.Constants;
-import mmud.Utils;
-import mmud.commands.CommandFactory;
-import mmud.commands.CommandFactory.UserCommandInfo;
-import mmud.commands.CommandRunner;
-import mmud.database.InputSanitizer;
-import mmud.database.entities.characters.Person;
-import mmud.database.entities.characters.User;
-import mmud.database.entities.game.*;
-import mmud.database.enums.Sex;
-import mmud.exceptions.ExceptionUtils;
-import mmud.exceptions.MudException;
-import mmud.exceptions.MudWebException;
-import mmud.rest.webentities.PrivateDisplay;
-import mmud.rest.webentities.PrivateLog;
-import mmud.rest.webentities.PrivatePerson;
-import mmud.services.CommunicationService;
-import mmud.services.PersonCommunicationService;
-
+import java.net.InetAddress;
+import java.net.UnknownHostException;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.annotation.Resource;
 import javax.annotation.security.DeclareRoles;
 import javax.annotation.security.PermitAll;
@@ -43,22 +31,54 @@ import javax.ejb.EJB;
 import javax.ejb.LocalBean;
 import javax.ejb.SessionContext;
 import javax.ejb.Stateless;
-import javax.persistence.*;
+import javax.inject.Inject;
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+import javax.persistence.PersistenceException;
+import javax.persistence.Query;
+import javax.persistence.TypedQuery;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.ConstraintViolationException;
-import javax.ws.rs.*;
+import javax.ws.rs.DELETE;
+import javax.ws.rs.GET;
+import javax.ws.rs.POST;
+import javax.ws.rs.PUT;
+import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
+import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
+import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-import java.net.InetAddress;
-import java.net.UnknownHostException;
-import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
+import mmud.Constants;
+import mmud.Utils;
+import mmud.commands.CommandFactory;
+import mmud.commands.CommandFactory.UserCommandInfo;
+import mmud.commands.CommandRunner;
+import mmud.database.InputSanitizer;
+import mmud.database.entities.characters.Person;
+import mmud.database.entities.characters.User;
+import mmud.database.entities.game.Board;
+import mmud.database.entities.game.BoardMessage;
+import mmud.database.entities.game.DisplayInterface;
+import mmud.database.entities.game.Macro;
+import mmud.database.entities.game.MacroPK;
+import mmud.database.entities.game.Room;
+import mmud.database.entities.game.UserCommand;
+import mmud.database.entities.game.Worldattribute;
+import mmud.database.enums.Sex;
+import mmud.exceptions.ExceptionUtils;
+import mmud.exceptions.MudException;
+import mmud.exceptions.MudWebException;
+import mmud.rest.webentities.PrivateDisplay;
+import mmud.rest.webentities.PrivateLog;
+import mmud.rest.webentities.PrivatePerson;
+import mmud.services.CommunicationService;
+import mmud.services.IdleUsersService;
+import mmud.services.PersonCommunicationService;
 import static mmud.Constants.DATETIME_FORMAT;
 
 /**
@@ -87,6 +107,9 @@ public class GameBean
 
   @EJB
   private BoardBean boardBean;
+
+  @Inject
+  private IdleUsersService idleUsersService;
 
   @EJB
   private PersonBean personBean;
@@ -615,6 +638,7 @@ public class GameBean
     try
     {
       person.activate();
+      idleUsersService.resetUser(person.getName());
       final PersonCommunicationService communicationService = CommunicationService.getCommunicationService(person);
       String message = "You have entered the game. (" + LocalDateTime.now().format(DATETIME_FORMAT) + ")<br>";
       communicationService.writeMessage(message);
@@ -685,6 +709,7 @@ public class GameBean
     command = InputSanitizer.security(command);
     PrivateDisplay display = null;
     User person = authenticate(name);
+    idleUsersService.resetUser(person.getName());
     try
     {
       if (command.contains(" ; ") && (!command.toLowerCase().startsWith("macro ")))
@@ -909,6 +934,7 @@ public class GameBean
       String message = "You have left the game. (" + LocalDateTime.now().format(DATETIME_FORMAT) + ")<br>";
       CommunicationService.getCommunicationService(person).writeMessage(person, message);
       person.deactivate();
+      idleUsersService.removeUser(person.getName());
       logBean.writeLog(person, "left the game.");
     } catch (WebApplicationException e)
     {

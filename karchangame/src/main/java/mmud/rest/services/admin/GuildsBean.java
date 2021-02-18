@@ -17,27 +17,34 @@
 package mmud.rest.services.admin;
 
 
-import mmud.database.entities.characters.User;
-import mmud.database.entities.game.Admin;
-import mmud.database.entities.game.Guild;
-import mmud.exceptions.MudWebException;
-import mmud.rest.services.LogBean;
-import mmud.rest.webentities.admin.AdminGuild;
-
+import java.time.LocalDateTime;
+import java.util.List;
+import java.util.logging.Logger;
 import javax.annotation.security.DeclareRoles;
 import javax.annotation.security.RolesAllowed;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
-import javax.ws.rs.*;
+import javax.ws.rs.Consumes;
+import javax.ws.rs.DELETE;
+import javax.ws.rs.GET;
+import javax.ws.rs.POST;
+import javax.ws.rs.PUT;
+import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
+import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.SecurityContext;
 import javax.ws.rs.core.UriInfo;
-import java.time.LocalDateTime;
-import java.util.List;
-import java.util.logging.Logger;
+
+import mmud.database.entities.characters.User;
+import mmud.database.entities.game.Admin;
+import mmud.database.entities.game.Guild;
+import mmud.exceptions.MudWebException;
+import mmud.rest.services.LogBean;
+import mmud.rest.webentities.admin.AdminGuild;
 
 /**
  * @author maartenl
@@ -83,7 +90,8 @@ public class GuildsBean
     {
       throw new MudWebException(name, "Guild " + adminGuild.name + " needs a guildmaster, guildmaster not found.", Response.Status.NOT_FOUND);
     }
-    if (guildmaster.getGuild() != null) {
+    if (guildmaster.getGuild() != null)
+    {
       throw new MudWebException(name, adminGuild.bossname + " is already a guildmaster.", Response.Status.PRECONDITION_FAILED);
     }
     guild.setBoss(guildmaster);
@@ -126,7 +134,8 @@ public class GuildsBean
     {
       throw new MudWebException(name, "Guildmaster " + adminGuild.bossname + " not found.", Response.Status.NOT_FOUND);
     }
-    if (guildmaster.getGuild().getBoss() == guildmaster && guild != guildmaster.getGuild()) {
+    if (guildmaster.getGuild().getBoss() == guildmaster && guild != guildmaster.getGuild())
+    {
       throw new MudWebException(name, adminGuild.bossname + " is already a guildmaster of guild " + guildmaster.getGuild().getName() + ".", Response.Status.PRECONDITION_FAILED);
     }
     guild.setBoss(guildmaster);
@@ -175,11 +184,9 @@ public class GuildsBean
     {
       "application/json"
     })
-  public String findAll(@Context UriInfo info)
+  public Response findAll(@Context UriInfo info)
   {
-    List<String> items = getEntityManager().createNativeQuery(AdminGuild.GET_QUERY)
-      .getResultList();
-    return "[" + String.join(",", items) + "]";
+    return Response.ok(StreamerHelper.getStream(getEntityManager(), AdminGuild.GET_QUERY)).build();
   }
 
   @GET
