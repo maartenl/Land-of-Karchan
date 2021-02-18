@@ -42,7 +42,7 @@ import mmud.rest.webentities.PrivateItem;
 public class Constants
 {
 
-  private static final String BASEPATH = "/Users/m.vanleunen";
+  private static final String BASEPATH = "/home/jelastic";
 
   public static final String DEPUTIES_EMAILADDRESS = "deputiesofkarchan@outlook.com";
 
