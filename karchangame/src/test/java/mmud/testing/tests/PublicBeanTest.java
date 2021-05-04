@@ -41,6 +41,7 @@ import mmud.rest.webentities.Fortune;
 import mmud.rest.webentities.News;
 import mmud.rest.webentities.PublicGuild;
 import mmud.rest.webentities.PublicPerson;
+import mmud.services.IdleUsersService;
 import mmud.testing.TestingConstants;
 import mmud.testing.TestingUtils;
 import org.mockito.ArgumentMatchers;
@@ -295,6 +296,9 @@ public class PublicBeanTest
         return entityManager;
       }
     });
+    IdleUsersService idleUsersService = new IdleUsersService();
+    idleUsersService.resetUser("Hotblack");
+    publicBean.setIdleUsersService(idleUsersService);
     // Unit under test is exercised.
     List<PublicPerson> result = publicBean.who();
     // Verification code (JUnit/TestNG asserts), if any.
@@ -306,6 +310,7 @@ public class PublicBeanTest
     expected.area = "On board the Starship Heart of Gold";
     expected.min = 16L;
     expected.sec = 40L;
+    expected.idleTime = 0L;
     expected.title = "Guitar keyboard player of the rock group Disaster Area";
     compare(result.get(0), expected);
     expected = new PublicPerson();
@@ -315,6 +320,7 @@ public class PublicBeanTest
     expected.min = 33L;
     expected.sec = 20L;
     expected.title = "The Paranoid Android";
+    expected.idleTime = null;
     compare(result.get(1), expected);
   }
 

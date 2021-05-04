@@ -16,16 +16,14 @@
  */
 package mmud.rest.services;
 
-import java.time.Duration;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
-import javax.ejb.EJB;
 import javax.ejb.LocalBean;
 import javax.ejb.Stateless;
+import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
@@ -49,6 +47,7 @@ import mmud.rest.webentities.PublicFamily;
 import mmud.rest.webentities.PublicGuild;
 import mmud.rest.webentities.PublicPerson;
 import mmud.rest.webentities.admin.AdminAdmin;
+import mmud.services.IdleUsersService;
 
 /**
  * Contains all rest calls that are available to the world, without
@@ -63,11 +62,14 @@ import mmud.rest.webentities.admin.AdminAdmin;
 public class PublicBean
 {
 
-  @EJB
+  @Inject
   private BoardBean boardBean;
 
-  @EJB
+  @Inject
   private PersonBean personBean;
+
+  @Inject
+  private IdleUsersService idleUsersService;
 
   @PersistenceContext(unitName = "karchangamePU")
   private EntityManager em;
@@ -148,27 +150,8 @@ public class PublicBean
         {
           continue;
         }
-        PublicPerson publicPerson = new PublicPerson();
-        String name = person.getName();
-        if (person.getFrogging() > 0)
-        {
-          name = "a frog called " + name;
-        }
-        if (person.getJackassing() > 0)
-        {
-          name = "a jackass called " + name;
-        }
-        publicPerson.name = name;
-        publicPerson.title = person.getTitle();
-        publicPerson.sleep = (person.getSleep() != null && person.getSleep()) ? "sleeping" : "";
-        publicPerson.area = person.getRoom().getArea().getShortdescription();
-        if (person.getLastlogin() == null)
-        {
-          continue;
-        }
-        Duration between = Duration.between(person.getLastlogin(), LocalDateTime.now());
-        publicPerson.min = between.getSeconds() / 60;
-        publicPerson.sec = between.getSeconds() % 60;
+        Long idleTime = idleUsersService.getIdleTime(person.getName());
+        PublicPerson publicPerson = new PublicPerson(person, idleTime);
         res.add(publicPerson);
       }
     } catch (Exception e)
@@ -177,6 +160,12 @@ public class PublicBean
     }
     LOGGER.finer("exiting who");
     return res;
+  }
+
+  @VisibleForTesting
+  public void setIdleUsersService(IdleUsersService idleUsersService)
+  {
+    this.idleUsersService = idleUsersService;
   }
 
   /**

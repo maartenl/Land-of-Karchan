@@ -38,6 +38,7 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.SecurityContext;
+
 import mmud.database.entities.game.Admin;
 import mmud.database.entities.web.Blog;
 import mmud.exceptions.MudWebException;
@@ -53,7 +54,7 @@ import mmud.rest.webentities.admin.AdminBlog;
 @RolesAllowed("deputy")
 @Stateless
 @Path("/administration/blogs")
-public class BlogsBean extends AbstractFacade<Blog>
+public class BlogsBean
 {
 
   private static final Logger LOGGER = Logger.getLogger(BlogsBean.class.getName());
@@ -63,11 +64,6 @@ public class BlogsBean extends AbstractFacade<Blog>
 
   @Inject
   private LogBean logBean;
-
-  public BlogsBean()
-  {
-    super(Blog.class);
-  }
 
   private Admin getAdmin(String name)
   {
@@ -100,7 +96,7 @@ public class BlogsBean extends AbstractFacade<Blog>
     entity.setTitle(blog.title);
     entity.setUrlTitle(blog.urlTitle);
     entity.setContents(blog.contents);
-    checkValidation(name, entity);
+    ValidationUtils.checkValidation(name, entity);
     getEntityManager().persist(entity);
     getEntityManager().flush();
     logBean.writeDeputyLog(getAdmin(name), "Blog " + entity.getUrlTitle() + " created.");
@@ -118,7 +114,7 @@ public class BlogsBean extends AbstractFacade<Blog>
     LOGGER.info("edit");
     final String name = sc.getUserPrincipal().getName();
 
-    Blog entity = super.find(id);
+    Blog entity = em.find(Blog.class, id);
 
     if (entity == null)
     {
@@ -129,7 +125,7 @@ public class BlogsBean extends AbstractFacade<Blog>
     entity.setModifiedDate(LocalDateTime.now());
     entity.setTitle(blog.title);
     entity.setUrlTitle(blog.urlTitle);
-    checkValidation(name, entity);
+    ValidationUtils.checkValidation(name, entity);
     logBean.writeDeputyLog(getAdmin(name), "Blog " + entity.getUrlTitle() + " edited.");
   }
 
@@ -138,14 +134,14 @@ public class BlogsBean extends AbstractFacade<Blog>
   public void remove(@PathParam("id") Long id, @Context SecurityContext sc)
   {
     final String name = sc.getUserPrincipal().getName();
-    final Blog blog = super.find(id);
+    final Blog blog = em.find(Blog.class, id);
     if (blog == null)
     {
       throw new MudWebException(name, "Blog " + id + " not found.", Response.Status.NOT_FOUND);
     }
     Admin admin = (new OwnerHelper(getEntityManager())).authorize(name, blog);
     logBean.writeDeputyLog(getAdmin(name), "Blog " + blog.getUrlTitle() + " removed.");
-    remove(blog);
+    em.remove(blog);
   }
 
   @GET
@@ -157,7 +153,7 @@ public class BlogsBean extends AbstractFacade<Blog>
   public AdminBlog find(@PathParam("id") Long id, @Context SecurityContext sc)
   {
     final String name = sc.getUserPrincipal().getName();
-    Blog entity = super.find(id);
+    Blog entity = em.find(Blog.class, id);
     if (entity == null)
     {
       throw new MudWebException(name, "Blog " + id + " not found.", Response.Status.NOT_FOUND);
@@ -166,11 +162,16 @@ public class BlogsBean extends AbstractFacade<Blog>
     return new AdminBlog(entity);
   }
 
+  private EntityManager getEntityManager()
+  {
+    return em;
+  }
+
   @GET
   @Produces(
-          {
-            "application/json"
-          })
+    {
+      "application/json"
+    })
   public List<AdminBlog> findAll(@Context SecurityContext sc)
   {
     final String name = sc.getUserPrincipal().getName();
@@ -182,18 +183,6 @@ public class BlogsBean extends AbstractFacade<Blog>
     TypedQuery<Blog> blogs = getEntityManager().createNamedQuery("Blog.find", Blog.class);
     blogs.setParameter("user", admin);
     return blogs.getResultList().stream().map(x -> new AdminBlog(x)).collect(Collectors.toList());
-  }
-
-  @Override
-  protected EntityManager getEntityManager()
-  {
-    return em;
-  }
-
-  @Override
-  public void create(Blog entity, SecurityContext sc)
-  {
-    throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
   }
 
 }
