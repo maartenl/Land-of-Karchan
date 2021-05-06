@@ -1,16 +1,16 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
-import { Router } from '@angular/router';
+import {Component, OnInit, ViewChild} from '@angular/core';
+import {Router} from '@angular/router';
 import * as ClassicEditor from '@ckeditor/ckeditor5-build-classic';
-import { ChangeEvent } from '@ckeditor/ckeditor5-angular/ckeditor.component';
-import { FormControl, FormGroup, FormBuilder } from '@angular/forms';
+import {ChangeEvent} from '@ckeditor/ckeditor5-angular/ckeditor.component';
+import {FormBuilder, FormGroup} from '@angular/forms';
 
-import { PlayerService } from '../player.service';
-import { GameService } from '../game.service';
-import { Display, Person, Item, Log } from './display.model';
-import { LanguageUtils } from '../language.utils';
-import { StringUtils } from '../string.utils';
-import { LogonmessageComponent } from './logonmessage/logonmessage.component';
-import { ChatlogService, Message } from '../chatlog.service';
+import {PlayerService} from '../player.service';
+import {GameService} from '../game.service';
+import {Display, Item, Log, Person, WhoPerson} from './display.model';
+import {LanguageUtils} from '../language.utils';
+import {StringUtils} from '../string.utils';
+import {LogonmessageComponent} from './logonmessage/logonmessage.component';
+import {ChatlogService, Message} from '../chatlog.service';
 
 /**
  * Actually plays teh game, instead of administration of your player character/settings/mail.
@@ -81,8 +81,43 @@ export class PlayComponent implements OnInit {
       );
   }
 
+  public who(): void {
+    this.gameService.getWho()
+      .subscribe(
+        (data: any) => { // on success
+          if (data !== undefined) {
+            let users: Array<WhoPerson> = data.map((x: any) => new WhoPerson(x));
+            const display = new Display()
+            display.title = 'Who';
+            display.image = '';
+            if (users.length === 0) {
+              display.body = 'There are no people online at the moment.';
+            } else {
+              display.body = 'There are ' + users.length + ' players.<br/><br/><br/>';
+              display.body += '<ul>';
+              users.forEach(user => {
+                display.body += '<li>' + user.name + ', ' + user.title + (user.area === 'Land of Karchan' ? '' : ' in ' + user.area);
+                display.body += (user.sleep !== '' ? ', sleeping ' : ' ');
+                display.body += user.idleTime;
+                display.body += '</li>\r\n';
+              });
+              display.body += '</ul>\r\n';
+            }
+            this.writeStuff(display);
+          }
+        },
+        (err: any) => { // error
+          // console.log('error', err);
+        },
+        () => { // on completion
+        }
+      );
+  }
+
   public playInit(): void {
-    if (window.console) { console.log('playInit'); }
+    if (window.console) {
+      console.log('playInit');
+    }
     const name = this.retrieveName();
     this.karchan.name = name;
     this.karchan.logOffset = 0;
@@ -159,12 +194,24 @@ export class PlayComponent implements OnInit {
         // a command was entered, perhaps with a big talk component
         totalcommand = this.karchan.editor === undefined || this.karchan.editor === '' ? command : command + ' ' + this.karchan.editor;
       }
-      if (window.console) { console.log('play: "' + totalcommand + '"'); }
+      if (window.console) {
+        console.log('play: "' + totalcommand + '"');
+      }
+      if (totalcommand === 'who') {
+        this.who();
+        this.createForms();
+        return false;
+      }
       this.processCall(totalcommand, true);
       return false;
     }
     if (window.console) { console.log('play: "' + command + '"'); }
     if (command !== undefined && command !== null) {
+      if (command === 'who') {
+        this.who();
+        this.createForms();
+        return false;
+      }
       this.processCall(command, true);
     }
     return false;

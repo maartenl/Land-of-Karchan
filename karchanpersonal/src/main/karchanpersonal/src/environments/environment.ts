@@ -18,7 +18,8 @@ export const environment = {
   WIKIPAGES_URL: '/assets/wikipages',
   WIKIPAGES_PREVIEW_URL: '/assets/wikipages/preview.html',
   PICTURES_URL: '/assets/pictures.json',
-  GAME_URL: '/assets/play/'
+  GAME_URL: '/assets/play/',
+  WHO_URL: '/assets/who.json'
 };
 
 /*

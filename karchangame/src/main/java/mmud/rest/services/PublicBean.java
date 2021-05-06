@@ -27,6 +27,7 @@ import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
+import javax.persistence.TypedQuery;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
@@ -150,7 +151,7 @@ public class PublicBean
         {
           continue;
         }
-        Long idleTime = idleUsersService.getIdleTime(person.getName());
+        String idleTime = idleUsersService.getIdleTimeInMinAndSeconds(person.getName());
         PublicPerson publicPerson = new PublicPerson(person, idleTime);
         res.add(publicPerson);
       }
@@ -259,7 +260,7 @@ public class PublicBean
     List<PublicGuild> res = new ArrayList<>();
     try
     {
-      Query query = getEntityManager().createNamedQuery("Guild.findAll");
+      TypedQuery<Guild> query = getEntityManager().createNamedQuery("Guild.findAll", Guild.class);
       List<Guild> list = query.getResultList();
 
       for (Guild guild : list)
@@ -329,7 +330,7 @@ public class PublicBean
       res.guild = person.getGuild().getTitle();
     }
 
-    Query query = getEntityManager().createNamedQuery("Family.findByName");
+    TypedQuery<Family> query = getEntityManager().createNamedQuery("Family.findByName", Family.class);
     query.setParameter("name", person.getName());
     List<Family> list = query.getResultList();
     for (Family fam : list)
@@ -366,7 +367,7 @@ public class PublicBean
     List<PublicPerson> res = new ArrayList<>();
     try
     {
-      Query query = getEntityManager().createNamedQuery("CharacterInfo.charactersheets");
+      TypedQuery<String> query = getEntityManager().createNamedQuery("CharacterInfo.charactersheets", String.class);
       List<String> list = query.getResultList();
 
       for (String name : list)

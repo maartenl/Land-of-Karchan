@@ -47,7 +47,7 @@ public class PublicPerson
   public String storyline;
   public Long min;
   public Long sec;
-  public Long idleTime;
+  public String idleTime;
 
   public List<PublicFamily> familyvalues = new ArrayList<>();
 
@@ -61,7 +61,7 @@ public class PublicPerson
    * @param person   a player
    * @param idleTime how long this player has been idle
    */
-  public PublicPerson(User person, Long idleTime)
+  public PublicPerson(User person, String idleTime)
   {
     String publicName = person.getName();
     if (person.getFrogging() > 0)
