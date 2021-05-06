@@ -39,23 +39,23 @@ public class OocCommand extends NormalCommand
     @Override
     public DisplayInterface run(String command, User aUser) throws MudException
     {
-        if (command.toLowerCase().equals("ooc on"))
+        if (command.equalsIgnoreCase("ooc on"))
         {
-            aUser.setOoc(true);
-            CommunicationService.getCommunicationService(aUser).writeMessage("Your OOC channel is now turned on.<br/>\r\n");
-        } else if (command.toLowerCase().equals("ooc off"))
+          aUser.setOoc(true);
+          CommunicationService.getCommunicationService(aUser).writeMessage("Your OOC channel is now turned on.<br/>\r\n");
+        } else if (command.equalsIgnoreCase("ooc off"))
         {
-            aUser.setOoc(false);
-            CommunicationService.getCommunicationService(aUser).writeMessage("Your OOC channel is now turned off.<br/>\r\n");
+          aUser.setOoc(false);
+          CommunicationService.getCommunicationService(aUser).writeMessage("Your OOC channel is now turned off.<br/>\r\n");
         } else if (!aUser.getOoc())
         {
-            CommunicationService.getCommunicationService(aUser).writeMessage("Sorry, you have your OOC channel turned off.<br/>\r\n");
+          CommunicationService.getCommunicationService(aUser).writeMessage("Sorry, you have your OOC channel turned off.<br/>\r\n");
         } else
         {
-            PersonBean personBean = getPersonBean();
-            final String message = command.substring(4);
+          PersonBean personBean = getPersonBean();
+          final String message = command.substring(4);
             //  "#4c76a2"
-            personBean.sendWall("<span style=\"color:#4c76a2;\">>[OOC: <b>" + aUser.getName() + "</b>] " + message + "</span><br/>\r\n", p -> p.getOoc());
+          personBean.sendWall("<span class=\"chat-cyanblue\">[OOC: <b>" + aUser.getName() + "</b>] " + message + "</span><br/>\r\n", User::getOoc);
         }
         return aUser.getRoom();
     }
