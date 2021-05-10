@@ -1,11 +1,13 @@
-import { Component, OnInit } from '@angular/core';
-import { MudCharacter } from './character.model';
-import { FormGroup, FormBuilder } from '@angular/forms';
+import {Component, OnInit} from '@angular/core';
+import {MudCharacter} from './character.model';
+import {FormBuilder, FormGroup} from '@angular/forms';
 
-import { AdminComponent } from '../admin/admin.component';
-import { ToastService } from '../toast.service';
-import { AdminRestService } from '../admin/admin-rest.service';
-import { CharactersRestService } from '../characters-rest.service';
+import {AdminComponent} from '../admin/admin.component';
+import {ToastService} from '../toast.service';
+import {AdminRestService} from '../admin/admin-rest.service';
+import {Attribute} from '../attribute.model';
+import {CharactersRestService} from '../characters-rest.service';
+import {AttributesRestService} from '../attributes-rest.service';
 
 @Component({
   selector: 'app-characters',
@@ -14,6 +16,12 @@ import { CharactersRestService } from '../characters-rest.service';
 })
 export class CharactersComponent extends AdminComponent<MudCharacter, string> implements OnInit {
   form: FormGroup;
+
+  attributeForm: FormGroup;
+
+  attributes: Array<Attribute> = [];
+
+  attribute: Attribute | null = null;
 
   SearchTerms = class {
     owner: string | null = null;
@@ -26,6 +34,7 @@ export class CharactersComponent extends AdminComponent<MudCharacter, string> im
 
   constructor(
     private charactersRestService: CharactersRestService,
+    private attributesRestService: AttributesRestService,
     private formBuilder: FormBuilder,
     private toastService: ToastService) {
     super();
@@ -47,6 +56,8 @@ export class CharactersComponent extends AdminComponent<MudCharacter, string> im
       beard: null,
       arm: null,
       leg: null,
+      birth: null,
+      lastlogin: null,
       copper: null,
       notes: null,
       address: null,
@@ -55,6 +66,13 @@ export class CharactersComponent extends AdminComponent<MudCharacter, string> im
       owner: null
     };
     this.form = this.formBuilder.group(object);
+    const attribute = {
+      id: null,
+      name: null,
+      value: null,
+      valueType: null
+    }
+    this.attributeForm = this.formBuilder.group(attribute);
     this.makeItem();
     this.getItems();
   }
@@ -84,7 +102,7 @@ export class CharactersComponent extends AdminComponent<MudCharacter, string> im
 
   getItems() {
     this.charactersRestService.getAll().subscribe({
-      next: data => {
+      next: (data: MudCharacter[]) => {
         const ownerFilter = (character: MudCharacter) => this.searchTerms.owner === undefined ||
           this.searchTerms.owner === null ||
           this.searchTerms.owner === character.owner;
@@ -125,6 +143,8 @@ export class CharactersComponent extends AdminComponent<MudCharacter, string> im
       beard: null,
       arm: null,
       leg: null,
+      birth: null,
+      lastlogin: null,
       copper: null,
       notes: null,
       address: null,
@@ -184,15 +204,129 @@ export class CharactersComponent extends AdminComponent<MudCharacter, string> im
     }
     this.charactersRestService.get(id).subscribe({
       next: (data) => {
-        if (data !== undefined) { this.setCharacter(data); }
+        if (data !== undefined) {
+          this.setCharacter(data);
+        }
       }
     });
     return false;
   }
 
+  setAttribute(attribute: Attribute) {
+    this.attribute = attribute;
+    this.setAttributeForm(attribute);
+    return false;
+  }
+
+  deleteAttribute(attribute: Attribute) {
+    if (window.console) {
+      console.log("deleteAttribute " + attribute);
+    }
+    this.attributesRestService.delete(attribute).subscribe(
+      (result: any) => { // on success
+        const index = this.attributes.indexOf(attribute, 0);
+        if (index > -1) {
+          this.attributes.splice(index, 1);
+        }
+        this.toastService.show('Attribute successfully deleted.', {
+          delay: 3000,
+          autohide: true,
+          headertext: 'Deleted...'
+        });
+      }
+    );
+    return false;
+  }
+
+  updateAttribute() {
+    const attribute = this.getAttributeForm();
+    if (window.console) {
+      console.log("updateAttribute " + attribute);
+    }
+    if (attribute === null || attribute === undefined) {
+      return false;
+    }
+    this.attributesRestService.update(attribute).subscribe(
+      (result: any) => { // on success
+        this.attributes = this.attributes.map(u => u.id !== attribute.id ? u : attribute);
+        this.toastService.show('Attribute successfully updated.', {
+          delay: 3000,
+          autohide: true,
+          headertext: 'Updated...'
+        });
+      }
+    );
+    return false;
+  }
+
+  createAttribute() {
+    const attribute = this.getAttributeForm();
+    if (window.console) {
+      console.log("createAttribute " + attribute);
+    }
+    if (attribute === null || attribute === undefined) {
+      return false;
+    }
+    attribute.id = null;
+    this.attributesRestService.update(attribute).subscribe(
+      (result: any) => { // on success
+        this.attributes.push(attribute);
+        this.toastService.show('Attribute successfully created.', {
+          delay: 3000,
+          autohide: true,
+          headertext: 'Created...'
+        });
+      }
+    );
+    return false;
+  }
+
+  cancelAttribute() {
+    this.setAttributeForm();
+    return false;
+  }
+
+  setAttributeForm(item?: Attribute) {
+    const object = item === undefined ? {
+      id: null,
+      name: null,
+      value: null,
+      valueType: null,
+    } : item;
+    if (this.attributeForm === undefined) {
+      this.attributeForm = this.formBuilder.group(object);
+    } else {
+      this.attributeForm.reset(object);
+    }
+  }
+
+  getAttributeForm(): Attribute | null {
+    const formModel = this.attributeForm.value;
+
+    if (this.item === null || this.item === undefined) {
+      return null;
+    }
+
+    const saveAttribute: Attribute = new Attribute({
+      id: formModel.id as number,
+      name: formModel.name as string,
+      value: formModel.value as string,
+      valueType: formModel.valueType as string,
+      objecttype: 'PERSON',
+      objectid: this.item.name as string,
+    });
+    return saveAttribute;
+  }
 
   private setCharacter(character: MudCharacter) {
     this.item = character;
+    this.attributesRestService.getFromCharacter(character).subscribe({
+      next: (data) => {
+        if (data !== undefined) {
+          this.attributes = data;
+        }
+      }
+    })
     this.form.reset({
       name: character.name,
       image: character.image,
@@ -211,6 +345,8 @@ export class CharactersComponent extends AdminComponent<MudCharacter, string> im
       beard: character.beard,
       arm: character.arm,
       leg: character.leg,
+      birth: character.birth,
+      lastlogin: character.lastlogin,
       copper: character.copper,
       notes: character.notes,
       address: character.address,

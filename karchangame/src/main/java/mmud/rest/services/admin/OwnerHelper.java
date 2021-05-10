@@ -16,13 +16,13 @@
  */
 package mmud.rest.services.admin;
 
-import mmud.database.entities.Ownage;
-import mmud.database.entities.game.Admin;
-import mmud.exceptions.MudWebException;
-
 import javax.persistence.EntityManager;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.SecurityContext;
+
+import mmud.database.entities.Ownage;
+import mmud.database.entities.game.Admin;
+import mmud.exceptions.MudWebException;
 
 /**
  * @author maartenl
@@ -30,7 +30,7 @@ import javax.ws.rs.core.SecurityContext;
 class OwnerHelper
 {
 
-  private EntityManager em;
+  private final EntityManager em;
 
   public static Admin getNewOwner(String newowner, Admin admin, EntityManager entityManager)
   {

@@ -231,6 +231,10 @@ public class PersonsBean
     {
       throw new MudWebException(name, "Character " + id + " not found.", Response.Status.NOT_FOUND);
     }
+    if (item.getGod() == God.DEFAULT_USER || item.getGod() == God.GOD)
+    {
+      return new AdminCharacter((User) item).toJson();
+    }
     return new AdminCharacter(item).toJson();
   }
 

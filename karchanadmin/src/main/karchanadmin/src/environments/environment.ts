@@ -18,8 +18,9 @@ export const environment = {
   MANPAGES_URL: '/assets/manpages.json',
   EVENTS_URL: '/assets/events.json',
   WORLDATTRIBUTES_URL: '/assets/worldattributes.json',
-  CHARACTERS_URL: '/assets/characters.json'
-  };
+  CHARACTERS_URL: '/assets/characters.json',
+  ATTRIBUTES_URL: '/assets/attributes.json'
+};
 
 /*
  * For easier debugging in development mode, you can import the following file
