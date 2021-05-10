@@ -37,6 +37,22 @@ export class AttributesRestService {
       );
   }
 
+  public getAll(name: string): Observable<Attribute[]> {
+    return this.http.get<Attribute[]>(this.url + '/byName/' + name)
+      .pipe(
+        map(items => {
+          const newItems = new Array<Attribute>();
+          items.forEach(item => newItems.push(new Attribute(item)));
+          return newItems;
+        }),
+        catchError(err => {
+          this.handleError(err);
+          return [];
+        })
+      );
+  }
+
+
   delete(attribute: Attribute): Observable<any> {
     return this.http.delete(this.url + '/byId/' + attribute.objecttype + '/' + attribute.id)
       .pipe(

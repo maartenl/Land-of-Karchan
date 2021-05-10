@@ -171,7 +171,8 @@
         <tbody>
         <tr *ngFor="let attribute of attributes" (click)="setAttribute(attribute)">
           <td *ngIf="attribute">{{ attribute.id }}</td>
-          <td *ngIf="attribute">{{ attribute.name }}</td>
+          <td *ngIf="attribute">
+            <a [routerLink]="['/attributes/', attribute.name]">{{ attribute.name }}</a></td>
           <td *ngIf="attribute">{{ attribute.value }}</td>
           <td *ngIf="attribute">{{ attribute.valueType }}</td>
           <td *ngIf="attribute">

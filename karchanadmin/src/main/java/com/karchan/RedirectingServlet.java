@@ -18,7 +18,6 @@ package com.karchan;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.PrintWriter;
 import javax.servlet.ServletException;
 import javax.servlet.ServletOutputStream;
 import javax.servlet.annotation.WebServlet;
@@ -34,7 +33,7 @@ import javax.servlet.http.HttpServletResponse;
  */
 @WebServlet(name = "RedirectingServlet", urlPatterns =
 {
-  "/blogs/*", "/templates/*", "/systemlog/*", "/rooms/*", "/methods/*", "/commands/*", "/areas/*", "/items/*", "/ban/*", "/manpages/*", "/events/*",  "/worldattributes/*", "/characters/*", "/boards/*",  "/guilds/*"
+  "/blogs/*", "/templates/*", "/systemlog/*", "/rooms/*", "/methods/*", "/commands/*", "/areas/*", "/items/*", "/ban/*", "/manpages/*", "/events/*", "/attributes/*", "/worldattributes/*", "/characters/*", "/boards/*", "/guilds/*"
 })
 public class RedirectingServlet extends HttpServlet
 {

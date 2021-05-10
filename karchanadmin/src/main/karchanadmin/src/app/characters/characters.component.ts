@@ -1,4 +1,5 @@
 import {Component, OnInit} from '@angular/core';
+import {ActivatedRoute} from '@angular/router';
 import {MudCharacter} from './character.model';
 import {FormBuilder, FormGroup} from '@angular/forms';
 
@@ -35,6 +36,7 @@ export class CharactersComponent extends AdminComponent<MudCharacter, string> im
   constructor(
     private charactersRestService: CharactersRestService,
     private attributesRestService: AttributesRestService,
+    private route: ActivatedRoute,
     private formBuilder: FormBuilder,
     private toastService: ToastService) {
     super();
@@ -98,6 +100,14 @@ export class CharactersComponent extends AdminComponent<MudCharacter, string> im
   }
 
   ngOnInit() {
+    if (window.console) {
+      console.log('ngOnInit');
+    }
+    const name: string | null = this.route.snapshot.paramMap.get('name');
+    if (name === undefined || name === null) {
+      return;
+    }
+    this.setItemById(name);
   }
 
   getItems() {
@@ -198,12 +208,12 @@ export class CharactersComponent extends AdminComponent<MudCharacter, string> im
     return saveCharacter;
   }
 
-  setItemById(id: string | undefined | null) {
-    if (id === undefined || id === null) {
+  setItemById(name: string | undefined | null) {
+    if (name === undefined || name === null) {
       return false;
     }
-    this.charactersRestService.get(id).subscribe({
-      next: (data) => {
+    this.charactersRestService.get(name).subscribe({
+      next: (data: MudCharacter) => {
         if (data !== undefined) {
           this.setCharacter(data);
         }

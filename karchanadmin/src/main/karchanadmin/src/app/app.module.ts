@@ -1,44 +1,42 @@
-import { BrowserModule } from '@angular/platform-browser';
-import { NgModule } from '@angular/core';
-import {
-  FormsModule,
-  ReactiveFormsModule
-} from '@angular/forms';
-import { CookieService } from 'ngx-cookie-service';
-import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
+import {BrowserModule} from '@angular/platform-browser';
+import {NgModule} from '@angular/core';
+import {FormsModule, ReactiveFormsModule} from '@angular/forms';
+import {CookieService} from 'ngx-cookie-service';
+import {HTTP_INTERCEPTORS, HttpClientModule} from '@angular/common/http';
 
-import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
+import {NgbModule} from '@ng-bootstrap/ng-bootstrap';
 
-import { AppRoutingModule } from './app-routing.module';
-import { AppComponent } from './app.component';
-import { DefaultHttpInterceptor } from './http.interceptor';
-import { MockHttpInterceptor } from './http.mock.interceptor';
-import { BlogsComponent } from './blogs/blogs.component';
-import { TemplatesComponent } from './templates/templates.component';
-import { ErrorsComponent } from './errors/errors.component';
-import { SystemlogComponent } from './systemlog/systemlog.component';
-import { RoomsComponent } from './rooms/rooms.component';
+import {AppRoutingModule} from './app-routing.module';
+import {AppComponent} from './app.component';
+import {DefaultHttpInterceptor} from './http.interceptor';
+import {MockHttpInterceptor} from './http.mock.interceptor';
+import {BlogsComponent} from './blogs/blogs.component';
+import {TemplatesComponent} from './templates/templates.component';
+import {ErrorsComponent} from './errors/errors.component';
+import {SystemlogComponent} from './systemlog/systemlog.component';
+import {RoomsComponent} from './rooms/rooms.component';
 
-import { ScrollingModule } from '@angular/cdk/scrolling';
-import { MethodsComponent } from './methods/methods.component';
-import { CommandsComponent } from './commands/commands.component';
-import { ToastComponent } from './toast/toast.component';
-import { AreasComponent } from './areas/areas.component';
-import { ItemsComponent } from './items/items.component';
-import { BanComponent } from './ban/ban.component';
-import { BannedComponent } from './ban/banned/banned.component';
-import { BannednamesComponent } from './ban/bannednames/bannednames.component';
-import { SillynamesComponent } from './ban/sillynames/sillynames.component';
-import { UnbannedComponent } from './ban/unbanned/unbanned.component';
-import { ManpagesComponent } from './manpages/manpages.component';
-import { EventsComponent } from './events/events.component';
-import { WorldattributesComponent } from './worldattributes/worldattributes.component';
-import { CharactersComponent } from './characters/characters.component';
-import { environment } from 'src/environments/environment';
-import { BoardsComponent } from './boards/boards.component';
-import { GuildsComponent } from './guilds/guilds.component';
-import { NoopAnimationsModule } from '@angular/platform-browser/animations';
-import { AdministratorComponent } from './administrator/administrator.component';
+import {ScrollingModule} from '@angular/cdk/scrolling';
+import {MethodsComponent} from './methods/methods.component';
+import {CommandsComponent} from './commands/commands.component';
+import {ToastComponent} from './toast/toast.component';
+import {AreasComponent} from './areas/areas.component';
+import {ItemsComponent} from './items/items.component';
+import {BanComponent} from './ban/ban.component';
+import {BannedComponent} from './ban/banned/banned.component';
+import {BannednamesComponent} from './ban/bannednames/bannednames.component';
+import {SillynamesComponent} from './ban/sillynames/sillynames.component';
+import {UnbannedComponent} from './ban/unbanned/unbanned.component';
+import {ManpagesComponent} from './manpages/manpages.component';
+import {EventsComponent} from './events/events.component';
+import {WorldattributesComponent} from './worldattributes/worldattributes.component';
+import {CharactersComponent} from './characters/characters.component';
+import {environment} from 'src/environments/environment';
+import {BoardsComponent} from './boards/boards.component';
+import {GuildsComponent} from './guilds/guilds.component';
+import {NoopAnimationsModule} from '@angular/platform-browser/animations';
+import {AdministratorComponent} from './administrator/administrator.component';
+import {AttributesComponent} from './attributes/attributes.component';
 
 export const isMock = environment.mock;
 
@@ -66,7 +64,8 @@ export const isMock = environment.mock;
     CharactersComponent,
     BoardsComponent,
     GuildsComponent,
-    AdministratorComponent
+    AdministratorComponent,
+    AttributesComponent
   ],
   imports: [
     BrowserModule,

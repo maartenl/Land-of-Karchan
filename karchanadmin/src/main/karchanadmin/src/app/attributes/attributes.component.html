@@ -1,0 +1,75 @@
+<div class="container-fluid">
+  <div class="row row-content">
+    <div class="col-xs-12">
+      <form>
+        <fieldset class="form-group">
+          <input type="text" class="form-control" id="nameSearch" name="nameSearch" placeholder="Name"
+                 #searchname (keyup.enter)="updateNameSearch(searchname.value)"
+                 (blur)="updateNameSearch(searchname.value)">
+        </fieldset>
+      </form>
+    </div>
+  </div>
+</div>
+<div class="container-fluid">
+  <div class="row row-content">
+    <div class="col-xs-12 col-xl-6">
+      <h1>Attributes</h1>
+      <table class="table table-sm table-hover">
+        <thead>
+        <tr>
+          <th scope="col">Id</th>
+          <th scope="col">Name</th>
+          <th scope="col">Value</th>
+          <th scope="col">Type</th>
+          <th scope="col">Object type</th>
+          <th scope="col">Object id</th>
+          <th scope="col"></th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr *ngFor="let attribute of attributes" (click)="setAttribute(attribute)">
+          <td *ngIf="attribute">{{ attribute.id }}</td>
+          <td *ngIf="attribute">{{ attribute.name }}</td>
+          <td *ngIf="attribute">{{ attribute.value }}</td>
+          <td *ngIf="attribute">{{ attribute.valueType }}</td>
+          <td *ngIf="attribute">{{ attribute.objecttype }}</td>
+          <td *ngIf="attribute?.objecttype === 'PERSON'">
+            <a [routerLink]="['/characters/', attribute.objectid]">{{ attribute.objectid }}</a>
+          </td>
+          <td *ngIf="attribute">
+            <a href="#" (click)="deleteAttribute(attribute)">
+              <i class="material-icons align-middle">delete</i>
+            </a>
+          </td>
+        </tr>
+        </tbody>
+      </table>
+      <h1>Attribute {{ attribute === undefined || attribute === null ? '-' : attribute?.name }}</h1>
+      <form [formGroup]="attributeForm" novalidate>
+        <fieldset class="form-group">
+          <label for="id">Id</label>
+          <input type="number" readonly class="form-control" id="id" name="id" formControlName="id">
+        </fieldset>
+        <fieldset class="form-group">
+          <label for="name">Name</label>
+          <input type="text" class="form-control" id="name" name="name" formControlName="name">
+        </fieldset>
+        <fieldset class="form-group">
+          <label for="value">Value</label>
+          <input type="text" class="form-control" id="value" name="value" formControlName="value">
+        </fieldset>
+        <fieldset class="form-group">
+          <label for="valueType">Type</label>
+          <input type="text" class="form-control" id="valueType" name="valueType" formControlName="valueType">
+        </fieldset>
+        <div class="col-xs-12 col-sm-12 text-right">
+          <button type="submit" [disabled]="attributeForm.pristine" class="mx-1 btn btn-primary"
+                  (click)="updateAttribute()">Update
+          </button>
+          <button type="reset" class="mx-1 btn btn-secondary" (click)="cancelAttribute()">Cancel</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>

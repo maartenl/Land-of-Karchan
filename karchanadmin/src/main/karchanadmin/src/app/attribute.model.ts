@@ -20,11 +20,12 @@ export class Attribute {
    */
   valueType: string | null = null;
   /**
-   * What kind of mud object contains this attribute.
+   * What kind of mud object contains this attribute. For example: PERSON.
    */
   objecttype: string | null = null;
   /**
-   * De primary key of the mud object that contains this attribute.
+   * De primary key of the mud object that contains this attribute. For example: Karn.
+   * Closely related to the objecttype, obviously.
    */
   objectid: string | null = null;
 
