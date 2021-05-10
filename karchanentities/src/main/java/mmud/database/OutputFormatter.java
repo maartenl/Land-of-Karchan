@@ -10,9 +10,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+
+import com.google.common.html.HtmlEscapers;
 import mmud.database.entities.items.Item;
 import mmud.database.entities.items.ItemDefinition;
-import com.google.common.html.HtmlEscapers;
 /**
  *
  * @author maartenl
@@ -169,22 +170,22 @@ public class OutputFormatter
       case 3:
         // name and two adjectives should be equals
         return possibleAdjectives.contains(parsed.get(0))
-                && possibleAdjectives.contains(parsed.get(1))
-                && name.equalsIgnoreCase(parsed.get(2));
+          && possibleAdjectives.contains(parsed.get(1))
+          && name.equalsIgnoreCase(parsed.get(2));
       default:
         // name and all three adjective should be equals
         return possibleAdjectives.contains(parsed.get(0))
-                && possibleAdjectives.contains(parsed.get(1))
-                && possibleAdjectives.contains(parsed.get(2))
-                && name.equalsIgnoreCase(parsed.get(3));
+          && possibleAdjectives.contains(parsed.get(1))
+          && possibleAdjectives.contains(parsed.get(2))
+          && name.equalsIgnoreCase(parsed.get(3));
     }
   }
-  
-    /**
+
+  /**
    * Adds a descriptive set of the items and their buy/sell price to the string
    * builder.
    *
-   * @param set a set of items to be described.
+   * @param set     a set of items to be described.
    * @param builder the builder to append to. Should not be null.
    */
   public static void addShopkeeperList(Set<Item> set, StringBuilder builder)
@@ -244,7 +245,7 @@ public class OutputFormatter
 
     for (Item item : set)
     {
-      if (item.getItemDefinition().getId() < 0)
+      if (item.getItemDefinition().getId() < 0L)
       {
         continue;
       }
@@ -259,7 +260,7 @@ public class OutputFormatter
     }
     return inventory;
   }
-  
+
   public static String htmlEscaper(String source) {
     return HtmlEscapers.htmlEscaper().escape(source);
   }
