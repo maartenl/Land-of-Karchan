@@ -17,47 +17,48 @@
 package mmud.commands.communication;
 
 /**
- *
  * @author maartenl
  */
 public enum CommType
 {
 
-    SAY("say", "says"),
-    SING("sing", "sings"),
-    SCREAM("scream", "screams"),
-    CRY("cry", "cries"),
-    WHISPER("whisper", "whispers"),
-    SHOUT("shout", "shouts"),
-    TELL("tell", "tells"),
-    ASK("ask", "asks");
-    private final String theType;
-    private final String thePlural;
+  SAY("say", "says"),
+  SING("sing", "sings"),
+  SCREAM("scream", "screams"),
+  CRY("cry", "cries"),
+  WHISPER("whisper", "whispers"),
+  SHOUT("shout", "shouts"),
+  TELL("tell", "tells"),
+  ASK("ask", "asks"),
+  CHAT("chat", "chats");
 
-    private CommType(String aType, String aPlural)
-    {
-        theType = aType;
-        thePlural = aPlural;
-    }
+  private final String theType;
+  private final String thePlural;
 
-    /**
-     * returns the communication type.
-     *
-     * @return returns "ask", "say", "whisper", "shout", "tell".
-     */
-    @Override
-    public String toString()
-    {
-        return theType;
-    }
+  CommType(String aType, String aPlural)
+  {
+    theType = aType;
+    thePlural = aPlural;
+  }
 
-    /**
-     * Returns the conjugation of the verb or some such stuff.
-     *
-     * @return for example, say becomes "says", but cry becomes "cries".
-     */
-    public String getPlural()
-    {
-        return thePlural;
-    }
+  /**
+   * returns the communication type.
+   *
+   * @return returns "ask", "say", "whisper", "shout", "tell".
+   */
+  @Override
+  public String toString()
+  {
+    return theType;
+  }
+
+  /**
+   * Returns the conjugation of the verb or some such stuff.
+   *
+   * @return for example, say becomes "says", but cry becomes "cries".
+   */
+  public String getPlural()
+  {
+    return thePlural;
+  }
 }

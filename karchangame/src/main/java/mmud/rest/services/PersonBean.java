@@ -17,6 +17,7 @@
 package mmud.rest.services;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.function.Predicate;
 import java.util.logging.Logger;
 import javax.ejb.EJB;
@@ -25,8 +26,11 @@ import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
+import javax.persistence.TypedQuery;
+
 import mmud.database.entities.characters.Person;
 import mmud.database.entities.characters.User;
+import mmud.database.entities.game.Chatline;
 import mmud.scripting.PersonsInterface;
 import mmud.services.CommunicationService;
 
@@ -155,6 +159,19 @@ public class PersonBean implements PersonsInterface
     Query query = getEntityManager().createNamedQuery("User.who");
     List<User> list = query.getResultList();
     return list;
+  }
+
+  public Optional<Chatline> getChatline(String name)
+  {
+    TypedQuery<Chatline> namedQuery = getEntityManager().createNamedQuery("Chatline.findByName", Chatline.class);
+    namedQuery.setParameter("name", name);
+    List<Chatline> chatlines = namedQuery.getResultList();
+    return chatlines.stream().findFirst();
+  }
+
+  public List<Chatline> getChatlines()
+  {
+    return getEntityManager().createNamedQuery("Chatline.all", Chatline.class).getResultList();
   }
 
   /**

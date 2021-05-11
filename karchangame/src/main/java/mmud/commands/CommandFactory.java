@@ -23,9 +23,14 @@ import java.util.Map;
 import java.util.TreeMap;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.logging.Logger;
+
 import mmud.Utils;
 import mmud.commands.communication.AskCommand;
+import mmud.commands.communication.ChatCommand;
+import mmud.commands.communication.CreateChatCommand;
 import mmud.commands.communication.CryCommand;
+import mmud.commands.communication.JoinChatCommand;
+import mmud.commands.communication.LeaveChatCommand;
 import mmud.commands.communication.OocCommand;
 import mmud.commands.communication.SayCommand;
 import mmud.commands.communication.ScreamCommand;
@@ -130,13 +135,19 @@ public class CommandFactory
     theCommandStructure.put("say", () -> new SayCommand("say (to (\\w)+ )?.+"));
     theCommandStructure.put("macro", () -> new MacroCommand("macro( .+)?"));
     theCommandStructure.put("sing", () -> new SingCommand("sing (to (\\w)+ )?.+"));
+
+    theCommandStructure.put("joinchat", () -> new JoinChatCommand("joinchat (\\w)+"));
+    theCommandStructure.put("chat", () -> new ChatCommand("chat (\\w)+ .+"));
+    theCommandStructure.put("createchat", () -> new CreateChatCommand("createchat (\\w)+ (\\w)+ (\\w)+"));
+    theCommandStructure.put("leavechat", () -> new LeaveChatCommand("leavechat (\\w)+"));
+
     theCommandStructure.put("cry", () -> new CryCommand("cry (to (\\w)+ )?.+"));
     theCommandStructure.put("shout", () -> new ShoutCommand(
-            "shout (to (\\w )+)?.+"));
+      "shout (to (\\w )+)?.+"));
     theCommandStructure.put("scream", () -> new ScreamCommand(
-            "scream (to (\\w )+)?.+"));
+      "scream (to (\\w )+)?.+"));
     theCommandStructure.put("whisper", () -> new WhisperCommand(
-            "whisper (to (\\w)+ )?.+"));
+      "whisper (to (\\w)+ )?.+"));
     theCommandStructure.put("clear", () -> new ClearCommand("clear"));
     theCommandStructure.put("time", () -> new TimeCommand("time"));
     theCommandStructure.put("date", () -> new DateCommand("date"));

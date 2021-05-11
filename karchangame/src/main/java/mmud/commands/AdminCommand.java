@@ -16,6 +16,8 @@
  */
 package mmud.commands;
 
+import java.util.stream.Collectors;
+
 import mmud.database.entities.characters.Administrator;
 import mmud.database.entities.characters.User;
 import mmud.database.entities.game.DisplayInterface;
@@ -86,6 +88,17 @@ public class AdminCommand extends NormalCommand
         getLogBean().writeLog(aUser, " turned visible.");
       }
     }
+    if (command.toLowerCase().startsWith("admin chatlines"))
+    {
+      String table =
+        "<table><tr><th>id</th><th>name</th><th>attribute</th><th>colour</th><th>last used</th></tr>" +
+          getPersonBean().getChatlines().stream()
+            .map(chat -> "<tr><td>" + chat.getId() + "</td><td>" + chat.getChatname() + "</td><td>" + chat.getAttributename() + "</td><td>" + chat.getColour() + "</td><td>" + chat.getLastchattime() +
+              "</td></tr>")
+            .collect(Collectors.joining()) +
+          "</table><br/>\r\n";
+      communicationService.writeMessage(table);
+    }
     if (command.toLowerCase().startsWith("admin frog"))
     {
       PersonBean personBean = getPersonBean();
@@ -123,7 +136,7 @@ public class AdminCommand extends NormalCommand
       {
         throw new MudException("Expected admin jackass command in the shape of 'admin jackass personname amount'.");
       }
-      Integer amount = 0;
+      int amount = 0;
       User person = personBean.getActiveUser(commands[2]);
       if (person == null)
       {
@@ -133,7 +146,7 @@ public class AdminCommand extends NormalCommand
       {
         try
         {
-          amount = Integer.valueOf(commands[3]);
+          amount = Integer.parseInt(commands[3]);
           person.setJackassing(amount);
         } catch (NumberFormatException f)
         {
@@ -180,17 +193,18 @@ public class AdminCommand extends NormalCommand
     if (command.equalsIgnoreCase("admin help"))
     {
       communicationService.writeMessage("Possible commands are:<ul>"
-              + "<li>admin help - this help text</li>"
-              + "<li>admin wall &lt;message&gt; - pages all users with the message entered</li>"
-              + "<li>admin kick &lt;playername&gt; [&lt;minutes&gt;] - kicks a user off the game. When the minutes are provided,"
-              + "said user will not be able to logon for that many minutes.</li>"
-              + "<li>admin frog &lt;playername&gt; [&lt;amount&gt;] - turns the user into a frog, automatically turns back after [amount] ribbits."
-              + "<li>admin jackass &lt;playername&gt; [&lt;amount&gt;] - turns the user into a jackass, automatically turns back after [amount] heehaws."
-              + "<li>admin visible [on | off] - makes an administrator not show up in the wholist or in a room.</li>"
-              + "<li>admin runevent &lt;eventid&gt; - runs an event, in order to see if it works.</li>"
-              + "<li>admin reset commands - reset the cached <i>special</i> commands."
-              + "Necessary if a command has been deleted, added or changed.</li>"
-              + "</ul>\r\n");
+        + "<li>admin help - this help text</li>"
+        + "<li>admin wall &lt;message&gt; - pages all users with the message entered</li>"
+        + "<li>admin chatlines - shows all available chatlines, with info</li>"
+        + "<li>admin kick &lt;playername&gt; [&lt;minutes&gt;] - kicks a user off the game. When the minutes are provided,"
+        + "said user will not be able to logon for that many minutes.</li>"
+        + "<li>admin frog &lt;playername&gt; [&lt;amount&gt;] - turns the user into a frog, automatically turns back after [amount] ribbits."
+        + "<li>admin jackass &lt;playername&gt; [&lt;amount&gt;] - turns the user into a jackass, automatically turns back after [amount] heehaws."
+        + "<li>admin visible [on | off] - makes an administrator not show up in the wholist or in a room.</li>"
+        + "<li>admin runevent &lt;eventid&gt; - runs an event, in order to see if it works.</li>"
+        + "<li>admin reset commands - reset the cached <i>special</i> commands."
+        + "Necessary if a command has been deleted, added or changed.</li>"
+        + "</ul>\r\n");
     }
     return aUser.getRoom();
   }
