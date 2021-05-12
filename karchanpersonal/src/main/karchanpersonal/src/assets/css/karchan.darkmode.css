@@ -1,0 +1,9 @@
+.compass {
+  display: block;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
+  background: url(../images/compass_white.png) no-repeat;
+  width: 160px; /* Width of new image */
+  height: 149px; /* Height of new image */
+  padding-left: 160px; /* Equal to width of new image */
+}

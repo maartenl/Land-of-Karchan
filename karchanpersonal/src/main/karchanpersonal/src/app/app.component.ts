@@ -1,7 +1,7 @@
-import { Component, OnInit } from '@angular/core';
-import { environment } from '../environments/environment';
-import { CookieService } from 'ngx-cookie-service';
-import { ChristmasUtils } from './christmas.utils';
+import {Component, OnInit} from '@angular/core';
+import {environment} from '../environments/environment';
+import {CookieService} from 'ngx-cookie-service';
+import {ChristmasUtils} from './christmas.utils';
 
 @Component({
   selector: 'app-root',
@@ -24,10 +24,14 @@ export class AppComponent implements OnInit {
   ngOnInit(): void {
     this.darkmode = this.cookieService.check('karchandarkmode');
     if (this.darkmode) {
-      const t = document.getElementById('pagestyle');
-      if (t !== null) {
-        t.setAttribute('href', 'assets/css/bootstrap.darkmode.min.css');
-      }      
+      const bootstrapcss = document.getElementById('pagestyle');
+      if (bootstrapcss !== null) {
+        bootstrapcss.setAttribute('href', 'assets/css/bootstrap.darkmode.min.css');
+      }
+      const karchancss = document.getElementById('karchanpagestyle');
+      if (karchancss !== null) {
+        karchancss.setAttribute('href', 'assets/css/karchan.darkmode.css');
+      }
     }
   }
 
