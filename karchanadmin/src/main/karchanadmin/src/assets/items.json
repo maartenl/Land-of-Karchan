@@ -1,8 +1,58 @@
-[{"id": -4, "name": "lake", "adject1": "clear", "adject2": "crystal", "adject3": "", "owner": "Ephinie", "creation": "2015-04-21 06:58:21"}  ,
-     {"id": -3, "name": "chain", "adject1": "heavy", "adject2": "rusty", "adject3": "loose", "owner": null, "creation": "2004-07-21 22:39:02"}   ,
-     {"id": -2, "name": "book", "adject1": "ancient", "adject2": "leather", "adject3": "", "owner": null, "creation": "2004-07-21 22:48:08"}     ,
-     {"id": -1, "name": "walls", "adject1": "wet", "adject2": "stone", "adject3": "", "owner": null, "creation": "2004-07-21 22:39:02"}          ,
-     {"id": 1, "name": "bucket", "adject1": "sturdy", "adject2": "old", "adject3": "wooden", "owner": "Karn", "creation": "2014-10-31 07:16:11"} ,
-     {"id": 2, "name": "pick", "adject1": "strong", "adject2": "sharp", "adject3": "iron", "owner": "Karn", "creation": "2014-10-31 07:16:11"}   ,
-     {"id": 3, "name": "rose", "adject1": "soft", "adject2": "red", "adject3": "delicate", "owner": "Karn", "creation": "2014-10-31 07:16:11"}   ,
-     {"id": 4, "name": "ring", "adject1": "solid", "adject2": "gold", "adject3": "wedding", "owner": "Karn", "creation": "2005-09-22 13:32:28"} ]
+[
+  {
+    "id": -4,
+    "name": "lake",
+    "adjectives": "clear, crystal",
+    "owner": "Ephinie",
+    "creation": "2015-04-21 06:58:21"
+  },
+  {
+    "id": -3,
+    "name": "chain",
+    "adjectives": "heavy, rusty, loose",
+    "owner": null,
+    "creation": "2004-07-21 22:39:02"
+  },
+  {
+    "id": -2,
+    "name": "book",
+    "adjectives": "ancient, leather",
+    "owner": null,
+    "creation": "2004-07-21 22:48:08"
+  },
+  {
+    "id": -1,
+    "name": "walls",
+    "adjectives": "wet, stone",
+    "owner": null,
+    "creation": "2004-07-21 22:39:02"
+  },
+  {
+    "id": 1,
+    "name": "bucket",
+    "adjectives": "sturdy, old, wooden",
+    "owner": "Karn",
+    "creation": "2014-10-31 07:16:11"
+  },
+  {
+    "id": 2,
+    "name": "pick",
+    "adjectives": "strong, sharp, iron",
+    "owner": "Karn",
+    "creation": "2014-10-31 07:16:11"
+  },
+  {
+    "id": 3,
+    "name": "rose",
+    "adjectives": "soft, red, delicate",
+    "owner": "Karn",
+    "creation": "2014-10-31 07:16:11"
+  },
+  {
+    "id": 4,
+    "name": "ring",
+    "adjectives": "solid, gold, wedding",
+    "owner": "Karn",
+    "creation": "2005-09-22 13:32:28"
+  }
+]

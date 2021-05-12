@@ -77,9 +77,7 @@ public class ItemsBean
 
     ItemDefinition item = new ItemDefinition();
     item.setName(adminItem.name);
-    item.setAdject1(adminItem.adject1);
-    item.setAdject2(adminItem.adject2);
-    item.setAdject3(adminItem.adject3);
+    item.setAdjectives(adminItem.adjectives);
 //    item.setManaincrease(adminItem.manaincrease);
 //    item.setHitincrease(adminItem.hitincrease);
 //    item.setVitalincrease(adminItem.vitalincrease);
@@ -145,9 +143,7 @@ public class ItemsBean
     }
     Admin admin = (new OwnerHelper(getEntityManager())).authorize(name, item);
     item.setName(adminItem.name);
-    item.setAdject1(adminItem.adject1);
-    item.setAdject2(adminItem.adject2);
-    item.setAdject3(adminItem.adject3);
+    item.setAdjectives(adminItem.adjectives);
 //    item.setManaincrease(adminItem.manaincrease);
 //    item.setHitincrease(adminItem.hitincrease);
 //    item.setVitalincrease(adminItem.vitalincrease);

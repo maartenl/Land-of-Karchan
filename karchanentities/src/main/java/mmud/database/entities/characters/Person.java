@@ -889,6 +889,7 @@ abstract public class Person implements Serializable, AttributeWrangler, Display
     if (active == null)
     {
       this.active = null;
+      return;
     }
     this.active = active ? 1 : 0;
   }
@@ -1470,17 +1471,17 @@ abstract public class Person implements Serializable, AttributeWrangler, Display
   public String getBody() throws MudException
   {
     StringBuilder builder = new StringBuilder(
-            getLongDescription() + "<br/>\r\n"
-            + getWearables());
+      getLongDescription() + "<br/>\r\n"
+        + getWearables());
     if (getState() != null)
     {
       builder.append(getState()).append("<br/>\r\n");
     }
     String stuff2 = builder.toString();
-    stuff2 = stuff2.replaceAll("%SHESHE", getSex().Direct());
-    stuff2 = stuff2.replaceAll("%SHISHER", getSex()
-            .posession());
-    stuff2 = stuff2.replaceAll("%SISARE", "is");
+    stuff2 = stuff2.replace("%SHESHE", getSex().Direct());
+    stuff2 = stuff2.replace("%SHISHER", getSex()
+      .posession());
+    stuff2 = stuff2.replace("%SISARE", "is");
     return stuff2;
   }
 
@@ -1495,6 +1496,7 @@ abstract public class Person implements Serializable, AttributeWrangler, Display
   @Override
   public List<Item> findItems(List<String> parsed)
   {
+    LOGGER.warning("findItems " + parsed);
     List<Item> result = new ArrayList<>();
     for (Item item : getItems())
     {

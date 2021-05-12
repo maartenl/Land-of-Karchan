@@ -16,11 +16,9 @@
  */
 package mmud.testing.tests;
 
+import mmud.database.RegularExpressions;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
-
-import mmud.database.RegularExpressions;
-
 import static org.assertj.core.api.Assertions.assertThat;
 
 /**
@@ -49,10 +47,16 @@ public class RegularExpressionsTest
         RegularExpressions.ONLY_LETTERS_REGEXP, "Many", true
       },
       {
-        RegularExpressions.ONLY_LETTERS_REGEXP, "many fowled", false // no spaces allowed
+        RegularExpressions.ONLY_LETTERS_REGEXP, "many fowled", true // spaces allowed
       },
       {
-        RegularExpressions.ONLY_LETTERS_REGEXP, "many-fowled", true
+        RegularExpressions.ONLY_LETTERS_REGEXP, "many-fowled", true // dashes allrighty too
+      },
+      {
+        RegularExpressions.ONLY_LETTERS_REGEXP, "Philosopher's stone", true // apostrophes are fine
+      },
+      {
+        RegularExpressions.ONLY_LETTERS_REGEXP, "old, faded, yellow", true // , are also fine
       },
       {
         RegularExpressions.ONLY_LETTERS_REGEXP, "<b>many</b>", false // no html allowed

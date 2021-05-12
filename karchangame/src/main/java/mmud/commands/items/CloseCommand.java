@@ -19,8 +19,8 @@ package mmud.commands.items;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import mmud.Constants;
-import mmud.commands.*;
+
+import mmud.commands.NormalCommand;
 import mmud.database.entities.characters.User;
 import mmud.database.entities.game.DisplayInterface;
 import mmud.database.entities.items.Item;
@@ -49,7 +49,7 @@ public class CloseCommand extends NormalCommand
       PersonCommunicationService communicationService = CommunicationService.getCommunicationService(aUser);
         // first is find the item
         List<String> parsed = new ArrayList<>(Arrays.asList(parseCommand(command)));
-        parsed.remove(0); // remove "open"
+      parsed.remove(0); // remove "close"
         // find the item on ourselves
         List<Item> itemsFound = aUser.findItems(parsed);
         if (itemsFound.isEmpty())

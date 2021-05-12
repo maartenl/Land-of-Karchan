@@ -1,20 +1,18 @@
 package mmud.rest.webentities.admin;
 
-import mmud.database.entities.items.ItemDefinition;
-
+import java.time.LocalDateTime;
 import javax.json.bind.Jsonb;
 import javax.json.bind.JsonbBuilder;
-import java.time.LocalDateTime;
+
+import mmud.database.entities.items.ItemDefinition;
 
 public class AdminItem
 {
-  public static final String GET_QUERY = "select json_object(\"id\", id, \"name\", name, \"adject1\", adject1, \"adject2\", adject2, \"adject3\", adject3, \"owner\", owner, \"creation\", creation) from mm_items order by id";
+  public static final String GET_QUERY = "select json_object(\"id\", id, \"name\", name, \"adjectives\", adjectives, \"owner\", owner, \"creation\", creation) from mm_items order by id";
 
   public Long id;
   public String name;
-  public String adject1;
-  public String adject2;
-  public String adject3;
+  public String adjectives;
   public Integer manaincrease;
   public Integer hitincrease;
   public Integer vitalincrease;
@@ -55,9 +53,7 @@ public class AdminItem
   {
     this.id = item.getId();
     this.name = item.getName();
-    this.adject1 = item.getAdject1();
-    this.adject2 = item.getAdject2();
-    this.adject3 = item.getAdject3();
+    this.adjectives = item.getAdjectives();
     this.manaincrease = item.getManaincrease();
     this.hitincrease = item.getHitincrease();
     this.vitalincrease = item.getVitalincrease();
@@ -103,9 +99,7 @@ public class AdminItem
     return "AdminItem{" +
       "id=" + id +
       ", name='" + name + '\'' +
-      ", adject1='" + adject1 + '\'' +
-      ", adject2='" + adject2 + '\'' +
-      ", adject3='" + adject3 + '\'' +
+      ", adjectives='" + adjectives + '\'' +
       ", manaincrease=" + manaincrease +
       ", hitincrease=" + hitincrease +
       ", vitalincrease=" + vitalincrease +

@@ -16,6 +16,10 @@
  */
 package mmud.testing.tests.commands;
 
+import java.io.File;
+import java.io.PrintWriter;
+import java.util.HashSet;
+
 import mmud.Constants;
 import mmud.commands.CommandRunner;
 import mmud.commands.items.BuyCommand;
@@ -29,18 +33,11 @@ import mmud.database.entities.items.ItemDefinition;
 import mmud.database.entities.items.NormalItem;
 import mmud.rest.services.ItemBean;
 import mmud.rest.services.LogBean;
+import mmud.services.CommunicationService;
 import mmud.testing.tests.LogBeanStub;
 import mmud.testing.tests.MudTest;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
-
-
-import java.io.File;
-import java.io.PrintWriter;
-import java.util.HashSet;
-
-import mmud.services.CommunicationService;
-
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
 /**
@@ -316,9 +313,7 @@ public class BuyCommandTest extends MudTest
     itemDef = new ItemDefinition();
     itemDef.setId(1L);
     itemDef.setName("ring");
-    itemDef.setAdject1("nice");
-    itemDef.setAdject2("golden");
-    itemDef.setAdject3("friendship");
+    itemDef.setAdjectives("nice, golden, friendship");
     itemDef.setCopper(5);
 
     ring = new NormalItem();

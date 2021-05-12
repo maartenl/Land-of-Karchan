@@ -16,6 +16,10 @@
  */
 package mmud.testing.tests.commands;
 
+import java.io.File;
+import java.io.PrintWriter;
+import java.util.HashSet;
+
 import mmud.Constants;
 import mmud.commands.CommandRunner;
 import mmud.commands.items.SellCommand;
@@ -31,349 +35,341 @@ import mmud.database.enums.Wearing;
 import mmud.database.enums.Wielding;
 import mmud.rest.services.ItemBean;
 import mmud.rest.services.LogBean;
+import mmud.services.CommunicationService;
 import mmud.testing.tests.LogBeanStub;
 import mmud.testing.tests.MudTest;
-import org.testng.annotations.*;
-
-
-import java.io.File;
-import java.io.PrintWriter;
-import java.util.HashSet;
-import mmud.services.CommunicationService;
-
+import org.testng.annotations.BeforeMethod;
+import org.testng.annotations.Test;
 import static org.assertj.core.api.Assertions.assertThat;
 
 /**
- *
  * @author maartenl
  */
 public class SellCommandTest extends MudTest
 {
 
-    private User karn;
-    private Room room1;
-    private NormalItem ring;
-    private ItemDefinition itemDef;
-    private ItemBean itemBean;
+  private User karn;
+  private Room room1;
+  private NormalItem ring;
+  private ItemDefinition itemDef;
+  private ItemBean itemBean;
 
-    private LogBean logBean = new LogBeanStub();
+  private LogBean logBean = new LogBeanStub();
 
-    private CommandRunner commandRunner = new CommandRunner();
+  private CommandRunner commandRunner = new CommandRunner();
 
-    public SellCommandTest()
-    {
-    }
+  public SellCommandTest()
+  {
+  }
 
-    @Test
-    public void sellItemYouDonotHave()
-    {
-        SellCommand sellCommand = new SellCommand("sell( (\\w|-)+){1,4} to (\\w)+");
-        assertThat(sellCommand.getRegExpr()).isEqualTo("sell( (\\w|-)+){1,4} to (\\w)+");
-        DisplayInterface display = sellCommand.run("sell brush to karcas", karn);
-        assertThat(display).isNotNull();
-        assertThat(display.getBody()).isEqualTo("You are in a small room.");
-        String log = CommunicationService.getCommunicationService(karn).getLog(0);
-        assertThat(log).isEqualTo("You don&#39;t have that.<br />\n");
-    }
+  @Test
+  public void sellItemYouDonotHave()
+  {
+    SellCommand sellCommand = new SellCommand("sell( (\\w|-)+){1,4} to (\\w)+");
+    assertThat(sellCommand.getRegExpr()).isEqualTo("sell( (\\w|-)+){1,4} to (\\w)+");
+    DisplayInterface display = sellCommand.run("sell brush to karcas", karn);
+    assertThat(display).isNotNull();
+    assertThat(display.getBody()).isEqualTo("You are in a small room.");
+    String log = CommunicationService.getCommunicationService(karn).getLog(0);
+    assertThat(log).isEqualTo("You don&#39;t have that.<br />\n");
+  }
 
-    @Test
-    public void sellIllegalAmount()
-    {
-        User karcas = new User();
-        karcas.setName("Karcas");
-        karcas.setRoom(room1);
+  @Test
+  public void sellIllegalAmount()
+  {
+    User karcas = new User();
+    karcas.setName("Karcas");
+    karcas.setRoom(room1);
 
-        HashSet<Item> items = new HashSet<>();
-        items.add(ring);
-        setField(Person.class, "items", karn, items);
+    HashSet<Item> items = new HashSet<>();
+    items.add(ring);
+    setField(Person.class, "items", karn, items);
 
-        HashSet<Person> persons = new HashSet<>();
-        persons.add(karn);
-        persons.add(karcas);
-        setField(Room.class, "persons", room1, persons);
+    HashSet<Person> persons = new HashSet<>();
+    persons.add(karn);
+    persons.add(karcas);
+    setField(Room.class, "persons", room1, persons);
 
-        SellCommand sellCommand = new SellCommand("sell( (\\w|-)+){1,4} to (\\w)+");
-        assertThat(sellCommand.getRegExpr()).isEqualTo("sell( (\\w|-)+){1,4} to (\\w)+");
-        DisplayInterface display = sellCommand.run("sell -2 ring to karcas", karn);
-        assertThat(display).isNotNull();
-        assertThat(display.getBody()).isEqualTo("You are in a small room.");
-        String log = CommunicationService.getCommunicationService(karn).getLog(0);
-        assertThat(log).isEqualTo("That is an illegal amount.<br />\n");
-    }
+    SellCommand sellCommand = new SellCommand("sell( (\\w|-)+){1,4} to (\\w)+");
+    assertThat(sellCommand.getRegExpr()).isEqualTo("sell( (\\w|-)+){1,4} to (\\w)+");
+    DisplayInterface display = sellCommand.run("sell -2 ring to karcas", karn);
+    assertThat(display).isNotNull();
+    assertThat(display.getBody()).isEqualTo("You are in a small room.");
+    String log = CommunicationService.getCommunicationService(karn).getLog(0);
+    assertThat(log).isEqualTo("That is an illegal amount.<br />\n");
+  }
 
-    @Test
-    public void sellNotEnoughItems()
-    {
-        HashSet<Item> items = new HashSet<>();
-        items.add(ring);
-        setField(Person.class, "items", karn, items);
-        SellCommand sellCommand = new SellCommand("sell( (\\w|-)+){1,4} to (\\w)+");
-        assertThat(sellCommand.getRegExpr()).isEqualTo("sell( (\\w|-)+){1,4} to (\\w)+");
-        DisplayInterface display = sellCommand.run("sell 3 ring to karcas", karn);
-        assertThat(display).isNotNull();
-        assertThat(display.getBody()).isEqualTo("You are in a small room.");
-        String log = CommunicationService.getCommunicationService(karn).getLog(0);
-        assertThat(log).isEqualTo("You do not have that many items in your inventory.<br />\r\n");
-    }
+  @Test
+  public void sellNotEnoughItems()
+  {
+    HashSet<Item> items = new HashSet<>();
+    items.add(ring);
+    setField(Person.class, "items", karn, items);
+    SellCommand sellCommand = new SellCommand("sell( (\\w|-)+){1,4} to (\\w)+");
+    assertThat(sellCommand.getRegExpr()).isEqualTo("sell( (\\w|-)+){1,4} to (\\w)+");
+    DisplayInterface display = sellCommand.run("sell 3 ring to karcas", karn);
+    assertThat(display).isNotNull();
+    assertThat(display.getBody()).isEqualTo("You are in a small room.");
+    String log = CommunicationService.getCommunicationService(karn).getLog(0);
+    assertThat(log).isEqualTo("You do not have that many items in your inventory.<br />\r\n");
+  }
 
-    @Test
-    public void sellToUnknownShopkeeper()
-    {
-        HashSet<Item> items = new HashSet<>();
-        items.add(ring);
-        setField(Person.class, "items", karn, items);
-        SellCommand sellCommand = new SellCommand("sell( (\\w|-)+){1,4} to (\\w)+");
-        assertThat(sellCommand.getRegExpr()).isEqualTo("sell( (\\w|-)+){1,4} to (\\w)+");
-        DisplayInterface display = sellCommand.run("sell ring to karcas", karn);
-        assertThat(display).isNotNull();
-        assertThat(display.getBody()).isEqualTo("You are in a small room.");
-        String log = CommunicationService.getCommunicationService(karn).getLog(0);
-        assertThat(log).isEqualTo("Unable to locate shopkeeper.<br />\r\n");
-    }
+  @Test
+  public void sellToUnknownShopkeeper()
+  {
+    HashSet<Item> items = new HashSet<>();
+    items.add(ring);
+    setField(Person.class, "items", karn, items);
+    SellCommand sellCommand = new SellCommand("sell( (\\w|-)+){1,4} to (\\w)+");
+    assertThat(sellCommand.getRegExpr()).isEqualTo("sell( (\\w|-)+){1,4} to (\\w)+");
+    DisplayInterface display = sellCommand.run("sell ring to karcas", karn);
+    assertThat(display).isNotNull();
+    assertThat(display.getBody()).isEqualTo("You are in a small room.");
+    String log = CommunicationService.getCommunicationService(karn).getLog(0);
+    assertThat(log).isEqualTo("Unable to locate shopkeeper.<br />\r\n");
+  }
 
-    @Test
-    public void sellToNonShopkeeper()
-    {
-        User karcas = new User();
-        karcas.setName("Karcas");
-        karcas.setRoom(room1);
+  @Test
+  public void sellToNonShopkeeper()
+  {
+    User karcas = new User();
+    karcas.setName("Karcas");
+    karcas.setRoom(room1);
 
-        HashSet<Person> persons = new HashSet<>();
-        persons.add(karn);
-        persons.add(karcas);
-        setField(Room.class, "persons", room1, persons);
+    HashSet<Person> persons = new HashSet<>();
+    persons.add(karn);
+    persons.add(karcas);
+    setField(Room.class, "persons", room1, persons);
 
-        HashSet<Item> items = new HashSet<>();
-        items.add(ring);
-        setField(Person.class, "items", karn, items);
-        SellCommand sellCommand = new SellCommand("sell( (\\w|-)+){1,4} to (\\w)+");
-        assertThat(sellCommand.getRegExpr()).isEqualTo("sell( (\\w|-)+){1,4} to (\\w)+");
-        DisplayInterface display = sellCommand.run("sell ring to karcas", karn);
-        assertThat(display).isNotNull();
-        assertThat(display.getBody()).isEqualTo("You are in a small room.");
-        String log = CommunicationService.getCommunicationService(karn).getLog(0);
-        assertThat(log).isEqualTo("That&#39;s not a shopkeeper!<br />\r\n");
-    }
+    HashSet<Item> items = new HashSet<>();
+    items.add(ring);
+    setField(Person.class, "items", karn, items);
+    SellCommand sellCommand = new SellCommand("sell( (\\w|-)+){1,4} to (\\w)+");
+    assertThat(sellCommand.getRegExpr()).isEqualTo("sell( (\\w|-)+){1,4} to (\\w)+");
+    DisplayInterface display = sellCommand.run("sell ring to karcas", karn);
+    assertThat(display).isNotNull();
+    assertThat(display.getBody()).isEqualTo("You are in a small room.");
+    String log = CommunicationService.getCommunicationService(karn).getLog(0);
+    assertThat(log).isEqualTo("That&#39;s not a shopkeeper!<br />\r\n");
+  }
 
-    @Test
-    public void sellItemNotWorthAnything()
-    {
-        ring.getItemDefinition().setCopper(1);
-        Shopkeeper karcas = new Shopkeeper();
-        karcas.setName("Karcas");
-        karcas.setRoom(room1);
+  @Test
+  public void sellItemNotWorthAnything()
+  {
+    ring.getItemDefinition().setCopper(1);
+    Shopkeeper karcas = new Shopkeeper();
+    karcas.setName("Karcas");
+    karcas.setRoom(room1);
 
-        HashSet<Person> persons = new HashSet<>();
-        persons.add(karn);
-        persons.add(karcas);
-        setField(Room.class, "persons", room1, persons);
+    HashSet<Person> persons = new HashSet<>();
+    persons.add(karn);
+    persons.add(karcas);
+    setField(Room.class, "persons", room1, persons);
 
-        HashSet<Item> items = new HashSet<>();
-        items.add(ring);
-        setField(Person.class, "items", karn, items);
-        SellCommand sellCommand = new SellCommand("sell( (\\w|-)+){1,4} to (\\w)+");
-        sellCommand.setCallback(commandRunner);
-        assertThat(sellCommand.getRegExpr()).isEqualTo("sell( (\\w|-)+){1,4} to (\\w)+");
-  commandRunner.setBeans(null, null, null, itemBean, null, null, null);
-        DisplayInterface display = sellCommand.run("sell ring to karcas", karn);
-        assertThat(display).isNotNull();
-        assertThat(display.getBody()).isEqualTo("You are in a small room.");
-        String log = CommunicationService.getCommunicationService(karn).getLog(0);
-        assertThat(log).isEqualTo("Karcas says [to you] : That item is not worth anything.<br />\r\nYou did not sell anything.<br />\r\n");
-    }
+    HashSet<Item> items = new HashSet<>();
+    items.add(ring);
+    setField(Person.class, "items", karn, items);
+    SellCommand sellCommand = new SellCommand("sell( (\\w|-)+){1,4} to (\\w)+");
+    sellCommand.setCallback(commandRunner);
+    assertThat(sellCommand.getRegExpr()).isEqualTo("sell( (\\w|-)+){1,4} to (\\w)+");
+    commandRunner.setBeans(null, null, null, itemBean, null, null, null);
+    DisplayInterface display = sellCommand.run("sell ring to karcas", karn);
+    assertThat(display).isNotNull();
+    assertThat(display.getBody()).isEqualTo("You are in a small room.");
+    String log = CommunicationService.getCommunicationService(karn).getLog(0);
+    assertThat(log).isEqualTo("Karcas says [to you] : That item is not worth anything.<br />\r\nYou did not sell anything.<br />\r\n");
+  }
 
-    @Test
-    public void sellShopkeeperHasNoMoney()
-    {
-        Shopkeeper karcas = new Shopkeeper();
-        karcas.setName("Karcas");
-        karcas.setRoom(room1);
+  @Test
+  public void sellShopkeeperHasNoMoney()
+  {
+    Shopkeeper karcas = new Shopkeeper();
+    karcas.setName("Karcas");
+    karcas.setRoom(room1);
 
-        HashSet<Person> persons = new HashSet<>();
-        persons.add(karn);
-        persons.add(karcas);
-        setField(Room.class, "persons", room1, persons);
+    HashSet<Person> persons = new HashSet<>();
+    persons.add(karn);
+    persons.add(karcas);
+    setField(Room.class, "persons", room1, persons);
 
-        HashSet<Item> items = new HashSet<>();
-        items.add(ring);
-        setField(Person.class, "items", karn, items);
-        SellCommand sellCommand = new SellCommand("sell( (\\w|-)+){1,4} to (\\w)+");
-        sellCommand.setCallback(commandRunner);
-        assertThat(sellCommand.getRegExpr()).isEqualTo("sell( (\\w|-)+){1,4} to (\\w)+");
-  commandRunner.setBeans(null, null, null, itemBean, null, null, null);
-        DisplayInterface display = sellCommand.run("sell ring to karcas", karn);
-        assertThat(display).isNotNull();
-        assertThat(display.getBody()).isEqualTo("You are in a small room.");
-        String log = CommunicationService.getCommunicationService(karn).getLog(0);
-        assertThat(log).isEqualTo("Karcas mutters something about not having enough money.<br />\r\nYou did not sell anything.<br />\r\n");
-    }
+    HashSet<Item> items = new HashSet<>();
+    items.add(ring);
+    setField(Person.class, "items", karn, items);
+    SellCommand sellCommand = new SellCommand("sell( (\\w|-)+){1,4} to (\\w)+");
+    sellCommand.setCallback(commandRunner);
+    assertThat(sellCommand.getRegExpr()).isEqualTo("sell( (\\w|-)+){1,4} to (\\w)+");
+    commandRunner.setBeans(null, null, null, itemBean, null, null, null);
+    DisplayInterface display = sellCommand.run("sell ring to karcas", karn);
+    assertThat(display).isNotNull();
+    assertThat(display.getBody()).isEqualTo("You are in a small room.");
+    String log = CommunicationService.getCommunicationService(karn).getLog(0);
+    assertThat(log).isEqualTo("Karcas mutters something about not having enough money.<br />\r\nYou did not sell anything.<br />\r\n");
+  }
 
-    @Test
-    public void sellWearingItem()
-    {
-        Shopkeeper karcas = new Shopkeeper();
-        karcas.setName("Karcas");
-        karcas.setRoom(room1);
-        HashSet<Person> persons = new HashSet<>();
-        persons.add(karn);
-        persons.add(karcas);
-        setField(Room.class, "persons", room1, persons);
-        setField(Person.class, "copper", karcas, 1111);
-        setField(ItemDefinition.class, "wearable", ring.getItemDefinition(), Wearing.ON_LEFT_FINGER.toInt());
-        HashSet<Item> items = new HashSet<>();
-        items.add(ring);
-        setField(Person.class, "items", karn, items);
-        karn.wear(ring, Wearing.ON_LEFT_FINGER);
-        SellCommand sellCommand = new SellCommand("sell( (\\w|-)+){1,4} to (\\w)+");
-        sellCommand.setCallback(commandRunner);
-        assertThat(sellCommand.getRegExpr()).isEqualTo("sell( (\\w|-)+){1,4} to (\\w)+");
-  commandRunner.setBeans(null, null, null, itemBean, null, null, null);
-        DisplayInterface display = sellCommand.run("sell ring to karcas", karn);
-        assertThat(display).isNotNull();
-        assertThat(display.getBody()).isEqualTo("You are in a small room.");
-        String log = CommunicationService.getCommunicationService(karn).getLog(0);
-        assertThat(log).isEqualTo("You are wearing or wielding this item.<br />\r\nYou did not sell anything.<br />\r\n");
-    }
+  @Test
+  public void sellWearingItem()
+  {
+    Shopkeeper karcas = new Shopkeeper();
+    karcas.setName("Karcas");
+    karcas.setRoom(room1);
+    HashSet<Person> persons = new HashSet<>();
+    persons.add(karn);
+    persons.add(karcas);
+    setField(Room.class, "persons", room1, persons);
+    setField(Person.class, "copper", karcas, 1111);
+    setField(ItemDefinition.class, "wearable", ring.getItemDefinition(), Wearing.ON_LEFT_FINGER.toInt());
+    HashSet<Item> items = new HashSet<>();
+    items.add(ring);
+    setField(Person.class, "items", karn, items);
+    karn.wear(ring, Wearing.ON_LEFT_FINGER);
+    SellCommand sellCommand = new SellCommand("sell( (\\w|-)+){1,4} to (\\w)+");
+    sellCommand.setCallback(commandRunner);
+    assertThat(sellCommand.getRegExpr()).isEqualTo("sell( (\\w|-)+){1,4} to (\\w)+");
+    commandRunner.setBeans(null, null, null, itemBean, null, null, null);
+    DisplayInterface display = sellCommand.run("sell ring to karcas", karn);
+    assertThat(display).isNotNull();
+    assertThat(display.getBody()).isEqualTo("You are in a small room.");
+    String log = CommunicationService.getCommunicationService(karn).getLog(0);
+    assertThat(log).isEqualTo("You are wearing or wielding this item.<br />\r\nYou did not sell anything.<br />\r\n");
+  }
 
-    @Test
-    public void sellWieldingItem()
-    {
-        Shopkeeper karcas = new Shopkeeper();
-        karcas.setName("Karcas");
-        karcas.setRoom(room1);
-        HashSet<Person> persons = new HashSet<>();
-        persons.add(karn);
-        persons.add(karcas);
-        setField(Room.class, "persons", room1, persons);
-        setField(Person.class, "copper", karcas, 1111);
+  @Test
+  public void sellWieldingItem()
+  {
+    Shopkeeper karcas = new Shopkeeper();
+    karcas.setName("Karcas");
+    karcas.setRoom(room1);
+    HashSet<Person> persons = new HashSet<>();
+    persons.add(karn);
+    persons.add(karcas);
+    setField(Room.class, "persons", room1, persons);
+    setField(Person.class, "copper", karcas, 1111);
 
-        HashSet<Item> items = new HashSet<>();
-        setField(ItemDefinition.class, "wieldable", ring.getItemDefinition(), Wielding.WIELD_LEFT.toInt());
-        items.add(ring);
-        setField(Person.class, "items", karn, items);
-        karn.wield(ring, Wielding.WIELD_LEFT);
-        SellCommand sellCommand = new SellCommand("sell( (\\w|-)+){1,4} to (\\w)+");
-        sellCommand.setCallback(commandRunner);
-        assertThat(sellCommand.getRegExpr()).isEqualTo("sell( (\\w|-)+){1,4} to (\\w)+");
-  commandRunner.setBeans(null, null, null, itemBean, null, null, null);
-        DisplayInterface display = sellCommand.run("sell ring to karcas", karn);
-        assertThat(display).isNotNull();
-        assertThat(display.getBody()).isEqualTo("You are in a small room.");
-        String log = CommunicationService.getCommunicationService(karn).getLog(0);
-        assertThat(log).isEqualTo("You are wearing or wielding this item.<br />\r\nYou did not sell anything.<br />\r\n");
-    }
+    HashSet<Item> items = new HashSet<>();
+    setField(ItemDefinition.class, "wieldable", ring.getItemDefinition(), Wielding.WIELD_LEFT.toInt());
+    items.add(ring);
+    setField(Person.class, "items", karn, items);
+    karn.wield(ring, Wielding.WIELD_LEFT);
+    SellCommand sellCommand = new SellCommand("sell( (\\w|-)+){1,4} to (\\w)+");
+    sellCommand.setCallback(commandRunner);
+    assertThat(sellCommand.getRegExpr()).isEqualTo("sell( (\\w|-)+){1,4} to (\\w)+");
+    commandRunner.setBeans(null, null, null, itemBean, null, null, null);
+    DisplayInterface display = sellCommand.run("sell ring to karcas", karn);
+    assertThat(display).isNotNull();
+    assertThat(display.getBody()).isEqualTo("You are in a small room.");
+    String log = CommunicationService.getCommunicationService(karn).getLog(0);
+    assertThat(log).isEqualTo("You are wearing or wielding this item.<br />\r\nYou did not sell anything.<br />\r\n");
+  }
 
-    @Test
-    public void sellItemdefIdNegative()
-    {
-        ring.getItemDefinition().setId(-3L);
-        Shopkeeper karcas = new Shopkeeper();
-        karcas.setName("Karcas");
-        karcas.setRoom(room1);
+  @Test
+  public void sellItemdefIdNegative()
+  {
+    ring.getItemDefinition().setId(-3L);
+    Shopkeeper karcas = new Shopkeeper();
+    karcas.setName("Karcas");
+    karcas.setRoom(room1);
 
-        HashSet<Person> persons = new HashSet<>();
-        persons.add(karn);
-        persons.add(karcas);
-        setField(Room.class, "persons", room1, persons);
-        setField(Person.class, "copper", karcas, 1111);
+    HashSet<Person> persons = new HashSet<>();
+    persons.add(karn);
+    persons.add(karcas);
+    setField(Room.class, "persons", room1, persons);
+    setField(Person.class, "copper", karcas, 1111);
 
-        HashSet<Item> items = new HashSet<>();
-        items.add(ring);
-        setField(Person.class, "items", karn, items);
-        SellCommand sellCommand = new SellCommand("sell( (\\w|-)+){1,4} to (\\w)+");
-        sellCommand.setCallback(commandRunner);
-        assertThat(sellCommand.getRegExpr()).isEqualTo("sell( (\\w|-)+){1,4} to (\\w)+");
-  commandRunner.setBeans(null, null, null, itemBean, null, null, null);
-        DisplayInterface display = sellCommand.run("sell ring to karcas", karn);
-        assertThat(display).isNotNull();
-        assertThat(display.getBody()).isEqualTo("You are in a small room.");
-        String log = CommunicationService.getCommunicationService(karn).getLog(0);
-        assertThat(log).isEqualTo("You cannot sell that item.<br />\r\nYou did not sell anything.<br />\r\n");
-    }
+    HashSet<Item> items = new HashSet<>();
+    items.add(ring);
+    setField(Person.class, "items", karn, items);
+    SellCommand sellCommand = new SellCommand("sell( (\\w|-)+){1,4} to (\\w)+");
+    sellCommand.setCallback(commandRunner);
+    assertThat(sellCommand.getRegExpr()).isEqualTo("sell( (\\w|-)+){1,4} to (\\w)+");
+    commandRunner.setBeans(null, null, null, itemBean, null, null, null);
+    DisplayInterface display = sellCommand.run("sell ring to karcas", karn);
+    assertThat(display).isNotNull();
+    assertThat(display.getBody()).isEqualTo("You are in a small room.");
+    String log = CommunicationService.getCommunicationService(karn).getLog(0);
+    assertThat(log).isEqualTo("You cannot sell that item.<br />\r\nYou did not sell anything.<br />\r\n");
+  }
 
-    @Test
-    public void sellBound()
-    {
-        Shopkeeper karcas = new Shopkeeper();
-        karcas.setName("Karcas");
-        karcas.setRoom(room1);
+  @Test
+  public void sellBound()
+  {
+    Shopkeeper karcas = new Shopkeeper();
+    karcas.setName("Karcas");
+    karcas.setRoom(room1);
 
-        HashSet<Person> persons = new HashSet<>();
-        persons.add(karn);
-        persons.add(karcas);
-        ring.getItemDefinition().setBound(true);
-        setField(Room.class, "persons", room1, persons);
-        setField(Person.class, "copper", karcas, 1111);
+    HashSet<Person> persons = new HashSet<>();
+    persons.add(karn);
+    persons.add(karcas);
+    ring.getItemDefinition().setBound(true);
+    setField(Room.class, "persons", room1, persons);
+    setField(Person.class, "copper", karcas, 1111);
 
-        HashSet<Item> items = new HashSet<>();
-        items.add(ring);
-        setField(Person.class, "items", karn, items);
-        SellCommand sellCommand = new SellCommand("sell( (\\w|-)+){1,4} to (\\w)+");
-        sellCommand.setCallback(commandRunner);
-        assertThat(sellCommand.getRegExpr()).isEqualTo("sell( (\\w|-)+){1,4} to (\\w)+");
-  commandRunner.setBeans(null, null, null, itemBean, null, null, null);
-        DisplayInterface display = sellCommand.run("sell ring to karcas", karn);
-        assertThat(display).isNotNull();
-        assertThat(display.getBody()).isEqualTo("You are in a small room.");
-        String log = CommunicationService.getCommunicationService(karn).getLog(0);
-        assertThat(log).isEqualTo("You cannot sell that item.<br />\r\nYou did not sell anything.<br />\r\n");
-    }
+    HashSet<Item> items = new HashSet<>();
+    items.add(ring);
+    setField(Person.class, "items", karn, items);
+    SellCommand sellCommand = new SellCommand("sell( (\\w|-)+){1,4} to (\\w)+");
+    sellCommand.setCallback(commandRunner);
+    assertThat(sellCommand.getRegExpr()).isEqualTo("sell( (\\w|-)+){1,4} to (\\w)+");
+    commandRunner.setBeans(null, null, null, itemBean, null, null, null);
+    DisplayInterface display = sellCommand.run("sell ring to karcas", karn);
+    assertThat(display).isNotNull();
+    assertThat(display.getBody()).isEqualTo("You are in a small room.");
+    String log = CommunicationService.getCommunicationService(karn).getLog(0);
+    assertThat(log).isEqualTo("You cannot sell that item.<br />\r\nYou did not sell anything.<br />\r\n");
+  }
 
-    @Test
-    public void sellOk()
-    {
-        Shopkeeper karcas = new Shopkeeper();
-        karcas.setName("Karcas");
-        karcas.setRoom(room1);
+  @Test
+  public void sellOk()
+  {
+    Shopkeeper karcas = new Shopkeeper();
+    karcas.setName("Karcas");
+    karcas.setRoom(room1);
 
-        HashSet<Person> persons = new HashSet<>();
-        persons.add(karn);
-        persons.add(karcas);
-        setField(Room.class, "persons", room1, persons);
-        setField(Person.class, "copper", karcas, 1111);
+    HashSet<Person> persons = new HashSet<>();
+    persons.add(karn);
+    persons.add(karcas);
+    setField(Room.class, "persons", room1, persons);
+    setField(Person.class, "copper", karcas, 1111);
 
-        HashSet<Item> items = new HashSet<>();
-        items.add(ring);
-        setField(Person.class, "items", karn, items);
-        SellCommand sellCommand = new SellCommand("sell( (\\w|-)+){1,4} to (\\w)+");
-        sellCommand.setCallback(commandRunner);
-        assertThat(sellCommand.getRegExpr()).isEqualTo("sell( (\\w|-)+){1,4} to (\\w)+");
-  commandRunner.setBeans(null, logBean, null, itemBean, null, null, null);
-        DisplayInterface display = sellCommand.run("sell ring to karcas", karn);
-        assertThat(display).isNotNull();
-        assertThat(display.getBody()).isEqualTo("You are in a small room.");
-        String log = CommunicationService.getCommunicationService(karn).getLog(0);
-        assertThat(log).isEqualTo("You sold a nice, golden, friendship ring to Karcas for 4 copper coins.<br />\r\n");
-    }
+    HashSet<Item> items = new HashSet<>();
+    items.add(ring);
+    setField(Person.class, "items", karn, items);
+    SellCommand sellCommand = new SellCommand("sell( (\\w|-)+){1,4} to (\\w)+");
+    sellCommand.setCallback(commandRunner);
+    assertThat(sellCommand.getRegExpr()).isEqualTo("sell( (\\w|-)+){1,4} to (\\w)+");
+    commandRunner.setBeans(null, logBean, null, itemBean, null, null, null);
+    DisplayInterface display = sellCommand.run("sell ring to karcas", karn);
+    assertThat(display).isNotNull();
+    assertThat(display.getBody()).isEqualTo("You are in a small room.");
+    String log = CommunicationService.getCommunicationService(karn).getLog(0);
+    assertThat(log).isEqualTo("You sold a nice, golden, friendship ring to Karcas for 4 copper coins.<br />\r\n");
+  }
 
-    @BeforeMethod
-    public void setUpMethod() throws Exception
-    {
-        itemBean = new ItemBean();
-        setField(ItemBean.class, "logBean", itemBean, logBean);
+  @BeforeMethod
+  public void setUpMethod() throws Exception
+  {
+    itemBean = new ItemBean();
+    setField(ItemBean.class, "logBean", itemBean, logBean);
 
-        itemDef = new ItemDefinition();
-        itemDef.setId(1L);
-        itemDef.setName("ring");
-        itemDef.setAdject1("nice");
-        itemDef.setAdject2("golden");
-        itemDef.setAdject3("friendship");
-        itemDef.setCopper(5);
+    itemDef = new ItemDefinition();
+    itemDef.setId(1L);
+    itemDef.setName("ring");
+    itemDef.setAdjectives("nice, golden, friendship");
+    itemDef.setCopper(5);
 
-        ring = new NormalItem();
-        ring.setItemDefinition(itemDef);
+    ring = new NormalItem();
+    ring.setItemDefinition(itemDef);
 
-        room1 = new Room();
-        room1.setId(1L);
-        room1.setContents("You are in a small room.");
+    room1 = new Room();
+    room1.setId(1L);
+    room1.setContents("You are in a small room.");
 
-        karn = new User();
-        karn.setName("Karn");
-        karn.setRoom(room1);
+    karn = new User();
+    karn.setName("Karn");
+    karn.setRoom(room1);
 
-        File file = new File(Constants.getMudfilepath() + File.separator + "Karn.log");
-        PrintWriter writer = new PrintWriter(file);
-        writer.close();
-    }
+    File file = new File(Constants.getMudfilepath() + File.separator + "Karn.log");
+    PrintWriter writer = new PrintWriter(file);
+    writer.close();
+  }
 
 }

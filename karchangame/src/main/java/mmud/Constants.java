@@ -148,9 +148,7 @@ public class Constants
       } else
       {
         PrivateItem privateItem = new PrivateItem();
-        privateItem.adject1 = item.getItemDefinition().getAdject1();
-        privateItem.adject2 = item.getItemDefinition().getAdject2();
-        privateItem.adject3 = item.getItemDefinition().getAdject3();
+        privateItem.adjectives = item.getItemDefinition().getAdjectives();
         privateItem.name = item.getItemDefinition().getName();
         privateItem.amount = 1;
         inventory.put(key, privateItem);
@@ -160,25 +158,23 @@ public class Constants
   }
 
   /**
-   * Returns null if all is well, otherwise a description of the problems with the bean.
-   *
-   * @param <T>
-   * @param entity
-   * @return
+   * @param <T>    generic
+   * @param entity the JPA entity to check
+   * @return description of problems with the bean, or null if all is well.
    */
   public static <T> String checkValidation(T entity)
   {
     ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
     Validator validator = factory.getValidator();
     Set<ConstraintViolation<T>> constraintViolations = validator.validate(entity);
-    StringBuffer buffer = null;
+    StringBuilder buffer = null;
     if (!constraintViolations.isEmpty())
     {
       for (ConstraintViolation<T> cv : constraintViolations)
       {
         if (buffer == null)
         {
-          buffer = new StringBuffer();
+          buffer = new StringBuilder();
         }
         buffer.append(cv.getRootBeanClass().getSimpleName()).append(".").append(cv.getPropertyPath()).append(" ").append(cv.getMessage());
       }

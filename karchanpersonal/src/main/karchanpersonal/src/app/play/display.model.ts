@@ -5,11 +5,9 @@ export class Person {
 }
 
 export class Item {
-    adject1: string = '';
-    adject2: string = '';
-    adject3: string = '';
-    amount: number = 1;
-    name: string = '';
+  adjectives: string = '';
+  amount: number = 1;
+  name: string = '';
 }
 
 export class Log {

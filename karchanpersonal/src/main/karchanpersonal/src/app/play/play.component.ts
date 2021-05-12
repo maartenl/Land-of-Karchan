@@ -305,9 +305,15 @@ export class PlayComponent implements OnInit {
   }
 
   public lookAtItem(item: Item): boolean {
-    if (window.console) { console.log('lookAtItem ' + item); }
-    const itemarray = [item.adject1, item.adject2, item.adject3, name];
-    this.processCall('look at ' + itemarray.reduce((prev, cur) => prev + ' ' + cur) + ' ', true);
+    if (window.console) {
+      console.log('lookAtItem ');
+    }
+    if (window.console) {
+      console.log(item);
+    }
+    const adjectives = item.adjectives.replace(/,/g, ' ').split(" ").reduce((x, y) => x.trim() + ' ' + y.trim())
+    const description = adjectives + ' ' + item.name;
+    this.processCall('look at ' + description, true);
     return false;
   }
 
