@@ -90,10 +90,10 @@ public class ItemsBean
     item.setGetable(adminItem.getable);
     item.setDropable(adminItem.dropable);
     item.setVisible(adminItem.visible);
-//    item.getWieldable()
     item.setDescription(adminItem.description);
     item.setReaddescription(adminItem.readdescr);
-//    item.setWearable()
+    item.setWieldable(adminItem.wieldable);
+    item.setWearable(adminItem.wearable);
     item.setCopper(adminItem.copper);
     item.setWeight(adminItem.weight);
     item.setContainer(adminItem.container);
@@ -156,10 +156,22 @@ public class ItemsBean
     item.setGetable(adminItem.getable);
     item.setDropable(adminItem.dropable);
     item.setVisible(adminItem.visible);
-//    item.getWieldable()
+    try
+    {
+      item.setWearable(adminItem.wearable);
+    } catch (IllegalArgumentException e)
+    {
+      throw new MudWebException(name, "Wearable " + adminItem.wearable + " not proper.", Response.Status.BAD_REQUEST);
+    }
+    try
+    {
+      item.setWieldable(adminItem.wieldable);
+    } catch (IllegalArgumentException e)
+    {
+      throw new MudWebException(name, "Wieldable " + adminItem.wieldable + " not proper.", Response.Status.BAD_REQUEST);
+    }
     item.setDescription(adminItem.description);
     item.setReaddescription(adminItem.readdescr);
-//    item.setWearable()
     item.setCopper(adminItem.copper);
     item.setWeight(adminItem.weight);
     item.setContainer(adminItem.container);

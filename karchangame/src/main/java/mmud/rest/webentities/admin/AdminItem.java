@@ -1,6 +1,7 @@
 package mmud.rest.webentities.admin;
 
 import java.time.LocalDateTime;
+import java.util.stream.Collectors;
 import javax.json.bind.Jsonb;
 import javax.json.bind.JsonbBuilder;
 
@@ -23,10 +24,10 @@ public class AdminItem
   public Boolean getable;
   public Boolean dropable;
   public Boolean visible;
-  public Boolean wieldable;
+  public String wieldable;
   public String description;
   public String readdescr;
-  public Long wearable;
+  public String wearable;
   public Integer copper;
   public int weight;
   public Integer pasdefense;
@@ -64,12 +65,14 @@ public class AdminItem
     this.getable = item.getGetable();
     this.dropable = item.getDropable();
     this.visible = item.getVisible();
-    // TODO : wieldable
-//    this.wieldable = item.getWieldable();
+    this.wieldable = item.getWieldable().stream()
+      .map(Enum::name)
+      .collect(Collectors.joining(","));
     this.description = item.getDescription();
     this.readdescr = item.getReaddescription();
-    // TODO : wearable
-//    this.wearable = item.getWearable();
+    this.wearable = item.getWearable().stream()
+      .map(Enum::name)
+      .collect(Collectors.joining(","));
     this.copper = item.getCopper();
     this.weight = item.getWeight();
     this.pasdefense = item.getPasdefense();

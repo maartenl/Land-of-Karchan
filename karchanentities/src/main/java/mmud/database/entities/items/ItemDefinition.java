@@ -767,6 +767,11 @@ public class ItemDefinition implements Serializable, Ownage
     return Wearing.isIn(wearable, position);
   }
 
+  public void setWearable(String set)
+  {
+    this.wearable = Wearing.returnValue(set);
+  }
+
   boolean isWieldable(Wielding position)
   {
     return Wielding.isIn(wieldable, position);
@@ -803,4 +808,8 @@ public class ItemDefinition implements Serializable, Ownage
     return discriminator;
   }
 
+  public void setWieldable(String wieldable)
+  {
+    this.wieldable = Wielding.returnValue(wieldable);
+  }
 }

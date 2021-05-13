@@ -44,36 +44,47 @@
                 </fieldset>
                 <fieldset class="form-group">
                     <label for="title">Title</label>
-                    <input type="text" class="form-control" id="title" name="title" formControlName="title">
+                  <input type="text" class="form-control" id="title" name="title" formControlName="title">
                 </fieldset>
-                <fieldset class="form-group">
-                    <label for="description">Description</label>
-                    <textarea class="form-control" id="description" rows="13" formControlName="description"></textarea>
-                </fieldset>
-                <fieldset class="form-group">
-                    <label for="readdescr">Readable description</label>
-                    <textarea class="form-control" id="readdescr" rows="13" formControlName="readdescr"></textarea>
-                </fieldset>
-                <fieldset class="form-group">
-                    <label for="discriminator">Discriminator</label>
-                    <input type="text" class="form-control" id="discriminator" name="discriminator" formControlName="discriminator">
-                </fieldset>
-                <fieldset class="form-group">
-                    <label for="eatable">Eatable</label>
-                    <textarea class="form-control" id="eatable" rows="13" formControlName="eatable"></textarea>
-                </fieldset>
-                <fieldset class="form-group">
-                    <label for="drinkable">Drinkable</label>
-                    <textarea class="form-control" id="drinkable" rows="13" formControlName="drinkable"></textarea>
-                </fieldset>
-                <fieldset class="form-group">
-                    <label for="room">Room</label>
-                    <input type="number" class="form-control" id="room" name="room" formControlName="room">
-                </fieldset>
-                <fieldset class="form-group">
-                    <label for="wearable">Wearable</label>
-                  <input type="number" class="form-control" id="wearable" name="wearable" formControlName="wearable">
-                </fieldset>
+              <fieldset class="form-group">
+                <label for="description">Description</label>
+                <textarea class="form-control" id="description" rows="13" formControlName="description"></textarea>
+              </fieldset>
+              <fieldset class="form-group">
+                <label for="readdescr">Readable description</label>
+                <textarea class="form-control" id="readdescr" rows="13" formControlName="readdescr"></textarea>
+              </fieldset>
+              <fieldset class="form-group">
+                <label for="discriminator">Discriminator</label>
+                <input type="text" class="form-control" id="discriminator" name="discriminator"
+                       formControlName="discriminator">
+              </fieldset>
+              <fieldset class="form-group">
+                <label for="eatable">Eatable</label>
+                <textarea class="form-control" id="eatable" rows="13" formControlName="eatable"></textarea>
+              </fieldset>
+              <fieldset class="form-group">
+                <label for="drinkable">Drinkable</label>
+                <textarea class="form-control" id="drinkable" rows="13" formControlName="drinkable"></textarea>
+              </fieldset>
+              <fieldset class="form-group">
+                <label for="room">Room</label>
+                <input type="number" class="form-control" id="room" name="room" formControlName="room">
+              </fieldset>
+              <fieldset class="form-group">
+                <label for="wearable">Wearable</label>
+                <input type="text" class="form-control" id="wearable" name="wearable" formControlName="wearable">
+                <small id="contents" class="form-text text-muted">Possibilities are ON_HEAD, ON_NECK, ON_TORSO, ON_ARMS,
+                  ON_LEFT_WRIST, ON_RIGHT_WRIST, ON_LEFT_FINGER, ON_RIGHT_FINGER, ON_FEET, ON_HANDS, FLOATING_NEARBY,
+                  ON_WAIST, ON_LEGS, ON_EYES, ON_EARS, ABOUT_BODY.</small>
+              </fieldset>
+              <fieldset class="form-group">
+                <label for="wieldable">Wieldable</label>
+                <input type="text" class="form-control" id="wieldable" name="wieldable"
+                       formControlName="wieldable">
+                <small id="contents" class="form-text text-muted">Possibilities are WIELD_LEFT, WIELD_RIGHT,
+                  WIELD_BOTH.</small>
+              </fieldset>
               <fieldset class="form-group">
                 <label for="copper">Copper</label>
                 <input type="number" class="form-control" id="copper" name="copper" formControlName="copper">
@@ -98,8 +109,7 @@
               </fieldset>
               <fieldset class="form-group">
                 <label for="capacity">Capacity</label>
-                <input type="number" class="form-control" id="capacity" name="capacity"
-                       formControlName="capacity">
+                <input type="number" class="form-control" id="capacity" name="capacity" formControlName="capacity">
               </fieldset>
               <fieldset class="form-group form-check">
                 <input type="checkbox" class="form-check-input" id="getable" name="getable"
@@ -111,32 +121,26 @@
                        formControlName="dropable">
                 <label class="form-check-label" for="dropable">Dropable</label>
               </fieldset>
-                <fieldset class="form-group form-check">
-                    <input type="checkbox" class="form-check-input" id="bound" name="bound"
-                        formControlName="bound">
-                    <label class="form-check-label" for="bound">Bound</label>
-                </fieldset>
-                <fieldset class="form-group form-check">
-                    <input type="checkbox" class="form-check-input" id="visible" name="visible"
-                        formControlName="visible">
-                    <label class="form-check-label" for="visible">Visible</label>
-                </fieldset>
-                <fieldset class="form-group form-check">
-                    <input type="checkbox" class="form-check-input" id="wieldable" name="wieldable"
-                        formControlName="wieldable">
-                    <label class="form-check-label" for="wieldable">Wieldable</label>
-                </fieldset>
-                <fieldset class="form-group form-check">
-                    <input type="checkbox" class="form-check-input" id="lightable" name="lightable"
-                        formControlName="lightable">
-                    <label class="form-check-label" for="lightable">Lightable</label>
-                </fieldset>
-                <fieldset class="form-group form-check">
-                    <input type="checkbox" class="form-check-input" id="isopenable" name="isopenable"
-                        formControlName="isopenable">
-                    <label class="form-check-label" for="isopenable">Is openable</label>
-                </fieldset>
-                <fieldset class="form-group">
+              <fieldset class="form-group form-check">
+                <input type="checkbox" class="form-check-input" id="bound" name="bound" formControlName="bound">
+                <label class="form-check-label" for="bound">Bound</label>
+              </fieldset>
+              <fieldset class="form-group form-check">
+                <input type="checkbox" class="form-check-input" id="visible" name="visible"
+                       formControlName="visible">
+                <label class="form-check-label" for="visible">Visible</label>
+              </fieldset>
+              <fieldset class="form-group form-check">
+                <input type="checkbox" class="form-check-input" id="lightable" name="lightable"
+                       formControlName="lightable">
+                <label class="form-check-label" for="lightable">Lightable</label>
+              </fieldset>
+              <fieldset class="form-group form-check">
+                <input type="checkbox" class="form-check-input" id="isopenable" name="isopenable"
+                       formControlName="isopenable">
+                <label class="form-check-label" for="isopenable">Is openable</label>
+              </fieldset>
+              <fieldset class="form-group">
                     <label for="owner">Owner</label>
                     <input type="text" class="form-control" id="owner" name="owner" formControlName="owner">
                 </fieldset>
