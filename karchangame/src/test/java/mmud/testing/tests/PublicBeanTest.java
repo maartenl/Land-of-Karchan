@@ -32,6 +32,7 @@ import mmud.database.entities.game.BoardMessage;
 import mmud.database.entities.game.Guild;
 import mmud.database.entities.game.Room;
 import mmud.database.entities.web.CharacterInfo;
+import mmud.database.entities.web.Family;
 import mmud.exceptions.MudException;
 import mmud.exceptions.MudWebException;
 import mmud.rest.services.BoardBean;
@@ -41,6 +42,7 @@ import mmud.rest.webentities.Fortune;
 import mmud.rest.webentities.News;
 import mmud.rest.webentities.PublicGuild;
 import mmud.rest.webentities.PublicPerson;
+import mmud.services.IdleUsersService;
 import mmud.testing.TestingConstants;
 import mmud.testing.TestingUtils;
 import org.mockito.ArgumentMatchers;
@@ -295,6 +297,9 @@ public class PublicBeanTest
         return entityManager;
       }
     });
+    IdleUsersService idleUsersService = new IdleUsersService();
+    idleUsersService.resetUser("Hotblack");
+    publicBean.setIdleUsersService(idleUsersService);
     // Unit under test is exercised.
     List<PublicPerson> result = publicBean.who();
     // Verification code (JUnit/TestNG asserts), if any.
@@ -306,6 +311,7 @@ public class PublicBeanTest
     expected.area = "On board the Starship Heart of Gold";
     expected.min = 16L;
     expected.sec = 40L;
+    expected.idleTime = "";
     expected.title = "Guitar keyboard player of the rock group Disaster Area";
     compare(result.get(0), expected);
     expected = new PublicPerson();
@@ -315,6 +321,7 @@ public class PublicBeanTest
     expected.min = 33L;
     expected.sec = 20L;
     expected.title = "The Paranoid Android";
+    expected.idleTime = null;
     compare(result.get(1), expected);
   }
 
@@ -465,9 +472,9 @@ public class PublicBeanTest
   public void guildsEmptyTest()
   {
     LOGGER.fine("guildsEmptyTest");
-    Query query = mock(Query.class);
+    TypedQuery<Guild> query = mock(TypedQuery.class);
     EntityManager entityManager = mock(EntityManager.class);
-    when(entityManager.createNamedQuery("Guild.findAll")).thenReturn(query);
+    when(entityManager.createNamedQuery("Guild.findAll", Guild.class)).thenReturn(query);
     when(query.getResultList()).thenReturn(Collections.emptyList());
     PublicBean publicBean = new PublicBean()
     {
@@ -507,9 +514,9 @@ public class PublicBeanTest
     guild.setHomepage("http://www.scc.com");
     guild.setDescription("This is just a description");
     list.add(guild);
-    Query query = mock(Query.class);
+    TypedQuery<Guild> query = mock(TypedQuery.class);
     EntityManager entityManager = mock(EntityManager.class);
-    when(entityManager.createNamedQuery("Guild.findAll")).thenReturn(query);
+    when(entityManager.createNamedQuery("Guild.findAll", Guild.class)).thenReturn(query);
     when(query.getResultList()).thenReturn(list);
     PublicBean publicBean = new PublicBean()
     {
@@ -576,11 +583,11 @@ public class PublicBeanTest
     charinfo.setStoryline("An android");
     charinfo.setName("Marvin");
 
-    Query query = mock(Query.class);
+    TypedQuery<Family> query = mock(TypedQuery.class);
     EntityManager entityManager = mock(EntityManager.class);
     when(entityManager.find(User.class, "Marvin")).thenReturn(marvin);
     when(entityManager.find(CharacterInfo.class, marvin.getName())).thenReturn(charinfo);
-    when(entityManager.createNamedQuery("Family.findByName")).thenReturn(query);
+    when(entityManager.createNamedQuery("Family.findByName", Family.class)).thenReturn(query);
     when(query.getResultList()).thenReturn(Collections.emptyList());
 
     PublicBean publicBean = new PublicBean()
@@ -613,9 +620,9 @@ public class PublicBeanTest
   public void charactersheetsEmptyTest()
   {
     LOGGER.fine("charactersheetsEmptyTest");
-    Query query = mock(Query.class);
+    TypedQuery<String> query = mock(TypedQuery.class);
     EntityManager entityManager = mock(EntityManager.class);
-    when(entityManager.createNamedQuery("CharacterInfo.charactersheets")).thenReturn(query);
+    when(entityManager.createNamedQuery("CharacterInfo.charactersheets", String.class)).thenReturn(query);
     when(query.getResultList()).thenReturn(Collections.emptyList());
 
     PublicBean publicBean = new PublicBean()
@@ -640,9 +647,9 @@ public class PublicBeanTest
     final List<String> list = new ArrayList<>();
     list.add("Marvin");
     list.add("Hotblack");
-    Query query = mock(Query.class);
+    TypedQuery<String> query = mock(TypedQuery.class);
     EntityManager entityManager = mock(EntityManager.class);
-    when(entityManager.createNamedQuery("CharacterInfo.charactersheets")).thenReturn(query);
+    when(entityManager.createNamedQuery("CharacterInfo.charactersheets", String.class)).thenReturn(query);
     when(query.getResultList()).thenReturn(list);
     PublicBean publicBean = new PublicBean()
     {

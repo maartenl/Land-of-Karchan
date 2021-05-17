@@ -30,7 +30,6 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.annotation.security.DeclareRoles;
 import javax.inject.Inject;
-import org.eclipse.microprofile.config.inject.ConfigProperty;
 import javax.security.enterprise.SecurityContext;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -43,6 +42,7 @@ import com.google.common.annotations.VisibleForTesting;
 import freemarker.template.Template;
 import freemarker.template.TemplateException;
 import freemarker.template.TemplateNotFoundException;
+import org.eclipse.microprofile.config.inject.ConfigProperty;
 import org.karchan.menus.Menu;
 import org.karchan.menus.MenuFactory;
 import org.karchan.security.Roles;
@@ -60,7 +60,7 @@ public class WebsiteServlet extends HttpServlet
 
   private static final String VERSION_COOKIENAME = "karchanversion";
 
-  private static final String CURRENT_VERSION = "2.0.8";
+  private static final String CURRENT_VERSION = "2.0.10-SNAPSHOT";
 
   /**
    * For example: https://www.karchan.org. If it isn't configured, then no redirect takes place.

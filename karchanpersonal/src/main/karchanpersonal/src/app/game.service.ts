@@ -1,16 +1,13 @@
-import { Observable } from 'rxjs';
-import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
-import { HttpHeaders } from '@angular/common/http';
-import { HttpErrorResponse } from '@angular/common/http';
-import { CookieService } from 'ngx-cookie-service';
+import {Observable} from 'rxjs';
+import {Injectable} from '@angular/core';
+import {HttpClient, HttpErrorResponse, HttpHeaders} from '@angular/common/http';
+import {CookieService} from 'ngx-cookie-service';
 
-import { environment } from '../environments/environment';
+import {environment} from '../environments/environment';
 
-import { ErrorsService } from './errors.service';
-import { PlayerService } from './player.service';
-import { ErrorMessage } from './errors/errormessage.model';
-import { Display } from './play/display.model';
+import {ErrorsService} from './errors.service';
+import {PlayerService} from './player.service';
+import {Display} from './play/display.model';
 
 @Injectable({
   providedIn: 'root'
@@ -18,6 +15,8 @@ import { Display } from './play/display.model';
 export class GameService {
 
   gameUrl: string;
+
+  whoList: string;
 
   showLogonmessage = true;
 
@@ -29,6 +28,7 @@ export class GameService {
     private http: HttpClient,
     private errorsService: ErrorsService) {
     this.gameUrl = environment.GAME_URL;
+    this.whoList = environment.WHO_URL;
     this.isGaming = false;
   }
 
@@ -48,12 +48,16 @@ export class GameService {
 
   getLogonmessage(): Observable<string> {
     if (!environment.production) {
-      return this.http.get(this.getGameUrl() + 'logonmessage.json', { responseType: 'text' });
+      return this.http.get(this.getGameUrl() + 'logonmessage.json', {responseType: 'text'});
     }
     const url: string = this.getGameUrl() + 'logonmessage';
-    return this.http.get(url, { responseType: 'text' });
+    return this.http.get(url, {responseType: 'text'});
   }
 
+  getWho(): Observable<any> {
+    const url: string = this.whoList;
+    return this.http.get(url);
+  }
 
   public setIsGaming(isGaming: boolean) {
     this.isGaming = isGaming;

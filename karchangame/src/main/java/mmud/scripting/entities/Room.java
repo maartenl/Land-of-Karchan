@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 import java.util.logging.Logger;
+
 import mmud.database.entities.characters.Person;
 import mmud.exceptions.PersonNotFoundException;
 import mmud.services.CommunicationService;
@@ -234,19 +235,19 @@ public class Room
         CommunicationService.getCommunicationService(room).sendMessageExcl(target, message);
     }
 
-    public Item[] getItems(Integer itemdefid)
+    public Item[] getItems(Long itemdefid)
     {
-        LOGGER.entering(this.getClass().getName(), "getItems");
-        List<Item> result = new ArrayList<>();
-        final Set<mmud.database.entities.items.Item> items = room.getItems();
-        for (mmud.database.entities.items.Item item : items)
+      LOGGER.entering(this.getClass().getName(), "getItems " + itemdefid);
+      List<Item> result = new ArrayList<>();
+      final Set<mmud.database.entities.items.Item> items = room.getItems();
+      for (mmud.database.entities.items.Item item : items)
+      {
+        if (item.getItemDefinition().getId().equals(itemdefid))
         {
-            if (item.getItemDefinition().getId().equals(itemdefid))
-            {
-                result.add(new Item(item));
-            }
+          result.add(new Item(item));
         }
-        LOGGER.exiting(this.getClass().getName(), "getItems");
+        }
+      LOGGER.exiting(this.getClass().getName(), "getItems " + result.size());
         return result.toArray(new Item[result.size()]);
     }
 //Item addItem(integer)

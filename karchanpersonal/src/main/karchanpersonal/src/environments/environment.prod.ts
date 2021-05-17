@@ -14,5 +14,6 @@ export const environment = {
   WIKIPAGES_URL: '/karchangame/resources/wikipages',
   WIKIPAGES_PREVIEW_URL: '/wiki/preview',
   PICTURES_URL: '/karchangame/resources/private/[player]/pictures',
-  GAME_URL: '/karchangame/resources/game/[player]/'
+  GAME_URL: '/karchangame/resources/game/[player]/',
+  WHO_URL: '/karchangame/resources/public/who'
 };

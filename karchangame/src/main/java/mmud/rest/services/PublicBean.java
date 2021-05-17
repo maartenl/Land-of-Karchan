@@ -16,19 +16,18 @@
  */
 package mmud.rest.services;
 
-import java.time.Duration;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
-import javax.ejb.EJB;
 import javax.ejb.LocalBean;
 import javax.ejb.Stateless;
+import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
+import javax.persistence.TypedQuery;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
@@ -49,6 +48,7 @@ import mmud.rest.webentities.PublicFamily;
 import mmud.rest.webentities.PublicGuild;
 import mmud.rest.webentities.PublicPerson;
 import mmud.rest.webentities.admin.AdminAdmin;
+import mmud.services.IdleUsersService;
 
 /**
  * Contains all rest calls that are available to the world, without
@@ -63,11 +63,14 @@ import mmud.rest.webentities.admin.AdminAdmin;
 public class PublicBean
 {
 
-  @EJB
+  @Inject
   private BoardBean boardBean;
 
-  @EJB
+  @Inject
   private PersonBean personBean;
+
+  @Inject
+  private IdleUsersService idleUsersService;
 
   @PersistenceContext(unitName = "karchangamePU")
   private EntityManager em;
@@ -148,27 +151,8 @@ public class PublicBean
         {
           continue;
         }
-        PublicPerson publicPerson = new PublicPerson();
-        String name = person.getName();
-        if (person.getFrogging() > 0)
-        {
-          name = "a frog called " + name;
-        }
-        if (person.getJackassing() > 0)
-        {
-          name = "a jackass called " + name;
-        }
-        publicPerson.name = name;
-        publicPerson.title = person.getTitle();
-        publicPerson.sleep = (person.getSleep() != null && person.getSleep()) ? "sleeping" : "";
-        publicPerson.area = person.getRoom().getArea().getShortdescription();
-        if (person.getLastlogin() == null)
-        {
-          continue;
-        }
-        Duration between = Duration.between(person.getLastlogin(), LocalDateTime.now());
-        publicPerson.min = between.getSeconds() / 60;
-        publicPerson.sec = between.getSeconds() % 60;
+        String idleTime = idleUsersService.getIdleTimeInMinAndSeconds(person.getName());
+        PublicPerson publicPerson = new PublicPerson(person, idleTime);
         res.add(publicPerson);
       }
     } catch (Exception e)
@@ -177,6 +161,12 @@ public class PublicBean
     }
     LOGGER.finer("exiting who");
     return res;
+  }
+
+  @VisibleForTesting
+  public void setIdleUsersService(IdleUsersService idleUsersService)
+  {
+    this.idleUsersService = idleUsersService;
   }
 
   /**
@@ -270,7 +260,7 @@ public class PublicBean
     List<PublicGuild> res = new ArrayList<>();
     try
     {
-      Query query = getEntityManager().createNamedQuery("Guild.findAll");
+      TypedQuery<Guild> query = getEntityManager().createNamedQuery("Guild.findAll", Guild.class);
       List<Guild> list = query.getResultList();
 
       for (Guild guild : list)
@@ -340,7 +330,7 @@ public class PublicBean
       res.guild = person.getGuild().getTitle();
     }
 
-    Query query = getEntityManager().createNamedQuery("Family.findByName");
+    TypedQuery<Family> query = getEntityManager().createNamedQuery("Family.findByName", Family.class);
     query.setParameter("name", person.getName());
     List<Family> list = query.getResultList();
     for (Family fam : list)
@@ -377,7 +367,7 @@ public class PublicBean
     List<PublicPerson> res = new ArrayList<>();
     try
     {
-      Query query = getEntityManager().createNamedQuery("CharacterInfo.charactersheets");
+      TypedQuery<String> query = getEntityManager().createNamedQuery("CharacterInfo.charactersheets", String.class);
       List<String> list = query.getResultList();
 
       for (String name : list)

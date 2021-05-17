@@ -7,6 +7,7 @@ package mmud.database;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
 import mmud.exceptions.RegularExpressionException;
 
 /**
@@ -28,8 +29,8 @@ public class RegularExpressions
   public static final String ONLY_LETTERS_ONE_OR_MORE_REGEXP = "[a-zA-Z-]{1,}";
   public static final String ONLY_LETTERS_ONE_OR_MORE_MESSAGE = "Only letters and dash (-) are allowed and at least one letter is required.";
 
-  public static final String ONLY_LETTERS_REGEXP = "[a-zA-Z-]*";
-  public static final String ONLY_LETTERS_MESSAGE = "Only letters and dash (-) are allowed.";
+  public static final String ONLY_LETTERS_REGEXP = "[a-zA-Z-', ]*";
+  public static final String ONLY_LETTERS_MESSAGE = "Only letters, spaces, apostrophes, comma's and dashes (-) are allowed.";
 
   public static final String COMMENTS_REGEXP = "^[a-zA-Z0-9- ]*$";
   public static final String COMMENTS_MESSAGE = "For comments only letters, digits, dash and spaces are allowed.";
@@ -37,14 +38,18 @@ public class RegularExpressions
   public static final String WIKIPAGE_TITLE_REGEXP = "^[a-zA-Z0-9- ]*$";
   public static final String WIKIPAGE_TITLE_MESSAGE = "For the title of a wikipage only letters, digits, dash and spaces are allowed.";
 
+  private RegularExpressions()
+  {
+  }
+
   /**
    * Checks if the value matches the regular expression
    *
-   * @param regexp the regular expression
-   * @param value the value to verify
+   * @param regexp  the regular expression
+   * @param value   the value to verify
    * @param message a message to display if the regular expression does not
-   * check out. May be null, in which case the message becomes something generic
-   * like "value x should match regexp y.
+   *                check out. May be null, in which case the message becomes something generic
+   *                like "value x should match regexp y.
    * @throws RegularExpressionException a checked exception indicating failure.
    */
   public static void checkRegexp(String regexp, String value, String message) throws RegularExpressionException

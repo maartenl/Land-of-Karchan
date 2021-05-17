@@ -19,17 +19,14 @@ package mmud.rest.webentities;
 import javax.xml.bind.annotation.XmlRootElement;
 
 /**
- *
  * @author maartenl
  */
 @XmlRootElement
 public class PrivateItem
 {
 
-    public Integer amount;
-    public String adject1;
-    public String adject2;
-    public String adject3;
-    public String name;
+  public Integer amount;
+  public String adjectives;
+  public String name;
 
 }

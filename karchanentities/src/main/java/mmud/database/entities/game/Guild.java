@@ -16,19 +16,35 @@
  */
 package mmud.database.entities.game;
 
+import java.io.Serializable;
+import java.time.LocalDateTime;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
+import java.util.Set;
+import java.util.SortedSet;
+import javax.persistence.Basic;
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.Lob;
+import javax.persistence.ManyToOne;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
+import javax.persistence.OneToMany;
+import javax.persistence.OrderBy;
+import javax.persistence.Table;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Pattern;
+import javax.validation.constraints.Size;
+
 import mmud.database.entities.Ownage;
 import mmud.database.entities.characters.Person;
 import mmud.database.entities.characters.User;
 import mmud.exceptions.MudException;
 import org.eclipse.persistence.annotations.Customizer;
-
-import javax.persistence.*;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Pattern;
-import javax.validation.constraints.Size;
-import java.io.Serializable;
-import java.time.LocalDateTime;
-import java.util.*;
 
 /**
  * @author maartenl
@@ -350,7 +366,7 @@ public class Guild implements Serializable, DisplayInterface, Ownage
     return colour;
   }
 
-  public static final String DEFAULT_GUILDMESSAGE_COLOUR = "Green";
+  public static final String DEFAULT_GUILDMESSAGE_COLOUR = "green";
 
   /**
    * @param colour

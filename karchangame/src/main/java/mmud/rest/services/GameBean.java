@@ -566,8 +566,6 @@ public class GameBean
   /**
    * Retrieves the logon message.
    *
-   * @param requestContext used for retrieving the ip address/hostname of the
-   *                       player for determining ban-rules and the like.
    * @param name           the name of the character/player
    * @throws WebApplicationException <ul><li>BAD_REQUEST if an unexpected
    *                                 exception crops up.</li>
@@ -797,6 +795,7 @@ public class GameBean
   private PrivateDisplay gameMain(User person, String command) throws MudException
   {
     LOGGER.log(Level.FINER, "{0}.gameMain", this.getClass().getName());
+    command = command.replace("&#39;", "'");
     logBean.writeCommandLog(person, command);
     if (CommandFactory.noUserCommands())
     {

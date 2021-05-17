@@ -66,7 +66,7 @@ public class AdminCharacter
   public Integer drinkstats;
   public Integer eatstats;
   public String active;
-  public String lastlogin;
+  public LocalDateTime lastlogin;
   public LocalDateTime birth;
   public String god;
   public String guild;
@@ -167,6 +167,7 @@ public class AdminCharacter
     this.cgiUserAgent = item.getCgiUserAgent();
     this.rrribbits = item.getPunishment();
     this.heehaws = item.getPunishment();
+    this.lastlogin = item.getLastlogin();
     this.ooc = item.getOoc();
   }
 
@@ -200,7 +201,6 @@ public class AdminCharacter
     this.drinkstats = item.getDrinkstats();
     this.eatstats = item.getEatstats();
 //    this.   active=item.getA;
-//    this.   lastlogin=item.getLa;
     this.birth = item.getBirth();
     this.god = item.getGod().toString();
     this.strength = item.getStrength();

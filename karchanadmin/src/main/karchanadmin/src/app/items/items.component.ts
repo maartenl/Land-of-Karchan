@@ -1,13 +1,11 @@
-import { CollectionViewer, DataSource } from '@angular/cdk/collections';
-import { BehaviorSubject, Observable, of, Subscription } from 'rxjs';
-import { Router, ActivatedRoute, ParamMap } from '@angular/router';
-import { Component, OnInit, ViewChild } from '@angular/core';
-import { FormControl, FormGroup, FormBuilder } from '@angular/forms';
+import {ActivatedRoute} from '@angular/router';
+import {Component, OnInit} from '@angular/core';
+import {FormBuilder, FormGroup} from '@angular/forms';
 
-import { ItemsRestService } from '../items-rest.service';
-import { Item } from './item.model';
-import { AdminComponent } from '../admin/admin.component';
-import { ToastService } from '../toast.service';
+import {ItemsRestService} from '../items-rest.service';
+import {Item} from './item.model';
+import {AdminComponent} from '../admin/admin.component';
+import {ToastService} from '../toast.service';
 
 @Component({
   selector: 'app-items',
@@ -43,9 +41,7 @@ export class ItemsComponent extends AdminComponent<Item, number> implements OnIn
     super();
     const object = {
       id: null,
-      adject1: '',
-      adject2: '',
-      adject3: '',
+      adjectives: '',
       name: '',
       room: 0,
       manaincrease: 0,
@@ -60,10 +56,10 @@ export class ItemsComponent extends AdminComponent<Item, number> implements OnIn
       getable: true,
       dropable: true,
       visible: true,
-      wieldable: 0,
+      wieldable: '',
       description: '',
       readdescr: '',
-      wearable: true,
+      wearable: '',
       copper: 0,
       weight: 0,
       container: 0,
@@ -116,9 +112,7 @@ export class ItemsComponent extends AdminComponent<Item, number> implements OnIn
   setForm(item?: Item) {
     const object = item === undefined ? {
       id: null,
-      adject1: '',
-      adject2: '',
-      adject3: '',
+      adjectives: '',
       name: '',
       room: 0,
       manaincrease: 0,
@@ -133,10 +127,10 @@ export class ItemsComponent extends AdminComponent<Item, number> implements OnIn
       getable: true,
       dropable: true,
       visible: true,
-      wieldable: 0,
+      wieldable: '',
       description: '',
       readdescr: '',
-      wearable: true,
+      wearable: '',
       copper: 0,
       weight: 0,
       container: 0,
@@ -174,9 +168,7 @@ export class ItemsComponent extends AdminComponent<Item, number> implements OnIn
     this.item = item;
     this.form.reset({
       id: item.id,
-      adject1: item.adject1,
-      adject2: item.adject2,
-      adject3: item.adject3,
+      adjectives: item.adjectives,
       name: item.name,
       room: item.room,
       manaincrease: item.manaincrease,
@@ -222,9 +214,7 @@ export class ItemsComponent extends AdminComponent<Item, number> implements OnIn
     const owner = this.item === undefined || this.item === null ? null : this.item.owner;
     const saveItem: Item = new Item({
       id,
-      adject1: formModel.adject1 as string,
-      adject2: formModel.adject2 as string,
-      adject3: formModel.adject3 as string,
+      adjectives: formModel.adjectives as string,
       name: formModel.name as string,
       room: formModel.room as number,
       eatable: formModel.eatable as string,
@@ -281,61 +271,19 @@ export class ItemsComponent extends AdminComponent<Item, number> implements OnIn
     return false;
   }
 
-  sortByAdject1() {
+  sortByAdjectives() {
     if (window.console) {
-      console.log('sortByAdject1');
+      console.log('sortByAdjectives');
     }
     this.items = this.items.sort((a, b) => {
-      if (a.adject1 === b.adject1) {
+      if (a.adjectives === b.adjectives) {
         return 0;
-      }
-      else if (a.adject1 === null) {
+      } else if (a.adjectives === null) {
         return 1;
-      }
-      else if (b.adject1 === null) {
+      } else if (b.adjectives === null) {
         return -1;
       }
-      return a.adject1.localeCompare(b.adject1)
-    });
-    this.items = [...this.items];
-    return false;
-  }
-
-  sortByAdject2() {
-    if (window.console) {
-      console.log('sortByAdject2');
-    }
-    this.items = this.items.sort((a, b) => {
-      if (a.adject2 === b.adject2) {
-        return 0;
-      }
-      else if (a.adject2 === null) {
-        return 1;
-      }
-      else if (b.adject2 === null) {
-        return -1;
-      }
-      return a.adject2.localeCompare(b.adject2)
-    });
-    this.items = [...this.items];
-    return false;
-  }
-
-  sortByAdject3() {
-    if (window.console) {
-      console.log('sortByAdject3');
-    }
-    this.items = this.items.sort((a, b) => {
-      if (a.adject3 === b.adject3) {
-        return 0;
-      }
-      else if (a.adject3 === null) {
-        return 1;
-      }
-      else if (b.adject3 === null) {
-        return -1;
-      }
-      return a.adject3.localeCompare(b.adject3)
+      return a.adjectives.localeCompare(b.adjectives)
     });
     this.items = [...this.items];
     return false;

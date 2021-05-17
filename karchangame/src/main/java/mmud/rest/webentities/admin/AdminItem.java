@@ -1,20 +1,19 @@
 package mmud.rest.webentities.admin;
 
-import mmud.database.entities.items.ItemDefinition;
-
+import java.time.LocalDateTime;
+import java.util.stream.Collectors;
 import javax.json.bind.Jsonb;
 import javax.json.bind.JsonbBuilder;
-import java.time.LocalDateTime;
+
+import mmud.database.entities.items.ItemDefinition;
 
 public class AdminItem
 {
-  public static final String GET_QUERY = "select json_object(\"id\", id, \"name\", name, \"adject1\", adject1, \"adject2\", adject2, \"adject3\", adject3, \"owner\", owner, \"creation\", creation) from mm_items order by id";
+  public static final String GET_QUERY = "select json_object(\"id\", id, \"name\", name, \"adjectives\", adjectives, \"owner\", owner, \"creation\", creation) from mm_items order by id";
 
   public Long id;
   public String name;
-  public String adject1;
-  public String adject2;
-  public String adject3;
+  public String adjectives;
   public Integer manaincrease;
   public Integer hitincrease;
   public Integer vitalincrease;
@@ -25,10 +24,10 @@ public class AdminItem
   public Boolean getable;
   public Boolean dropable;
   public Boolean visible;
-  public Boolean wieldable;
+  public String wieldable;
   public String description;
   public String readdescr;
-  public Long wearable;
+  public String wearable;
   public Integer copper;
   public int weight;
   public Integer pasdefense;
@@ -55,9 +54,7 @@ public class AdminItem
   {
     this.id = item.getId();
     this.name = item.getName();
-    this.adject1 = item.getAdject1();
-    this.adject2 = item.getAdject2();
-    this.adject3 = item.getAdject3();
+    this.adjectives = item.getAdjectives();
     this.manaincrease = item.getManaincrease();
     this.hitincrease = item.getHitincrease();
     this.vitalincrease = item.getVitalincrease();
@@ -68,12 +65,14 @@ public class AdminItem
     this.getable = item.getGetable();
     this.dropable = item.getDropable();
     this.visible = item.getVisible();
-    // TODO : wieldable
-//    this.wieldable = item.getWieldable();
+    this.wieldable = item.getWieldable().stream()
+      .map(Enum::name)
+      .collect(Collectors.joining(","));
     this.description = item.getDescription();
     this.readdescr = item.getReaddescription();
-    // TODO : wearable
-//    this.wearable = item.getWearable();
+    this.wearable = item.getWearable().stream()
+      .map(Enum::name)
+      .collect(Collectors.joining(","));
     this.copper = item.getCopper();
     this.weight = item.getWeight();
     this.pasdefense = item.getPasdefense();
@@ -103,9 +102,7 @@ public class AdminItem
     return "AdminItem{" +
       "id=" + id +
       ", name='" + name + '\'' +
-      ", adject1='" + adject1 + '\'' +
-      ", adject2='" + adject2 + '\'' +
-      ", adject3='" + adject3 + '\'' +
+      ", adjectives='" + adjectives + '\'' +
       ", manaincrease=" + manaincrease +
       ", hitincrease=" + hitincrease +
       ", vitalincrease=" + vitalincrease +

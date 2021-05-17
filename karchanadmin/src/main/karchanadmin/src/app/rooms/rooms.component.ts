@@ -1,12 +1,12 @@
-import { Router, ActivatedRoute, ParamMap } from '@angular/router';
-import { Component, OnInit, ViewChild } from '@angular/core';
-import { FormControl, FormGroup, FormBuilder } from '@angular/forms';
+import {ActivatedRoute} from '@angular/router';
+import {Component, OnInit} from '@angular/core';
+import {FormBuilder, FormGroup} from '@angular/forms';
 
-import { AdminComponent } from '../admin/admin.component'
-import { RoomsRestService } from '../rooms-rest.service';
-import { Room } from './room.model';
-import { Command } from '../commands/command.model';
-import { ToastService } from '../toast.service';
+import {AdminComponent} from '../admin/admin.component'
+import {RoomsRestService} from '../rooms-rest.service';
+import {Room} from './room.model';
+import {Command} from '../commands/command.model';
+import {ToastService} from '../toast.service';
 
 @Component({
   selector: 'app-rooms',
@@ -76,8 +76,8 @@ export class RoomsComponent extends AdminComponent<Room, number> implements OnIn
       owner: null,
       area: null
     };
-      this.form = this.formBuilder.group(object);
-          this.item = this.makeItem();
+    this.form = this.formBuilder.group(object);
+    this.item = this.makeItem();
     this.getItems();
   }
 

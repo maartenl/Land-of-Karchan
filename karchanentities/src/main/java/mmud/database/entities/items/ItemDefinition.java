@@ -19,7 +19,6 @@ package mmud.database.entities.items;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.Collection;
-
 import java.util.List;
 import java.util.Set;
 import javax.persistence.Basic;
@@ -34,8 +33,6 @@ import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
@@ -44,7 +41,6 @@ import mmud.database.OutputFormatter;
 import mmud.database.RegularExpressions;
 import mmud.database.entities.Ownage;
 import mmud.database.entities.game.Admin;
-import mmud.database.entities.game.Mail;
 import mmud.database.enums.Wearing;
 import mmud.database.enums.Wielding;
 
@@ -82,19 +78,9 @@ public class ItemDefinition implements Serializable, Ownage
   private String name;
 
   @Size(max = 30)
-  @Column(name = "adject1")
+  @Column(name = "adjectives")
   @Pattern(regexp = RegularExpressions.ONLY_LETTERS_REGEXP, message = RegularExpressions.ONLY_LETTERS_MESSAGE)
-  private String adject1;
-
-  @Size(max = 30)
-  @Column(name = "adject2")
-  @Pattern(regexp = RegularExpressions.ONLY_LETTERS_REGEXP, message = RegularExpressions.ONLY_LETTERS_MESSAGE)
-  private String adject2;
-
-  @Size(max = 30)
-  @Column(name = "adject3")
-  @Pattern(regexp = RegularExpressions.ONLY_LETTERS_REGEXP, message = RegularExpressions.ONLY_LETTERS_MESSAGE)
-  private String adject3;
+  private String adjectives;
 
   @Column(name = "manaincrease")
   private Integer manaincrease;
@@ -278,46 +264,16 @@ public class ItemDefinition implements Serializable, Ownage
   /**
    * Return the first adjective.
    *
-   * @return String containing the first adjective of the item definition.
+   * @return String containing the adjectives of the item definition, for example "dusty grey-fur trimmed long white cloak".
    */
-  public String getAdject1()
+  public String getAdjectives()
   {
-    return adject1;
+    return adjectives;
   }
 
-  public void setAdject1(String adject1)
+  public void setAdjectives(String adjectives)
   {
-    this.adject1 = adject1;
-  }
-
-  /**
-   * Return the second adjective.
-   *
-   * @return String containing the second adjective of the item definition.
-   */
-  public String getAdject2()
-  {
-    return adject2;
-  }
-
-  public void setAdject2(String adject2)
-  {
-    this.adject2 = adject2;
-  }
-
-  /**
-   * Return the third adjective.
-   *
-   * @return String containing the third adjective of the item definition.
-   */
-  public String getAdject3()
-  {
-    return adject3;
-  }
-
-  public void setAdject3(String adject3)
-  {
-    this.adject3 = adject3;
+    this.adjectives = adjectives;
   }
 
   public Integer getManaincrease()
@@ -757,13 +713,13 @@ public class ItemDefinition implements Serializable, Ownage
   }
 
   /**
-   * See for more information {@link Constants#getDescriptionOfItem(java.lang.String, java.lang.String, java.lang.String, java.lang.String, boolean)}.
+   * See for more information {@link OutputFormatter#getDescriptionOfItem(String, String, boolean)}.
    *
    * @return String containing a longdescription of the item, made from concatenating adjectives and the name.
    */
   public String getShortDescription()
   {
-    return OutputFormatter.getDescriptionOfItem(getAdject1(), getAdject2(), getAdject3(), getName(), true);
+    return OutputFormatter.getDescriptionOfItem(getAdjectives(), getName(), true);
   }
 
   /**
@@ -777,7 +733,7 @@ public class ItemDefinition implements Serializable, Ownage
    */
   boolean isDescribedBy(List<String> parsed)
   {
-    return OutputFormatter.compareItemDescription(parsed, getAdject1(), getAdject2(), getAdject3(), getName());
+    return OutputFormatter.compareItemDescription(parsed, getAdjectives(), getName());
   }
 
   public String getImage()
@@ -809,6 +765,11 @@ public class ItemDefinition implements Serializable, Ownage
   boolean isWearable(Wearing position)
   {
     return Wearing.isIn(wearable, position);
+  }
+
+  public void setWearable(String set)
+  {
+    this.wearable = Wearing.returnValue(set);
   }
 
   boolean isWieldable(Wielding position)
@@ -847,4 +808,8 @@ public class ItemDefinition implements Serializable, Ownage
     return discriminator;
   }
 
+  public void setWieldable(String wieldable)
+  {
+    this.wieldable = Wielding.returnValue(wieldable);
+  }
 }

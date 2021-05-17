@@ -1,15 +1,13 @@
-import { Observable } from 'rxjs';
-import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
-import { HttpErrorResponse } from '@angular/common/http';
+import {Observable} from 'rxjs';
+import {Injectable} from '@angular/core';
+import {HttpClient, HttpErrorResponse} from '@angular/common/http';
 
-import { catchError, map, tap } from 'rxjs/operators';
+import {catchError} from 'rxjs/operators';
 
-import { environment } from '../environments/environment';
+import {environment} from '../environments/environment';
 
-import { ErrorsService } from './errors.service';
-import { Blog } from './blogs/blog.model';
-import { ErrorMessage } from './errors/errormessage.model';
+import {ErrorsService} from './errors.service';
+import {Blog} from './blogs/blog.model';
 
 @Injectable({
   providedIn: 'root'
@@ -42,15 +40,15 @@ export class BlogService {
   }
 
   public updateBlog(blog: Blog): any {
-    if (blog.id !== undefined) {
+    if (blog.id !== undefined && blog.id !== null) {
       // update
       return this.http.put<Blog[]>(this.url + '/' + blog.id, blog)
-      .pipe(
-        catchError(err => {
-          this.handleError(err);
-          return [];
-        })
-      );
+        .pipe(
+          catchError(err => {
+            this.handleError(err);
+            return [];
+          })
+        );
     }
     // new
     return this.http.post(this.url, blog)

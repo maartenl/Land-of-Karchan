@@ -5,11 +5,9 @@ export class Person {
 }
 
 export class Item {
-    adject1: string = '';
-    adject2: string = '';
-    adject3: string = '';
-    amount: number = 1;
-    name: string = '';
+  adjectives: string = '';
+  amount: number = 1;
+  name: string = '';
 }
 
 export class Log {
@@ -43,19 +41,44 @@ export class Display {
     }
 
     set(display: Display) {
-        this.body = display.body;
-        this.image = display.image;
-        this.items = display.items;
-        this.persons = display.persons;
-        this.north = display.north;
-        this.north = display.north;
-        this.south = display.south;
-        this.up = display.up;
-        this.down = display.down;
-        this.east = display.east;
-        this.west = display.west;
-        this.title = display.title;
+      this.body = display.body;
+      this.image = display.image;
+      this.items = display.items;
+      this.persons = display.persons;
+      this.north = display.north;
+      this.north = display.north;
+      this.south = display.south;
+      this.up = display.up;
+      this.down = display.down;
+      this.east = display.east;
+      this.west = display.west;
+      this.title = display.title;
     }
 
+}
+
+/**
+ * Used by the wholist command.
+ */
+export class WhoPerson {
+  name: string = '';
+  title: string = '';
+  area: string = '';
+  sleep: string = '';
+  /**
+   * Looks for example like "(23 min, 45 sec idle)"
+   */
+  idleTime: string = '';
+
+  constructor(object?: any) {
+    if (object === undefined) {
+      return;
+    }
+    this.name = object.name;
+    this.title = object.title;
+    this.area = object.area;
+    this.sleep = object.sleep;
+    this.idleTime = object.idleTime;
+  }
 }
 

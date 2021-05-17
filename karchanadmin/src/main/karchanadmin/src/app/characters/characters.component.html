@@ -7,46 +7,46 @@
                         #searchowner (keyup.enter)="updateOwnerSearch(searchowner.value)"
                         (blur)="updateOwnerSearch(searchowner.value)">
                 </fieldset>
-                <fieldset class="form-group">
-                    <input type="text" class="form-control" id="nameSearch" name="nameSearch" placeholder="Name"
-                        #searchname (keyup.enter)="updateNameSearch(searchname.value)"
-                        (blur)="updateNameSearch(searchname.value)">
-                </fieldset>
-                <fieldset class="form-group">
-                    <input type="text" class="form-control" id="ipSearch" name="ipSearch" placeholder="Address"
-                        #searchip (keyup.enter)="updateIpSearch(searchip.value)"
-                        (blur)="updateIpSearch(searchip.value)">
-                </fieldset>
-                <fieldset class="form-group">
-                    <input type="text" class="form-control" id="roomSearch" name="roomSearch"
-                        placeholder="Roomnr" #searchroom
-                        (keyup.enter)="updateRoomSearch(searchroom.value)"
-                        (blur)="updateRoomSearch(searchroom.value)">
-                </fieldset>
+              <fieldset class="form-group">
+                <input type="text" class="form-control" id="nameSearch" name="nameSearch" placeholder="Name"
+                       #searchname (keyup.enter)="updateNameSearch(searchname.value)"
+                       (blur)="updateNameSearch(searchname.value)">
+              </fieldset>
+              <fieldset class="form-group">
+                <input type="text" class="form-control" id="ipSearch" name="ipSearch" placeholder="Address"
+                       #searchip (keyup.enter)="updateIpSearch(searchip.value)"
+                       (blur)="updateIpSearch(searchip.value)">
+              </fieldset>
+              <fieldset class="form-group">
+                <input type="text" class="form-control" id="roomSearch" name="roomSearch" placeholder="Roomnr"
+                       #searchroom (keyup.enter)="updateRoomSearch(searchroom.value)"
+                       (blur)="updateRoomSearch(searchroom.value)">
+              </fieldset>
             </form>
         </div>
     </div>
-</div><div class="container-fluid">
-    <div class="row row-content">
-        <div class="col-xs-12 col-xl-6">
-            <h1>Character {{ item === undefined || item === null ? '-' : item?.name }}</h1>
-            <form [formGroup]="form" novalidate>
-                <fieldset class="form-group">
-                    <label for="name">Name</label>
-                    <input type="text" [readonly]="item !== undefined" class="form-control" id="name" name="name"
-                        formControlName="name">
-                </fieldset>
-                <fieldset class="form-group">
-                    <label for="image">Image</label>
-                    <input type="text" class="form-control" id="image" name="image" formControlName="image">
-                </fieldset>
-                <fieldset class="form-group">
-                    <div class="card" *ngIf="item !== undefined && item !== null && item.title !== undefined">
-                        <div class="card-text" [innerHTML]="item.title">
-                        </div>
-                    </div>
-                    <label for="title">Title</label>
-                    <input type="text" class="form-control" id="title" name="title" formControlName="title">
+</div>
+<div class="container-fluid">
+  <div class="row row-content">
+    <div class="col-xs-12 col-xl-6">
+      <h1>Character {{ item === undefined || item === null ? '-' : item?.name }}</h1>
+      <form [formGroup]="form" novalidate>
+        <fieldset class="form-group">
+          <label for="name">Name</label>
+          <input type="text" [readonly]="item !== undefined" class="form-control" id="name" name="name"
+                 formControlName="name">
+        </fieldset>
+        <fieldset class="form-group">
+          <label for="image">Image</label>
+          <input type="text" class="form-control" id="image" name="image" formControlName="image">
+        </fieldset>
+        <fieldset class="form-group">
+          <div class="card" *ngIf="item !== undefined && item !== null && item.title !== undefined">
+            <div class="card-text" [innerHTML]="item.title">
+            </div>
+          </div>
+          <label for="title">Title</label>
+          <input type="text" class="form-control" id="title" name="title" formControlName="title">
                 </fieldset>
                 <fieldset class="form-group">
                     <label for="room">Room</label>
@@ -97,59 +97,121 @@
                 </fieldset>
                 <fieldset class="form-group">
                     <label for="face">Face</label>
-                    <input type="text" class="form-control" id="face" name="face" formControlName="face">
+                  <input type="text" class="form-control" id="face" name="face" formControlName="face">
                 </fieldset>
-                <fieldset class="form-group">
-                    <label for="hair">Hair</label>
-                    <input type="text" class="form-control" id="hair" name="hair" formControlName="hair">
-                </fieldset>
-                <fieldset class="form-group">
-                    <label for="beard">Beard</label>
-                    <input type="text" class="form-control" id="beard" name="beard" formControlName="beard">
-                </fieldset>
-                <fieldset class="form-group">
-                    <label for="arm">Arm</label>
-                    <input type="text" class="form-control" id="arm" name="arm" formControlName="arm">
-                </fieldset>
-                <fieldset class="form-group">
-                    <label for="leg">Leg</label>
-                    <input type="text" class="form-control" id="leg" name="leg" formControlName="leg">
-                </fieldset>
-                <fieldset class="form-group">
-                    <label for="copper">Copper</label>
-                    <input readonly type="number" class="form-control" id="copper" name="copper"
-                        formControlName="copper">
-                </fieldset>
-                <fieldset class="form-group">
-                    <label for="address">Address</label>
-                    <input type="text" class="form-control" id="address" name="address" formControlName="address">
-                </fieldset>
-                <fieldset class="form-group">
-                    <label for="realname">Realname</label>
-                    <input type="text" class="form-control" id="realname" name="realname" formControlName="realname">
-                </fieldset>
-                <fieldset class="form-group">
-                    <label for="address">Address</label>
-                    <input type="text" class="form-control" id="address" name="address" formControlName="address">
-                </fieldset>
-                <fieldset class="form-group">
-                    <label for="notes">Notes</label>
-                    <textarea class="form-control" id="notes" rows="13" formControlName="notes"></textarea>
-                </fieldset>
-                <fieldset class="form-group">
-                    <label for="owner">Owner</label>
-                    <input type="text" class="form-control" id="owner" name="owner" formControlName="owner">
-                </fieldset>
-                <div class="col-xs-12 col-sm-12 text-right">
-                    <button type="submit" [disabled]="form.pristine" class="mx-1 btn btn-primary"
-                        (click)="updateItem()">Update</button>
-                    <button type="submit" [disabled]="form.pristine" class="mx-1 btn btn-primary"
-                        (click)="createItem()">Create</button>
-                    <button type="button" class="mx-1 btn btn-secondary" (click)="deleteItem()">Delete</button>
-                    <button type="reset" class="mx-1 btn btn-secondary" (click)="cancel()">Cancel</button>
-                </div>
-            </form>
+        <fieldset class="form-group">
+          <label for="hair">Hair</label>
+          <input type="text" class="form-control" id="hair" name="hair" formControlName="hair">
+        </fieldset>
+        <fieldset class="form-group">
+          <label for="beard">Beard</label>
+          <input type="text" class="form-control" id="beard" name="beard" formControlName="beard">
+        </fieldset>
+        <fieldset class="form-group">
+          <label for="arm">Arm</label>
+          <input type="text" class="form-control" id="arm" name="arm" formControlName="arm">
+        </fieldset>
+        <fieldset class="form-group">
+          <label for="leg">Leg</label>
+          <input type="text" class="form-control" id="leg" name="leg" formControlName="leg">
+        </fieldset>
+        <fieldset class="form-group">
+          <label for="birth">Birthdate</label>
+          <input readonly type="text" class="form-control" id="birth" name="birth" formControlName="birth">
+        </fieldset>
+        <fieldset class="form-group">
+          <label for="lastlogin">Last time logged in</label>
+          <input readonly type="text" class="form-control" id="lastlogin" name="lastlogin"
+                 formControlName="lastlogin">
+        </fieldset>
+        <fieldset class="form-group">
+          <label for="copper">Copper</label>
+          <input readonly type="number" class="form-control" id="copper" name="copper"
+                 formControlName="copper">
+        </fieldset>
+        <fieldset class="form-group">
+          <label for="address">Address</label>
+          <input type="text" readonly class="form-control" id="address" name="address"
+                 formControlName="address">
+        </fieldset>
+        <fieldset class="form-group">
+          <label for="realname">Real name</label>
+          <input type="text" class="form-control" id="realname" name="realname" formControlName="realname">
+        </fieldset>
+        <fieldset class="form-group">
+          <label for="notes">Notes</label>
+          <textarea class="form-control" id="notes" rows="13" formControlName="notes"></textarea>
+        </fieldset>
+        <fieldset class="form-group">
+          <label for="owner">Owner</label>
+          <input type="text" class="form-control" id="owner" name="owner" formControlName="owner">
+        </fieldset>
+        <div class="col-xs-12 col-sm-12 text-right">
+          <button type="submit" [disabled]="form.pristine" class="mx-1 btn btn-primary"
+                  (click)="updateItem()">Update
+          </button>
+          <button type="submit" [disabled]="form.pristine" class="mx-1 btn btn-primary"
+                  (click)="createItem()">Create
+          </button>
+          <button type="button" class="mx-1 btn btn-secondary" (click)="deleteItem()">Delete</button>
+          <button type="reset" class="mx-1 btn btn-secondary" (click)="cancel()">Cancel</button>
         </div>
+      </form>
+      <h2>Attributes</h2>
+      <table class="table table-sm table-hover">
+        <thead>
+        <tr>
+          <th scope="col">Id</th>
+          <th scope="col">Name</th>
+          <th scope="col">Value</th>
+          <th scope="col">Type</th>
+          <th scope="col"></th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr *ngFor="let attribute of attributes" (click)="setAttribute(attribute)">
+          <td *ngIf="attribute">{{ attribute.id }}</td>
+          <td *ngIf="attribute">
+            <a [routerLink]="['/attributes/', attribute.name]">{{ attribute.name }}</a></td>
+          <td *ngIf="attribute">{{ attribute.value }}</td>
+          <td *ngIf="attribute">{{ attribute.valueType }}</td>
+          <td *ngIf="attribute">
+            <a href="#" (click)="deleteAttribute(attribute)">
+              <i class="material-icons align-middle">delete</i>
+            </a>
+          </td>
+        </tr>
+        </tbody>
+      </table>
+      <h1>Attribute {{ attribute === undefined || attribute === null ? '-' : attribute?.name }}</h1>
+      <form [formGroup]="attributeForm" novalidate>
+        <fieldset class="form-group">
+          <label for="id">Id</label>
+          <input type="number" readonly class="form-control" id="id" name="id" formControlName="id">
+        </fieldset>
+        <fieldset class="form-group">
+          <label for="name">Name</label>
+          <input type="text" class="form-control" id="name" name="name" formControlName="name">
+        </fieldset>
+        <fieldset class="form-group">
+          <label for="value">Value</label>
+          <input type="text" class="form-control" id="value" name="value" formControlName="value">
+        </fieldset>
+        <fieldset class="form-group">
+          <label for="valueType">Type</label>
+          <input type="text" class="form-control" id="valueType" name="valueType" formControlName="valueType">
+        </fieldset>
+        <div class="col-xs-12 col-sm-12 text-right">
+          <button type="submit" [disabled]="attributeForm.pristine" class="mx-1 btn btn-primary"
+                  (click)="updateAttribute()">Update
+          </button>
+          <button type="submit" [disabled]="attributeForm.pristine" class="mx-1 btn btn-primary"
+                  (click)="createAttribute()">Create
+          </button>
+          <button type="reset" class="mx-1 btn btn-secondary" (click)="cancelAttribute()">Cancel</button>
+        </div>
+      </form>
+    </div>
         <div class="col-xs-12 col-xl-6">
             <button type="button" class="mx-1 btn btn-secondary" (click)="refresh()">Refresh</button>
             <cdk-virtual-scroll-viewport style="height: 400px;" [itemSize]="33">

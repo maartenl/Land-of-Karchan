@@ -24,15 +24,16 @@ package mmud.database.entities.game;
 public interface Attribute
 {
 
-  public Long getAttributeId();
+  Long getAttributeId();
 
-  public String getName();
+  String getName();
 
-  public String getValue();
+  String getValue();
 
-  public void setValue(String value);
+  void setValue(String value);
 
-  public String getValueType();
+  String getValueType();
 
-  public void setValueType(String valueType);
+  void setValueType(String valueType);
+
 }

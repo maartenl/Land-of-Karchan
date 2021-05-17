@@ -23,9 +23,14 @@ import java.util.Map;
 import java.util.TreeMap;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.logging.Logger;
+
 import mmud.Utils;
 import mmud.commands.communication.AskCommand;
+import mmud.commands.communication.ChatCommand;
+import mmud.commands.communication.CreateChatCommand;
 import mmud.commands.communication.CryCommand;
+import mmud.commands.communication.JoinChatCommand;
+import mmud.commands.communication.LeaveChatCommand;
 import mmud.commands.communication.OocCommand;
 import mmud.commands.communication.SayCommand;
 import mmud.commands.communication.ScreamCommand;
@@ -130,13 +135,19 @@ public class CommandFactory
     theCommandStructure.put("say", () -> new SayCommand("say (to (\\w)+ )?.+"));
     theCommandStructure.put("macro", () -> new MacroCommand("macro( .+)?"));
     theCommandStructure.put("sing", () -> new SingCommand("sing (to (\\w)+ )?.+"));
+
+    theCommandStructure.put("joinchat", () -> new JoinChatCommand("joinchat (\\w)+"));
+    theCommandStructure.put("chat", () -> new ChatCommand("chat (\\w)+ .+"));
+    theCommandStructure.put("createchat", () -> new CreateChatCommand("createchat (\\w)+ (\\w)+ (\\w)+"));
+    theCommandStructure.put("leavechat", () -> new LeaveChatCommand("leavechat (\\w)+"));
+
     theCommandStructure.put("cry", () -> new CryCommand("cry (to (\\w)+ )?.+"));
     theCommandStructure.put("shout", () -> new ShoutCommand(
-            "shout (to (\\w )+)?.+"));
+      "shout (to (\\w )+)?.+"));
     theCommandStructure.put("scream", () -> new ScreamCommand(
-            "scream (to (\\w )+)?.+"));
+      "scream (to (\\w )+)?.+"));
     theCommandStructure.put("whisper", () -> new WhisperCommand(
-            "whisper (to (\\w)+ )?.+"));
+      "whisper (to (\\w)+ )?.+"));
     theCommandStructure.put("clear", () -> new ClearCommand("clear"));
     theCommandStructure.put("time", () -> new TimeCommand("time"));
     theCommandStructure.put("date", () -> new DateCommand("date"));
@@ -171,53 +182,53 @@ public class CommandFactory
     theCommandStructure.put("inventory", () -> new InventoryCommand("inventory"));
     theCommandStructure.put("i", () -> new InventoryCommand("i"));
     theCommandStructure.put("drink", () -> new DrinkCommand(
-            "drink( (\\w|-)+){1,4}"));
-    theCommandStructure.put("eat", () -> new EatCommand("eat( (\\w|-)+){1,4}"));
-    theCommandStructure.put("destroy", () -> new DestroyCommand("destroy( (\\w|-)+){1,4}"));
+      "drink( (\\w|-)+){1,}"));
+    theCommandStructure.put("eat", () -> new EatCommand("eat( (\\w|-)+){1,}"));
+    theCommandStructure.put("destroy", () -> new DestroyCommand("destroy( (\\w|-)+){1,}"));
     theCommandStructure.put("wear", () -> new WearCommand(
-            "wear( (\\w|-)+){1,4} on (\\w)+"));
+      "wear( (\\w|-)+){1,} on (\\w)+"));
     theCommandStructure.put("remove", () -> new UnwearCommand(
-            "remove from (\\w)+"));
+      "remove from (\\w)+"));
     theCommandStructure.put("undress", () -> new UndressCommand(
-            "undress"));
+      "undress"));
     theCommandStructure.put("disarm", () -> new DisarmCommand(
-            "disarm"));
+      "disarm"));
     theCommandStructure.put("wield", () -> new WieldCommand(
-            "wield( (\\w|-)+){1,4} with (\\w)+"));
+      "wield( (\\w|-)+){1,} with (\\w)+"));
     theCommandStructure.put("unwield", () -> new UnwieldCommand(
-            "unwield from (\\w)+"));
-    theCommandStructure.put("drop", () -> new DropCommand("drop( (\\w|-)+){1,4}"));
-    theCommandStructure.put("get", () -> new GetCommand("get( (\\w|-)+){1,4}"));
+      "unwield from (\\w)+"));
+    theCommandStructure.put("drop", () -> new DropCommand("drop( (\\w|-)+){1,}"));
+    theCommandStructure.put("get", () -> new GetCommand("get( (\\w|-)+){1,}"));
     theCommandStructure.put("put", () -> new PutCommand(
-            "put( (\\w|-)+){1,4} in( (\\w|-)+){1,4}"));
+      "put( (\\w|-)+){1,} in( (\\w|-)+){1,}"));
     theCommandStructure.put("retrieve", () -> new RetrieveCommand(
-            "retrieve( (\\w|-)+){1,4} from( (\\w|-)+){1,4}"));
+      "retrieve( (\\w|-)+){1,} from( (\\w|-)+){1,}"));
     theCommandStructure.put("lock", () -> new LockCommand(
-            "lock( (\\w|-)+){1,4} with( (\\w|-)+){1,4}"));
+      "lock( (\\w|-)+){1,} with( (\\w|-)+){1,}"));
     theCommandStructure.put("unlock", () -> new UnlockCommand(
-            "unlock( (\\w|-)+){1,4} with( (\\w|-)+){1,4}"));
+      "unlock( (\\w|-)+){1,} with( (\\w|-)+){1,}"));
     theCommandStructure.put("give", () -> new GiveCommand(
-            "give( (\\w|-)+){1,4} to (\\w)+"));
-    theCommandStructure.put("open", () -> new OpenCommand("open( (\\w|-)+){1,4}"));
+      "give( (\\w|-)+){1,} to (\\w)+"));
+    theCommandStructure.put("open", () -> new OpenCommand("open( (\\w|-)+){1,}"));
     theCommandStructure.put("close", () -> new CloseCommand(
-            "close( (\\w|-)+){1,4}"));
-    theCommandStructure.put("read", () -> new ReadCommand("read( (\\w|-)+){1,4}"));
+      "close( (\\w|-)+){1,}"));
+    theCommandStructure.put("read", () -> new ReadCommand("read( (\\w|-)+){1,}"));
     theCommandStructure.put("readboard", () -> new ReadBoardCommand(
-            "readboard (\\w)+"));
+      "readboard (\\w)+"));
     theCommandStructure.put("post", () -> new PostBoardCommand("post (\\w)+ .+"));
     theCommandStructure.put("l", () -> new LookCommand("l"));
     theCommandStructure.put("look", () -> new LookCommand(
-            "look"));
+      "look"));
     theCommandStructure.put("look at", () -> new LookAtCommand(
-            "look at( (\\w|-)+){1,4}"));
+      "look at( (\\w|-)+){1,}"));
     theCommandStructure.put("look in", () -> new LookInCommand(
-            "look in( (\\w|-)+){1,4}"));
+      "look in( (\\w|-)+){1,}"));
 //        theCommandStructure.put("search", new SearchCommand(
 //                "search( (\\w|-)+){1,4}"));
     theCommandStructure.put("buy", () -> new BuyCommand(
-            "buy( (\\w|-)+){1,4} from (\\w)+"));
+      "buy( (\\w|-)+){1,} from (\\w)+"));
     theCommandStructure.put("sell", () -> new SellCommand(
-            "sell( (\\w|-)+){1,4} to (\\w)+"));
+      "sell( (\\w|-)+){1,} to (\\w)+"));
 //        theCommandStructure.put("show", new ShowCommand(
 //                "show( (\\w|-)+){1,4} to (\\w)+"));
 //        theCommandStructure.put("title", new TitleCommand("title .+"));

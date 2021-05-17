@@ -152,7 +152,7 @@ public class MudMailTest
     EntityManager entityManager = mock(EntityManager.class);
     when(entityManager.find(User.class, "Marvin")).thenReturn(marvin);
 
-    TypedQuery listMailQuery = mock(TypedQuery.class);
+    TypedQuery<MailReceiver> listMailQuery = mock(TypedQuery.class);
     when(entityManager.createNamedQuery("Mail.listmail", MailReceiver.class)).thenReturn(listMailQuery);
     when(listMailQuery.getResultList()).thenReturn(Collections.emptyList());
 
@@ -205,7 +205,7 @@ public class MudMailTest
     mailreceiver.setNewmail(true);
     list.add(mailreceiver);
     mail = new Mail();
-    mail.setId(2l);
+    mail.setId(2L);
     mail.setSubject("Subject2");
     mail.setBody("Second mail");
     mail.setToname("hotblack");
@@ -256,7 +256,7 @@ public class MudMailTest
     expected.body = "First mail";
     expected.subject = "Subject";
     expected.haveread = false;
-    expected.id = 5l;
+    expected.id = 5L;
     expected.item_id = null;
     expected.name = "Marvin";
     expected.newmail = true;
@@ -268,7 +268,7 @@ public class MudMailTest
     expected.body = "Second mail";
     expected.subject = "Subject2";
     expected.haveread = true;
-    expected.id = 6l;
+    expected.id = 6L;
     expected.item_id = null;
     expected.name = "Marvin";
     expected.newmail = false;
@@ -633,9 +633,7 @@ public class MudMailTest
     itemDef.setId(8009L);
     itemDef.setReaddescription("this is letterhead.</p><p>letterbody</p><p>letterfoot</p>");
     itemDef.setName("paper");
-    itemDef.setAdject1("small");
-    itemDef.setAdject2("piece");
-    itemDef.setAdject3("of");
+    itemDef.setAdjectives("small piece of");
     itemDef.setGetable(true);
     itemDef.setDropable(true);
     itemDef.setVisible(true);
@@ -735,9 +733,7 @@ public class MudMailTest
     itemDef.setId(12L);
     itemDef.setReaddescription("Dear people,</p><p>Blahblah</p><p>Regards, Karn.</p>");
     itemDef.setName("paper");
-    itemDef.setAdject1("small");
-    itemDef.setAdject2("piece");
-    itemDef.setAdject3("of");
+    itemDef.setAdjectives("small piece of");
     itemDef.setGetable(true);
     itemDef.setDropable(true);
     itemDef.setVisible(true);
@@ -877,7 +873,7 @@ public class MudMailTest
     try
     {
       // Unit under test is exercised.
-      privateBean.createMailItem("Marvin", 1l, 8);
+      privateBean.createMailItem("Marvin", 1L, 8);
       fail("Exception expected");
     } catch (WebApplicationException result)
     {

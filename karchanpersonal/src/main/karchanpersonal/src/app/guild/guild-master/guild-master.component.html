@@ -15,8 +15,8 @@
           <input type="text" class="form-control" id="bossname" name="bossname" value="{{guild?.bossname}}" readonly>
         </fieldset>
         <fieldset class="form-group">
-          <label for="guildurl">Homepage - <a
-          href="{{guildForm.get('guildurl')?.value }}" target="_blank">{{guildForm.get('guildurl')?.value }}</a></label>
+          <label for="guildurl">Homepage - <a href="{{guildForm.get('guildurl')?.value }}"
+                                              target="_blank">{{guildForm.get('guildurl')?.value }}</a></label>
           <input type="text" class="form-control" id="guildurl" name="guildurl" formControlName="guildurl">
         </fieldset>
         <div class="card" style="width: 100%;">
@@ -32,7 +32,46 @@
         </fieldset>
         <fieldset class="form-group">
           <label for="colour" [ngStyle]="getStyle()">Colour</label>
-          <input type="text" class="form-control" id="colour" name="colour" formControlName="colour">
+          <select class="form-control" id="colour" name="colour" formControlName="colour">
+            <option selected="selected" value="human">human</option>
+            <option value="chocolate">chocolate</option>
+            <option value="cornflowerblue">cornflowerblue</option>
+            <option value="red">red</option>
+            <option value="darkcyan">darkcyan</option>
+            <option value="darkgoldenrod">darkgoldenrod</option>
+            <option value="darkorange">darkorange</option>
+            <option value="darkorchid">darkorchid</option>
+            <option value="deeppink">deeppink</option>
+            <option value="deepskyblue">deepskyblue</option>
+            <option value="dodgerblue">dodgerblue</option>
+            <option value="forestgreen">forestgreen</option>
+            <option value="fuchsia">fuchsia</option>
+            <option value="gold">gold</option>
+            <option value="goldenrod">goldenrod</option>
+            <option value="hotpink">hotpink</option>
+            <option value="indianred">indianred</option>
+            <option value="lightcoral">lightcoral</option>
+            <option value="lightseagreen">lightseagreen</option>
+            <option value="lime">lime</option>
+            <option value="limegreen">limegreen</option>
+            <option value="mediumorchid">mediumorchid</option>
+            <option value="mediumpurple">mediumpurple</option>
+            <option value="mediumslateblue">mediumslateblue</option>
+            <option value="mediumvioletred">mediumvioletred</option>
+            <option value="olive">olive</option>
+            <option value="olivedrab">olivedrab</option>
+            <option value="orangered">orangered</option>
+            <option value="orchid">orchid</option>
+            <option value="palevioletred">palevioletred</option>
+            <option value="peru">peru</option>
+            <option value="royalblue">royalblue</option>
+            <option value="seagreen">seagreen</option>
+            <option value="sienna">sienna</option>
+            <option value="steelblue">steelblue</option>
+            <option value="teal">teal</option>
+            <option value="cyanblue">cyanblue</option>
+            <option value="green">green</option>
+          </select>
         </fieldset>
         <div class="card" style="width: 100%;">
           <div class="card-header">
@@ -47,11 +86,14 @@
         </fieldset>
         <fieldset class="form-group">
           <label for="creation">Created</label>
-          <input type="text" class="form-control" id="creation" name="creation" value="{{guild?.creation | date:'medium'}}" readonly>
+          <input type="text" class="form-control" id="creation" name="creation"
+                 value="{{guild?.creation | date:'medium'}}" readonly>
         </fieldset>
         <div class="col-xs-12 col-sm-12 text-right">
           <button type="submit" [disabled]="guildForm.pristine" class="btn btn-primary">Save</button>
-          <button type="reset" [disabled]="guildForm.pristine" class="btn btn-primary" (click)="cancel()">Cancel</button>
+          <button type="reset" [disabled]="guildForm.pristine" class="btn btn-primary"
+                  (click)="cancel()">Cancel
+          </button>
         </div>
       </form>
     </div>
@@ -65,9 +107,9 @@
         <div class="card">
           <div class="card-header" role="tab" id="headingOne">
             <h5 class="mb-0">
-              <a data-toggle="collapse" data-parent="#accordion" href="#collapseMembers" aria-expanded="true" aria-controls="collapseMembers"
-                (click)="checkMembers()">
-               Members
+              <a data-toggle="collapse" data-parent="#accordion" href="#collapseMembers" aria-expanded="true"
+                 aria-controls="collapseMembers" (click)="checkMembers()">
+                Members
               </a>
             </h5>
           </div>
@@ -75,7 +117,8 @@
           <div id="collapseMembers" role="tabpanel" aria-labelledby="headingOne">
             <div class="card-text" *ngIf="guildMembers !== undefined">
               <ul class="list-group">
-                <li class="list-group-item justify-content-between" *ngFor="let member of guildMembers.members" (click)="selectMember(member)">
+                <li class="list-group-item justify-content-between" *ngFor="let member of guildMembers.members"
+                    (click)="selectMember(member)">
                   {{member.name}}{{ member.guildrank === undefined ? "" : ", " + member.guildrank?.title }}
                   <button type="button" class="close" aria-label="Close" (click)="deleteMember(member)">
                     <i class="material-icons" aria-hidden="true">delete</i>
@@ -92,7 +135,8 @@
                     <label for="rank">Rank</label>
                     <select class="form-control" id="rank" name="rank" formControlName="rank">
                       <option [ngValue]="-1">no rank</option>
-                      <option [ngValue]="rank.guildlevel" *ngFor="let rank of guildRanks.ranks">{{ rank.title }}</option>
+                      <option [ngValue]="rank.guildlevel" *ngFor="let rank of guildRanks.ranks">{{ rank.title }}
+                      </option>
                     </select>
                   </fieldset>
                   <div class="col-xs-12 col-sm-12 text-right">
@@ -107,16 +151,17 @@
         <div class="card">
           <div class="card-header" role="tab" id="headingTwo">
             <h5 class="mb-0">
-              <a class="collapsed" data-toggle="collapse" data-parent="#accordion" href="#collapseRanks" aria-expanded="false" aria-controls="collapseRanks"
-                (click)="checkRanks()">
-               Ranks
-             </a>
+              <a class="collapsed" data-toggle="collapse" data-parent="#accordion" href="#collapseRanks"
+                 aria-expanded="false" aria-controls="collapseRanks" (click)="checkRanks()">
+                Ranks
+              </a>
             </h5>
           </div>
           <div id="collapseRanks" role="tabpanel" aria-labelledby="headingTwo">
             <div class="card-text" *ngIf="guildRanks !== undefined">
               <ul class="list-group">
-                <li class="list-group-item justify-content-between" *ngFor="let rank of guildRanks.ranks" (click)="selectRank(rank)">
+                <li class="list-group-item justify-content-between" *ngFor="let rank of guildRanks.ranks"
+                    (click)="selectRank(rank)">
                   {{rank.guildlevel}} - {{rank.title}}
                   <button type="button" class="close" aria-label="Close" (click)="deleteRank(rank)">
                     <i class="material-icons" aria-hidden="true">delete</i>
@@ -127,7 +172,8 @@
                 <form [formGroup]="rankForm" (ngSubmit)="saveRank()" novalidate>
                   <fieldset class="form-group">
                     <label for="guildlevel">Level</label>
-                    <input type="text" class="form-control" id="guildlevel" name="guildlevel" formControlName="guildlevel">
+                    <input type="text" class="form-control" id="guildlevel" name="guildlevel"
+                           formControlName="guildlevel">
                   </fieldset>
                   <fieldset class="form-group">
                     <label for="title">Title</label>
@@ -144,9 +190,9 @@
         <div class="card">
           <div class="card-header" role="tab" id="headingThree">
             <h5 class="mb-0">
-              <a class="collapsed" data-toggle="collapse" data-parent="#accordion" href="#collapseHopefuls" aria-expanded="false" aria-controls="collapseHopefuls"
-                (click)="checkHopefuls()">
-               Hopefuls
+              <a class="collapsed" data-toggle="collapse" data-parent="#accordion" href="#collapseHopefuls"
+                 aria-expanded="false" aria-controls="collapseHopefuls" (click)="checkHopefuls()">
+                Hopefuls
               </a>
             </h5>
           </div>

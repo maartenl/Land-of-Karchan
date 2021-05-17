@@ -31,6 +31,7 @@ import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
+
 import mmud.database.entities.characters.Person;
 
 /**
@@ -40,11 +41,14 @@ import mmud.database.entities.characters.Person;
 @Entity
 @Table(name = "mm_charattributes")
 @NamedQueries(
-        {
-          @NamedQuery(name = "Charattribute.findAll", query = "SELECT c FROM Charattribute c"),
-          @NamedQuery(name = "Charattribute.findByName", query = "SELECT c FROM Charattribute c WHERE c.name = :name"),
-          @NamedQuery(name = "Charattribute.findByValueType", query = "SELECT c FROM Charattribute c WHERE c.valueType = :valueType")
-        })
+  {
+    @NamedQuery(name = "Charattribute.findAll", query = "SELECT c FROM Charattribute c"),
+    @NamedQuery(name = "Charattribute.deleteByName", query = "DELETE FROM Charattribute c WHERE c.name = :name"),
+    @NamedQuery(name = "Charattribute.findByName", query = "SELECT c FROM Charattribute c WHERE c.name = :name"),
+    @NamedQuery(name = "Charattribute.findByNameAndPerson", query = "SELECT c FROM Charattribute c WHERE c.name = :name and c.person.name = :person"),
+    @NamedQuery(name = "Charattribute.findByPerson", query = "SELECT c FROM Charattribute c WHERE c.person.name = :person"),
+    @NamedQuery(name = "Charattribute.findByValueType", query = "SELECT c FROM Charattribute c WHERE c.valueType = :valueType")
+  })
 public class Charattribute implements Serializable, Attribute
 {
 
@@ -55,7 +59,7 @@ public class Charattribute implements Serializable, Attribute
   @Basic(optional = false)
   @Column(name = "attrid")
   private Long attributeId;
-  
+
   @Basic(optional = false)
   @NotNull
   @Size(min = 1, max = 32)

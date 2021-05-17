@@ -16,6 +16,12 @@
  */
 package mmud.testing.tests.commands.communication;
 
+import java.io.File;
+import java.io.PrintWriter;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.List;
+
 import mmud.Constants;
 import mmud.commands.CommandRunner;
 import mmud.commands.communication.OocCommand;
@@ -25,18 +31,12 @@ import mmud.database.entities.characters.User;
 import mmud.database.entities.game.DisplayInterface;
 import mmud.database.entities.game.Room;
 import mmud.rest.services.PersonBean;
+import mmud.services.CommunicationService;
 import mmud.testing.TestingConstants;
 import mmud.testing.tests.LogBeanStub;
 import mmud.testing.tests.MudTest;
-import org.testng.annotations.*;
-
-import java.io.File;
-import java.io.PrintWriter;
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.List;
-import mmud.services.CommunicationService;
-
+import org.testng.annotations.BeforeMethod;
+import org.testng.annotations.Test;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
 /**
@@ -122,15 +122,15 @@ public class OocCommandTest extends MudTest
         assertThat(marvin.getOoc()).isTrue();
         OocCommand heehawCommand = new OocCommand("ooc .+");
         heehawCommand.setCallback(commandRunner);
-        assertThat(heehawCommand.getRegExpr()).isEqualTo("ooc .+");
-commandRunner.setBeans(personBean, null, null, null, null, null, null);
+      assertThat(heehawCommand.getRegExpr()).isEqualTo("ooc .+");
+      commandRunner.setBeans(personBean, null, null, null, null, null, null);
         DisplayInterface display = heehawCommand.run("ooc Hey! This works!", marvin);
         assertThat(display).isNotNull();
         String log = CommunicationService.getCommunicationService(marvin).getLog(0);
-        assertThat(log).isEqualTo("<span style=\"color:#4c76a2\">&gt;[OOC: <b>Marvin</b>] Hey! This works!</span><br />\r\n");
-        log = CommunicationService.getCommunicationService(karn).getLog(0);
-        assertThat(log).isEqualTo("<span style=\"color:#4c76a2\">&gt;[OOC: <b>Marvin</b>] Hey! This works!</span><br />\r\n");
-        assertThat(marvin.getOoc()).isTrue();
+      assertThat(log).isEqualTo("<span class=\"chat-cyanblue\">[OOC: <b>Marvin</b>] Hey! This works!</span><br />\r\n");
+      log = CommunicationService.getCommunicationService(karn).getLog(0);
+      assertThat(log).isEqualTo("<span class=\"chat-cyanblue\">[OOC: <b>Marvin</b>] Hey! This works!</span><br />\r\n");
+      assertThat(marvin.getOoc()).isTrue();
     }
 
     @BeforeMethod
