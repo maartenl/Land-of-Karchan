@@ -18,12 +18,10 @@
 
 package mmud.rest.webentities.admin;
 
-import mmud.database.entities.game.Board;
-import mmud.database.entities.game.Guild;
-
-import javax.json.bind.Jsonb;
-import javax.json.bind.JsonbBuilder;
 import java.time.LocalDateTime;
+
+import mmud.JsonUtils;
+import mmud.database.entities.game.Guild;
 
 public class AdminGuild
 {
@@ -61,12 +59,11 @@ public class AdminGuild
 
   public String toJson()
   {
-    return JsonbBuilder.create().toJson(this);
+    return JsonUtils.toJson(this);
   }
 
   public static AdminGuild fromJson(String json)
   {
-    Jsonb jsonb = JsonbBuilder.create();
-    return jsonb.fromJson(json, AdminGuild.class);
+    return JsonUtils.fromJson(json, AdminGuild.class);
   }
 }

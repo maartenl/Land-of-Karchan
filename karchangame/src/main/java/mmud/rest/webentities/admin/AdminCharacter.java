@@ -19,9 +19,8 @@ package mmud.rest.webentities.admin;
 
 
 import java.time.LocalDateTime;
-import javax.json.bind.Jsonb;
-import javax.json.bind.JsonbBuilder;
 
+import mmud.JsonUtils;
 import mmud.database.entities.characters.Person;
 import mmud.database.entities.characters.User;
 
@@ -250,12 +249,11 @@ public class AdminCharacter
 
   public String toJson()
   {
-    return JsonbBuilder.create().toJson(this);
+    return JsonUtils.toJson(this);
   }
 
   public static AdminCharacter fromJson(String json)
   {
-    Jsonb jsonb = JsonbBuilder.create();
-    return jsonb.fromJson(json, AdminCharacter.class);
+    return JsonUtils.fromJson(json, AdminCharacter.class);
   }
 }

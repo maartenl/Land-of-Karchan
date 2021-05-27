@@ -17,7 +17,8 @@
 package mmud.rest.webentities;
 
 import java.time.LocalDateTime;
-import javax.json.bind.JsonbBuilder;
+
+import mmud.JsonUtils;
 import mmud.database.entities.web.Image;
 
 /**
@@ -54,6 +55,6 @@ public class PrivateImage
 
   public String toJson()
   {
-    return JsonbBuilder.create().toJson(this);
+    return JsonUtils.toJson(this);
   }
 }

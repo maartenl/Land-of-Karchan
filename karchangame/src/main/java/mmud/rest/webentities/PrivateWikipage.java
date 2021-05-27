@@ -16,14 +16,13 @@
  */
 package mmud.rest.webentities;
 
-import java.time.Instant;
 import java.time.LocalDateTime;
-import javax.json.bind.JsonbBuilder;
 import javax.xml.bind.annotation.XmlRootElement;
+
+import mmud.JsonUtils;
 import mmud.database.entities.web.Wikipage;
 
 /**
- *
  * @author maartenl
  */
 @XmlRootElement
@@ -41,7 +40,7 @@ public class PrivateWikipage
   public boolean administration;
   public String comment;
   public Integer ordering;
-  
+
   public PrivateWikipage()
   {
   }
@@ -63,7 +62,12 @@ public class PrivateWikipage
 
   public String toJson()
   {
-    return JsonbBuilder.create().toJson(this);
+    return JsonUtils.toJson(this);
+  }
+
+  public static PrivateWikipage fromJson(String json)
+  {
+    return JsonUtils.fromJson(json, PrivateWikipage.class);
   }
 
 }

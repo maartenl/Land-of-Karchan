@@ -17,19 +17,18 @@
 package mmud.rest.webentities.admin;
 
 import java.time.LocalDateTime;
-import javax.json.bind.Jsonb;
-import javax.json.bind.JsonbBuilder;
+
+import mmud.JsonUtils;
 import mmud.database.entities.game.Method;
 
 /**
- *
  * @author maartenl
  */
 public class AdminMethod
 {
   public static String GET_QUERY = "select json_object(\"name\", name, \"owner\", owner, \"creation\", creation) "
-          + "from mm_methods r "
-          + "order by r.name";
+    + "from mm_methods r "
+    + "order by r.name";
 
   public String name;
   public String src;
@@ -48,16 +47,15 @@ public class AdminMethod
     src = method.getSrc();
     owner = method.getOwner() != null ? method.getOwner().getName() : null;
   }
-  
+
   public String toJson()
   {
-    return JsonbBuilder.create().toJson(this);
+    return JsonUtils.toJson(this);
   }
-  
+
   public static AdminMethod fromJson(String json)
   {
-    Jsonb jsonb = JsonbBuilder.create();
-    AdminMethod adminRoom = jsonb.fromJson(json, AdminMethod.class);
-    return adminRoom;
+    return JsonUtils.fromJson(json, AdminMethod.class);
+
   }
 }

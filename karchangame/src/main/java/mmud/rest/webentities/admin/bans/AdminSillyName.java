@@ -1,11 +1,7 @@
 package mmud.rest.webentities.admin.bans;
 
-import mmud.database.entities.game.BannedName;
+import mmud.JsonUtils;
 import mmud.database.entities.game.SillyName;
-
-import javax.json.bind.Jsonb;
-import javax.json.bind.JsonbBuilder;
-import java.time.LocalDateTime;
 
 public class AdminSillyName
 {
@@ -25,13 +21,12 @@ public class AdminSillyName
 
   public String toJson()
   {
-    return JsonbBuilder.create().toJson(this);
+    return JsonUtils.toJson(this);
   }
 
   public static AdminSillyName fromJson(String json)
   {
-    Jsonb jsonb = JsonbBuilder.create();
-    return jsonb.fromJson(json, AdminSillyName.class);
+    return JsonUtils.fromJson(json, AdminSillyName.class);
   }
 
 

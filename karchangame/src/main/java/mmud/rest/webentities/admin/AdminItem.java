@@ -2,9 +2,8 @@ package mmud.rest.webentities.admin;
 
 import java.time.LocalDateTime;
 import java.util.stream.Collectors;
-import javax.json.bind.Jsonb;
-import javax.json.bind.JsonbBuilder;
 
+import mmud.JsonUtils;
 import mmud.database.entities.items.ItemDefinition;
 
 public class AdminItem
@@ -93,7 +92,7 @@ public class AdminItem
 
   public String toJson()
   {
-    return JsonbBuilder.create().toJson(this);
+    return JsonUtils.toJson(this);
   }
 
   @Override
@@ -138,8 +137,7 @@ public class AdminItem
 
   public static AdminItem fromJson(String json)
   {
-    Jsonb jsonb = JsonbBuilder.create();
-    return jsonb.fromJson(json, AdminItem.class);
+    return JsonUtils.fromJson(json, AdminItem.class);
   }
 
 

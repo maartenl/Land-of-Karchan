@@ -17,11 +17,10 @@
 package mmud.rest.webentities.admin;
 
 
-import mmud.database.entities.game.Event;
-
-import javax.json.bind.Jsonb;
-import javax.json.bind.JsonbBuilder;
 import java.time.LocalDateTime;
+
+import mmud.JsonUtils;
+import mmud.database.entities.game.Event;
 
 /**
  * @author maartenl
@@ -67,12 +66,11 @@ public class AdminEvent
 
   public String toJson()
   {
-    return JsonbBuilder.create().toJson(this);
+    return JsonUtils.toJson(this);
   }
 
   public static AdminEvent fromJson(String json)
   {
-    Jsonb jsonb = JsonbBuilder.create();
-    return jsonb.fromJson(json, AdminEvent.class);
+    return JsonUtils.fromJson(json, AdminEvent.class);
   }
 }

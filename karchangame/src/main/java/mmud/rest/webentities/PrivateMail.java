@@ -5,18 +5,17 @@
 package mmud.rest.webentities;
 
 
+import java.time.LocalDateTime;
+
+import mmud.JsonUtils;
 import mmud.database.entities.game.Mail;
 import mmud.database.entities.game.MailReceiver;
-import mmud.rest.webentities.admin.AdminEvent;
-
-import javax.json.bind.Jsonb;
-import javax.json.bind.JsonbBuilder;
-import java.time.LocalDateTime;
 
 /**
  * @author maartenl
  */
-public class PrivateMail {
+public class PrivateMail
+{
 
   public String toname;
   public String name;
@@ -29,7 +28,8 @@ public class PrivateMail {
   public Boolean deleted;
   public Long item_id;
 
-  public PrivateMail(MailReceiver receiver) {
+  public PrivateMail(MailReceiver receiver)
+  {
     name = receiver.getMail().getName().getName();
     toname = receiver.getMail().getToname();
     subject = receiver.getMail().getSubject();
@@ -41,7 +41,8 @@ public class PrivateMail {
     deleted = receiver.getDeleted();
   }
 
-  public PrivateMail(Mail mail) {
+  public PrivateMail(Mail mail)
+  {
     name = mail.getName().getName();
     toname = mail.getToname();
     subject = mail.getSubject();
@@ -51,17 +52,18 @@ public class PrivateMail {
     deleted = mail.getDeleted();
   }
 
-  public PrivateMail() {
+  public PrivateMail()
+  {
   }
 
   public String toJson()
   {
-    return JsonbBuilder.create().toJson(this);
+    return JsonUtils.toJson(this);
   }
 
   public static PrivateMail fromJson(String json)
   {
-    Jsonb jsonb = JsonbBuilder.create();
-    return jsonb.fromJson(json, PrivateMail.class);
+    return JsonUtils.fromJson(json, PrivateMail.class);
+
   }
 }

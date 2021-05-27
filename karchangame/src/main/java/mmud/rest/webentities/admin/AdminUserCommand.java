@@ -17,20 +17,19 @@
 package mmud.rest.webentities.admin;
 
 import java.time.LocalDateTime;
-import javax.json.bind.Jsonb;
-import javax.json.bind.JsonbBuilder;
+
+import mmud.JsonUtils;
 import mmud.database.entities.game.UserCommand;
 
 /**
- *
  * @author maartenl
  */
 public class AdminUserCommand
 {
 
   public static String GET_QUERY = "select json_object(\"id\", id, \"command\", command,  \"methodName\", method_name, \"room\", room, \"owner\", owner, \"creation\", creation) "
-          + "from mm_commands r "
-          + "order by r.command";
+    + "from mm_commands r "
+    + "order by r.command";
 
   public Integer id;
   public Boolean callable;
@@ -59,13 +58,12 @@ public class AdminUserCommand
 
   public String toJson()
   {
-    return JsonbBuilder.create().toJson(this);
+    return JsonUtils.toJson(this);
   }
 
   public static AdminUserCommand fromJson(String json)
   {
-    Jsonb jsonb = JsonbBuilder.create();
-    AdminUserCommand adminUserCommand = jsonb.fromJson(json, AdminUserCommand.class);
-    return adminUserCommand;
+    return JsonUtils.fromJson(json, AdminUserCommand.class);
+
   }
 }

@@ -18,12 +18,10 @@
 
 package mmud.rest.webentities.admin;
 
-import mmud.database.entities.game.Board;
-import mmud.database.entities.game.BoardMessage;
-
-import javax.json.bind.Jsonb;
-import javax.json.bind.JsonbBuilder;
 import java.time.LocalDateTime;
+
+import mmud.JsonUtils;
+import mmud.database.entities.game.BoardMessage;
 
 public class AdminBoardMessage
 {
@@ -51,12 +49,11 @@ public class AdminBoardMessage
 
   public String toJson()
   {
-    return JsonbBuilder.create().toJson(this);
+    return JsonUtils.toJson(this);
   }
 
   public static AdminBoardMessage fromJson(String json)
   {
-    Jsonb jsonb = JsonbBuilder.create();
-    return jsonb.fromJson(json, AdminBoardMessage.class);
+    return JsonUtils.fromJson(json, AdminBoardMessage.class);
   }
 }

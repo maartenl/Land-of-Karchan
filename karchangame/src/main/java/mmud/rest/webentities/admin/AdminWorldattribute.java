@@ -16,15 +16,14 @@
  */
 package mmud.rest.webentities.admin;
 
-import mmud.database.entities.game.Worldattribute;
-import mmud.database.entities.web.Blog;
-
-import javax.json.bind.Jsonb;
-import javax.json.bind.JsonbBuilder;
 import java.time.LocalDateTime;
+
+import mmud.JsonUtils;
+import mmud.database.entities.game.Worldattribute;
 
 /**
  * See {@link Worldattribute}
+ *
  * @author maartenl
  */
 public class AdminWorldattribute
@@ -55,12 +54,11 @@ public class AdminWorldattribute
 
   public String toJson()
   {
-    return JsonbBuilder.create().toJson(this);
+    return JsonUtils.toJson(this);
   }
 
   public static AdminWorldattribute fromJson(String json)
   {
-    Jsonb jsonb = JsonbBuilder.create();
-    return jsonb.fromJson(json, AdminWorldattribute.class);
+    return JsonUtils.fromJson(json, AdminWorldattribute.class);
   }
 }

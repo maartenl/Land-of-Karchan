@@ -1,10 +1,7 @@
 package mmud.rest.webentities.admin;
 
-import mmud.database.entities.game.Area;
+import mmud.JsonUtils;
 import mmud.database.entities.game.Help;
-
-import javax.json.bind.Jsonb;
-import javax.json.bind.JsonbBuilder;
 
 public class AdminManpage
 {
@@ -44,13 +41,12 @@ public class AdminManpage
 
   public String toJson()
   {
-    return JsonbBuilder.create().toJson(this);
+    return JsonUtils.toJson(this);
   }
 
   public static AdminManpage fromJson(String json)
   {
-    Jsonb jsonb = JsonbBuilder.create();
-    return jsonb.fromJson(json, AdminManpage.class);
+    return JsonUtils.fromJson(json, AdminManpage.class);
   }
 
 

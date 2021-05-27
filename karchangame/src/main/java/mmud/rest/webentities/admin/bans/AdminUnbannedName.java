@@ -1,9 +1,7 @@
 package mmud.rest.webentities.admin.bans;
 
+import mmud.JsonUtils;
 import mmud.database.entities.game.SillyName;
-
-import javax.json.bind.Jsonb;
-import javax.json.bind.JsonbBuilder;
 
 public class AdminUnbannedName
 {
@@ -23,13 +21,12 @@ public class AdminUnbannedName
 
   public String toJson()
   {
-    return JsonbBuilder.create().toJson(this);
+    return JsonUtils.toJson(this);
   }
 
   public static AdminUnbannedName fromJson(String json)
   {
-    Jsonb jsonb = JsonbBuilder.create();
-    return jsonb.fromJson(json, AdminUnbannedName.class);
+    return JsonUtils.fromJson(json, AdminUnbannedName.class);
   }
 
 

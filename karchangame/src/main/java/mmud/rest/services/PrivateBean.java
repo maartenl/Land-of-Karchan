@@ -31,7 +31,6 @@ import javax.ejb.EJB;
 import javax.ejb.LocalBean;
 import javax.ejb.SessionContext;
 import javax.ejb.Stateless;
-import javax.json.bind.JsonbBuilder;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
@@ -51,6 +50,7 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
+import mmud.JsonUtils;
 import mmud.database.entities.characters.Person;
 import mmud.database.entities.characters.User;
 import mmud.database.entities.game.Admin;
@@ -318,7 +318,7 @@ public class PrivateBean
     boolean result = mailBean.hasNewMail(person);
     var privateHasMail = new PrivateHasMail();
     privateHasMail.hasMail = result;
-    return JsonbBuilder.create().toJson(privateHasMail);
+    return JsonUtils.toJson(privateHasMail);
   }
 
   private Person getPerson(String name)
