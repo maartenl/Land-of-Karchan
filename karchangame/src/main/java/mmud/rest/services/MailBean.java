@@ -21,11 +21,11 @@ import javax.ejb.LocalBean;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
-import javax.persistence.Query;
+
 import mmud.database.entities.characters.Person;
 
 /**
- * TODO : add all mail here instead of in privateBean. use Path:{name}/mail
+ * TODO : add all mail here instead of in {@link PrivateBean}. use Path:{name}/mail
  *
  * @author maartenl
  */
@@ -51,7 +51,7 @@ public class MailBean
 
     public boolean hasNewMail(Person person)
     {
-        Query query = getEntityManager().createNamedQuery("Mail.hasnewmail");
+      var query = getEntityManager().createNamedQuery("Mail.hasnewmail");
         query.setParameter("name", person);
 
         Long count = (Long) query.getSingleResult();

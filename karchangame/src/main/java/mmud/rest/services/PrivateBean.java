@@ -34,7 +34,6 @@ import javax.ejb.Stateless;
 import javax.json.bind.JsonbBuilder;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
-import javax.persistence.Query;
 import javax.persistence.TypedQuery;
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.Consumes;
@@ -231,8 +230,7 @@ public class PrivateBean
       List<MailReceiver> list = query.getResultList();
       for (MailReceiver mail : list)
       {
-        PrivateMail pmail = new PrivateMail(mail);
-        res.add(pmail);
+        res.add(new PrivateMail(mail));
       }
 
       // turn off the "newmail" sign.
@@ -285,8 +283,7 @@ public class PrivateBean
       List<Mail> list = query.getResultList();
       for (Mail mail : list)
       {
-        PrivateMail pmail = new PrivateMail(mail);
-        res.add(pmail);
+        res.add(new PrivateMail(mail));
       }
     } catch (WebApplicationException e)
     {
@@ -319,14 +316,14 @@ public class PrivateBean
     LOGGER.finer("entering hasNewMail");
     Person person = authenticate(name);
     boolean result = mailBean.hasNewMail(person);
-    PrivateHasMail privateHasMail = new PrivateHasMail();
+    var privateHasMail = new PrivateHasMail();
     privateHasMail.hasMail = result;
     return JsonbBuilder.create().toJson(privateHasMail);
   }
 
   private Person getPerson(String name)
   {
-    Person toperson = getEntityManager().find(Person.class, name);
+    var toperson = getEntityManager().find(Person.class, name);
     if (toperson == null)
     {
       throw new MudWebException(name, name + " was not found.", "User was not found (" + name + ")", Response.Status.NOT_FOUND);
@@ -352,9 +349,9 @@ public class PrivateBean
   /**
    * Send a new mail.
    *
-   * @param newMail the new mail object received from the client. Sending to
-   *                user "deputies" allows for a mail to be sent to all current active deputies.
-   * @param name    the name of the person logged in/sending mail
+   * @param json json representation of a new mail object received from the client. Sending to
+   *             user "deputies" allows for a mail to be sent to all current active deputies.
+   * @param name the name of the person logged in/sending mail
    * @return Response.ok if everything's okay.
    * @throws WebApplicationException UNAUTHORIZED, if the authorisation
    *                                 failed. BAD_REQUEST if an unexpected exception crops up.
@@ -365,8 +362,9 @@ public class PrivateBean
     {
       MediaType.APPLICATION_JSON
     })
-  public Response newMailRest(PrivateMail newMail, @PathParam("name") String name)
+  public Response newMailRest(String json, @PathParam("name") String name)
   {
+    var newMail = PrivateMail.fromJson(json);
     newMail(newMail, name);
     return Response.ok().build();
   }
@@ -424,7 +422,7 @@ public class PrivateBean
     }
     if ("everybody".equalsIgnoreCase(toname))
     {
-      Admin admin = getEntityManager().find(Admin.class, fromname);
+      var admin = getEntityManager().find(Admin.class, fromname);
       if (admin == null || !admin.isValid())
       {
         throw new MudWebException(fromname, "Only administrators are allowed to use 'everybody' in mail.", Status.UNAUTHORIZED);
@@ -438,7 +436,7 @@ public class PrivateBean
 
   private void createNewMail(String subject, String body, User person, String toperson, Set<User> receivers)
   {
-    Mail mail = new Mail();
+    var mail = new Mail();
     mail.setBody(body);
     mail.setDeleted(Boolean.FALSE);
     mail.setId(null);
@@ -450,7 +448,7 @@ public class PrivateBean
 
     receivers.forEach(receiver ->
     {
-      MailReceiver mailReceiver = new MailReceiver();
+      var mailReceiver = new MailReceiver();
       mailReceiver.setId(null);
       mailReceiver.setToname(receiver);
       mailReceiver.setHaveread(false);
@@ -710,13 +708,13 @@ public class PrivateBean
   {
     LOGGER.log(Level.FINER, "entering deletePerson {0}", name);
     Person person = authenticate(name);
-    Query deleteBoardMessagesQuery = em.createNamedQuery("BoardMessage.deleteByName");
+    var deleteBoardMessagesQuery = em.createNamedQuery("BoardMessage.deleteByName");
     deleteBoardMessagesQuery.setParameter("person", person);
     LOGGER.log(Level.FINER, "deleting {0} boardmessages", deleteBoardMessagesQuery.executeUpdate());
-    Query deleteMailsSentQuery = em.createNamedQuery("Mail.deleteByName");
+    var deleteMailsSentQuery = em.createNamedQuery("Mail.deleteByName");
     deleteMailsSentQuery.setParameter("person", person);
     LOGGER.log(Level.FINER, "deleting {0} mudmails sent", deleteMailsSentQuery.executeUpdate());
-    Query deleteMailsReceivedQuery = em.createNamedQuery("MailReceiver.deleteByName");
+    var deleteMailsReceivedQuery = em.createNamedQuery("MailReceiver.deleteByName");
     deleteMailsReceivedQuery.setParameter("person", person);
     LOGGER.log(Level.FINER, "deleting {0} mudmails received", deleteMailsReceivedQuery.executeUpdate());
     em.remove(person);
@@ -757,8 +755,8 @@ public class PrivateBean
     }
     try
     {
-      CharacterInfo characterInfo = getEntityManager().find(CharacterInfo.class, person.getName());
-      boolean isNew = false;
+      var characterInfo = getEntityManager().find(CharacterInfo.class, person.getName());
+      var isNew = false;
       if (characterInfo == null)
       {
         isNew = true;
@@ -874,20 +872,20 @@ public class PrivateBean
       throw new MudWebException(name, "No person provided.", Response.Status.BAD_REQUEST);
     }
     User person = authenticate(name);
-    Person toperson = getPerson(toname);
+    var toperson = getPerson(toname);
     try
     {
-      FamilyValue familyValue = getEntityManager().find(FamilyValue.class, description);
+      var familyValue = getEntityManager().find(FamilyValue.class, description);
       if (familyValue == null)
       {
         throw new MudWebException(name, "Family value was not found.",
           "Family value " + description + " was not found.",
           Response.Status.BAD_REQUEST);
       }
-      FamilyPK pk = new FamilyPK();
+      var pk = new FamilyPK();
       pk.setName(person.getName());
       pk.setToname(toperson.getName());
-      Family family = getEntityManager().find(Family.class, pk);
+      var family = getEntityManager().find(Family.class, pk);
 
       boolean isNew = family == null;
       if (family == null)
@@ -933,10 +931,10 @@ public class PrivateBean
   {
     LOGGER.finer("entering deleteFamilyValues");
     Person person = authenticate(name);
-    FamilyPK pk = new FamilyPK();
+    var pk = new FamilyPK();
     pk.setName(person.getName());
     pk.setToname(toname);
-    Family family = getEntityManager().find(Family.class, pk);
+    var family = getEntityManager().find(Family.class, pk);
     if (family == null)
     {
       throw new MudWebException(name, "Unable to delete family value. Family value not found.", Response.Status.NOT_FOUND);
@@ -949,9 +947,8 @@ public class PrivateBean
    * Provides the player who is logged in during this session.
    *
    * @return name of the player
-   * @throws IllegalStateException
    */
-  protected String getPlayerName() throws IllegalStateException
+  protected String getPlayerName()
   {
     final String name = context.getCallerPrincipal().getName();
     if (name.equals("ANONYMOUS"))
