@@ -20,7 +20,6 @@ import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collection;
-
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -40,6 +39,7 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
+
 import mmud.database.Attributes;
 import mmud.database.entities.Ownage;
 import mmud.database.entities.characters.Person;
@@ -420,7 +420,7 @@ public class Room implements Serializable, DisplayInterface, ItemWrangler, Attri
   @Override
   public boolean equals(Object object)
   {
-    // TODO: Warning - this method won't work in the case the id fields are not set
+    // Warning - this method won't work in the case the id fields are not set
     if (!(object instanceof Room))
     {
       return false;

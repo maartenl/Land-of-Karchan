@@ -18,7 +18,6 @@ package mmud.database.entities.game;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
-
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -28,8 +27,6 @@ import javax.persistence.Id;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.Table;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlRootElement;
@@ -52,36 +49,36 @@ import javax.xml.bind.annotation.XmlRootElement;
 public class Commandlog implements Serializable
 {
 
-    private static final long serialVersionUID = 1L;
-    
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Basic(optional = false)
-    @Column(name = "id")
-    private Long id;
-    
-    @Basic(optional = false)
-    @NotNull
-    @Column(name = "stamp")
-    private LocalDateTime stamp;
-    
-    @Basic(optional = false)
-    @NotNull
-    @Size(min = 1, max = 20)
-    @Column(name = "name")
-    private String name;
-    
-    @Basic(optional = false)
-    @NotNull
-    @Size(min = 0, max = 255)
-    @Column(name = "command")
-    private String command;
+  private static final long serialVersionUID = 1L;
 
-    public Commandlog()
-    {
-    }
+  @Id
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  @Basic(optional = false)
+  @Column(name = "id")
+  private Long id;
 
-    public Commandlog(Long id)
+  @Basic(optional = false)
+  @NotNull
+  @Column(name = "stamp")
+  private LocalDateTime stamp;
+
+  @Basic(optional = false)
+  @NotNull
+  @Size(min = 1, max = 20)
+  @Column(name = "name")
+  private String name;
+
+  @Basic(optional = false)
+  @NotNull
+  @Size(min = 0, max = 255)
+  @Column(name = "command")
+  private String command;
+
+  public Commandlog()
+  {
+  }
+
+  public Commandlog(Long id)
     {
         this.id = id;
     }
@@ -149,7 +146,7 @@ public class Commandlog implements Serializable
     @Override
     public boolean equals(Object object)
     {
-        // TODO: Warning - this method won't work in the case the id fields are not set
+      // Warning - this method won't work in the case the id fields are not set
         if (!(object instanceof Commandlog))
         {
             return false;

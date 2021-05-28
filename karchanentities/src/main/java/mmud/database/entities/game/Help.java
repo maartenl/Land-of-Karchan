@@ -28,7 +28,6 @@ import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
-import mmud.database.InputSanitizer;
 import mmud.database.OutputFormatter;
 
 /**
@@ -286,7 +285,7 @@ public class Help implements Serializable, DisplayInterface
   @Override
   public boolean equals(Object object)
   {
-    // TODO: Warning - this method won't work in the case the id fields are not set
+    // Warning - this method won't work in the case the id fields are not set
     if (!(object instanceof Help))
     {
       return false;
