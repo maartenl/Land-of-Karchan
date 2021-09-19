@@ -249,6 +249,20 @@ export class PlayerService {
       );
   }
 
+  
+  /**
+   * Url will be /karchangame/resources/private/[player]/mail/[id]/createMailItem/[item_id]")
+   */
+  public createItemFromMail(mail: Mail, item_id: number): Observable<any> {
+    return this.http.get(this.getMailUrl() + '/' + mail.id + '/createMailItem/' + item_id)
+      .pipe(
+        catchError(err => {
+          this.handleError(err);
+          return [];
+        })
+      );
+  }
+
   // guild calls
 
   public getGuild(): Observable<any> {

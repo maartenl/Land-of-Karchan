@@ -114,7 +114,7 @@ abstract public class Item implements Serializable, DisplayInterface, AttributeW
   private Admin owner;
 
   @OneToMany(cascade = CascadeType.ALL, mappedBy = "item", orphanRemoval = true)
-  private List<Itemattribute> itemattributeCollection;
+  private List<Itemattribute> itemattributeCollection = new ArrayList<>();
 
   /**
    * Constructor. Creates a completely empty item. Usually required by ORM.

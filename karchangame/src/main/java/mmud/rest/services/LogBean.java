@@ -27,10 +27,14 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.validation.ConstraintViolation;
 import javax.validation.ConstraintViolationException;
+import javax.ws.rs.core.Response;
+
 import mmud.database.entities.characters.Person;
 import mmud.database.entities.game.Admin;
 import mmud.database.entities.game.Commandlog;
 import mmud.database.entities.game.Log;
+import mmud.exceptions.ExceptionUtils;
+import mmud.exceptions.MudWebException;
 
 /**
  *
@@ -264,14 +268,9 @@ public class LogBean
         try
         {
             getEntityManager().persist(commandlog);
-        } catch (ConstraintViolationException ex)
+        } catch (ConstraintViolationException e)
         {
-            StringBuilder buffer = new StringBuilder("ConstraintViolationException:");
-            for (ConstraintViolation<?> violation : ex.getConstraintViolations())
-            {
-                buffer.append(violation);
-            }
-            throw new RuntimeException(buffer.toString(), ex);
+          throw new MudWebException(null, ExceptionUtils.createMessage(e), e, Response.Status.BAD_REQUEST);
         }
     }
 }

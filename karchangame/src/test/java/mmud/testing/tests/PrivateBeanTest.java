@@ -18,6 +18,8 @@ package mmud.testing.tests;
 
 import java.util.logging.Logger;
 import javax.persistence.EntityManager;
+import javax.ws.rs.WebApplicationException;
+import javax.ws.rs.core.Response;
 
 import mmud.database.entities.characters.Person;
 import mmud.database.entities.characters.User;
@@ -120,6 +122,12 @@ public class PrivateBeanTest
       {
         return "Marvin";
       }
+
+      @Override
+      protected Response createResponse()
+      {
+        return null;
+      }
     };
     // Unit under test is exercised.
     final PrivatePerson person = new PrivatePerson();
@@ -130,7 +138,7 @@ public class PrivateBeanTest
     person.cityofbirth = "Sirius";
     person.storyline = "Life, don&#39;t talk to me about life.";
     privateBean.updateCharacterSheet("Marvin", person);
-    // Verification code (JUnit/TestNG asserts), if any.
+      // Verification code (JUnit/TestNG asserts), if any.
     assertEquals(cinfo.getName(), person.name);
     assertEquals(cinfo.getImageurl(), person.imageurl);
     assertEquals(cinfo.getHomepageurl(), person.homepageurl);
@@ -160,6 +168,12 @@ public class PrivateBeanTest
       {
         return "Marvin";
       }
+
+      @Override
+      protected Response createResponse()
+      {
+        return null;
+      }
     };
     // Unit under test is exercised.
     final PrivatePerson person = new PrivatePerson();
@@ -182,7 +196,7 @@ public class PrivateBeanTest
       return null;
     }).when(entityManager).persist(any(CharacterInfo.class));
     privateBean.updateCharacterSheet("Marvin", person);
-    // Verification code (JUnit/TestNG asserts), if any.
+      // Verification code (JUnit/TestNG asserts), if any.
   }
 
   @Test
@@ -214,6 +228,12 @@ public class PrivateBeanTest
       {
         return "Marvin";
       }
+
+      @Override
+      protected Response createResponse()
+      {
+        return null;
+      }
     };
     final PrivatePerson person = new PrivatePerson();
     person.name = "Marvin";
@@ -223,7 +243,7 @@ public class PrivateBeanTest
     person.cityofbirth = "Sirius";
     person.storyline = "Life, don't talk to me about <script>alert('woaj');</script>life.";
     privateBean.updateCharacterSheet("Marvin", person);
-    // Verification code (JUnit/TestNG asserts), if any.
+      // Verification code (JUnit/TestNG asserts), if any.
 
     assertEquals(cinfo.getName(), person.name);
     assertEquals(cinfo.getImageurl(), person.imageurl);
@@ -308,6 +328,12 @@ public class PrivateBeanTest
       {
         return "Marvin";
       }
+
+      @Override
+      protected Response createResponse()
+      {
+        return null;
+      }
     };
     // Unit under test is exercised.
     privateBean.updateFamilyvalues("Marvin", "Hotblack", 2);
@@ -367,6 +393,11 @@ public class PrivateBeanTest
       {
         return "Marvin";
       }
+      @Override
+      protected Response createResponse()
+      {
+        return null;
+      }
     };
 
     doAnswer((InvocationOnMock invocation) ->
@@ -416,6 +447,11 @@ public class PrivateBeanTest
         return "Marvin";
       }
 
+      @Override
+      protected Response createResponse()
+      {
+        return null;
+      }
     };
     // Unit under test is exercised.
     privateBean.deleteFamilyvalues("Marvin", "Hotblack");

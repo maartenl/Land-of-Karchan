@@ -56,7 +56,7 @@ import org.karchan.security.Roles;
 public class WebsiteServlet extends HttpServlet
 {
 
-  private final static Logger LOGGER = Logger.getLogger(WebsiteServlet.class.getName());
+  private static final Logger LOGGER = Logger.getLogger(WebsiteServlet.class.getName());
 
   private static final String VERSION_COOKIENAME = "karchanversion";
 
@@ -235,7 +235,7 @@ public class WebsiteServlet extends HttpServlet
       return Collections.emptyList();
     }
     List<Menu> breadcrumbs = new ArrayList<>();
-    while (menu.getParent() != null && menu.getParent() != menuFactory.getRootMenu())
+    while (menu.getParent() != null && menu.getParent() != MenuFactory.getRootMenu())
     {
       breadcrumbs.add(0, menu.getParent());
       menu = menu.getParent();
@@ -258,9 +258,9 @@ public class WebsiteServlet extends HttpServlet
     {
       return true;
     }
-    LocalDateTime now = LocalDateTime.now();
-    LocalDateTime startOfChristmas = LocalDateTime.of(now.getYear(), Month.DECEMBER, 7, 0, 0, 0);
-    LocalDateTime endOfChristmas = LocalDateTime.of(now.getYear() + 1, Month.JANUARY, 6, 0, 0, 0);
+    var now = LocalDateTime.now();
+    var startOfChristmas = LocalDateTime.of(now.getYear(), Month.DECEMBER, 7, 0, 0, 0);
+    var endOfChristmas = LocalDateTime.of(now.getYear() + 1, Month.JANUARY, 6, 0, 0, 0);
     return now.isAfter(startOfChristmas) && now.isBefore(endOfChristmas);
   }
 

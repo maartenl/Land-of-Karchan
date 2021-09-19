@@ -24,7 +24,6 @@ import java.util.List;
 import java.util.logging.Logger;
 import javax.persistence.EntityManager;
 import javax.persistence.TypedQuery;
-import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Response;
 
 import mmud.database.entities.characters.User;
@@ -33,9 +32,12 @@ import mmud.database.entities.game.Area;
 import mmud.database.entities.game.Mail;
 import mmud.database.entities.game.MailReceiver;
 import mmud.database.entities.game.Room;
+import mmud.database.entities.items.Item;
 import mmud.database.entities.items.ItemDefinition;
 import mmud.exceptions.MudException;
 import mmud.exceptions.MudWebException;
+import mmud.rest.services.ItemBean;
+import mmud.rest.services.LogBean;
 import mmud.rest.services.PrivateBean;
 import mmud.rest.services.PublicBean;
 import mmud.rest.webentities.PrivateMail;
@@ -57,7 +59,6 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertNotNull;
-import static org.testng.Assert.fail;
 
 /**
  * @author maartenl
@@ -623,8 +624,7 @@ public class MudMailTest
     compare(actual, expected);
   }
 
-  // TODO : Fix this!
-  @Test(enabled = false)
+  @Test
   public void createMailItem()
   {
     LOGGER.fine("createMailItem");
@@ -643,14 +643,23 @@ public class MudMailTest
     itemDef.setNotes("Some notes");
 
     final Mail mail = new Mail();
-//    mail.setToname(marvin);
     mail.setName(hotblack);
     mail.setBody("First mail");
     mail.setSubject("Subject");
     mail.setDeleted(Boolean.FALSE);
-//    mail.setHaveread(Boolean.FALSE);
+
+    MailReceiver mailreceiver = new MailReceiver();
+    mailreceiver.setDeleted(false);
+    mailreceiver.setMail(mail);
+    mailreceiver.setHaveread(false);
+    mailreceiver.setToname(marvin);
+    mailreceiver.setNewmail(true);
+
     EntityManager entityManager = mock(EntityManager.class);
     when(entityManager.find(User.class, "Marvin")).thenReturn(marvin);
+    when(entityManager.find(MailReceiver.class, 1L)).thenReturn(mailreceiver);
+    when(entityManager.find(ItemDefinition.class, 8009L)).thenReturn(itemDef);
+
     PrivateBean privateBean = new PrivateBean()
     {
       @Override
@@ -658,73 +667,37 @@ public class MudMailTest
       {
         return entityManager;
       }
+
+      @Override
+      protected String getPlayerName() throws IllegalStateException
+      {
+        return "Marvin";
+      }
+
+      @Override
+      protected Response createResponse()
+      {
+        return null;
+      }
     };
-//    new Expectations() // an "expectation block"
-//    {
-//
-//      {
-//        entityManager.find(User.class, "Marvin");
-//        result = marvin;
-//        entityManager.find(Mail.class, 1l);
-//        result = mail;
-//        entityManager.find(ItemDefinition.class, 8009);
-//        result = itemDef;
-//        entityManager.createNamedQuery("ItemDefinition.maxid");
-//        result = query;
-//        query.getSingleResult();
-//        result = Integer.valueOf(5);
-//        entityManager.persist((ItemDefinition) any);
-//        result = new Delegate()
-//        {
-//          // The name of this method can actually be anything.
-//          void persist(ItemDefinition newItemDef)
-//          {
-//            assertNotNull(newItemDef);
-//            assertEquals(newItemDef.getId(), Integer.valueOf(6));
-//            assertEquals(newItemDef.getShortDescription(), itemDef.getShortDescription());
-//            assertEquals(newItemDef.getReaddescription(), "this is <div id=\"karchan_letterhead\">Subject</div>.</p><p><div id=\"karchan_letterbody\">First mail</div></p><p>letterfoot</p>");
-//            assertEquals(newItemDef.getName(), itemDef.getName());
-//            assertEquals(newItemDef.getAdject1(), itemDef.getAdject1());
-//            assertEquals(newItemDef.getAdject2(), itemDef.getAdject2());
-//            assertEquals(newItemDef.getAdject3(), itemDef.getAdject3());
-//            assertEquals(newItemDef.getGetable(), itemDef.getGetable());
-//            assertEquals(newItemDef.getDropable(), itemDef.getDropable());
-//            assertEquals(newItemDef.getVisible(), itemDef.getVisible());
-//
-//            assertEquals(newItemDef.getCopper(), itemDef.getCopper());
-//            assertEquals(newItemDef.getOwner(), itemDef.getOwner());
-//            assertEquals(newItemDef.getNotes(), itemDef.getNotes());
-//          }
-//        };
-//
-//        entityManager.find(Admin.class, Admin.DEFAULT_OWNER);
-//        result = TestingConstants.getAdmin();
-//
-//        entityManager.persist((Item) any);
-//        result = new Delegate()
-//        {
-//          // The name of this method can actually be anything.
-//          void persist(Item item)
-//          {
-//            assertNotNull(item);
-//            // assertEquals(item.getCreation(), LocalDateTime.now());
-//            assertNull(item.getId());
-//            assertEquals(item.getItemDefinition().getId(), Integer.valueOf(6));
-//            assertEquals(item.getOwner(), admin);
-//          }
-//        };
-//
-//      }
-//    };
+    LogBeanStub logBean = new LogBeanStub();
+    privateBean.setLogBean(logBean);
     // Unit under test is exercised.
-    Response response = privateBean.createMailItem("Marvin", 1L, 1);
+    privateBean.createMailItem("Marvin", 1L, 1);
     // Verification code (JUnit/TestNG asserts), if any.
-    assertNotNull(response);
-    assertEquals(response.getStatus(), Response.Status.OK.getStatusCode());
+    assertThat(marvin.getItems()).hasSize(1);
+    Item item = marvin.getItems().stream().findFirst().orElseThrow(() -> new AssertionError("Expected at least one"));
+    assertThat(item).isNotNull();
+    assertThat(item.getId()).isNull();
+    assertThat(item.getBelongsTo()).isEqualTo(marvin);
+    assertThat(item.getRoom()).isNull();
+    assertThat(item.getContainer()).isNull();
+    assertThat(item.getItems()).as("It should not contain items.").isEmpty();
+    assertThat(item.getItemDefinition()).isEqualTo(itemDef);
+    assertThat(logBean.getLog()).isEqualTo("Marvin:item small piece of paper from mail 1 created.\n");
   }
 
-  // TODO : Fix this!
-  @Test(enabled = false)
+  @Test
   public void createSecondMailItem() throws MudException
   {
     LOGGER.fine("createSecondMailItem");
@@ -750,8 +723,19 @@ public class MudMailTest
     mail.setDeleted(Boolean.FALSE);
 //    mail.setHaveread(Boolean.FALSE);
 //    mail.setItemDefinition(itemDef);
+
+    MailReceiver mailreceiver = new MailReceiver();
+    mailreceiver.setDeleted(false);
+    mailreceiver.setMail(mail);
+    mailreceiver.setHaveread(false);
+    mailreceiver.setToname(marvin);
+    mailreceiver.setNewmail(true);
+
     EntityManager entityManager = mock(EntityManager.class);
     when(entityManager.find(User.class, "Marvin")).thenReturn(marvin);
+    when(entityManager.find(MailReceiver.class, 1L)).thenReturn(mailreceiver);
+    when(entityManager.find(ItemDefinition.class, 8009L)).thenReturn(itemDef);
+
     PrivateBean privateBean = new PrivateBean()
     {
       @Override
@@ -759,43 +743,33 @@ public class MudMailTest
       {
         return entityManager;
       }
+
+      @Override
+      protected String getPlayerName() throws IllegalStateException
+      {
+        return "Marvin";
+      }
+
+      @Override
+      protected Response createResponse()
+      {
+        return null;
+      }
+
     };
-//    new Expectations() // an "expectation block"
-//    {
-//
-//      {
-//        entityManager.find(User.class, "Marvin");
-//        result = marvin;
-//        entityManager.find(Mail.class, 1l);
-//        result = mail;
-//        entityManager.find(Admin.class, Admin.DEFAULT_OWNER);
-//        result = TestingConstants.getAdmin();
-//        entityManager.persist((Item) any);
-//        result = new Delegate()
-//        {
-//          // The name of this method can actually be anything.
-//          void persist(Item item)
-//          {
-//            assertNotNull(item);
-//            // assertEquals(item.getCreation(), LocalDateTime.now());
-//            assertNull(item.getId());
-//            assertEquals(item.getItemDefinition().getId(), Integer.valueOf(12));
-//            assertEquals(item.getOwner(), admin);
-//          }
-//        };
-//
-//      }
-//    };
+    LogBeanStub logBean = new LogBeanStub();
+    privateBean.setLogBean(logBean);
     // Unit under test is exercised.
-    Response response = privateBean.createMailItem("Marvin", 1L, 1);
+    privateBean.createMailItem("Marvin", 1L, 1);
     // Verification code (JUnit/TestNG asserts), if any.
-    assertNotNull(response);
-    assertEquals(response.getStatus(), Response.Status.OK.getStatusCode());
+    assertThat(logBean.getLog()).isEqualTo("Marvin:item small piece of paper from mail 1 created.\n");
   }
 
-  // TODO : Fix this!
-  @Test(enabled = false)
-  public void createMailItemError1() throws MudException
+  /**
+   * An illegal itemdefinition number (-1) is requested by the user.
+   */
+  @Test
+  public void createMailItemError1()
   {
     LOGGER.fine("createMailItemError1");
     final Mail mail = new Mail();
@@ -805,8 +779,17 @@ public class MudMailTest
     mail.setSubject("Subject");
     mail.setDeleted(Boolean.FALSE);
 //    mail.setHaveread(Boolean.FALSE);
+    MailReceiver mailreceiver = new MailReceiver();
+    mailreceiver.setDeleted(false);
+    mailreceiver.setMail(mail);
+    mailreceiver.setHaveread(false);
+    mailreceiver.setToname(marvin);
+    mailreceiver.setNewmail(true);
     EntityManager entityManager = mock(EntityManager.class);
     when(entityManager.find(User.class, "Marvin")).thenReturn(marvin);
+    when(entityManager.find(MailReceiver.class, 1L)).thenReturn(mailreceiver);
+    when(entityManager.find(ItemDefinition.class, 8009L)).thenReturn(null);
+
     PrivateBean privateBean = new PrivateBean()
     {
       @Override
@@ -814,32 +797,22 @@ public class MudMailTest
       {
         return entityManager;
       }
-    };
-//    new Expectations() // an "expectation block"
-//    {
-//
-//      {
-//        entityManager.find(User.class, "Marvin");
-//        result = marvin;
-//        entityManager.find(Mail.class, 1l);
-//        result = mail;
-//      }
-//    };
-    try
-    {
-      // Unit under test is exercised.
-      privateBean.createMailItem("Marvin", 1L, -1);
-      fail("Exception expected");
-    } catch (WebApplicationException result)
-    {
-      assertEquals(result.getResponse().getStatus(), Response.Status.BAD_REQUEST.getStatusCode());
 
-    }
+      @Override
+      protected String getPlayerName() throws IllegalStateException
+      {
+        return "Marvin";
+      }
+
+    };
+    // Unit under test is exercised.
+    assertThatThrownBy(() -> privateBean.createMailItem("Marvin", 1L, -1))
+      .isInstanceOf(MudWebException.class)
+      .hasMessage("mmud.exceptions.MudWebException: Could not create item from mail.");
     // Verification code (JUnit/TestNG asserts), if any.
   }
 
-  // TODO : Fix this!
-  @Test(enabled = false)
+  @Test
   public void createMailItemError2() throws MudException
   {
     LOGGER.fine("createMailItemError1");
@@ -850,8 +823,17 @@ public class MudMailTest
     mail.setSubject("Subject");
     mail.setDeleted(Boolean.FALSE);
 //    mail.setHaveread(Boolean.FALSE);
+    MailReceiver mailreceiver = new MailReceiver();
+    mailreceiver.setDeleted(false);
+    mailreceiver.setMail(mail);
+    mailreceiver.setHaveread(false);
+    mailreceiver.setToname(marvin);
+    mailreceiver.setNewmail(true);
+
     EntityManager entityManager = mock(EntityManager.class);
     when(entityManager.find(User.class, "Marvin")).thenReturn(marvin);
+    when(entityManager.find(MailReceiver.class, 1L)).thenReturn(mailreceiver);
+
     PrivateBean privateBean = new PrivateBean()
     {
       @Override
@@ -859,27 +841,23 @@ public class MudMailTest
       {
         return entityManager;
       }
-    };
-//    new Expectations() // an "expectation block"
-//    {
-//
-//      {
-//        entityManager.find(User.class, "Marvin");
-//        result = marvin;
-//        entityManager.find(Mail.class, 1l);
-//        result = mail;
-//      }
-//    };
-    try
-    {
-      // Unit under test is exercised.
-      privateBean.createMailItem("Marvin", 1L, 8);
-      fail("Exception expected");
-    } catch (WebApplicationException result)
-    {
-      assertEquals(result.getResponse().getStatus(), Response.Status.BAD_REQUEST.getStatusCode());
 
-    }
+      @Override
+      protected String getPlayerName() throws IllegalStateException
+      {
+        return "Marvin";
+      }
+
+      @Override
+      protected Response createResponse()
+      {
+        return null;
+      }
+    };
+    // Unit under test is exercised.
+    assertThatThrownBy(() -> privateBean.createMailItem("Marvin", 1L, 8))
+      .isInstanceOf(MudWebException.class)
+      .hasMessage("mmud.exceptions.MudWebException: Could not create item from mail.");
     // Verification code (JUnit/TestNG asserts), if any.
   }
 
@@ -917,11 +895,19 @@ public class MudMailTest
         return "Marvin";
       }
 
+      @Override
+      protected Response createResponse()
+      {
+        return null;
+      }
     };
+    LogBeanStub logBean = new LogBeanStub();
+    privateBean.setLogBean(logBean);
     // Unit under test is exercised.
     privateBean.deleteMail("Marvin", 1L);
     // Verification code (JUnit/TestNG asserts), if any.
     assertEquals(mailreceiver.getDeleted(), Boolean.TRUE);
+    assertThat(logBean.getLog()).isEqualTo("Marvin:mail 1 deleted.\n");
   }
 
   @Test
