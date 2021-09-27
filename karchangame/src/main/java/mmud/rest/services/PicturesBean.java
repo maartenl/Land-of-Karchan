@@ -31,8 +31,6 @@ import javax.ejb.LocalBean;
 import javax.ejb.Stateless;
 import javax.imageio.ImageIO;
 import javax.inject.Inject;
-import javax.json.bind.Jsonb;
-import javax.json.bind.JsonbBuilder;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
@@ -48,6 +46,7 @@ import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
+import mmud.JsonUtils;
 import mmud.database.RegularExpressions;
 import mmud.database.entities.characters.User;
 import mmud.database.entities.web.Image;
@@ -188,12 +187,7 @@ public class PicturesBean
         throw new MudWebException(name, "Not your image.", Response.Status.UNAUTHORIZED);
       }
 
-      String result;
-      try (Jsonb jsonb = JsonbBuilder.create())
-      {
-        result = jsonb.toJson(new PrivateImage(image));
-      }
-      return result;
+      return new PrivateImage(image).toJson();
 
     } catch (WebApplicationException e)
     {
@@ -223,15 +217,7 @@ public class PicturesBean
     })
   public Response createPicture(@PathParam("name") String player, String json) throws UnsupportedEncodingException
   {
-    PrivateImage newImage;
-    try (Jsonb jsonb = JsonbBuilder.create())
-    {
-      newImage = jsonb.fromJson(json, PrivateImage.class);
-    } catch (Exception e)
-    {
-      throw new MudWebException(player, e, Response.Status.BAD_REQUEST);
-    }
-
+    PrivateImage newImage = JsonUtils.fromJson(json, PrivateImage.class);
     String name = securityContext.getCallerPrincipal().getName();
     if (name == null)
     {

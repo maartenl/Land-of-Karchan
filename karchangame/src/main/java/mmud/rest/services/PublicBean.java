@@ -346,45 +346,6 @@ public class PublicBean
     return res;
   }
 
-  /**
-   * Returns a List of characters and their profiles. The URL:
-   * /karchangame/resources/public/charactersheets. Can produce both
-   * application/xml and application/json.
-   *
-   * @return A List of Characters and their profiles.
-   */
-  @GET
-  @Path("charactersheets")
-  @Produces(
-    {
-      MediaType.APPLICATION_JSON
-    })
-  public List<PublicPerson> charactersheets()
-  {
-
-    LOGGER.finer("entering charactersheets");
-
-    List<PublicPerson> res = new ArrayList<>();
-    try
-    {
-      TypedQuery<String> query = getEntityManager().createNamedQuery("CharacterInfo.charactersheets", String.class);
-      List<String> list = query.getResultList();
-
-      for (String name : list)
-      {
-        PublicPerson person = new PublicPerson();
-        person.name = name;
-        person.url = "/karchangame/resources/public/charactersheets/" + name;
-        res.add(person);
-      }
-    } catch (Exception e)
-    {
-      throw new MudWebException(e, Response.Status.BAD_REQUEST);
-    }
-    LOGGER.finer("exiting charactersheets");
-    return res;
-  }
-
   @VisibleForTesting
   public void setPersonBean(PersonBean personBean)
   {

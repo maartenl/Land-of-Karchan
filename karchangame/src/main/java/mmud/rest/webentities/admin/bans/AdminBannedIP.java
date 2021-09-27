@@ -1,11 +1,9 @@
 package mmud.rest.webentities.admin.bans;
 
-import mmud.database.entities.game.BanTable;
-import mmud.database.entities.items.ItemDefinition;
-
-import javax.json.bind.Jsonb;
-import javax.json.bind.JsonbBuilder;
 import java.time.LocalDateTime;
+
+import mmud.JsonUtils;
+import mmud.database.entities.game.BanTable;
 
 public class AdminBannedIP
 {
@@ -37,13 +35,12 @@ public class AdminBannedIP
 
   public String toJson()
   {
-    return JsonbBuilder.create().toJson(this);
+    return JsonUtils.toJson(this);
   }
 
   public static AdminBannedIP fromJson(String json)
   {
-    Jsonb jsonb = JsonbBuilder.create();
-    return jsonb.fromJson(json, AdminBannedIP.class);
+    return JsonUtils.fromJson(json, AdminBannedIP.class);
   }
 
 

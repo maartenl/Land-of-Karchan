@@ -388,7 +388,7 @@ public class Guild implements Serializable, DisplayInterface, Ownage
   @Override
   public boolean equals(Object object)
   {
-    // TODO: Warning - this method won't work in the case the id fields are not set
+    // Warning - this method won't work in the case the id fields are not set
     if (!(object instanceof Guild))
     {
       return false;

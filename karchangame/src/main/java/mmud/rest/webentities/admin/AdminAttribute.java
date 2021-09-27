@@ -16,9 +16,7 @@
  */
 package mmud.rest.webentities.admin;
 
-import javax.json.bind.Jsonb;
-import javax.json.bind.JsonbBuilder;
-
+import mmud.JsonUtils;
 import mmud.database.entities.game.Attribute;
 
 /**
@@ -58,12 +56,11 @@ public class AdminAttribute
 
   public String toJson()
   {
-    return JsonbBuilder.create().toJson(this);
+    return JsonUtils.toJson(this);
   }
 
   public static AdminAttribute fromJson(String json)
   {
-    Jsonb jsonb = JsonbBuilder.create();
-    return jsonb.fromJson(json, AdminAttribute.class);
+    return JsonUtils.fromJson(json, AdminAttribute.class);
   }
 }

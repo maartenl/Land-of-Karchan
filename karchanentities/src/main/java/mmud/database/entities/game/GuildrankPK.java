@@ -56,7 +56,8 @@ public class GuildrankPK implements Serializable
     /**
      * Returns the rank number in the guild. Guideline here could
      * be that the lower the number, the higher the rank. Rank 0 is the most important rank, and is usually the guild
-     * master. 
+     * master.
+     *
      * @return the rank
      */
     public int getGuildlevel()
@@ -91,19 +92,19 @@ public class GuildrankPK implements Serializable
     @Override
     public boolean equals(Object object)
     {
-        // TODO: Warning - this method won't work in the case the id fields are not set
-        if (!(object instanceof GuildrankPK))
-        {
-            return false;
-        }
-        GuildrankPK other = (GuildrankPK) object;
-        if (this.guildlevel != other.guildlevel)
-        {
-            return false;
-        }
-        if ((this.guildname == null && other.guildname != null) || (this.guildname != null && !this.guildname.equals(other.guildname)))
-        {
-            return false;
+        // Warning - this method won't work in the case the id fields are not set
+      if (!(object instanceof GuildrankPK))
+      {
+        return false;
+      }
+      GuildrankPK other = (GuildrankPK) object;
+      if (this.guildlevel != other.guildlevel)
+      {
+        return false;
+      }
+      if ((this.guildname == null && other.guildname != null) || (this.guildname != null && !this.guildname.equals(other.guildname)))
+      {
+        return false;
         }
         return true;
     }

@@ -73,5 +73,14 @@ h4 {
 
 .navbar-brand {
   font-family: 'GabrielleRegular';
-  color: white !important; 
+  color: white !important;
+}
+
+.people {
+  -webkit-column-width: 150px;
+  -moz-column-width: 150px;
+  column-width: 150px;
+  -webkit-column-rule: 1px dotted #ddd;
+  -moz-column-rule: 1px dotted #ddd;
+  column-rule: 1px dotted #ddd;
 }

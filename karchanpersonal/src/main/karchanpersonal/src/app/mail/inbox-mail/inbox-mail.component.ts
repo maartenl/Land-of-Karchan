@@ -1,8 +1,8 @@
-import { Component, OnInit, EventEmitter, Output } from '@angular/core';
+import {Component, EventEmitter, OnInit, Output} from '@angular/core';
 
-import { Mail, MailList } from '../mail.model';
-import { PlayerService } from '../../player.service';
-import { ToastService } from '../../toast.service';
+import {Mail, MailList} from '../mail.model';
+import {PlayerService} from '../../player.service';
+import {ToastService} from '../../toast.service';
 
 @Component({
   selector: 'app-inbox-mail',
@@ -28,8 +28,11 @@ export class InboxMailComponent implements OnInit {
     this.playerService.getMail(this.mails.getNumberOfMails()).subscribe(
       (result: Mail[]) => { // on success
         if (result !== undefined && result.length !== 0) {
-          result.forEach(value =>
-            value.whensent = value.whensent.replace('[UTC]', '')
+          result.forEach(value => {
+              if (value.whensent !== null) {
+                value.whensent = value.whensent.replace('[UTC]', '')
+              }
+            }
           );
           this.mails.addAll(result);
         }
@@ -111,8 +114,11 @@ export class InboxMailComponent implements OnInit {
     this.playerService.getMail(this.mails.getNumberOfMails()).subscribe(
       (result: Mail[]) => { // on success
         if (result !== undefined && result.length !== 0) {
-          result.forEach(value =>
-            value.whensent = value.whensent.replace('[UTC]', '')
+          result.forEach(value => {
+              if (value.whensent !== null) {
+                value.whensent = value.whensent.replace('[UTC]', '')
+              }
+            }
           );
           this.mails.addAll(result);
           this.mails.next();

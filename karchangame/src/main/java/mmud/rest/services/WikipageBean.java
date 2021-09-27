@@ -24,8 +24,6 @@ import javax.annotation.security.RolesAllowed;
 import javax.ejb.LocalBean;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
-import javax.json.bind.Jsonb;
-import javax.json.bind.JsonbBuilder;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
@@ -40,14 +38,15 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-import mmud.Constants;
+
+import mmud.JsonUtils;
 import mmud.database.RegularExpressions;
 import mmud.database.entities.characters.User;
+import mmud.database.entities.web.Wikipage;
+import mmud.database.entities.web.WikipageHistory;
 import mmud.exceptions.MudWebException;
 import mmud.rest.webentities.PrivateWikipage;
 import org.karchan.security.Roles;
-import mmud.database.entities.web.Wikipage;
-import mmud.database.entities.web.WikipageHistory;
 
 /**
  * Allows getting wikipages, creating new ones and editing them. You can find
@@ -82,9 +81,10 @@ public class WikipageBean
   {
     return em;
   }
+
   private static final Logger LOGGER = Logger.getLogger(WikipageBean.class.getName());
 
-    private User getUser(String name)
+  private User getUser(String name)
   {
     User person = getEntityManager().find(User.class, name);
     if (person == null)
@@ -97,30 +97,30 @@ public class WikipageBean
     }
     return person;
   }
-    
+
   /**
    * Returns a wikipage with that specific title.
    *
    * @param title the (unique) title of the wikipage
    * @return a wikipage in json format
    * @throws WebApplicationException <ul>
-   * <li>UNAUTHORIZED, if the authorization failed.</li>
-   * <li>NOT_FOUND if this wikipage does not exist.</li>
-   * <li>BAD_REQUEST if an unexpected exception crops up.</li></ul>
+   *                                 <li>UNAUTHORIZED, if the authorization failed.</li>
+   *                                 <li>NOT_FOUND if this wikipage does not exist.</li>
+   *                                 <li>BAD_REQUEST if an unexpected exception crops up.</li></ul>
    */
   @GET
   @Path("{title}")
   @Produces(
-          {
-            MediaType.APPLICATION_JSON
-          })
+    {
+      MediaType.APPLICATION_JSON
+    })
   public String getWikipage(@PathParam("title") String title)
   {
     try
     {
       String namedQuery = securityContext.isCallerInRole(Roles.DEPUTY)
-              ? "Wikipage.findByTitleAuthorized"
-              : "Wikipage.findByTitle";
+        ? "Wikipage.findByTitleAuthorized"
+        : "Wikipage.findByTitle";
       Query query = getEntityManager().createNamedQuery(namedQuery);
       query.setParameter("title", title);
 
@@ -149,18 +149,17 @@ public class WikipageBean
    * @param json the new wikipage to store in json format.
    * @return Response.ok if everything's okay.
    * @throws WebApplicationException UNAUTHORIZED, if the authorization failed.
-   * BAD_REQUEST if an unexpected exception crops up.
+   *                                 BAD_REQUEST if an unexpected exception crops up.
    */
   @POST
   @Consumes(
-          {
-            MediaType.APPLICATION_JSON
-          })
+    {
+      MediaType.APPLICATION_JSON
+    })
   public Response createWikipage(String json)
   {
-    Jsonb jsonb = JsonbBuilder.create();
-    PrivateWikipage newWikipage = jsonb.fromJson(json, PrivateWikipage.class);
-    Query queryCheckExistence = getEntityManager().createNamedQuery("Wikipage.checkExistenceOfWikipage");
+    PrivateWikipage newWikipage = PrivateWikipage.fromJson(json);
+    var queryCheckExistence = getEntityManager().createNamedQuery("Wikipage.checkExistenceOfWikipage");
     queryCheckExistence.setParameter("title", newWikipage.title);
 
     List<Wikipage> list = queryCheckExistence.getResultList();
@@ -226,27 +225,26 @@ public class WikipageBean
    * Adds or updates a wikipage.
    *
    * @param title the (unique) title of the wikpage, should not exist yet.
-   * @param json the updated wikipage to store in json format.
+   * @param json  the updated wikipage to store in json format.
    * @return Response.ok if everything is okay.
    * @throws WebApplicationException UNAUTHORIZED, if the authorisation failed.
-   * BAD_REQUEST if an unexpected exception crops up.
+   *                                 BAD_REQUEST if an unexpected exception crops up.
    */
   @PUT
   @Path("{title}")
   @Consumes(
-          {
-            MediaType.APPLICATION_JSON
-          })
+    {
+      MediaType.APPLICATION_JSON
+    })
   public Response updateWikipage(@PathParam("title") String title, String json)
   {
     String name = securityContext.getCallerPrincipal().getName();
-    Jsonb jsonb = JsonbBuilder.create();
-    PrivateWikipage privateWikipage = jsonb.fromJson(json, PrivateWikipage.class);
+    PrivateWikipage privateWikipage = JsonUtils.fromJson(json, PrivateWikipage.class);
     try
     {
       String namedQuery = securityContext.isCallerInRole(Roles.DEPUTY)
-              ? "Wikipage.findByTitleAuthorized"
-              : "Wikipage.findByTitle";
+        ? "Wikipage.findByTitleAuthorized"
+        : "Wikipage.findByTitle";
       Query queryCheckExistence = getEntityManager().createNamedQuery(namedQuery);
       queryCheckExistence.setParameter("title", title);
 

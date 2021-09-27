@@ -20,33 +20,39 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 import javax.persistence.PersistenceException;
+import javax.validation.ConstraintViolation;
 import javax.validation.ConstraintViolationException;
 
 /**
- *
  * @author maartenl
  */
 public class ExceptionUtils
 {
 
+  /**
+   * Creates a useful message for your constraint violations.
+   *
+   * @param e the constraint violation exception
+   * @return the string representation
+   */
   public static String createMessage(ConstraintViolationException e)
   {
+    System.out.println(e.getConstraintViolations().stream().map(x -> x.getPropertyPath().toString() + x.getInvalidValue() + x.getMessage()).collect(Collectors.joining()));
     Set<String> constraintViolations = e.getConstraintViolations().stream()
-            .map(violation -> violation.getMessage())
-            .collect(Collectors.toSet());
+      .map(ConstraintViolation::getMessage)
+      .collect(Collectors.toSet());
     if (constraintViolations.size() == 1)
     {
-      return constraintViolations.stream().findFirst().get();
+      return constraintViolations.stream().findFirst().orElse("Unknown constraint violation occurred.");
     }
-    String allMessages = constraintViolations.stream()
-            .map(str -> "<p>" + str + "</p>")
-            .reduce((x, y) -> x + y).orElse("Unknown constraint violation occurred.");
-    return allMessages;
+    return constraintViolations.stream()
+      .map(str -> "<p>" + str + "</p>")
+      .reduce((x, y) -> x + y).orElse("Unknown constraint violation occurred.");
   }
 
   public static Optional<String> createMessage(PersistenceException f)
   {
-    if (f.getCause().getClass().getName().equals("ConstraintViolationException"))
+    if (f.getCause() instanceof ConstraintViolationException)
     {
       ConstraintViolationException e = (ConstraintViolationException) f.getCause();
       return Optional.of(createMessage(e));

@@ -16,11 +16,20 @@
  */
 package mmud.database.entities.game;
 
-import mmud.database.entities.characters.Person;
-
-import javax.persistence.*;
-import javax.validation.constraints.NotNull;
 import java.io.Serializable;
+import javax.persistence.Basic;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.NamedQuery;
+import javax.persistence.Table;
+import javax.validation.constraints.NotNull;
+
+import mmud.database.entities.characters.Person;
 
 /**
  * It's basically a couple table between the mail sent, and the addressee.
@@ -32,34 +41,11 @@ import java.io.Serializable;
  */
 @Entity
 @Table(name = "mm_mailtable")
-@NamedQueries(
-  {
-//    @NamedQuery(name = "Mail.findAll", query = "SELECT m FROM Mail m"),
-//    @NamedQuery(name = "Mail.findById", query = "SELECT m FROM Mail m WHERE m.id = :id"),
-//    @NamedQuery(name = "Mail.findBySubject", query = "SELECT m FROM Mail m WHERE m.subject = :subject"),
-//    @NamedQuery(name = "Mail.findByWhensent", query = "SELECT m FROM Mail m WHERE m.whensent = :whensent"),
-//    @NamedQuery(name = "Mail.findByHaveread", query = "SELECT m FROM Mail m WHERE m.haveread = :haveread"),
-//    @NamedQuery(name = "Mail.findByNewmail", query = "SELECT m FROM Mail m WHERE m.newmail = :newmail"),
-    @NamedQuery(name = "MailReceiver.deleteByName", query = "DELETE FROM MailReceiver m WHERE m.toname = :person")
-//    @NamedQuery(name = "Mail.listmail", query = "SELECT m FROM Mail m WHERE m.deleted = false and m.toname = :name order by m.id desc"),
-//    @NamedQuery(name = "Mail.nonewmail", query = "UPDATE Mail m SET m.newmail = false WHERE m.toname = :name"),
-//    @NamedQuery(name = "Mail.hasnewmail", query = "SELECT count(m.id) FROM Mail m WHERE m.newmail = true and m.deleted = false and m.toname = :name")
-  })
-public class MailReceiver implements Serializable {
+@NamedQuery(name = "MailReceiver.deleteByName", query = "DELETE FROM MailReceiver m WHERE m.toname = :person")
+public class MailReceiver implements Serializable
+{
 
   private static final long serialVersionUID = 1L;
-
-  /**
-   * Contains the item ids of the different items that represent letters/mail.
-   * The readdescription of said letters looks a little like the following:
-   * <p>
-   * "stuffletterhead letterbody letterfooter"</p> That way, the
-   * letterhead, letterbody and letterfooter are automatically replaced.
-   */
-  public static final int[] ITEMS =
-    {
-      8008, 8009, 8010, 8011, 8012, 8013, 8014, 8015
-    };
 
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -86,30 +72,38 @@ public class MailReceiver implements Serializable {
   @ManyToOne(optional = false)
   private Mail mail;
 
-  public MailReceiver() {
+  public MailReceiver()
+  {
+    // ORMs usually require an empty constructor.
   }
 
-  public Long getId() {
+  public Long getId()
+  {
     return id;
   }
 
-  public void setId(Long id) {
+  public void setId(Long id)
+  {
     this.id = id;
   }
 
-  public Boolean getHaveread() {
+  public Boolean getHaveread()
+  {
     return haveread;
   }
 
-  public void setHaveread(Boolean haveread) {
+  public void setHaveread(Boolean haveread)
+  {
     this.haveread = haveread;
   }
 
-  public Boolean getNewmail() {
+  public Boolean getNewmail()
+  {
     return newmail;
   }
 
-  public void setNewmail(Boolean newmail) {
+  public void setNewmail(Boolean newmail)
+  {
     this.newmail = newmail;
   }
 
@@ -117,8 +111,10 @@ public class MailReceiver implements Serializable {
    * Indicates wether the received of the mail has deleted the mail.
    * This has no effect on other receivers or the send said mail.
    */
-  public Boolean getDeleted() {
-    if (deleted == null) {
+  public Boolean getDeleted()
+  {
+    if (deleted == null)
+    {
       return false;
     }
     return deleted;
@@ -127,7 +123,8 @@ public class MailReceiver implements Serializable {
   /**
    * @see #getDeleted()
    */
-  public void setDeleted(Boolean deleted) {
+  public void setDeleted(Boolean deleted)
+  {
     this.deleted = deleted;
   }
 
@@ -136,7 +133,8 @@ public class MailReceiver implements Serializable {
    *
    * @return the person receiving the mail
    */
-  public Person getToname() {
+  public Person getToname()
+  {
     return toname;
   }
 
@@ -145,7 +143,8 @@ public class MailReceiver implements Serializable {
    *
    * @param toname
    */
-  public void setToname(Person toname) {
+  public void setToname(Person toname)
+  {
     this.toname = toname;
   }
 
@@ -154,39 +153,46 @@ public class MailReceiver implements Serializable {
    *
    * @return the mail itself
    */
-  public Mail getMail() {
+  public Mail getMail()
+  {
     return mail;
   }
 
   /**
    * @see #getMail()
    */
-  public void setMail(Mail mail) {
+  public void setMail(Mail mail)
+  {
     this.mail = mail;
   }
 
   @Override
-  public int hashCode() {
+  public int hashCode()
+  {
     int hash = 0;
     hash += (id != null ? id.hashCode() : 0);
     return hash;
   }
 
   @Override
-  public boolean equals(Object object) {
-    // TODO: Warning - this method won't work in the case the id fields are not set
-    if (!(object instanceof MailReceiver)) {
+  public boolean equals(Object object)
+  {
+    // Warning - this method won't work in the case the id fields are not set
+    if (!(object instanceof MailReceiver))
+    {
       return false;
     }
     MailReceiver other = (MailReceiver) object;
-    if ((this.id == null && other.id != null) || (this.id != null && !this.id.equals(other.id))) {
+    if ((this.id == null && other.id != null) || (this.id != null && !this.id.equals(other.id)))
+    {
       return false;
     }
     return true;
   }
 
   @Override
-  public String toString() {
+  public String toString()
+  {
     return "mmud.database.entities.game.MailReceiver[ id=" + id + " ]";
   }
 }

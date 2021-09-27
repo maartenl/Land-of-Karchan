@@ -109,4 +109,15 @@ public class IdleUsersService
     });
     return result;
   }
+
+  /**
+   * This method is mostly used to get the game to not do anything if nobody is playing, it's a good idea for
+   * efficiency reasons.
+   *
+   * @return If nobody is playing the game, will return true, otherwise false.
+   */
+  public boolean isNobodyPlaying()
+  {
+    return idleusers.isEmpty();
+  }
 }

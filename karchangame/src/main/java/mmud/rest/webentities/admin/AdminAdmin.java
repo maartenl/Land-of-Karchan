@@ -1,12 +1,10 @@
 package mmud.rest.webentities.admin;
 
 import java.time.LocalDateTime;
-import javax.json.bind.Jsonb;
-import javax.json.bind.JsonbBuilder;
 
+import mmud.JsonUtils;
 import mmud.database.entities.characters.User;
 import mmud.database.entities.game.Admin;
-import mmud.database.entities.game.Area;
 
 /**
  * Data record containing admin information
@@ -42,13 +40,12 @@ public class AdminAdmin
 
   public String toJson()
   {
-    return JsonbBuilder.create().toJson(this);
+    return JsonUtils.toJson(this);
   }
 
   public static AdminAdmin fromJson(String json)
   {
-    Jsonb jsonb = JsonbBuilder.create();
-    return jsonb.fromJson(json, AdminAdmin.class);
+    return JsonUtils.fromJson(json, AdminAdmin.class);
   }
 
 

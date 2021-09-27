@@ -1,7 +1,6 @@
 package mmud.rest.webentities;
 
-import javax.json.bind.Jsonb;
-import javax.json.bind.JsonbBuilder;
+import mmud.JsonUtils;
 
 public class Message
 {
@@ -12,13 +11,12 @@ public class Message
 
   public String toJson()
   {
-    return JsonbBuilder.create().toJson(this);
+    return JsonUtils.toJson(this);
   }
 
   public static Message fromJson(String json)
   {
-    Jsonb jsonb = JsonbBuilder.create();
-    return jsonb.fromJson(json, Message.class);
+    return JsonUtils.fromJson(json, Message.class);
   }
 
   public Message()

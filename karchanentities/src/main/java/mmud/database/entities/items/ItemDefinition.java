@@ -77,7 +77,7 @@ public class ItemDefinition implements Serializable, Ownage
   @Pattern(regexp = RegularExpressions.ONLY_LETTERS_ONE_OR_MORE_REGEXP, message = RegularExpressions.ONLY_LETTERS_ONE_OR_MORE_MESSAGE)
   private String name;
 
-  @Size(max = 30)
+  @Size(max = 200)
   @Column(name = "adjectives")
   @Pattern(regexp = RegularExpressions.ONLY_LETTERS_REGEXP, message = RegularExpressions.ONLY_LETTERS_MESSAGE)
   private String adjectives;

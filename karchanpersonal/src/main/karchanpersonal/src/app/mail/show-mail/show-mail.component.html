@@ -12,5 +12,25 @@
                 </div>
             </div>
         </div>
+        <div class="col-xs-12 col-sm-12">
+            <form [formGroup]="maildocumentForm" (ngSubmit)="createItemFromMail()" novalidate>
+                <fieldset class="form-group">
+                    <label for="item_id">Get document</label>
+                    <select class="form-control" id="item_id" name="item_id" formControlName="item_id">
+                        <option value="0" selected="selected">old, faded, yellow parchment</option>
+                        <option value="1">crumpled piece of paper</option>
+                        <option value="2">official-looking sealed legal document</option>
+                        <option value="3">impressive-looking forged legal document</option>
+                        <option value="4">hand-written folded ink-spattered letter</option>
+                        <option value="5">short rushed squareshaped memo</option>
+                        <option value="6">embossed beautifully written leaflet</option>
+                        <option value="7">embossed beautifully written invitation</option>
+                    </select>
+                </fieldset>
+                <div class="col-xs-12 col-sm-12 text-right">
+                    <button type="submit" [disabled]="maildocumentForm.pristine" class="btn btn-primary">Create</button>
+                </div>
+            </form>
+        </div>
     </div>
 </div>

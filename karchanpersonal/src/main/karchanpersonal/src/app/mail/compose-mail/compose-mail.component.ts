@@ -1,8 +1,8 @@
-import { Component, OnInit, Input } from '@angular/core';
-import { PlayerService } from 'src/app/player.service';
-import { ToastService } from 'src/app/toast.service';
-import { FormControl, FormGroup, FormBuilder } from '@angular/forms';
-import { Mail } from '../mail.model';
+import {Component, Input, OnInit} from '@angular/core';
+import {PlayerService} from 'src/app/player.service';
+import {ToastService} from 'src/app/toast.service';
+import {FormBuilder, FormGroup} from '@angular/forms';
+import {Mail} from '../mail.model';
 
 @Component({
   selector: 'app-compose-mail',
@@ -29,6 +29,9 @@ export class ComposeMailComponent implements OnInit {
   }
 
   public getFullWhen(mail: Mail): string {
+    if (mail.whensent === null) {
+      return '';
+    }
     const date: Date = new Date(mail.whensent);
     return date.toDateString() + ' ' + date.toTimeString();
   }

@@ -35,7 +35,6 @@ import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
-import javax.validation.ConstraintViolation;
 import javax.validation.ConstraintViolationException;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
@@ -55,6 +54,7 @@ import mmud.database.entities.characters.User;
 import mmud.database.entities.game.Guild;
 import mmud.database.entities.game.Guildrank;
 import mmud.database.entities.game.GuildrankPK;
+import mmud.exceptions.ExceptionUtils;
 import mmud.exceptions.MudException;
 import mmud.exceptions.MudWebException;
 import mmud.rest.webentities.PrivateGuild;
@@ -250,12 +250,7 @@ public class GuildBean
       getEntityManager().persist(guild);
     } catch (ConstraintViolationException ex)
     {
-      StringBuilder buffer = new StringBuilder("ConstraintViolationException:");
-      for (ConstraintViolation<?> violation : ex.getConstraintViolations())
-      {
-        buffer.append(violation);
-      }
-      LOGGER.warning(buffer.toString());
+      LOGGER.warning(ExceptionUtils.createMessage(ex));
       throw ex;
     }
     person.setGuild(guild);
@@ -672,12 +667,7 @@ public class GuildBean
       getEntityManager().persist(newRank);
     } catch (ConstraintViolationException ex)
     {
-      StringBuilder buffer = new StringBuilder("ConstraintViolationException:");
-      for (ConstraintViolation<?> violation : ex.getConstraintViolations())
-      {
-        buffer.append(violation);
-      }
-      throw new MudWebException(name, buffer.toString(), ex, Response.Status.BAD_REQUEST);
+      throw new MudWebException(name, ExceptionUtils.createMessage(ex), ex, Response.Status.BAD_REQUEST);
     }
     return Response.ok().build();
   }

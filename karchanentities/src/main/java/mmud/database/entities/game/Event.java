@@ -18,7 +18,6 @@ package mmud.database.entities.game;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
-
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -29,8 +28,6 @@ import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.Table;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
 import javax.validation.constraints.NotNull;
 
 import mmud.database.entities.Ownage;
@@ -302,7 +299,7 @@ public class Event implements Serializable, Ownage
   @Override
   public boolean equals(Object object)
   {
-    // TODO: Warning - this method won't work in the case the id fields are not set
+    // Warning - this method won't work in the case the id fields are not set
     if (!(object instanceof Event))
     {
       return false;

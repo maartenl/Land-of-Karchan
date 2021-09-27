@@ -4,10 +4,10 @@ export class Mail {
   toname: string;
   subject: string;
   body: string;
-  id: string;
+  id: number | null;
   haveread: boolean;
   newmail: boolean;
-  whensent: string;
+  whensent: string | null;
   deleted: boolean;
   selected = false;
 
@@ -17,10 +17,10 @@ export class Mail {
       this.toname = '';
       this.subject = '';
       this.body = '';
-      this.id = '';
+      this.id = null;
       this.haveread = false;
       this.newmail = true;
-      this.whensent = '';
+      this.whensent = null;
       this.deleted = false;
       return;
     }

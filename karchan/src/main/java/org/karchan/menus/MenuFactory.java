@@ -16,7 +16,6 @@
  */
 package org.karchan.menus;
 
-import com.google.common.annotations.VisibleForTesting;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.util.Arrays;
@@ -31,13 +30,14 @@ import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
+
+import com.google.common.annotations.VisibleForTesting;
 import mmud.database.entities.web.Blog;
 import mmud.database.entities.web.Faq;
 import mmud.database.entities.web.Wikipage;
 import org.karchan.wiki.WikiRenderer;
 
 /**
- *
  * @author maartenl
  */
 @Stateless
@@ -74,14 +74,26 @@ public class MenuFactory
   {
     notFoundMenu = new SimpleMenu("Not found", "/notFound.html");
     add(notFoundMenu);
-    
+
     Menu dash = new Dash();
 
     Menu map = new SimpleMenu("Map", "/chronicles/map.html");
     Menu history = new SimpleMenu("History", "/chronicles/history.html");
-    Menu people = new SimpleMenu("People", "/chronicles/people.html");
+    Menu people = new Menu("People", "/chronicles/people.html")
+    {
+
+      @Override
+      public void setDatamodel(EntityManager entityManager, Map<String, Object> root, Map<String, String[]>
+        parameters)
+      {
+        TypedQuery<String> query = entityManager.createNamedQuery("CharacterInfo.charactersheets", String.class);
+        List<String> list = query.getResultList();
+        root.put("people", list);
+      }
+    };
     Menu fortunes = new SimpleMenu("Fortunes", "/chronicles/fortunes.html");
     Menu guilds = new SimpleMenu("Guilds", "/chronicles/guilds.html");
+
     add(map, history, people, fortunes, guilds);
 
     Menu status = new SimpleMenu("Status", "/help/status.html");
@@ -91,7 +103,9 @@ public class MenuFactory
     Menu serverMetrics = new SimpleMenu("Server metrics", "/help/metrics.html");
     Menu security = new SimpleMenu("Security", "/help/security.html");
     Menu darkmode = new SimpleMenu("Darkmode", "/help/darkmode.html");
+
     add(status, guide, techSpecs, serverMetrics, source, security, darkmode);
+
     Menu faq = new Menu("FAQ", "/help/faq.html")
     {
       @Override
@@ -102,8 +116,9 @@ public class MenuFactory
         root.put("faq", faq);
       }
     };
+
     add(faq);
-    
+
     Menu welcome = new Menu("Welcome", "/index.html")
     {
       @Override
@@ -119,18 +134,22 @@ public class MenuFactory
     Menu logon = new SimpleMenu("Logon", "/logon.html");
     Menu introduction = new SimpleMenu("Introduction", "/introduction.html");
     Menu newCharacter = new SimpleMenu("New character", "/new_character.html");
+
     add(welcome, logon, introduction, newCharacter);
-    
+
     Menu chronicles = new SimpleMenu("Chronicles", "/chronicles/index.html",
-            Arrays.asList(map, history, dash, people, fortunes, guilds));
+      Arrays.asList(map, history, dash, people, fortunes, guilds));
+
     add(chronicles);
 
     Menu who = new SimpleMenu("Who", "/who.html");
     Menu theLaw = new SimpleMenu("The Law", "/the_law.html");
+
     add(who, theLaw);
 
     Menu help = new SimpleMenu("Help", "/help/index.html",
-            Arrays.asList(status, guide, techSpecs, serverMetrics, source, security, darkmode, faq));
+      Arrays.asList(status, guide, techSpecs, serverMetrics, source, security, darkmode, faq));
+
     add(help);
 
     Menu links = new SimpleMenu("Links", "/links.html");
@@ -147,7 +166,7 @@ public class MenuFactory
         TypedQuery<Wikipage> wikipageQuery = entityManager.createNamedQuery("Wikipage.findFrontpage", Wikipage.class);
         List<Wikipage> wikipages = wikipageQuery.getResultList();
         if (wikipages.size() == 1)
-        {         
+        {
           final Wikipage wikipage = wikipages.get(0);
           wikipage.setHtmlContent(new WikiRenderer().render(wikipage.getContent()));
           root.put("wikipage", wikipage);
@@ -158,11 +177,15 @@ public class MenuFactory
         }
       }
     };
+
     add(links, wiki);
 
-    rootMenu = new SimpleMenu("root", " root ",
-            Arrays.asList(welcome, logon, introduction, newCharacter,
-                    chronicles, who, theLaw, help, links, wiki));
+    rootMenu = new
+
+      SimpleMenu("root", " root ",
+      Arrays.asList(welcome, logon, introduction, newCharacter,
+        chronicles, who, theLaw, help, links, wiki));
+
     add(rootMenu);
 
     Menu blogs = new Menu("Blogs", "/blogs/index.html")
@@ -199,13 +222,16 @@ public class MenuFactory
         root.put("page", page);
         root.put("size", numberOfPages);
       }
+
       private static final int PAGE_SIZE = 10;
     };
+
     add(blogs);
 
     Menu settings = new SimpleMenu("Settings", "/game/settings.html");
+
     add(settings);
-    
+
   }
 
   public static Menu getRootMenu()
@@ -243,13 +269,13 @@ public class MenuFactory
 
   public Menu createBlogMenu(String url)
   {
-    Menu specificBlogMenu = new Menu("Blog", "blogs/specific.html")
+    return new Menu("Blog", "blogs/specific.html")
     {
       @Override
-      public void setDatamodel(EntityManager entityManager, Map<String, Object> root, Map<String, String[]> parameters)
+      public void setDatamodel(EntityManager entityManager1, Map<String, Object> root, Map<String, String[]> parameters)
       {
         LOGGER.finest("setDatamodel called for BlogSpecific menu");
-        TypedQuery<Blog> blogsQuery = entityManager.createNamedQuery("Blog.findByUrlTitle", Blog.class);
+        TypedQuery<Blog> blogsQuery = entityManager1.createNamedQuery("Blog.findByUrlTitle", Blog.class);
         String searchBlog = url.substring("/blogs/".length()).replace(".html", "");
         blogsQuery.setParameter("title", searchBlog);
         List<Blog> blogs = blogsQuery.getResultList();
@@ -262,9 +288,9 @@ public class MenuFactory
         if (blogs.size() > 1)
         {
           LOGGER.log(Level.SEVERE, "{0} blogs found... expected only one with name {1}.", new Object[]
-          {
-            blogs.size(), searchBlog
-          });
+            {
+              blogs.size(), searchBlog
+            });
         }
         if (blogs.isEmpty())
         {
@@ -272,15 +298,14 @@ public class MenuFactory
         }
       }
     };
-    return specificBlogMenu;
   }
 
   public Menu createWikiMenu(String url, boolean isDeputy)
   {
-    Menu specificWikipageMenu = new Menu("Wiki", "wiki/specific.html")
+    return new Menu("Wiki", "wiki/specific.html")
     {
       @Override
-      public void setDatamodel(EntityManager entityManager, Map<String, Object> root, Map<String, String[]> parameters)
+      public void setDatamodel(EntityManager entityManager1, Map<String, Object> root, Map<String, String[]> parameters)
       {
         LOGGER.finest("setDatamodel called for WikiSpecific menu");
         String searchWiki;
@@ -294,9 +319,9 @@ public class MenuFactory
         }
 
         String namedQuery = isDeputy
-                ? "Wikipage.findByTitleAuthorized"
-                : "Wikipage.findByTitle";
-        TypedQuery<Wikipage> wikipageQuery = entityManager.createNamedQuery(namedQuery, Wikipage.class);
+          ? "Wikipage.findByTitleAuthorized"
+          : "Wikipage.findByTitle";
+        TypedQuery<Wikipage> wikipageQuery = entityManager1.createNamedQuery(namedQuery, Wikipage.class);
         wikipageQuery.setParameter("title", searchWiki);
         List<Wikipage> wikipages = wikipageQuery.getResultList();
         if (wikipages.size() == 1)
@@ -310,13 +335,12 @@ public class MenuFactory
         } else
         {
           LOGGER.log(Level.SEVERE, "{0} wikipages with name {1} found. (deputy={2})", new Object[]
-          {
-            wikipages.size(), searchWiki, isDeputy
-          });
+            {
+              wikipages.size(), searchWiki, isDeputy
+            });
         }
       }
     };
-    return specificWikipageMenu;
   }
 
   private static void createBreadcrumbsFromWikipages(Wikipage childPage, Menu childMenu)

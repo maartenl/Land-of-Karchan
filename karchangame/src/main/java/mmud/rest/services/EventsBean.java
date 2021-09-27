@@ -68,6 +68,8 @@ import mmud.services.IdleUsersService;
 public class EventsBean
 {
 
+  public static final String LOCALHOST = "localhost";
+  public static final String ONLY_LOCALHOST_MAY_ACCESS_THIS = "Only localhost may access this.";
   @EJB
   private PersonBean personBean;
   @EJB
@@ -100,9 +102,9 @@ public class EventsBean
   @Path("{eventid}")
   public String runSingleEvent(@PathParam("eventid") Integer eventid, @Context HttpServletRequest request)
   {
-    if (!request.getRequestURL().toString().contains("localhost"))
+    if (!request.getRequestURL().toString().contains(LOCALHOST))
     {
-      throw new MudWebException("root", "Only localhost may access this.", Response.Status.FORBIDDEN);
+      throw new MudWebException("root", ONLY_LOCALHOST_MAY_ACCESS_THIS, Response.Status.FORBIDDEN);
     }
     Object[] objects = {eventid, request.getRequestURL()};
     LOGGER.log(Level.INFO, "Run single event {0}. (accessed {1})", objects);
@@ -186,16 +188,21 @@ public class EventsBean
    * Runs every minute, looks up which user-defined event to execute now. So,
    * this takes care of the events that have been dictated by the deputies.
    *
-   * @throws java.lang.IllegalAccessException
-   * @throws java.lang.InstantiationException
-   * @throws java.lang.reflect.InvocationTargetException
+   * @return always "400"
+   * @throws java.lang.IllegalAccessException            an exception because of javascript
+   * @throws java.lang.InstantiationException            an exception because of javascript
+   * @throws java.lang.reflect.InvocationTargetException an exception because of javascript
    */
   @GET
-  public void events(@Context HttpServletRequest request) throws IllegalAccessException, InstantiationException, InvocationTargetException
+  public Response events(@Context HttpServletRequest request) throws IllegalAccessException, InstantiationException, InvocationTargetException
   {
-    if (!request.getRequestURL().toString().contains("localhost"))
+    if (!request.getRequestURL().toString().contains(LOCALHOST))
     {
-      throw new MudWebException("root", "Only localhost may access this.", Response.Status.FORBIDDEN);
+      throw new MudWebException("root", ONLY_LOCALHOST_MAY_ACCESS_THIS, Response.Status.FORBIDDEN);
+    }
+    if (idleUsersService.isNobodyPlaying())
+    {
+      return Response.ok().build();
     }
     Object[] objects = {LocalDateTime.now(), request.getRequestURL()};
     LOGGER.log(Level.INFO, "Events scheduled at time {0}. (accessed {1})", objects);
@@ -283,24 +290,27 @@ public class EventsBean
         }
       }
     }
+    return Response.ok().build();
   }
   // TODO : scheduler that cleans up people, runs at midnight
   // TODO : scheduler that increments item durability, runs at high noon?
-  // TODO : fighting scheduler (second = "*/2")
+  // TODO : fighting scheduler (second = "*/2") -> bad idea, fix this differently, with a dedicated server thing
 
   /**
    * Started once an hour, and computes who has been idle too long.
+   *
+   * @return always "400".
    */
   @GET
   @Path("idles")
-  public void executeIdleCleanup(@Context HttpServletRequest request)
+  public Response executeIdleCleanup(@Context HttpServletRequest request)
   {
-    if (!request.getRequestURL().toString().contains("localhost"))
+    if (!request.getRequestURL().toString().contains(LOCALHOST))
     {
-      throw new MudWebException("root", "Only localhost may access this.", Response.Status.FORBIDDEN);
+      throw new MudWebException("root", ONLY_LOCALHOST_MAY_ACCESS_THIS, Response.Status.FORBIDDEN);
     }
     LOGGER.log(Level.INFO, "Idle cleanup. (accessed {0})", request.getRequestURL());
-    Query query = getEntityManager().createNamedQuery("User.who");
+    var query = getEntityManager().createNamedQuery("User.who");
     List<User> list = query.getResultList();
     List<String> idleUsers = idleUsersService.getIdleUsers();
     for (User user : list)
@@ -314,6 +324,7 @@ public class EventsBean
         user.deactivate();
       }
     }
+    return Response.ok().build();
   }
 
 }
