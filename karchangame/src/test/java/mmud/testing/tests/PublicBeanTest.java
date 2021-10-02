@@ -241,9 +241,9 @@ public class PublicBeanTest
   public void whoEmptyTest()
   {
     LOGGER.fine("whoEmptyTest");
-    Query query = mock(Query.class);
+    TypedQuery query = mock(TypedQuery.class);
     EntityManager entityManager = mock(EntityManager.class);
-    when(entityManager.createNamedQuery("User.who")).thenReturn(query);
+    when(entityManager.createNamedQuery("User.who", User.class)).thenReturn(query);
     when(query.getResultList()).thenReturn(Collections.emptyList());
 
     PublicBean publicBean = new PublicBean()
@@ -276,9 +276,9 @@ public class PublicBeanTest
     final List<Person> list = new ArrayList<>();
     list.add(hotblack);
     list.add(marvin);
-    Query query = mock(Query.class);
+    TypedQuery query = mock(TypedQuery.class);
     EntityManager entityManager = mock(EntityManager.class);
-    when(entityManager.createNamedQuery("User.who")).thenReturn(query);
+    when(entityManager.createNamedQuery("User.who", User.class)).thenReturn(query);
     when(query.getResultList()).thenReturn(list);
 
     PublicBean publicBean = new PublicBean()
