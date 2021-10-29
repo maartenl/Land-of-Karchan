@@ -66,8 +66,8 @@ public class WebsiteServlet extends HttpServlet
    * For example: https://www.karchan.org. If it isn't configured, then no redirect takes place.
    */
   @Inject
-  @ConfigProperty(name = "karchan.redirect.url", defaultValue = "")
-  private String redirectHttps;
+  @ConfigProperty(name = "karchan.redirect.url")
+  private Optional<String> redirectHttps;
 
   @Inject
   private SecurityContext securityContext;
@@ -104,10 +104,10 @@ public class WebsiteServlet extends HttpServlet
   {
     final String url = getUrl(request);
 
-    if (!request.isSecure() && !"".equals(redirectHttps))
+    if (!request.isSecure() && redirectHttps.isPresent())
     {
       response.setStatus(301);
-      response.setHeader("Location", redirectHttps);
+      response.setHeader("Location", redirectHttps.get());
       return;
     }
 

@@ -70,7 +70,7 @@ public class PersonBean implements PersonsInterface
    */
   public Person getPerson(String name)
   {
-    Query query = getEntityManager().createNamedQuery("Person.findByName");
+    TypedQuery<Person> query = getEntityManager().createNamedQuery("Person.findByName", Person.class);
     query.setParameter("name", name);
     List<Person> result = query.getResultList();
     if (result.isEmpty())
@@ -96,6 +96,9 @@ public class PersonBean implements PersonsInterface
   public Person find(String name)
   {
     Person result = getEntityManager().find(Person.class, name);
+    if (result == null) {
+      return null;
+    }
     if (!result.isActive())
     {
       return null;
@@ -112,7 +115,7 @@ public class PersonBean implements PersonsInterface
    */
   public User getUser(String name)
   {
-    Query query = getEntityManager().createNamedQuery("User.findByName");
+    TypedQuery<User> query = getEntityManager().createNamedQuery("User.findByName", User.class);
     query.setParameter("name", name);
     List<User> result = query.getResultList();
     if (result.isEmpty())
@@ -136,7 +139,7 @@ public class PersonBean implements PersonsInterface
    */
   public User getActiveUser(String name)
   {
-    Query query = getEntityManager().createNamedQuery("User.findActiveByName");
+    TypedQuery<User> query = getEntityManager().createNamedQuery("User.findActiveByName", User.class);
     query.setParameter("name", name);
     List<User> result = query.getResultList();
     if (result.isEmpty())
@@ -156,9 +159,8 @@ public class PersonBean implements PersonsInterface
 
   public List<User> getActivePlayers()
   {
-    Query query = getEntityManager().createNamedQuery("User.who");
-    List<User> list = query.getResultList();
-    return list;
+    TypedQuery<User> query = getEntityManager().createNamedQuery("User.who", User.class);
+    return query.getResultList();
   }
 
   public Optional<Chatline> getChatline(String name)
@@ -182,7 +184,7 @@ public class PersonBean implements PersonsInterface
    */
   public void sendWall(String message)
   {
-    getActivePlayers().stream().forEach(p -> CommunicationService.getCommunicationService(p).writeMessage(message));
+    getActivePlayers().forEach(p -> CommunicationService.getCommunicationService(p).writeMessage(message));
   }
 
   public void sendWall(String message, Predicate<User> predicate)
