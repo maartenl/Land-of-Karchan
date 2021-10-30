@@ -47,10 +47,6 @@ public class MenuFactory
 
   private final static Logger LOGGER = Logger.getLogger(MenuFactory.class.getName());
 
-  private static final int MAX_RECENT_WIKIPAGES_EDITED = 8;
-
-  private static final int MAX_LATEST_BLOGS = 5;
-
   /**
    * Contains a mapping between the url (for example "blogs/index.html") and the
    * menu (for example "Blogs" with template name "blogs/index").
@@ -79,24 +75,13 @@ public class MenuFactory
 
     Menu map = new SimpleMenu("Map", "/chronicles/map.html");
     Menu history = new SimpleMenu("History", "/chronicles/history.html");
-    Menu people = new Menu("People", "/chronicles/people.html")
-    {
-
-      @Override
-      public void setDatamodel(EntityManager entityManager, Map<String, Object> root, Map<String, String[]>
-        parameters)
-      {
-        TypedQuery<String> query = entityManager.createNamedQuery("CharacterInfo.charactersheets", String.class);
-        List<String> list = query.getResultList();
-        root.put("people", list);
-      }
-    };
-    Menu fortunes = new SimpleMenu("Fortunes", "/chronicles/fortunes.html");
-    Menu guilds = new SimpleMenu("Guilds", "/chronicles/guilds.html");
+    Menu people = new PeopleMenu("People", "/chronicles/people.html");
+    Menu fortunes = new FortunesMenu("Fortunes", "/chronicles/fortunes.html");
+    Menu guilds = new GuildsMenu("Guilds", "/chronicles/guilds.html");
 
     add(map, history, people, fortunes, guilds);
 
-    Menu status = new SimpleMenu("Status", "/help/status.html");
+    Menu status = new StatusMenu("Status", "/help/status.html");
     Menu guide = new SimpleMenu("The Guide", "/help/guide.html");
     Menu techSpecs = new SimpleMenu("Tech Specs", "/help/tech_specs.html");
     Menu source = new SimpleMenu("Source", "/help/source.html");
@@ -106,31 +91,10 @@ public class MenuFactory
 
     add(status, guide, techSpecs, serverMetrics, source, security, darkmode);
 
-    Menu faq = new Menu("FAQ", "/help/faq.html")
-    {
-      @Override
-      public void setDatamodel(EntityManager entityManager, Map<String, Object> root, Map<String, String[]> parameters)
-      {
-        TypedQuery<Faq> faqQuery = entityManager.createNamedQuery("Faq.findAll", Faq.class);
-        List<Faq> faq = faqQuery.getResultList();
-        root.put("faq", faq);
-      }
-    };
-
+    Menu faq = new FaqMenu("FAQ", "/help/faq.html");
     add(faq);
 
-    Menu welcome = new Menu("Welcome", "/index.html")
-    {
-      @Override
-      public void setDatamodel(EntityManager entityManager, Map<String, Object> root, Map<String, String[]> parameters)
-      {
-        TypedQuery<Blog> blogsQuery = entityManager.createNamedQuery("Blog.findAll", Blog.class);
-        blogsQuery.setMaxResults(MAX_LATEST_BLOGS);
-        List<Blog> blogs = blogsQuery.getResultList();
-        root.put("blogs", blogs);
-      }
-
-    };
+    Menu welcome = new WelcomeMenu("Welcome", "/index.html");
     Menu logon = new SimpleMenu("Logon", "/logon.html");
     Menu introduction = new SimpleMenu("Introduction", "/introduction.html");
     Menu newCharacter = new SimpleMenu("New character", "/new_character.html");
@@ -153,39 +117,11 @@ public class MenuFactory
     add(help);
 
     Menu links = new SimpleMenu("Links", "/links.html");
-    Menu wiki = new Menu("Wiki", "/wiki/index.html")
-    {
-      @Override
-      public void setDatamodel(EntityManager entityManager, Map<String, Object> root, Map<String, String[]> parameters)
-      {
-        TypedQuery<Wikipage> recentQuery = entityManager.createNamedQuery("Wikipage.findRecentEdits", Wikipage.class);
-        recentQuery.setMaxResults(MAX_RECENT_WIKIPAGES_EDITED);
-        List<Wikipage> recentEdits = recentQuery.getResultList();
-        root.put("recentEdits", recentEdits);
-
-        TypedQuery<Wikipage> wikipageQuery = entityManager.createNamedQuery("Wikipage.findFrontpage", Wikipage.class);
-        List<Wikipage> wikipages = wikipageQuery.getResultList();
-        if (wikipages.size() == 1)
-        {
-          final Wikipage wikipage = wikipages.get(0);
-          wikipage.setHtmlContent(new WikiRenderer().render(wikipage.getContent()));
-          root.put("wikipage", wikipage);
-          root.put("children", wikipage.getChildren());
-        } else
-        {
-          LOGGER.log(Level.SEVERE, "{0} main wikipages ('FrontPage') found.", wikipages.size());
-        }
-      }
-    };
-
+    Menu wiki = new WikiMenu("Wiki", "/wiki/index.html");
     add(links, wiki);
 
-    rootMenu = new
-
-      SimpleMenu("root", " root ",
-      Arrays.asList(welcome, logon, introduction, newCharacter,
-        chronicles, who, theLaw, help, links, wiki));
-
+    rootMenu = new SimpleMenu("root", " root ",
+      Arrays.asList(welcome, logon, introduction, newCharacter, chronicles, who, theLaw, help, links, wiki));
     add(rootMenu);
 
     Menu blogs = new Menu("Blogs", "/blogs/index.html")

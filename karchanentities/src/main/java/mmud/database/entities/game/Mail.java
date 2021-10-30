@@ -57,6 +57,24 @@ public class Mail implements Serializable
 
   private static final long serialVersionUID = 1L;
 
+  public static final long ID_OLD_FADED_YELLOW_PARCHMENT = 8008L;
+  public static final long ID_CRUMPLED_PIECE_OF_PAPER = 8009L;
+  public static final long ID_OFFICIAL_LOOKING_SEALED_LEGAL_DOCUMENT = 8010L;
+  public static final long ID_IMPRESSIVE_LOOKING_FORGED_LEGAL_DOCUMENT = 8011L;
+  public static final long ID_HANDWRITTEN_FOLDED_INKSPATTERED_LETTER = 8012L;
+  public static final long ID_SHORT_RUSHED_SQUARESHAPED_MEMO = 8013L;
+  public static final long ID_EMBOSSED_BEAUTIFULLY_WRITTEN_LEAFLET = 8014L;
+  public static final long ID_EMBOSSED_BEAUTIFULLY_WRITTEN_INVITATION = 8015L;
+  private static final Long ID_OFFICIAL_MARRIAGE_CERTIFICATE = 10000L;
+  private static final Long ID_FORGED_MARRIAGE_CERTIFICATE = 10001L;
+  private static final Long ID_OFFICIAL_BIRTH_CERTIFICATE = 10002L;
+  private static final Long ID_FORGED_BIRTH_CERTIFICATE = 10003L;
+  private static final Long ID_OFFICIAL_DEATH_CERTIFICATE = 10004L;
+  private static final Long ID_FORGED_DEATH_CERTIFICATE = 10005L;
+  private static final Long ID_DAMAGED_OLD_TREASURE_MAP = 10006L;
+  private static final Long ID_SHORT_DETAILED_SIGNED_RECEIPT = 10007L;
+  private static final Long ID_BADLYSPELLED_RANSOM_NOTE = 10008L;
+  private static final Long ID_SHORT_MYSTERIOUS_NOTE = 10009L;
   /**
    * Contains the item ids of the different items that represent letters/mail.
    * The readdescription of said letters looks a little like the following:
@@ -64,7 +82,25 @@ public class Mail implements Serializable
    * "stuffletterhead letterbody letterfooter"</p> That way, the
    * letterhead, letterbody and letterfooter are automatically replaced.
    */
-  public static final List<Long> ITEMS = Arrays.asList(8008L, 8009L, 8010L, 8011L, 8012L, 8013L, 8014L, 8015L);
+  public static final List<Long> ITEMS = Arrays.asList(ID_OLD_FADED_YELLOW_PARCHMENT,
+    ID_CRUMPLED_PIECE_OF_PAPER,
+    ID_OFFICIAL_LOOKING_SEALED_LEGAL_DOCUMENT,
+    ID_IMPRESSIVE_LOOKING_FORGED_LEGAL_DOCUMENT,
+    ID_HANDWRITTEN_FOLDED_INKSPATTERED_LETTER,
+    ID_SHORT_RUSHED_SQUARESHAPED_MEMO,
+    ID_EMBOSSED_BEAUTIFULLY_WRITTEN_LEAFLET,
+    ID_EMBOSSED_BEAUTIFULLY_WRITTEN_INVITATION,
+    ID_OFFICIAL_MARRIAGE_CERTIFICATE,
+    ID_FORGED_MARRIAGE_CERTIFICATE,
+    ID_OFFICIAL_BIRTH_CERTIFICATE,
+    ID_FORGED_BIRTH_CERTIFICATE,
+    ID_OFFICIAL_DEATH_CERTIFICATE,
+    ID_FORGED_DEATH_CERTIFICATE,
+    ID_DAMAGED_OLD_TREASURE_MAP,
+    ID_SHORT_DETAILED_SIGNED_RECEIPT,
+    ID_BADLYSPELLED_RANSOM_NOTE,
+    ID_SHORT_MYSTERIOUS_NOTE
+  );
 
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
