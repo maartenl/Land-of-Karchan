@@ -8,13 +8,8 @@ import mmud.database.entities.characters.User;
 public class PublicAdmin
 {
 
-  public String name;
-  public String title;
-
-  public PublicAdmin()
-  {
-    // empty constructor, for creating a web entity from scratch.
-  }
+  private final String name;
+  private final String title;
 
   public PublicAdmin(User user)
   {
@@ -22,4 +17,13 @@ public class PublicAdmin
     this.title = user.getTitle();
   }
 
+  public String getName()
+  {
+    return name;
+  }
+
+  public String getTitle()
+  {
+    return title;
+  }
 }

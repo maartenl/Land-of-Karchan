@@ -1,17 +1,12 @@
 package org.karchan.menus;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.logging.Level;
 import java.util.stream.Collectors;
 import javax.persistence.EntityManager;
-import javax.persistence.TypedQuery;
 
 import mmud.database.entities.characters.User;
-import mmud.database.entities.game.Guild;
 import org.karchan.webentities.PublicAdmin;
-import org.karchan.webentities.PublicGuild;
 
 public class StatusMenu extends Menu
 {

@@ -20,15 +20,15 @@ public class FortunesMenu extends Menu
   public void setDatamodel(EntityManager entityManager, Map<String, Object> root, Map<String, String[]>
     parameters)
   {
-    List<Fortune> res = new ArrayList<>();
+    List<Fortune> fortunes = new ArrayList<>();
     Query query = entityManager.createNamedQuery("User.fortunes");
     query.setMaxResults(100);
     List<Object[]> list = query.getResultList();
 
     for (Object[] objectarray : list)
     {
-      res.add(new Fortune((String) objectarray[0], (Integer) objectarray[1]));
+      fortunes.add(new Fortune((String) objectarray[0], (Integer) objectarray[1]));
     }
-    root.put("fortunes", list);
+    root.put("fortunes", fortunes);
   }
 }
