@@ -17,27 +17,41 @@
 package org.karchan.webentities;
 
 /**
- *
  * @author maartenl
  */
 public class Fortune
 {
 
-    public String name;
-    public Integer gold;
-    public Integer silver;
-    public Integer copper;
+  private final String name;
+  private final Integer gold;
+  private final Integer silver;
+  private final Integer copper;
 
-    public Fortune()
-    {
-        // empty constructor for JAXB
-    }
+  public Fortune(String name, int copper)
+  {
+    this.name = name;
+    gold = copper / 100;
+    silver = (copper % 100) / 10;
+    this.copper = copper % 10;
+  }
 
-    public Fortune(String name, int copper)
-    {
-        this.name = name;
-        gold = copper / 100;
-        silver = (copper % 100) / 10;
-        this.copper = copper % 10;
-    }
+  public Integer getCopper()
+  {
+    return copper;
+  }
+
+  public Integer getGold()
+  {
+    return gold;
+  }
+
+  public Integer getSilver()
+  {
+    return silver;
+  }
+
+  public String getName()
+  {
+    return name;
+  }
 }

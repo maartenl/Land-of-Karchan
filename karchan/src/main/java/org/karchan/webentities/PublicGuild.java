@@ -18,18 +18,72 @@ package org.karchan.webentities;
 
 
 import java.time.LocalDateTime;
-import javax.xml.bind.annotation.XmlRootElement;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
+import mmud.database.entities.game.Guild;
+import org.apache.commons.lang3.StringUtils;
 
 /**
  * Information on a certain guild that is available to the big unwashed public.
+ *
  * @author maartenl
  */
 public class PublicGuild
 {
-    public String guildurl;
-    public String title;
-    public String bossname;
-    public String guilddescription;
-    public LocalDateTime creation;
-    public String image;
+  private final static Logger LOGGER = Logger.getLogger(PublicGuild.class.getName());
+
+  private final String guildurl;
+  private final String title;
+  private final String bossname;
+  private final String guilddescription;
+  private final LocalDateTime creation;
+  private final String image;
+
+  public PublicGuild(Guild guild)
+  {
+    guildurl = StringUtils.trimToNull(guild.getHomepage());
+    title = guild.getTitle();
+    if (guild.getBoss() == null)
+    {
+      LOGGER.log(Level.INFO, "guilds: no boss found for guild {0}", guild.getName());
+      bossname = "[Unknown]";
+    } else
+    {
+      bossname = guild.getBoss().getName();
+    }
+    guilddescription = guild.getDescription();
+    creation = guild.getCreation();
+    image = guild.getImage();
+  }
+
+  public String getGuildurl()
+  {
+    return guildurl;
+  }
+
+  public String getTitle()
+  {
+    return title;
+  }
+
+  public String getBossname()
+  {
+    return bossname;
+  }
+
+  public String getGuilddescription()
+  {
+    return guilddescription;
+  }
+
+  public LocalDateTime getCreation()
+  {
+    return creation;
+  }
+
+  public String getImage()
+  {
+    return image;
+  }
 }

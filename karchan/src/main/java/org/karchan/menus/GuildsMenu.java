@@ -3,13 +3,13 @@ package org.karchan.menus;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.stream.Collectors;
 import javax.persistence.EntityManager;
 import javax.persistence.TypedQuery;
-import javax.ws.rs.core.Response;
 
 import mmud.database.entities.game.Guild;
+import org.apache.commons.lang3.StringUtils;
 import org.karchan.webentities.PublicGuild;
 
 public class GuildsMenu extends Menu
@@ -26,26 +26,17 @@ public class GuildsMenu extends Menu
   public void setDatamodel(EntityManager entityManager, Map<String, Object> root, Map<String, String[]>
     parameters)
   {
-    List<PublicGuild> res = new ArrayList<>();
+    List<PublicGuild> guilds = new ArrayList<>();
     TypedQuery<Guild> query = entityManager.createNamedQuery("Guild.findAll", Guild.class);
-    List<Guild> list = query.getResultList();
+    List<Guild> list = query.getResultList().stream()
+      .filter(guild -> StringUtils.isNotBlank(guild.getTitle()))
+      .collect(Collectors.toList());
 
     for (Guild guild : list)
     {
-      PublicGuild newGuild = new PublicGuild();
-      newGuild.guildurl = guild.getHomepage();
-      newGuild.title = guild.getTitle();
-      if (guild.getBoss() == null)
-      {
-        LOGGER.log(Level.INFO, "guilds: no boss found for guild {0}", guild.getName());
-      } else
-      {
-        newGuild.bossname = guild.getBoss().getName();
-      }
-      newGuild.guilddescription = guild.getDescription();
-      newGuild.creation = guild.getCreation();
-      res.add(newGuild);
+      PublicGuild newGuild = new PublicGuild(guild);
+      guilds.add(newGuild);
     }
-    root.put("guilds", list);
+    root.put("guilds", guilds);
   }
 }
