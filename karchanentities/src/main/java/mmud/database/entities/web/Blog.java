@@ -32,6 +32,7 @@ import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
+
 import mmud.database.entities.Ownage;
 import mmud.database.entities.game.Admin;
 
@@ -192,9 +193,9 @@ public class Blog implements Serializable, Ownage
    */
   public String getName()
   {
-    return this.owner.getName();
+    return this.owner == null ? null : this.owner.getName();
   }
-  
+
   @Override
   public int hashCode()
   {
