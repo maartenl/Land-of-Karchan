@@ -5,7 +5,7 @@
     <div class="col-12">
       <div class="card">
         <div class="card-body">
-          <img alt="compass" class="compass float-right" src="assets/images/compass_black.png" usemap="#roosmap"/>
+          <img alt="compass" class="compass float-end" src="assets/images/compass_black.png" usemap="#roosmap"/>
           <map name="roosmap">
             <area alt="North" coords="0,0,80,75,160,0,0,0" href="#" (click)="goNorth();" shape="poly"/>
             <area alt="South" coords="0,151,80,75,160,151,0,151" href="#" (click)="goSouth();"
@@ -68,52 +68,52 @@
             </div>
             <div class="row">
               <div class="col">
-                <p class="card-text">
-                  <a class="btn btn-block btn-outline-primary" href="#" (click)="toggleSleep();">
+                <p class="d-grid gap-2 card-text">
+                  <a class="btn btn-outline-primary" href="#" (click)="toggleSleep();">
                     <span *ngIf="!karchan.sleep">Sleep</span>
                     <span *ngIf="karchan.sleep">Awaken</span>
                   </a>
                 </p>
               </div>
               <div class="col">
-                <p class="card-text">
-                  <a class="btn btn-block btn-outline-primary" href="#" (click)="toggleEntry();"
+                <p class="d-grid gap-2 card-text">
+                  <a class="btn btn-outline-primary" href="#" (click)="toggleEntry();"
                      title="Provide a big entry form">Big talk</a>
                 </p>
               </div>
               <div class="col">
-                <p class="card-text">
-                  <a class="btn btn-block btn-outline-primary" href="#" (click)="clearLog();"
+                <p class="d-grid gap-2 card-text">
+                  <a class="btn btn-outline-primary" href="#" (click)="clearLog();"
                      title="Clears your log">Clear</a>
                 </p>
               </div>
               <div class="col">
-                <p class="card-text">
-                  <a class="btn btn-block btn-outline-primary" href="#" (click)="resetLog();"
+                <p class="d-grid gap-2 card-text">
+                  <a class="btn btn-outline-primary" href="#" (click)="resetLog();"
                      title="Reset your log">Reset</a>
                 </p>
               </div>
               <div class="col">
-                <p class="card-text">
-                  <a class="btn btn-block btn-outline-primary" href="#" (click)="ping();"
+                <p class="d-grid gap-2 card-text">
+                  <a class="btn btn-outline-primary" href="#" (click)="ping();"
                      title="Ping">Ping</a>
                 </p>
               </div>
               <div class="col">
-                <p class="card-text">
+                <p class="d-grid gap-2 card-text">
                   <a class="btn btn-block btn-outline-primary" href="#" (click)="reconnect();"
                      title="Reconnect">Reconnect</a>
                 </p>
               </div>
               <div class="col">
-                <p class="card-text">
-                  <a class="btn btn-block btn-outline-primary" href="#" (click)="showLogonmessage();"
+                <p class="d-grid gap-2 card-text">
+                  <a class="btn btn-outline-primary" href="#" (click)="showLogonmessage();"
                      title="Show logon message">Logon message</a>
                 </p>
               </div>
               <div class="col">
-                <p class="card-text">
-                  <a class="btn btn-block btn-outline-primary" href="#" (click)="quit();"
+                <p class="d-grid gap-2 card-text">
+                  <a class="btn btn-outline-primary" href="#" (click)="quit();"
                      title="Quit the game">Quit</a>
                 </p>
               </div>

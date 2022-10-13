@@ -4,10 +4,10 @@
       <div *ngIf="isLoggedIn()" class="alert alert-primary" role="alert">
         <img *ngIf="isChristmas()" class="mr-3" src="assets/images/sclaus.gif" alt="Santa claus">
         Welcome to Karchan, {{ getPlayer() }}!
-        <span class="float-right d-none d-sm-block">
+        <span class="float-end d-none d-sm-block">
           [<a href="/?logout=true">Log out</a>]
         </span>
-        <span class="float-right" routerLinkActive="d-none">
+        <span class="float-end" routerLinkActive="d-none">
           [<a routerLink="/play" >Play</a>]
         </span>
       </div>

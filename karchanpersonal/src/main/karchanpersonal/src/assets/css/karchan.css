@@ -6,4 +6,5 @@
   width: 160px; /* Width of new image */
   height: 149px; /* Height of new image */
   padding-left: 160px; /* Equal to width of new image */
+  float: right; /* put it on the right side of the window */
 }
