@@ -1,7 +1,7 @@
 <div class="container-fluid">
     <div class="row row-content">
         <div class="col-xs-12 col-xl-6">
-            <h1>{{ item === undefined || item === null ? '-' : item?.command }}</h1>
+            <h1>{{ item === undefined || item === null ? '-' : item.command }}</h1>
             <div *ngIf="item !== undefined">
                 <p> </p>
                 <dl>

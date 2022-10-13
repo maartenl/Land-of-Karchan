@@ -45,7 +45,7 @@
         </tr>
         </tbody>
       </table>
-      <h1>Attribute {{ attribute === undefined || attribute === null ? '-' : attribute?.name }}</h1>
+      <h1>Attribute {{ attribute === undefined || attribute === null ? '-' : attribute.name }}</h1>
       <form [formGroup]="attributeForm" novalidate>
         <fieldset class="form-group">
           <label for="id">Id</label>
