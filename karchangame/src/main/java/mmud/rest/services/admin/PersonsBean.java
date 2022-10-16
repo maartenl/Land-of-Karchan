@@ -18,6 +18,7 @@ package mmud.rest.services.admin;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.logging.Logger;
 import javax.annotation.security.DeclareRoles;
 import javax.annotation.security.RolesAllowed;
 import javax.ejb.LocalBean;
@@ -49,6 +50,7 @@ import mmud.database.enums.God;
 import mmud.database.enums.Sex;
 import mmud.exceptions.MudWebException;
 import mmud.rest.services.LogBean;
+import mmud.rest.services.PublicBean;
 import mmud.rest.webentities.admin.AdminCharacter;
 
 /**
@@ -61,6 +63,7 @@ import mmud.rest.webentities.admin.AdminCharacter;
 @Path("/administration/characters")
 public class PersonsBean
 {
+  private static final Logger LOGGER = Logger.getLogger(PersonsBean.class.getName());
 
   @PersistenceContext(unitName = "karchangamePU")
   private EntityManager em;
@@ -75,6 +78,7 @@ public class PersonsBean
     })
   public void create(String json, @Context SecurityContext sc)
   {
+    LOGGER.finer("entering create");
     AdminCharacter adminCharacter = AdminCharacter.fromJson(json);
     final String name = sc.getUserPrincipal().getName();
     Admin admin = getEntityManager().find(Admin.class, name);
@@ -149,6 +153,7 @@ public class PersonsBean
     })
   public void edit(@PathParam("id") String id, String json, @Context SecurityContext sc)
   {
+    LOGGER.finer("entering edit");
     AdminCharacter adminCharacter = AdminCharacter.fromJson(json);
     final String name = sc.getUserPrincipal().getName();
     if (!id.equals(adminCharacter.name))
@@ -194,6 +199,9 @@ public class PersonsBean
       user.setRealname(adminCharacter.realname);
       user.setEmail(adminCharacter.email);
       user.setOoc(adminCharacter.ooc);
+      if (adminCharacter.newpassword != null && !adminCharacter.newpassword.trim().equals("")) {
+        user.setNewpassword(adminCharacter.newpassword);
+      }
     }
     character.setOwner(OwnerHelper.getNewOwner(adminCharacter.owner, admin, getEntityManager()));
     ValidationUtils.checkValidation(name, character);
@@ -202,9 +210,9 @@ public class PersonsBean
 
   @DELETE
   @Path("{id}")
-
   public void remove(@PathParam("id") String id, @Context SecurityContext sc)
   {
+    LOGGER.finer("entering remove");
     final String name = sc.getUserPrincipal().getName();
     final User character = getEntityManager().find(User.class, id);
     if (character == null)
@@ -222,9 +230,9 @@ public class PersonsBean
     {
       "application/json"
     })
-
   public String find(@PathParam("id") String id, @Context SecurityContext sc)
   {
+    LOGGER.finer("entering find");
     final String name = sc.getUserPrincipal().getName();
     Person item = getEntityManager().find(Person.class, id);
     if (item == null)

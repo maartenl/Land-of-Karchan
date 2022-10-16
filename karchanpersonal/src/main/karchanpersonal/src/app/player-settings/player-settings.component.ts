@@ -21,6 +21,8 @@ export class PlayerSettingsComponent implements OnInit {
 
   familyForm: FormGroup;
 
+  resetpasswordForm: FormGroup;
+
   constructor(
     private playerService: PlayerService,
     private formBuilder: FormBuilder,
@@ -32,12 +34,17 @@ export class PlayerSettingsComponent implements OnInit {
       imageurl: '',
       dateofbirth: '',
       cityofbirth: '',
-      storyline: ''
-    });
+      storyline: '',
+    });    
     this.familyForm = this.formBuilder.group({
       toname: '',
       description: ''
     });
+    this.resetpasswordForm = this.formBuilder.group({
+      oldpassword: null,
+      password: null,
+      password2: null,
+    })
   }
 
   ngOnInit() {
@@ -62,7 +69,7 @@ export class PlayerSettingsComponent implements OnInit {
       imageurl: '',
       dateofbirth: '',
       cityofbirth: '',
-      storyline: ''
+      storyline: '',
     });
     this.familyForm = this.formBuilder.group({
       toname: '',
@@ -77,7 +84,7 @@ export class PlayerSettingsComponent implements OnInit {
       imageurl: player.imageurl,
       dateofbirth: player.dateofbirth,
       cityofbirth: player.cityofbirth,
-      storyline: player.storyline
+      storyline: player.storyline,
     });
   }
 
@@ -110,7 +117,7 @@ export class PlayerSettingsComponent implements OnInit {
       cityofbirth: formModel.cityofbirth as string,
       dateofbirth: formModel.dateofbirth as string,
       storyline: formModel.storyline as string,
-      familyvalues: this.player.familyvalues as Family[]
+      familyvalues: this.player.familyvalues as Family[],
     };
     return savePlayer;
   }
@@ -130,6 +137,25 @@ export class PlayerSettingsComponent implements OnInit {
     family.toname = toname;
     family.description = description;
     this.update(family);
+  }
+
+  resetPassword() {
+    const formModel = this.resetpasswordForm.value;
+    const oldpassword = formModel.oldpassword as string;
+    const password = formModel.password as string;
+    const password2 = formModel.password2 as string;
+    this.playerService.resetPassword(this.player.name, oldpassword, password, password2).subscribe((result: any) => {
+      this.toastService.show('Password reset.', {
+        delay: 3000,
+        autohide: true,
+        headertext: 'Reset...'
+      });
+    });
+    this.resetpasswordForm = this.formBuilder.group({
+      oldpassword: null,
+      password: null,
+      password2: null,
+    })
   }
 
   cancel() {

@@ -65,6 +65,7 @@ export class CharactersComponent extends AdminComponent<MudCharacter, string> im
       address: null,
       realname: null,
       email: null,
+      newpassword: null,
       owner: null
     };
     this.form = this.formBuilder.group(object);
@@ -160,6 +161,7 @@ export class CharactersComponent extends AdminComponent<MudCharacter, string> im
       address: null,
       realname: null,
       email: null,
+      newpassword: null,
       owner: null
     } : item;
     if (this.form === undefined) {
@@ -203,6 +205,7 @@ export class CharactersComponent extends AdminComponent<MudCharacter, string> im
       address: formModel.address as string,
       realname: formModel.realname as string,
       email: formModel.email as string,
+      newpassword: formModel.newpassword as string,
       owner: formModel.owner as string
     });
     return saveCharacter;
@@ -362,6 +365,7 @@ export class CharactersComponent extends AdminComponent<MudCharacter, string> im
       address: character.address,
       realname: character.realname,
       email: character.email,
+      newpassword: null,
       owner: character.owner
     });
   }

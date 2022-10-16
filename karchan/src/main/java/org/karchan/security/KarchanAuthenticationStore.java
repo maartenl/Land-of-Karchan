@@ -37,6 +37,8 @@ import static javax.security.enterprise.identitystore.CredentialValidationResult
 import static javax.security.enterprise.identitystore.CredentialValidationResult.NOT_VALIDATED_RESULT;
 import javax.security.enterprise.identitystore.IdentityStore;
 import mmud.database.entities.web.Users;
+import mmud.encryption.Hash;
+import mmud.encryption.HexEncoder;
 
 /**
  * Can locate a user and verify his/her password.
@@ -55,35 +57,7 @@ public class KarchanAuthenticationStore implements IdentityStore
   @VisibleForTesting
   static String encryptThisString(String input)
   {
-    try
-    {
-      // getInstance() method is called with algorithm SHA-512 
-      MessageDigest md = MessageDigest.getInstance("SHA-512");
-
-      // digest() method is called 
-      // to calculate message digest of the input string 
-      // returned as array of byte 
-      byte[] messageDigest = md.digest(input.getBytes());
-
-      // Convert byte array into signum representation 
-      BigInteger no = new BigInteger(1, messageDigest);
-
-      // Convert message digest into hex value 
-      String hashtext = no.toString(16);
-
-      // Add preceding 0s to make it 128 bit 
-      while (hashtext.length() < 128)
-      {
-        hashtext = "0" + hashtext;
-      }
-
-      // return the HashText 
-      return hashtext;
-    } // For specifying wrong message digest algorithms 
-    catch (NoSuchAlgorithmException e)
-    {
-      throw new RuntimeException(e);
-    }
+    return new HexEncoder(128).encrypt(input, Hash.SHA_512);
   }
 
   @Override

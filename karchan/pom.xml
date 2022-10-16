@@ -82,6 +82,11 @@
       <version>${jakartaee.version}</version>
       <scope>provided</scope>
     </dependency>
+    <dependency>
+      <groupId>org.apache.commons</groupId>
+      <artifactId>commons-lang3</artifactId>
+      <version>3.4</version>
+    </dependency>
   </dependencies>
 
   <build>

@@ -32,6 +32,7 @@ import mmud.database.entities.web.FamilyValue;
 import mmud.exceptions.MudException;
 import mmud.exceptions.MudWebException;
 import mmud.rest.services.PrivateBean;
+import mmud.rest.webentities.PrivatePassword;
 import mmud.rest.webentities.PrivatePerson;
 import mmud.testing.TestingConstants;
 import org.mockito.invocation.InvocationOnMock;
@@ -129,6 +130,8 @@ public class PrivateBeanTest
         return null;
       }
     };
+    LogBeanStub logBean = new LogBeanStub();
+    privateBean.setLogBean(logBean);
     // Unit under test is exercised.
     final PrivatePerson person = new PrivatePerson();
     person.name = "Marvin";
@@ -145,6 +148,176 @@ public class PrivateBeanTest
     assertEquals(cinfo.getDateofbirth(), person.dateofbirth);
     assertEquals(cinfo.getCityofbirth(), person.cityofbirth);
     assertEquals(cinfo.getStoryline(), person.storyline);
+    assertThat(logBean.getLog()).isEqualTo("Marvin:settings changed.\n");
+  }
+
+  @Test
+  public void resetPassword() throws MudException
+  {
+    LOGGER.fine("resetPassword");
+
+    final PrivatePassword privatePassword = new PrivatePassword();
+    privatePassword.name = "Marvin";
+    privatePassword.oldpassword ="secret";
+    privatePassword.password ="itsasecret";
+    privatePassword.password2 = "itsasecret";
+
+    EntityManager entityManager = mock(EntityManager.class);
+    when(entityManager.find(User.class, "Marvin")).thenReturn(marvin);
+
+    PrivateBean privateBean = new PrivateBean()
+    {
+      @Override
+      protected EntityManager getEntityManager()
+      {
+        return entityManager;
+      }
+
+      @Override
+      protected String getPlayerName() throws IllegalStateException
+      {
+        return "Marvin";
+      }
+
+      @Override
+      protected Response createResponse()
+      {
+        return null;
+      }
+    };
+    LogBeanStub logBean = new LogBeanStub();
+    privateBean.setLogBean(logBean);
+    // Unit under test is exercised.
+    privateBean.resetPassword("Marvin", privatePassword.toJson(), null);
+    // Verification code (JUnit/TestNG asserts), if any.
+    assertThat(marvin.verifyPassword("itsasecret")).isTrue();
+    assertThat(logBean.getLog()).isEqualTo("Marvin:password changed.\n");
+  }
+
+  @Test(expectedExceptions = MudWebException.class, expectedExceptionsMessageRegExp = "Passwords do not match.")
+  public void resetPasswordDoesntMatchTwice() throws MudException
+  {
+    LOGGER.fine("resetPasswordDoesntMatchTwice");
+
+    final PrivatePassword privatePassword = new PrivatePassword();
+    privatePassword.name = "Marvin";
+    privatePassword.oldpassword ="itsasecret";
+    privatePassword.password ="itsasecret";
+    privatePassword.password2 = "itsasecre2t";
+
+    EntityManager entityManager = mock(EntityManager.class);
+    when(entityManager.find(User.class, "Marvin")).thenReturn(marvin);
+
+    PrivateBean privateBean = new PrivateBean()
+    {
+      @Override
+      protected EntityManager getEntityManager()
+      {
+        return entityManager;
+      }
+
+      @Override
+      protected String getPlayerName() throws IllegalStateException
+      {
+        return "Marvin";
+      }
+
+      @Override
+      protected Response createResponse()
+      {
+        return null;
+      }
+    };
+    LogBeanStub logBean = new LogBeanStub();
+    privateBean.setLogBean(logBean);
+    // Unit under test is exercised.
+    privateBean.resetPassword("Marvin", privatePassword.toJson(), null);
+    // Verification code (JUnit/TestNG asserts), if any.
+    assertThat(logBean.getLog()).isEqualTo("Marvin:settings changed.\n");
+  }
+
+  @Test(expectedExceptions = MudWebException.class, expectedExceptionsMessageRegExp = "Passwords do not match.")
+  public void resetOldPasswordDoesntMatch() throws MudException
+  {
+    LOGGER.fine("resetOldPasswordDoesntMatch");
+
+    final PrivatePassword privatePassword = new PrivatePassword();
+    privatePassword.name = "Marvin";
+    privatePassword.oldpassword ="itsase2cret";
+    privatePassword.password ="itsasecret";
+    privatePassword.password2 = "itsasecret";
+
+    EntityManager entityManager = mock(EntityManager.class);
+    when(entityManager.find(User.class, "Marvin")).thenReturn(marvin);
+
+    PrivateBean privateBean = new PrivateBean()
+    {
+      @Override
+      protected EntityManager getEntityManager()
+      {
+        return entityManager;
+      }
+
+      @Override
+      protected String getPlayerName() throws IllegalStateException
+      {
+        return "Marvin";
+      }
+
+      @Override
+      protected Response createResponse()
+      {
+        return null;
+      }
+    };
+    LogBeanStub logBean = new LogBeanStub();
+    privateBean.setLogBean(logBean);
+    // Unit under test is exercised.
+    privateBean.resetPassword("Marvin", privatePassword.toJson(), null);
+    // Verification code (JUnit/TestNG asserts), if any.
+    assertThat(logBean.getLog()).isEqualTo("Marvin:settings changed.\n");
+  }
+
+  @Test(expectedExceptions = MudWebException.class, expectedExceptionsMessageRegExp = "Marvin trying to update password of Hotblack")
+  public void resetPasswordOfSomebodyElse() throws MudException
+  {
+    LOGGER.fine("resetOldPasswordDoesntMatch");
+
+    final PrivatePassword privatePassword = new PrivatePassword();
+    privatePassword.name = "Hotblack";
+    privatePassword.oldpassword ="secret";
+    privatePassword.password ="itsasecret";
+    privatePassword.password2 = "itsasecret";
+
+    EntityManager entityManager = mock(EntityManager.class);
+    when(entityManager.find(User.class, "Marvin")).thenReturn(marvin);
+
+    PrivateBean privateBean = new PrivateBean()
+    {
+      @Override
+      protected EntityManager getEntityManager()
+      {
+        return entityManager;
+      }
+
+      @Override
+      protected String getPlayerName() throws IllegalStateException
+      {
+        return "Marvin";
+      }
+
+      @Override
+      protected Response createResponse()
+      {
+        return null;
+      }
+    };
+    LogBeanStub logBean = new LogBeanStub();
+    privateBean.setLogBean(logBean);
+    // Unit under test is exercised.
+    privateBean.resetPassword("Marvin", privatePassword.toJson(), null);
+    // Verification code (JUnit/TestNG asserts), if any.
+    assertThat(logBean.getLog()).isEqualTo("Marvin:settings changed.\n");
   }
 
   @Test
@@ -175,6 +348,8 @@ public class PrivateBeanTest
         return null;
       }
     };
+    LogBeanStub logBean = new LogBeanStub();
+    privateBean.setLogBean(logBean);
     // Unit under test is exercised.
     final PrivatePerson person = new PrivatePerson();
     person.name = "Marvin";
@@ -197,6 +372,7 @@ public class PrivateBeanTest
     }).when(entityManager).persist(any(CharacterInfo.class));
     privateBean.updateCharacterSheet("Marvin", person);
       // Verification code (JUnit/TestNG asserts), if any.
+    assertThat(logBean.getLog()).isEqualTo("Marvin:settings changed.\n");
   }
 
   @Test
@@ -235,6 +411,8 @@ public class PrivateBeanTest
         return null;
       }
     };
+    LogBeanStub logBean = new LogBeanStub();
+    privateBean.setLogBean(logBean);
     final PrivatePerson person = new PrivatePerson();
     person.name = "Marvin";
     person.imageurl = "http://www.images.com/newimage.jpg";
@@ -251,10 +429,11 @@ public class PrivateBeanTest
     assertEquals(cinfo.getDateofbirth(), person.dateofbirth);
     assertEquals(cinfo.getCityofbirth(), person.cityofbirth);
     assertEquals(cinfo.getStoryline(), "Life, don&#39;t talk to me about life.");
+    assertThat(logBean.getLog()).isEqualTo("Marvin:settings changed.\n");
 
   }
 
-  @Test(expectedExceptions = MudWebException.class)
+  @Test(expectedExceptions = MudWebException.class, expectedExceptionsMessageRegExp = "Marvin trying to update charactersheet of Hotblack")
   public void updateCharacterSheetOfSomebodyElse() throws MudException
   {
     LOGGER.fine("updateCharacterSheetOfSomebodyElse");
@@ -293,6 +472,7 @@ public class PrivateBeanTest
     person.storyline = "Life, don't talk to me about <script>alert('woaj');</script>life.";
     privateBean.updateCharacterSheet("Marvin", person);
   }
+
 
   @Test
   public void updateFamilyvalues() throws MudException

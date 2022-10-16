@@ -50,6 +50,7 @@ import mmud.database.enums.God;
 import mmud.encryption.Hash;
 import mmud.encryption.HexEncoder;
 import mmud.exceptions.MudException;
+import org.apache.commons.lang3.StringUtils;
 
 /**
  * A user in the game. Might be an administrator.
@@ -257,6 +258,18 @@ public class User extends Person
   public String getNewpassword()
   {
     return newpassword;
+  }
+
+  /**
+   * Verifies if the password is the correct one.
+   * @param newpassword the password to verify
+   * @return true if it's the same, false if it is empty or does not match.
+   */
+  public boolean verifyPassword(String newpassword) {
+    if (StringUtils.isBlank(newpassword)) {
+      return false;
+    }
+    return getNewpassword().equals(new HexEncoder(128).encrypt(newpassword, Hash.SHA_512));
   }
 
   /**

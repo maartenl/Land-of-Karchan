@@ -37,6 +37,7 @@ public class AdminCharacter
   public String image;
   public String title;
   public String realname;
+  public String newpassword;
   public String email;
   public String race;
   public String sex;

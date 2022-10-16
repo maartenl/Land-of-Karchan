@@ -63,6 +63,33 @@
   <div class="row row-content">
     <div class="col-xs-12 col-sm-12">
       <hr/>
+      <h3>Reset password</h3>
+    </div>
+    <div class="col-xs-12 col-sm-12">
+      <form [formGroup]="resetpasswordForm" (ngSubmit)="resetPassword()" novalidate>
+        <fieldset class="form-group">
+          <label for="oldpassword">Old password</label>
+          <input type="text" class="form-control" id="oldpassword" name="oldpassword" formControlName="oldpassword">
+        </fieldset>
+        <fieldset class="form-group">
+          <label for="password">New password</label>
+          <input type="text" class="form-control" id="password" name="password" formControlName="password">
+        </fieldset>
+        <fieldset class="form-group">
+          <label for="password2">New password (again)</label>
+          <input type="text" class="form-control" id="password2" name="password2" formControlName="password2">
+        </fieldset>
+        <div class="col-xs-12 col-sm-12 text-right">
+          <button type="submit" [disabled]="resetpasswordForm.pristine" class="btn btn-primary">Reset password</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+<div class="container">
+  <div class="row row-content">
+    <div class="col-xs-12 col-sm-12">
+      <hr/>
       <h3>Family relations</h3>
       <ul class="list-group">
         <li class="list-group-item justify-content-between" *ngFor="let relation of player.familyvalues" (click)="setFamilyForm(relation)">

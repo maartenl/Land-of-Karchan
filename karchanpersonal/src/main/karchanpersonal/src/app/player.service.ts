@@ -8,7 +8,7 @@ import { CookieService } from 'ngx-cookie-service';
 import { environment } from '../environments/environment';
 
 import { ErrorsService } from './errors.service';
-import { Player } from './player-settings/player.model';
+import { Player, PasswordReset } from './player-settings/player.model';
 import { Mail, MailList } from './mail/mail.model';
 import {
   Guild, GuildHopeful, GuildMember, GuildRank,
@@ -184,6 +184,22 @@ export class PlayerService {
       );
   }
 
+  public resetPassword(name: string, oldpassword: string, password: string, password2: string): Observable<any> {
+    const passwordReset: PasswordReset = new PasswordReset({
+      name: name,
+      oldpassword: password,
+      password: password,
+      password2: password2,
+    })
+    return this.http.put(this.getPrivateUrl() + "/resetPassword", passwordReset)
+      .pipe(
+        catchError(err => {
+          this.handleError(err);
+          return [];
+        })
+      );
+  }
+
   /**
    * Permanently deletes a character, by calling the appropriate rest service.
    */
@@ -249,7 +265,7 @@ export class PlayerService {
       );
   }
 
-  
+
   /**
    * Url will be /karchangame/resources/private/[player]/mail/[id]/createMailItem/[item_id]")
    */
@@ -424,7 +440,7 @@ export class PlayerService {
     const headers = new HttpHeaders()
       .append('Content-Type', 'text/html; charset=utf-8')
       .append('Accept', 'text/html');
-    return this.http.post(this.wikipagesPreviewUrl, contents, { responseType: 'text' , headers })
+    return this.http.post(this.wikipagesPreviewUrl, contents, { responseType: 'text', headers })
       .pipe(
         catchError(err => {
           this.handleError(err);
@@ -504,7 +520,7 @@ export class PlayerService {
           return [];
         })
       );
-    }
+  }
 
   /**
    * Handles error, delivers them to the errorService.

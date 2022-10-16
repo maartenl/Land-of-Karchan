@@ -50,6 +50,7 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
+import javax.ws.rs.core.SecurityContext;
 
 import com.google.common.annotations.VisibleForTesting;
 import mmud.JsonUtils;
@@ -68,10 +69,11 @@ import mmud.database.entities.web.FamilyValue;
 import mmud.exceptions.ExceptionUtils;
 import mmud.exceptions.MudException;
 import mmud.exceptions.MudWebException;
-import mmud.rest.services.admin.ValidationUtils;
 import mmud.rest.webentities.PrivateMail;
+import mmud.rest.webentities.PrivatePassword;
 import mmud.rest.webentities.PrivatePerson;
 import mmud.rest.webentities.PublicPerson;
+import org.apache.commons.lang3.StringUtils;
 
 /**
  * Contains all rest calls that are available to a specific character, with
@@ -88,6 +90,7 @@ import mmud.rest.webentities.PublicPerson;
 public class PrivateBean
 {
 
+  public static final String PASSWORDS_DO_NOT_MATCH = "Passwords do not match.";
   @EJB
 
   private MailBean mailBean;
@@ -719,7 +722,7 @@ public class PrivateBean
   public Response updateCharacterSheet(@PathParam("name") String name, PrivatePerson cinfo)
   {
     LOGGER.finer("entering updateCharacterSheet");
-    Person person = authenticate(name);
+    User person = authenticate(name);
     if (!person.getName().equals(cinfo.name))
     {
       throw new MudWebException(name, "User trying to update somebody elses charactersheet?",
@@ -745,7 +748,70 @@ public class PrivateBean
       {
         getEntityManager().persist(characterInfo);
       }
+      logBean.writeLog(person, "settings changed.");
+    } catch (WebApplicationException e)
+    {
+      //ignore
+      throw e;
+    } catch (MudException e)
+    {
+      throw new MudWebException(name, e, Status.BAD_REQUEST);
+    }
+    return createResponse();
+  }
 
+  /**
+   * Resets your current password
+   *
+   * @param name the name of the user
+   * @param json the object containing the new stuff to update.
+   * @return Response.ok if everything is okay.
+   * @throws WebApplicationException UNAUTHORIZED, if the authorisation
+   *                                 failed. BAD_REQUEST if an unexpected exception crops up.
+   */
+  @PUT
+  @Path("{name}/resetPassword")
+  @Consumes(
+    {
+      MediaType.APPLICATION_JSON
+    })
+  public Response resetPassword(@PathParam("name") String name, String json, @Context SecurityContext sc)
+  {
+    LOGGER.finer("entering resetPassword");
+    User person = authenticate(name);
+    PrivatePassword privatePassword = PrivatePassword.fromJson(json);
+
+    if (!person.getName().equals(privatePassword.name))
+    {
+      throw new MudWebException(name, "User trying to update somebody elses password?",
+        person.getName() + " trying to update password of " + privatePassword.name, Status.UNAUTHORIZED);
+    }
+    if (StringUtils.isBlank(privatePassword.oldpassword) ||
+      StringUtils.isBlank(privatePassword.password) ||
+      StringUtils.isBlank(privatePassword.password2)
+    )
+    {
+      throw new MudWebException(name, "Not enough information to reset password.",
+        person.getName() + " provides not enough information to reset password.", Status.UNAUTHORIZED);
+    }
+    if (!privatePassword.password.equals(privatePassword.password2))
+    {
+      throw new MudWebException(name,
+        PASSWORDS_DO_NOT_MATCH,
+        PASSWORDS_DO_NOT_MATCH,
+        Response.Status.BAD_REQUEST);
+    }
+    if (!person.verifyPassword(privatePassword.oldpassword))
+    {
+      throw new MudWebException(name,
+        PASSWORDS_DO_NOT_MATCH,
+        PASSWORDS_DO_NOT_MATCH,
+        Response.Status.BAD_REQUEST);
+    }
+    try
+    {
+      logBean.writeLog(person, "password changed.");
+      person.setNewpassword(privatePassword.password);
     } catch (WebApplicationException e)
     {
       //ignore
