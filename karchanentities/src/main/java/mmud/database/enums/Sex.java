@@ -19,6 +19,8 @@ package mmud.database.enums;
 import java.util.Arrays;
 import java.util.Optional;
 
+import mmud.exceptions.MudException;
+
 /**
  * Enumerated type for the male/female thing.
  *
@@ -53,13 +55,13 @@ public enum Sex
    * @param aString string describing the sex object to be created: "female",
    * "male" or "other".
    * @return Sex object, either male of female or other.
-   * @throws RuntimeException if the sex is neither male nor female nor other.
+   * @throws MudException if the sex is neither male nor female nor other.
    * In this case we do not know what to do.
    */
   public static Sex createFromString(String aString)
   {
     Optional<Sex> result = Arrays.stream(values()).filter(sex -> sex.theSex.equals(aString)).findFirst();
-    return result.orElseThrow(() -> new RuntimeException("Illegal sex '" + aString + "'."));
+    return result.orElseThrow(() -> new MudException("Illegal sex '" + aString + "'."));
   }
 
   /**

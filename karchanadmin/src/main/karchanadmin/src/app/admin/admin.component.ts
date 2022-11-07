@@ -25,7 +25,7 @@ export abstract class AdminComponent<T extends AdminObject<U>, U> {
 
   public cancel(): void {
     this.setForm();
-    this.item = this.makeItem();
+    this.item = null;
   }
 
   public isSelected() {
@@ -87,7 +87,7 @@ export abstract class AdminComponent<T extends AdminObject<U>, U> {
         this.items.push(itemFromForm);
         this.items = [...this.items];
         this.setItemById(result);
-        this.getToastService().show(this.item?.getType() + ' ' + this.item?.getIdentifier() + ' successfully created.', {
+        this.getToastService().show(itemFromForm.getType() + ' ' + itemFromForm.getIdentifier() + ' successfully created.', {
           delay: 3000,
           autohide: true,
           headertext: 'Created...'
@@ -109,7 +109,7 @@ export abstract class AdminComponent<T extends AdminObject<U>, U> {
       (result: any) => { // on success
         this.items[index] = itemFromForm;
         this.items = [...this.items];
-        this.getToastService().show(this.item?.getType() + ' ' + this.item?.getIdentifier() + ' successfully updated.', {
+        this.getToastService().show(itemFromForm.getType() + ' ' + itemFromForm.getIdentifier() + ' successfully updated.', {
           delay: 3000,
           autohide: true,
           headertext: 'Updated...'

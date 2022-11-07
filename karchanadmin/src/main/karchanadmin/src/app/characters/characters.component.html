@@ -33,7 +33,7 @@
       <form [formGroup]="form" novalidate>
         <fieldset class="form-group">
           <label for="name">Name</label>
-          <input type="text" [readonly]="item !== undefined" class="form-control" id="name" name="name"
+          <input type="text" [readonly]="item !== undefined && item !== null" class="form-control" id="name" name="name"
                  formControlName="name">
         </fieldset>
         <fieldset class="form-group">
@@ -151,10 +151,10 @@
           <input type="text" class="form-control" id="owner" name="owner" formControlName="owner">
         </fieldset>
         <div class="col-xs-12 col-sm-12 text-right">
-          <button type="submit" [disabled]="form.pristine" class="mx-1 btn btn-primary"
+          <button type="submit" [disabled]="form.pristine && (item === undefined || item === null)" class="mx-1 btn btn-primary"
                   (click)="updateItem()">Update
           </button>
-          <button type="submit" [disabled]="form.pristine" class="mx-1 btn btn-primary"
+          <button type="submit" [disabled]="form.pristine || (item !== undefined && item !== null)" class="mx-1 btn btn-primary"
                   (click)="createItem()">Create
           </button>
           <button type="button" class="mx-1 btn btn-secondary" (click)="deleteItem()">Delete</button>

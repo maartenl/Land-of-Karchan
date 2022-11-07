@@ -48,9 +48,9 @@ import mmud.database.entities.game.Admin;
 import mmud.database.entities.game.Room;
 import mmud.database.enums.God;
 import mmud.database.enums.Sex;
+import mmud.exceptions.MudException;
 import mmud.exceptions.MudWebException;
 import mmud.rest.services.LogBean;
-import mmud.rest.services.PublicBean;
 import mmud.rest.webentities.admin.AdminCharacter;
 
 /**
@@ -82,6 +82,11 @@ public class PersonsBean
     AdminCharacter adminCharacter = AdminCharacter.fromJson(json);
     final String name = sc.getUserPrincipal().getName();
     Admin admin = getEntityManager().find(Admin.class, name);
+    Person alreadyExistingPerson = getEntityManager().find(Person.class, adminCharacter.name);
+    if (alreadyExistingPerson != null)
+    {
+      throw new MudWebException(name, "Character '" + adminCharacter.name + "' already exists.", Response.Status.FOUND);
+    }
     Person character;
     if (adminCharacter.god == null)
     {
@@ -113,7 +118,13 @@ public class PersonsBean
 //    character.setImage(adminCharacter.image);
     character.setTitle(adminCharacter.title);
     character.setRace(adminCharacter.race);
-    character.setSex(Sex.createFromString(adminCharacter.sex));
+    try
+    {
+      character.setSex(Sex.createFromString(adminCharacter.sex));
+    } catch (MudException e)
+    {
+      throw new MudWebException(name, e, Response.Status.BAD_REQUEST);
+    }
     character.setAge(adminCharacter.age);
     character.setHeight(adminCharacter.height);
     character.setWidth(adminCharacter.width);
@@ -168,6 +179,7 @@ public class PersonsBean
     }
     Admin admin = (new OwnerHelper(getEntityManager())).authorize(name, character);
     character.setTitle(adminCharacter.title);
+//    character.setImage(adminCharacter.image);
     character.setRace(adminCharacter.race);
     character.setSex(Sex.createFromString(adminCharacter.sex));
     character.setAge(adminCharacter.age);
@@ -199,7 +211,8 @@ public class PersonsBean
       user.setRealname(adminCharacter.realname);
       user.setEmail(adminCharacter.email);
       user.setOoc(adminCharacter.ooc);
-      if (adminCharacter.newpassword != null && !adminCharacter.newpassword.trim().equals("")) {
+      if (adminCharacter.newpassword != null && !adminCharacter.newpassword.trim().equals(""))
+      {
         user.setNewpassword(adminCharacter.newpassword);
       }
     }
