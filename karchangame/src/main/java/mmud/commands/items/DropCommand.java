@@ -26,7 +26,7 @@ import mmud.database.entities.game.DisplayInterface;
 import mmud.database.entities.items.Item;
 import mmud.exceptions.MudException;
 import mmud.services.CommunicationService;
-import mmud.services.ItemBean;
+import mmud.services.ItemService;
 import mmud.services.PersonCommunicationService;
 
 /**
@@ -80,13 +80,13 @@ public class DropCommand extends NormalCommand
       return aUser.getRoom();
     }
     boolean dropped = false;
-    ItemBean itemBean = getItemBean();
+    ItemService itemService = getItemBean();
     for (Item item : itemsFound)
     {
       if (aUser.unused(item) && item.isDroppable())
       {
         // item is not used.
-        if (!itemBean.drop(item, aUser))
+        if (!itemService.drop(item, aUser))
         {
           continue;
         }

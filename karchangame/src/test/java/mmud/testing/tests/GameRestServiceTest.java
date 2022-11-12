@@ -57,7 +57,7 @@ public class GameRestServiceTest extends MudTest
   // Obtain a suitable LOGGER.
   private static final Logger LOGGER = Logger.getLogger(GameRestServiceTest.class.getName());
 
-  private LogBeanStub logBean;
+  private LogServiceStub logBean;
 
   private CommandRunner commandRunner = new CommandRunner();
 
@@ -94,7 +94,7 @@ public class GameRestServiceTest extends MudTest
   @BeforeMethod
   public void setUp() throws MudException
   {
-    logBean = new LogBeanStub();
+    logBean = new LogServiceStub();
 
     Area aArea = TestingConstants.getArea();
     room = TestingConstants.getRoom(aArea);

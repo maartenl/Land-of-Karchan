@@ -22,7 +22,7 @@ import mmud.database.entities.game.DisplayInterface;
 import mmud.database.entities.game.Guildrank;
 import mmud.exceptions.MudException;
 import mmud.services.CommunicationService;
-import mmud.services.LogBean;
+import mmud.services.LogService;
 import mmud.services.PersonCommunicationService;
 
 /**
@@ -51,7 +51,7 @@ public class RankAssignCommand extends GuildMasterCommand
   public DisplayInterface run(String command, User aUser) throws MudException
   {
     PersonCommunicationService communicationService = CommunicationService.getCommunicationService(aUser);
-    LogBean logBean = getLogBean();
+    LogService logService = getLogBean();
     String[] myParsed = parseCommand(command, 3);
     String rankString = myParsed[1];
     String memberName = myParsed[2];
@@ -65,8 +65,8 @@ public class RankAssignCommand extends GuildMasterCommand
     {
       member.setGuildrank(null);
       communicationService.writeMessage("Rank removed from guild member " + member.getName() + ".<BR>\r\n");
-      logBean.writeLog(aUser, " rankremoved from " + memberName
-              + " for guild " + aUser.getGuild().getName());
+      logService.writeLog(aUser, " rankremoved from " + memberName
+        + " for guild " + aUser.getGuild().getName());
       return aUser.getRoom();
     }
     int rankIndex = 0;
@@ -86,8 +86,8 @@ public class RankAssignCommand extends GuildMasterCommand
     }
     member.setGuildrank(rank);
     communicationService.writeMessage("Rank " + rank.getTitle() + " assigned to guild member " + member.getName() + ".<BR>\r\n");
-    logBean.writeLog(aUser, " rank " + rankIndex + " assigned to " + memberName
-            + " for guild " + aUser.getGuild().getName());
+    logService.writeLog(aUser, " rank " + rankIndex + " assigned to " + memberName
+      + " for guild " + aUser.getGuild().getName());
     return aUser.getRoom();
   }
 

@@ -28,7 +28,7 @@ import mmud.database.entities.items.Item;
 import mmud.exceptions.MudException;
 import mmud.exceptions.PersonNotFoundException;
 import mmud.services.CommunicationService;
-import mmud.services.ItemBean;
+import mmud.services.ItemService;
 import mmud.services.PersonCommunicationService;
 
 /**
@@ -142,13 +142,13 @@ public class GiveCommand extends NormalCommand
       return;
     }
     boolean given = false;
-    ItemBean itemBean = getItemBean();
+    ItemService itemService = getItemBean();
     for (Item item : itemsFound)
     {
       if (aUser.unused(item) && !item.isBound())
       {
         // item is not used.
-        if (!itemBean.give(item, aUser, target))
+        if (!itemService.give(item, aUser, target))
         {
           continue;
         }

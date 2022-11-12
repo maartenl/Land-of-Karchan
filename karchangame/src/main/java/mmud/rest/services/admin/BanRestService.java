@@ -45,7 +45,7 @@ import mmud.rest.webentities.admin.bans.AdminBannedIP;
 import mmud.rest.webentities.admin.bans.AdminBannedName;
 import mmud.rest.webentities.admin.bans.AdminSillyName;
 import mmud.rest.webentities.admin.bans.AdminUnbannedName;
-import mmud.services.LogBean;
+import mmud.services.LogService;
 
 /**
  * @author maartenl
@@ -63,7 +63,7 @@ public class BanRestService
   private EntityManager em;
 
   @Inject
-  private LogBean logBean;
+  private LogService logService;
 
   @GET
   @Path("bannedips")
@@ -136,7 +136,7 @@ public class BanRestService
     item.setReason(adminItem.reason);
     ValidationUtils.checkValidation(name, item);
     getEntityManager().persist(item);
-    logBean.writeDeputyLog(admin, "New banned IP '" + item.getAddress() + "' created.");
+    logService.writeDeputyLog(admin, "New banned IP '" + item.getAddress() + "' created.");
   }
 
 
@@ -165,7 +165,7 @@ public class BanRestService
     item.setReason(adminItem.reason);
     ValidationUtils.checkValidation(name, item);
     getEntityManager().persist(item);
-    logBean.writeDeputyLog(admin, "New banned name '" + item.getName() + "' created.");
+    logService.writeDeputyLog(admin, "New banned name '" + item.getName() + "' created.");
   }
 
   @POST
@@ -189,7 +189,7 @@ public class BanRestService
     item.setName(adminItem.name);
     ValidationUtils.checkValidation(name, item);
     getEntityManager().persist(item);
-    logBean.writeDeputyLog(admin, "New silly name '" + item.getName() + "' created.");
+    logService.writeDeputyLog(admin, "New silly name '" + item.getName() + "' created.");
   }
 
   @POST
@@ -213,7 +213,7 @@ public class BanRestService
     item.setName(adminItem.name);
     ValidationUtils.checkValidation(name, item);
     getEntityManager().persist(item);
-    logBean.writeDeputyLog(admin, "New unbanned name '" + item.getName() + "' created.");
+    logService.writeDeputyLog(admin, "New unbanned name '" + item.getName() + "' created.");
   }
 
   @DELETE
@@ -232,7 +232,7 @@ public class BanRestService
       throw new MudWebException(name, "Administrator " + name + " not found.", Response.Status.UNAUTHORIZED);
     }
     getEntityManager().remove(item);
-    logBean.writeDeputyLog(admin, "Banned IP '" + item.getAddress() + "' deleted.");
+    logService.writeDeputyLog(admin, "Banned IP '" + item.getAddress() + "' deleted.");
   }
 
   @DELETE
@@ -251,7 +251,7 @@ public class BanRestService
       throw new MudWebException(name, "Administrator " + name + " not found.", Response.Status.UNAUTHORIZED);
     }
     getEntityManager().remove(item);
-    logBean.writeDeputyLog(admin, "Banned name '" + item.getName() + "' deleted.");
+    logService.writeDeputyLog(admin, "Banned name '" + item.getName() + "' deleted.");
   }
 
   @DELETE
@@ -270,7 +270,7 @@ public class BanRestService
       throw new MudWebException(name, "Administrator " + name + " not found.", Response.Status.UNAUTHORIZED);
     }
     getEntityManager().remove(item);
-    logBean.writeDeputyLog(admin, "Silly name '" + item.getName() + "' deleted.");
+    logService.writeDeputyLog(admin, "Silly name '" + item.getName() + "' deleted.");
   }
 
   @DELETE
@@ -289,7 +289,7 @@ public class BanRestService
       throw new MudWebException(name, "Administrator " + name + " not found.", Response.Status.UNAUTHORIZED);
     }
     getEntityManager().remove(item);
-    logBean.writeDeputyLog(admin, "Unbanned name '" + item.getName() + "' deleted.");
+    logService.writeDeputyLog(admin, "Unbanned name '" + item.getName() + "' deleted.");
   }
 
   private EntityManager getEntityManager()

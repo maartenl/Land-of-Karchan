@@ -17,18 +17,18 @@
 package mmud.testing.tests;
 
 import mmud.database.entities.characters.Person;
-import mmud.services.LogBean;
+import mmud.services.LogService;
 
 /**
- *
  * @author maartenl
  */
-public class LogBeanStub extends LogBean
+public class LogServiceStub extends LogService
 {
 
-    public LogBeanStub()
+    public LogServiceStub()
     {
     }
+
     private final StringBuffer buffer = new StringBuffer();
 
     @Override

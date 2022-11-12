@@ -30,7 +30,7 @@ import mmud.database.entities.items.Item;
 import mmud.database.enums.God;
 import mmud.exceptions.MudException;
 import mmud.services.CommunicationService;
-import mmud.services.ItemBean;
+import mmud.services.ItemService;
 import mmud.services.PersonCommunicationService;
 
 /**
@@ -127,8 +127,8 @@ public class SellCommand extends NormalCommand
             return aUser.getRoom();
         }
         Shopkeeper shopkeeper = (Shopkeeper) keeper;
-        boolean sold = false;
-        ItemBean itemBean = getItemBean();
+      boolean sold = false;
+      ItemService itemService = getItemBean();
         for (Item item : itemsFound)
         {
             // item is not used.
@@ -156,7 +156,7 @@ public class SellCommand extends NormalCommand
                 communicationService.writeMessage("You cannot sell that item.<BR>\r\n");
                 continue;
             }
-            Integer moneyPaid = itemBean.sell(item, aUser, shopkeeper);
+          Integer moneyPaid = itemService.sell(item, aUser, shopkeeper);
             if (moneyPaid == null)
             {
                 continue;

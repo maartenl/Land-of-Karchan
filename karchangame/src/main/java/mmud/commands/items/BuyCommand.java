@@ -30,7 +30,7 @@ import mmud.database.entities.items.Item;
 import mmud.database.enums.God;
 import mmud.exceptions.MudException;
 import mmud.services.CommunicationService;
-import mmud.services.ItemBean;
+import mmud.services.ItemService;
 import mmud.services.PersonCommunicationService;
 
 /**
@@ -125,7 +125,7 @@ public class BuyCommand extends NormalCommand
       return aUser.getRoom();
     }
     boolean bought = false;
-    ItemBean itemBean = getItemBean();
+    ItemService itemService = getItemBean();
     for (Item item : itemsFound)
     {
       // item is not used.
@@ -147,7 +147,7 @@ public class BuyCommand extends NormalCommand
         communicationService.writeMessage("You do not have enough money.<br/>\r\n");
         break;
       }
-      final Integer moneyPaid = itemBean.buy(item, aUser, shopkeeper);
+      final Integer moneyPaid = itemService.buy(item, aUser, shopkeeper);
       if (moneyPaid == null)
       {
         continue;

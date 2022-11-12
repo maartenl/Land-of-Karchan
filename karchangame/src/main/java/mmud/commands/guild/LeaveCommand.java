@@ -22,7 +22,7 @@ import mmud.database.entities.game.DisplayInterface;
 import mmud.database.entities.game.Guild;
 import mmud.exceptions.MudException;
 import mmud.services.CommunicationService;
-import mmud.services.LogBean;
+import mmud.services.LogService;
 
 /**
  * Makes you leave a guild. There are some requirements to follow:
@@ -44,12 +44,12 @@ public class LeaveCommand extends GuildCommand
     @Override
     public DisplayInterface run(String command, User aUser) throws MudException
     {
-        LogBean logBean = getLogBean();
+        LogService logService = getLogBean();
         Guild guild = aUser.getGuild();
         aUser.setGuild(null);
         CommunicationService.getCommunicationService(aUser).writeMessage("You leave guild <i>" + guild.getTitle() + "</i>.<br/>\r\n");
-        logBean.writeLog(aUser, "left guild "
-                + guild.getName());
+        logService.writeLog(aUser, "left guild "
+          + guild.getName());
         return aUser.getRoom();
     }
 

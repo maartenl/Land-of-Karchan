@@ -24,7 +24,7 @@ import mmud.database.entities.game.DisplayInterface;
 import mmud.exceptions.MudException;
 import mmud.exceptions.PersonNotFoundException;
 import mmud.services.CommunicationService;
-import mmud.services.PersonBean;
+import mmud.services.PersonService;
 
 /**
  *
@@ -90,8 +90,8 @@ public class TellCommand extends TargetCommand
     {
         if (myParsed.length > 2 && myParsed[1].equalsIgnoreCase("to"))
         {
-            PersonBean personBean = getPersonBean();
-            Person toChar = personBean.getActiveUser(myParsed[2]);
+            PersonService personService = getPersonBean();
+            Person toChar = personService.getActiveUser(myParsed[2]);
             if (toChar == null)
             {
                 // action to unknown

@@ -26,7 +26,7 @@ import mmud.database.entities.game.DisplayInterface;
 import mmud.database.entities.items.Item;
 import mmud.exceptions.MudException;
 import mmud.services.CommunicationService;
-import mmud.services.ItemBean;
+import mmud.services.ItemService;
 import mmud.services.PersonCommunicationService;
 
 /**
@@ -81,12 +81,12 @@ public class GetCommand extends NormalCommand
       return aUser.getRoom();
     }
     boolean getted = false;
-    ItemBean itemBean = getItemBean();
+    ItemService itemService = getItemBean();
     for (Item item : itemsFound)
     {
       if (item.isGetable())
       {
-        if (!itemBean.get(item, aUser))
+        if (!itemService.get(item, aUser))
         {
           continue;
         }

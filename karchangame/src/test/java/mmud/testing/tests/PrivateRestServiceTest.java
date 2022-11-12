@@ -129,7 +129,7 @@ public class PrivateRestServiceTest
         return null;
       }
     };
-    LogBeanStub logBean = new LogBeanStub();
+    LogServiceStub logBean = new LogServiceStub();
     privateRestService.setLogBean(logBean);
     // Unit under test is exercised.
     final PrivatePerson person = new PrivatePerson();
@@ -184,7 +184,7 @@ public class PrivateRestServiceTest
         return null;
       }
     };
-    LogBeanStub logBean = new LogBeanStub();
+    LogServiceStub logBean = new LogServiceStub();
     privateRestService.setLogBean(logBean);
     // Unit under test is exercised.
     privateRestService.resetPassword("Marvin", privatePassword.toJson(), null);
@@ -227,7 +227,7 @@ public class PrivateRestServiceTest
         return null;
       }
     };
-    LogBeanStub logBean = new LogBeanStub();
+    LogServiceStub logBean = new LogServiceStub();
     privateRestService.setLogBean(logBean);
     // Unit under test is exercised.
     privateRestService.resetPassword("Marvin", privatePassword.toJson(), null);
@@ -269,7 +269,7 @@ public class PrivateRestServiceTest
         return null;
       }
     };
-    LogBeanStub logBean = new LogBeanStub();
+    LogServiceStub logBean = new LogServiceStub();
     privateRestService.setLogBean(logBean);
     // Unit under test is exercised.
     privateRestService.resetPassword("Marvin", privatePassword.toJson(), null);
@@ -311,7 +311,7 @@ public class PrivateRestServiceTest
         return null;
       }
     };
-    LogBeanStub logBean = new LogBeanStub();
+    LogServiceStub logBean = new LogServiceStub();
     privateRestService.setLogBean(logBean);
     // Unit under test is exercised.
     privateRestService.resetPassword("Marvin", privatePassword.toJson(), null);
@@ -347,7 +347,7 @@ public class PrivateRestServiceTest
         return null;
       }
     };
-    LogBeanStub logBean = new LogBeanStub();
+    LogServiceStub logBean = new LogServiceStub();
     privateRestService.setLogBean(logBean);
     // Unit under test is exercised.
     final PrivatePerson person = new PrivatePerson();
@@ -410,7 +410,7 @@ public class PrivateRestServiceTest
         return null;
       }
     };
-    LogBeanStub logBean = new LogBeanStub();
+    LogServiceStub logBean = new LogServiceStub();
     privateRestService.setLogBean(logBean);
     final PrivatePerson person = new PrivatePerson();
     person.name = "Marvin";

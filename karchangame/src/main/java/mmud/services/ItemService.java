@@ -39,17 +39,17 @@ import mmud.exceptions.ItemException;
  */
 
 
-public class ItemBean
+public class ItemService
 {
 
-    @PersistenceContext(unitName = "karchangamePU")
-    private EntityManager em;
+  @PersistenceContext(unitName = "karchangamePU")
+  private EntityManager em;
 
   @Inject
-    private LogBean logBean;
+  private LogService logService;
 
-    /**
-     * Returns the entity manager of JPA. This is defined in
+  /**
+   * Returns the entity manager of JPA. This is defined in
      * build/web/WEB-INF/classes/META-INF/persistence.xml.
      *
      * @return EntityManager
@@ -58,7 +58,8 @@ public class ItemBean
     {
         return em;
     }
-    private static final Logger LOGGER = Logger.getLogger(ItemBean.class.getName());
+
+  private static final Logger LOGGER = Logger.getLogger(ItemService.class.getName());
 
     /**
      * Drops an item on the floor.
@@ -76,7 +77,7 @@ public class ItemBean
         final boolean success = query.executeUpdate() == 1;
         if (success)
         {
-            logBean.writeLog(person, " dropped " + item.getDescription() + " in room " + person.getRoom().getId() + ".");
+          logService.writeLog(person, " dropped " + item.getDescription() + " in room " + person.getRoom().getId() + ".");
         }
         return success;
     }
@@ -97,7 +98,7 @@ public class ItemBean
         final boolean success = query.executeUpdate() == 1;
         if (success)
         {
-            logBean.writeLog(person, " got " + item.getDescription() + " from room " + person.getRoom().getId() + ".");
+          logService.writeLog(person, " got " + item.getDescription() + " from room " + person.getRoom().getId() + ".");
         }
         return success;
     }
@@ -119,7 +120,7 @@ public class ItemBean
         final boolean success = query.executeUpdate() == 1;
         if (success)
         {
-            logBean.writeLog(fromperson, " gave " + item.getDescription() + " to " + toperson.getName() + ".");
+          logService.writeLog(fromperson, " gave " + item.getDescription() + " to " + toperson.getName() + ".");
         }
         return success;
     }
@@ -153,7 +154,7 @@ public class ItemBean
         final boolean success = query.executeUpdate() == 1;
         if (success)
         {
-            logBean.writeLog(person, " put " + item.getDescription() + " into " + container.getDescription() + ".");
+          logService.writeLog(person, " put " + item.getDescription() + " into " + container.getDescription() + ".");
         }
         return success;
     }
@@ -191,7 +192,7 @@ public class ItemBean
         final boolean success = query.executeUpdate() == 1;
         if (success)
         {
-            logBean.writeLog(person, " retrieved " + item.getDescription() + " from " + container.getDescription() + ".");
+          logService.writeLog(person, " retrieved " + item.getDescription() + " from " + container.getDescription() + ".");
         }
         return success;
     }
@@ -236,8 +237,8 @@ public class ItemBean
         }
         aUser.give(item, shopkeeper);
         final int amount = item.getCopper() * 80 / 100;
-        shopkeeper.transferMoney(amount, aUser);
-        logBean.writeLog(aUser, " sold " + item.getDescription() + " to " + shopkeeper.getName() + " for " + amount + ".");
+      shopkeeper.transferMoney(amount, aUser);
+      logService.writeLog(aUser, " sold " + item.getDescription() + " to " + shopkeeper.getName() + " for " + amount + ".");
         return amount;
     }
 
@@ -281,8 +282,8 @@ public class ItemBean
         }
         shopkeeper.give(item, aUser);
         final int amount = item.getCopper();
-        aUser.transferMoney(amount, shopkeeper);
-        logBean.writeLog(aUser, " bought " + item.getDescription() + " from " + shopkeeper.getName() + " for " + amount + ".");
+      aUser.transferMoney(amount, shopkeeper);
+      logService.writeLog(aUser, " bought " + item.getDescription() + " from " + shopkeeper.getName() + " for " + amount + ".");
         return amount;
     }
 
@@ -291,7 +292,7 @@ public class ItemBean
         ItemDefinition itemDefinition = getEntityManager().find(ItemDefinition.class, itemdefnr);
         if (itemDefinition == null)
         {
-            logBean.writeLog("Unable to create item because item definition was empty.");
+          logService.writeLog("Unable to create item because item definition was empty.");
             return null;
         }
         Item item = new NormalItem(itemDefinition);

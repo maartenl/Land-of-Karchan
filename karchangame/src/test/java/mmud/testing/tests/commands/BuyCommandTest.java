@@ -32,9 +32,9 @@ import mmud.database.entities.items.Item;
 import mmud.database.entities.items.ItemDefinition;
 import mmud.database.entities.items.NormalItem;
 import mmud.services.CommunicationService;
-import mmud.services.ItemBean;
-import mmud.services.LogBean;
-import mmud.testing.tests.LogBeanStub;
+import mmud.services.ItemService;
+import mmud.services.LogService;
+import mmud.testing.tests.LogServiceStub;
 import mmud.testing.tests.MudTest;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
@@ -50,9 +50,9 @@ public class BuyCommandTest extends MudTest
   private Room room1;
   private NormalItem ring;
   private ItemDefinition itemDef;
-  private ItemBean itemBean;
+  private ItemService itemService;
 
-  private LogBean logBean = new LogBeanStub();
+  private LogService logService = new LogServiceStub();
 
   private CommandRunner commandRunner = new CommandRunner();
 
@@ -187,7 +187,7 @@ public class BuyCommandTest extends MudTest
     BuyCommand buyCommand = new BuyCommand("buy( (\\w|-)+){1,4} from (\\w)+");
     buyCommand.setCallback(commandRunner);
     assertThat(buyCommand.getRegExpr()).isEqualTo("buy( (\\w|-)+){1,4} from (\\w)+");
-    commandRunner.setBeans(null, null, null, itemBean, null, null, null);
+    commandRunner.setBeans(null, null, null, itemService, null, null, null);
     DisplayInterface display = buyCommand.run("buy ring from karcas", karn);
     assertThat(display).isNotNull();
     assertThat(display.getBody()).isEqualTo("You are in a small room.");
@@ -213,7 +213,7 @@ public class BuyCommandTest extends MudTest
     BuyCommand buyCommand = new BuyCommand("buy( (\\w|-)+){1,4} from (\\w)+");
     buyCommand.setCallback(commandRunner);
     assertThat(buyCommand.getRegExpr()).isEqualTo("buy( (\\w|-)+){1,4} from (\\w)+");
-    commandRunner.setBeans(null, null, null, itemBean, null, null, null);
+    commandRunner.setBeans(null, null, null, itemService, null, null, null);
     DisplayInterface display = buyCommand.run("buy ring from karcas", karn);
     assertThat(display).isNotNull();
     assertThat(display.getBody()).isEqualTo("You are in a small room.");
@@ -241,7 +241,7 @@ public class BuyCommandTest extends MudTest
     BuyCommand buyCommand = new BuyCommand("buy( (\\w|-)+){1,4} from (\\w)+");
     buyCommand.setCallback(commandRunner);
     assertThat(buyCommand.getRegExpr()).isEqualTo("buy( (\\w|-)+){1,4} from (\\w)+");
-    commandRunner.setBeans(null, null, null, itemBean, null, null, null);
+    commandRunner.setBeans(null, null, null, itemService, null, null, null);
     DisplayInterface display = buyCommand.run("buy ring from karcas", karn);
     assertThat(display).isNotNull();
     assertThat(display.getBody()).isEqualTo("You are in a small room.");
@@ -269,7 +269,7 @@ public class BuyCommandTest extends MudTest
     BuyCommand buyCommand = new BuyCommand("buy( (\\w|-)+){1,4} from (\\w)+");
     buyCommand.setCallback(commandRunner);
     assertThat(buyCommand.getRegExpr()).isEqualTo("buy( (\\w|-)+){1,4} from (\\w)+");
-    commandRunner.setBeans(null, null, null, itemBean, null, null, null);
+    commandRunner.setBeans(null, null, null, itemService, null, null, null);
     DisplayInterface display = buyCommand.run("buy ring from karcas", karn);
     assertThat(display).isNotNull();
     assertThat(display.getBody()).isEqualTo("You are in a small room.");
@@ -296,7 +296,7 @@ public class BuyCommandTest extends MudTest
     BuyCommand buyCommand = new BuyCommand("buy( (\\w|-)+){1,4} from (\\w)+");
     buyCommand.setCallback(commandRunner);
     assertThat(buyCommand.getRegExpr()).isEqualTo("buy( (\\w|-)+){1,4} from (\\w)+");
-    commandRunner.setBeans(null, logBean, null, itemBean, null, null, null);
+    commandRunner.setBeans(null, logService, null, itemService, null, null, null);
     DisplayInterface display = buyCommand.run("buy ring from karcas", karn);
     assertThat(display).isNotNull();
     assertThat(display.getBody()).isEqualTo("You are in a small room.");
@@ -307,8 +307,8 @@ public class BuyCommandTest extends MudTest
   @BeforeMethod
   public void setUpMethod() throws Exception
   {
-    itemBean = new ItemBean();
-    setField(ItemBean.class, "logBean", itemBean, logBean);
+    itemService = new ItemService();
+    setField(ItemService.class, "logBean", itemService, logService);
 
     itemDef = new ItemDefinition();
     itemDef.setId(1L);

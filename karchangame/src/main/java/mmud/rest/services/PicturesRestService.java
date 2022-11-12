@@ -50,7 +50,7 @@ import mmud.database.entities.characters.User;
 import mmud.database.entities.web.Image;
 import mmud.exceptions.MudWebException;
 import mmud.rest.webentities.PrivateImage;
-import mmud.services.LogBean;
+import mmud.services.LogService;
 import org.karchan.security.Roles;
 
 /**
@@ -78,7 +78,7 @@ public class PicturesRestService
   private SecurityContext securityContext;
 
   @Inject
-  private LogBean logBean;
+  private LogService logService;
 
   /**
    * Returns the entity manager of JPA. This is defined in
@@ -276,7 +276,7 @@ public class PicturesRestService
     image.setCreateDate(LocalDateTime.now());
     image.setMimeType(newImage.mimeType);
     getEntityManager().persist(image);
-    logBean.writeLog(user, "Picture added with url " + image.getUrl());
+    logService.writeLog(user, "Picture added with url " + image.getUrl());
     return Response.ok().build();
   }
 
@@ -324,7 +324,7 @@ public class PicturesRestService
 
     Image image = list.get(0);
     getEntityManager().remove(image);
-    logBean.writeLog(user, "Picture " + image.getId() + " removed. (" + image.getUrl() + ")");
+    logService.writeLog(user, "Picture " + image.getId() + " removed. (" + image.getUrl() + ")");
     return Response.ok().build();
   }
 }

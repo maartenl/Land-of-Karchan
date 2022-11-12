@@ -21,7 +21,7 @@ import mmud.database.entities.characters.User;
 import mmud.database.entities.game.DisplayInterface;
 import mmud.exceptions.MudException;
 import mmud.services.CommunicationService;
-import mmud.services.LogBean;
+import mmud.services.LogService;
 
 /**
  * Makes you, as guildmaster, change the logonmessage of your guild.
@@ -40,13 +40,13 @@ public class GuildMessageCommand extends GuildMasterCommand
     @Override
     public DisplayInterface run(String command, User aUser) throws MudException
     {
-        LogBean logBean = getLogBean();
+        LogService logService = getLogBean();
 
         String message = command.substring("guildmessage".length() + 1).trim();
         aUser.getGuild().setLogonmessage(message);
 
         CommunicationService.getCommunicationService(aUser).writeMessage("You have changed your guild logonmessage to <i>" + message + "</i>.<br/>\r\n");
-        logBean.writeLog(aUser, " changed guildmessage of  " + aUser.getGuild().getName() + ".", message);
+        logService.writeLog(aUser, " changed guildmessage of  " + aUser.getGuild().getName() + ".", message);
         return aUser.getRoom();
     }
 

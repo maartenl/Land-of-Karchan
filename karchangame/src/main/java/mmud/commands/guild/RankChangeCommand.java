@@ -22,7 +22,7 @@ import mmud.database.entities.game.DisplayInterface;
 import mmud.database.entities.game.Guildrank;
 import mmud.exceptions.MudException;
 import mmud.services.CommunicationService;
-import mmud.services.LogBean;
+import mmud.services.LogService;
 import mmud.services.PersonCommunicationService;
 
 /**
@@ -44,7 +44,7 @@ public class RankChangeCommand extends GuildMasterCommand
   public DisplayInterface run(String command, User aUser) throws MudException
   {
     PersonCommunicationService communicationService = CommunicationService.getCommunicationService(aUser);
-    LogBean logBean = getLogBean();
+    LogService logService = getLogBean();
     String[] myParsed = parseCommand(command, 3);
     String rankString = myParsed[1];
     int rankIndex = 0;
@@ -68,8 +68,8 @@ public class RankChangeCommand extends GuildMasterCommand
       communicationService.writeMessage("Existing rank updated.<BR>\r\n");
     }
     rank.setTitle(myParsed[2]);
-    logBean.writeLog(aUser, " rank created/updated " + rankIndex + ":" + myParsed[2]
-            + " for guild " + aUser.getGuild().getName());
+    logService.writeLog(aUser, " rank created/updated " + rankIndex + ":" + myParsed[2]
+      + " for guild " + aUser.getGuild().getName());
     return aUser.getRoom();
   }
 

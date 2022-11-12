@@ -38,10 +38,10 @@ import mmud.scripting.RunScript;
 import mmud.scripting.World;
 import mmud.services.AttributeService;
 import mmud.services.CommunicationService;
-import mmud.services.HelpBean;
-import mmud.services.ItemBean;
-import mmud.services.LogBean;
-import mmud.services.PersonBean;
+import mmud.services.HelpService;
+import mmud.services.ItemService;
+import mmud.services.LogService;
+import mmud.services.PersonService;
 
 /**
  * Will run the command provided.
@@ -55,7 +55,7 @@ public class CommandRunner
   private static final Logger LOGGER = Logger.getLogger(CommandRunner.class.getName());
 
   @Inject
-  private PersonBean personBean;
+  private PersonService personService;
 
   @Inject
   private AttributeService attributeService;
@@ -64,16 +64,16 @@ public class CommandRunner
   private RoomsRestService roomBean;
 
   @Inject
-  private HelpBean helpBean;
+  private HelpService helpService;
 
   @Inject
-  private LogBean logBean;
+  private LogService logService;
 
   @Inject
   private GuildRestService guildRestService;
 
   @Inject
-  private ItemBean itemBean;
+  private ItemService itemService;
 
   @Inject
   private EventsRestService eventsRestService;
@@ -115,9 +115,9 @@ public class CommandRunner
         return determineJackassing(aCommand, aUser);
       }
       List<NormalCommand> myCol = new ArrayList<>();
-      Persons persons = new Persons(personBean);
+      Persons persons = new Persons(personService);
       Rooms rooms = new Rooms(id -> roomBean.find(id));
-      Items items = new Items(itemdefnr -> itemBean.createItem(itemdefnr));
+      Items items = new Items(itemdefnr -> itemService.createItem(itemdefnr));
       World world = new World(name -> attributeService.getAttribute(name));
       RunScript runScript = new RunScript(persons, rooms, items, world);
       for (UserCommand myCom : userCommands)
@@ -188,19 +188,19 @@ public class CommandRunner
     return command.start(aCommand, aUser);
   }
 
-  public PersonBean getPersonBean()
+  public PersonService getPersonBean()
   {
-    return personBean;
+    return personService;
   }
 
-  public HelpBean getHelpBean()
+  public HelpService getHelpBean()
   {
-    return helpBean;
+    return helpService;
   }
 
-  public LogBean getLogBean()
+  public LogService getLogBean()
   {
-    return logBean;
+    return logService;
   }
 
   public GuildRestService getGuildBean()
@@ -208,9 +208,9 @@ public class CommandRunner
     return guildRestService;
   }
 
-  public ItemBean getItemBean()
+  public ItemService getItemBean()
   {
-    return itemBean;
+    return itemService;
   }
 
   EventsRestService getEventsBean()
@@ -224,15 +224,15 @@ public class CommandRunner
   }
 
   @VisibleForTesting
-  public void setBeans(PersonBean personBean, LogBean logBean, GuildRestService guildRestService, ItemBean itemBean, EventsRestService eventsRestService, AdminRestService adminRestService, HelpBean helpBean)
+  public void setBeans(PersonService personService, LogService logService, GuildRestService guildRestService, ItemService itemService, EventsRestService eventsRestService, AdminRestService adminRestService, HelpService helpService)
   {
-    this.personBean = personBean;
-    this.logBean = logBean;
+    this.personService = personService;
+    this.logService = logService;
     this.guildRestService = guildRestService;
-    this.itemBean = itemBean;
+    this.itemService = itemService;
     this.eventsRestService = eventsRestService;
     this.adminRestService = adminRestService;
-    this.helpBean = helpBean;
+    this.helpService = helpService;
   }
 
 }

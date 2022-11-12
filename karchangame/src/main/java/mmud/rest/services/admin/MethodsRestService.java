@@ -45,7 +45,7 @@ import mmud.database.entities.game.UserCommand;
 import mmud.exceptions.MudWebException;
 import mmud.rest.webentities.admin.AdminMethod;
 import mmud.rest.webentities.admin.AdminUserCommand;
-import mmud.services.LogBean;
+import mmud.services.LogService;
 
 /**
  * @author maartenl
@@ -64,7 +64,7 @@ public class MethodsRestService
   private EntityManager em;
 
   @Inject
-  private LogBean logBean;
+  private LogService logService;
 
   @POST
   @Consumes(
@@ -84,7 +84,7 @@ public class MethodsRestService
     method.setOwner(admin);
     ValidationUtils.checkValidation(name, method);
     getEntityManager().persist(method);
-    logBean.writeDeputyLog(admin, "New method '" + method.getName() + "' created.");
+    logService.writeDeputyLog(admin, "New method '" + method.getName() + "' created.");
   }
 
   @PUT

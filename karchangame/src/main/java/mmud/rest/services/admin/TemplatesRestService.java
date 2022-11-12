@@ -41,7 +41,7 @@ import mmud.database.entities.web.HistoricTemplate;
 import mmud.database.entities.web.HtmlTemplate;
 import mmud.exceptions.MudWebException;
 import mmud.rest.webentities.admin.AdminTemplate;
-import mmud.services.LogBean;
+import mmud.services.LogService;
 
 /**
  * The REST service for dealing with Templates.
@@ -61,7 +61,7 @@ public class TemplatesRestService
   private EntityManager em;
 
   @Inject
-  private LogBean logBean;
+  private LogService logService;
 
   @PUT
   @Path("{id}")
@@ -90,7 +90,7 @@ public class TemplatesRestService
     entity.setComment(template.comment);
     entity.increaseVersion();
     ValidationUtils.checkValidation(name, entity);
-    logBean.writeDeputyLog(getAdmin(name), "Template " + id + " updated.");
+    logService.writeDeputyLog(getAdmin(name), "Template " + id + " updated.");
   }
 
   @GET

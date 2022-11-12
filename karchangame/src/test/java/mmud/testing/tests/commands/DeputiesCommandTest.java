@@ -32,8 +32,8 @@ import mmud.database.entities.items.ItemDefinition;
 import mmud.database.entities.items.NormalItem;
 import mmud.rest.services.admin.AdminRestService;
 import mmud.services.CommunicationService;
-import mmud.services.ItemBean;
-import mmud.testing.tests.LogBeanStub;
+import mmud.services.ItemService;
+import mmud.testing.tests.LogServiceStub;
 import mmud.testing.tests.MudTest;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
@@ -50,9 +50,9 @@ public class DeputiesCommandTest extends MudTest
     private Room room1;
     private NormalItem ring;
     private ItemDefinition itemDef;
-    private ItemBean itemBean;
+    private ItemService itemService;
 
-    private LogBeanStub logBean;
+    private LogServiceStub logBean;
 
     private CommandRunner commandRunner = new CommandRunner();
     private AdminRestService adminRestService;
@@ -86,7 +86,7 @@ public class DeputiesCommandTest extends MudTest
     @BeforeMethod
     public void setUpMethod() throws Exception
     {
-        logBean = new LogBeanStub();
+        logBean = new LogServiceStub();
 
         room1 = new Room();
         room1.setId(1L);

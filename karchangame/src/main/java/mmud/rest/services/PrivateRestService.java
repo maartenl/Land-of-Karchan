@@ -69,8 +69,8 @@ import mmud.rest.webentities.PrivateMail;
 import mmud.rest.webentities.PrivatePassword;
 import mmud.rest.webentities.PrivatePerson;
 import mmud.rest.webentities.PublicPerson;
-import mmud.services.LogBean;
-import mmud.services.MailBean;
+import mmud.services.LogService;
+import mmud.services.MailService;
 import org.apache.commons.lang3.StringUtils;
 
 /**
@@ -89,7 +89,7 @@ public class PrivateRestService
   public static final String PASSWORDS_DO_NOT_MATCH = "Passwords do not match.";
   @Inject
 
-  private MailBean mailBean;
+  private MailService mailService;
 
   @Inject
   private PublicRestService publicRestService;
@@ -101,7 +101,7 @@ public class PrivateRestService
   private SecurityContext context;
 
   @Inject
-  private LogBean logBean;
+  private LogService logService;
 
   /**
    * Indicates that only 20 mails may be retrieved per time (basically a
@@ -320,7 +320,7 @@ public class PrivateRestService
   {
     LOGGER.finer("entering hasNewMail");
     Person person = authenticate(name);
-    boolean result = mailBean.hasNewMail(person);
+    boolean result = mailService.hasNewMail(person);
     var privateHasMail = new PrivateHasMail();
     privateHasMail.hasMail = result;
     return JsonUtils.toJson(privateHasMail);
@@ -615,7 +615,7 @@ public class PrivateRestService
           "</div></div>");
       item.setAttribute("readable", description);
       person.addItem(item);
-      logBean.writeLog(person, "item " + definition.getAdjectives() + " " + definition.getName() + " from mail " + id + " created.");
+      logService.writeLog(person, "item " + definition.getAdjectives() + " " + definition.getName() + " from mail " + id + " created.");
 
     } catch (WebApplicationException e)
     {
@@ -661,7 +661,7 @@ public class PrivateRestService
     MailReceiver mail = getMail(person.getName(), id);
     mail.setDeleted(Boolean.TRUE);
     LOGGER.finer("exiting deleteMail");
-    logBean.writeLog(person, "mail " + id + " deleted.");
+    logService.writeLog(person, "mail " + id + " deleted.");
     return createResponse();
   }
 
@@ -744,7 +744,7 @@ public class PrivateRestService
       {
         getEntityManager().persist(characterInfo);
       }
-      logBean.writeLog(person, "settings changed.");
+      logService.writeLog(person, "settings changed.");
     } catch (WebApplicationException e)
     {
       //ignore
@@ -806,7 +806,7 @@ public class PrivateRestService
     }
     try
     {
-      logBean.writeLog(person, "password changed.");
+      logService.writeLog(person, "password changed.");
       person.setNewpassword(privatePassword.password);
     } catch (WebApplicationException e)
     {
@@ -839,7 +839,7 @@ public class PrivateRestService
     Person person = authenticate(name);
     try
     {
-      logBean.writeLog(person, "character deleted.");
+      logService.writeLog(person, "character deleted.");
       getEntityManager().remove(person);
     } catch (WebApplicationException e)
     {
@@ -984,8 +984,8 @@ public class PrivateRestService
   }
 
   @VisibleForTesting
-  public void setLogBean(LogBean logBean)
+  public void setLogBean(LogService logService)
   {
-    this.logBean = logBean;
+    this.logService = logService;
   }
 }

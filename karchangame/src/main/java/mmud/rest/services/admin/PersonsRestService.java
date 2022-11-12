@@ -49,7 +49,7 @@ import mmud.database.enums.Sex;
 import mmud.exceptions.MudException;
 import mmud.exceptions.MudWebException;
 import mmud.rest.webentities.admin.AdminCharacter;
-import mmud.services.LogBean;
+import mmud.services.LogService;
 
 /**
  * @author maartenl
@@ -67,7 +67,7 @@ public class PersonsRestService
   private EntityManager em;
 
   @Inject
-  private LogBean logBean;
+  private LogService logService;
 
   @POST
   @Consumes(
@@ -151,7 +151,7 @@ public class PersonsRestService
     character.setOwner(admin);
     ValidationUtils.checkValidation(name, character);
     getEntityManager().persist(character);
-    logBean.writeDeputyLog(admin, "New character '" + character.getName() + "' created.");
+    logService.writeDeputyLog(admin, "New character '" + character.getName() + "' created.");
   }
 
   @PUT
@@ -216,7 +216,7 @@ public class PersonsRestService
     }
     character.setOwner(OwnerHelper.getNewOwner(adminCharacter.owner, admin, getEntityManager()));
     ValidationUtils.checkValidation(name, character);
-    logBean.writeDeputyLog(admin, "Character '" + character.getName() + "' updated.");
+    logService.writeDeputyLog(admin, "Character '" + character.getName() + "' updated.");
   }
 
   @DELETE
@@ -232,7 +232,7 @@ public class PersonsRestService
     }
     Admin admin = (new OwnerHelper(getEntityManager())).authorize(name, character);
     getEntityManager().remove(character);
-    logBean.writeDeputyLog(admin, "Character '" + character.getName() + "' deleted.");
+    logService.writeDeputyLog(admin, "Character '" + character.getName() + "' deleted.");
   }
 
   @GET

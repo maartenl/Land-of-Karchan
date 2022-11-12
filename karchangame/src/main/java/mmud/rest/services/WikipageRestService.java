@@ -44,7 +44,7 @@ import mmud.database.entities.web.Wikipage;
 import mmud.database.entities.web.WikipageHistory;
 import mmud.exceptions.MudWebException;
 import mmud.rest.webentities.PrivateWikipage;
-import mmud.services.LogBean;
+import mmud.services.LogService;
 import org.karchan.security.Roles;
 
 /**
@@ -68,7 +68,7 @@ public class WikipageRestService
   private SecurityContext securityContext;
 
   @Inject
-  private LogBean logBean;
+  private LogService logService;
 
   /**
    * Returns the entity manager of JPA. This is defined in
@@ -216,7 +216,7 @@ public class WikipageRestService
     wikipage.setComment(newWikipage.comment);
     wikipage.setOrdering(newWikipage.ordering);
     getEntityManager().persist(wikipage);
-    logBean.writeLog(getUser(name), "Wikipage created with title " + wikipage.getTitle());
+    logService.writeLog(getUser(name), "Wikipage created with title " + wikipage.getTitle());
     return Response.ok().build();
   }
 
@@ -305,7 +305,7 @@ public class WikipageRestService
       wikipage.setComment(privateWikipage.comment);
       wikipage.setOrdering(privateWikipage.ordering);
       wikipage.setParent(parent);
-      logBean.writeLog(getUser(name), "Wikipage with title " + wikipage.getTitle() + " updated.");
+      logService.writeLog(getUser(name), "Wikipage with title " + wikipage.getTitle() + " updated.");
 
     } catch (MudWebException e)
     {

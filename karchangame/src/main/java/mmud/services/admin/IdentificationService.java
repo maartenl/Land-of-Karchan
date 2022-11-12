@@ -29,7 +29,7 @@ import mmud.exceptions.MudWebException;
  * @author maartenl
  */
 
-public class IdentificationBean
+public class IdentificationService
 {
 
   @PersistenceContext(unitName = "karchangamePU")

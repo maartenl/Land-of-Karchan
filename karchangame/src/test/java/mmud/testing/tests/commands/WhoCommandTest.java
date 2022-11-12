@@ -31,8 +31,8 @@ import mmud.database.entities.characters.User;
 import mmud.database.entities.game.DisplayInterface;
 import mmud.database.entities.game.Room;
 import mmud.services.CommunicationService;
-import mmud.services.LogBean;
-import mmud.services.PersonBean;
+import mmud.services.LogService;
+import mmud.services.PersonService;
 import mmud.testing.TestingConstants;
 import mmud.testing.tests.MudTest;
 import org.testng.annotations.BeforeMethod;
@@ -48,11 +48,11 @@ public class WhoCommandTest extends MudTest
   private Administrator karn;
   private User marvin;
 
-  private LogBeanImpl logBean;
+  private LogServiceImpl logBean;
 
   private final CommandRunner commandRunner = new CommandRunner();
 
-  private PersonBean personBean;
+  private PersonService personService;
 
   public WhoCommandTest()
   {
@@ -61,7 +61,7 @@ public class WhoCommandTest extends MudTest
   @BeforeMethod
   public void setup()
   {
-    logBean = new LogBeanImpl();
+    logBean = new LogServiceImpl();
   }
 
   @Test
@@ -70,7 +70,7 @@ public class WhoCommandTest extends MudTest
     WhoCommand whoCommand = new WhoCommand("who");
     whoCommand.setCallback(commandRunner);
     assertThat(whoCommand.getRegExpr()).isEqualTo("who");
-    commandRunner.setBeans(personBean, null, null, null, null, null, null);
+    commandRunner.setBeans(personService, null, null, null, null, null, null);
     DisplayInterface display = whoCommand.run("who", marvin);
     assertThat(display).isNotNull();
     assertThat(CommunicationService.getCommunicationService(marvin).getLog(0)).isEmpty();
@@ -89,7 +89,7 @@ public class WhoCommandTest extends MudTest
     marvin.setSleep(true);
     whoCommand.setCallback(commandRunner);
     assertThat(whoCommand.getRegExpr()).isEqualTo("who");
-    commandRunner.setBeans(personBean, null, null, null, null, null, null);
+    commandRunner.setBeans(personService, null, null, null, null, null, null);
     DisplayInterface display = whoCommand.run("who", marvin);
     assertThat(display).isNotNull();
     assertThat(CommunicationService.getCommunicationService(marvin).getLog(0)).isEmpty();
@@ -107,7 +107,7 @@ public class WhoCommandTest extends MudTest
     karn.setVisible(false);
     whoCommand.setCallback(commandRunner);
     assertThat(whoCommand.getRegExpr()).isEqualTo("who");
-    commandRunner.setBeans(personBean, null, null, null, null, null, null);
+    commandRunner.setBeans(personService, null, null, null, null, null, null);
     DisplayInterface display = whoCommand.run("who", marvin);
     assertThat(display).isNotNull();
     assertThat(CommunicationService.getCommunicationService(marvin).getLog(0)).isEmpty();
@@ -125,7 +125,7 @@ public class WhoCommandTest extends MudTest
     karn.setFrogging(5);
     whoCommand.setCallback(commandRunner);
     assertThat(whoCommand.getRegExpr()).isEqualTo("who");
-    commandRunner.setBeans(personBean, null, null, null, null, null, null);
+    commandRunner.setBeans(personService, null, null, null, null, null, null);
     DisplayInterface display = whoCommand.run("who", marvin);
     assertThat(display).isNotNull();
     assertThat(CommunicationService.getCommunicationService(marvin).getLog(0)).isEmpty();
@@ -143,7 +143,7 @@ public class WhoCommandTest extends MudTest
     karn.setJackassing(5);
     whoCommand.setCallback(commandRunner);
     assertThat(whoCommand.getRegExpr()).isEqualTo("who");
-    commandRunner.setBeans(personBean, null, null, null, null, null, null);
+    commandRunner.setBeans(personService, null, null, null, null, null, null);
     DisplayInterface display = whoCommand.run("who", marvin);
     assertThat(display).isNotNull();
     assertThat(CommunicationService.getCommunicationService(marvin).getLog(0)).isEmpty();
@@ -157,7 +157,7 @@ public class WhoCommandTest extends MudTest
   @BeforeMethod
   public void setUpMethod() throws Exception
   {
-    personBean = new PersonBean()
+    personService = new PersonService()
     {
 
       @Override
@@ -180,7 +180,7 @@ public class WhoCommandTest extends MudTest
         return null;
       }
     };
-    setField(PersonBean.class, "logBean", personBean, logBean);
+    setField(PersonService.class, "logBean", personService, logBean);
 
     karn = TestingConstants.getKarn();
     final Room room = TestingConstants.getRoom(TestingConstants.getArea());
@@ -200,10 +200,10 @@ public class WhoCommandTest extends MudTest
     writer.close();
   }
 
-  private class LogBeanImpl extends LogBean
+  private class LogServiceImpl extends LogService
   {
 
-    public LogBeanImpl()
+    public LogServiceImpl()
     {
     }
 

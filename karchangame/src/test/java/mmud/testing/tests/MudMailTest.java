@@ -678,7 +678,7 @@ public class MudMailTest
         return null;
       }
     };
-    LogBeanStub logBean = new LogBeanStub();
+    LogServiceStub logBean = new LogServiceStub();
     privateRestService.setLogBean(logBean);
     // Unit under test is exercised.
     privateRestService.createMailItem("Marvin", 1L, 1);
@@ -755,7 +755,7 @@ public class MudMailTest
       }
 
     };
-    LogBeanStub logBean = new LogBeanStub();
+    LogServiceStub logBean = new LogServiceStub();
     privateRestService.setLogBean(logBean);
     // Unit under test is exercised.
     privateRestService.createMailItem("Marvin", 1L, 1);
@@ -899,7 +899,7 @@ public class MudMailTest
         return null;
       }
     };
-    LogBeanStub logBean = new LogBeanStub();
+    LogServiceStub logBean = new LogServiceStub();
     privateRestService.setLogBean(logBean);
     // Unit under test is exercised.
     privateRestService.deleteMail("Marvin", 1L);

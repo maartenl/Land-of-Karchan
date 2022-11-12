@@ -31,9 +31,9 @@ import mmud.database.entities.characters.User;
 import mmud.database.entities.game.DisplayInterface;
 import mmud.database.entities.game.Room;
 import mmud.services.CommunicationService;
-import mmud.services.PersonBean;
+import mmud.services.PersonService;
 import mmud.testing.TestingConstants;
-import mmud.testing.tests.LogBeanStub;
+import mmud.testing.tests.LogServiceStub;
 import mmud.testing.tests.MudTest;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
@@ -49,11 +49,11 @@ public class OocCommandTest extends MudTest
     private Administrator karn;
     private User marvin;
 
-    private LogBeanStub logBean;
+    private LogServiceStub logBean;
 
     private CommandRunner commandRunner = new CommandRunner();
 
-    private PersonBean personBean;
+    private PersonService personService;
 
     public OocCommandTest()
     {
@@ -122,8 +122,8 @@ public class OocCommandTest extends MudTest
         assertThat(marvin.getOoc()).isTrue();
         OocCommand heehawCommand = new OocCommand("ooc .+");
         heehawCommand.setCallback(commandRunner);
-      assertThat(heehawCommand.getRegExpr()).isEqualTo("ooc .+");
-      commandRunner.setBeans(personBean, null, null, null, null, null, null);
+        assertThat(heehawCommand.getRegExpr()).isEqualTo("ooc .+");
+        commandRunner.setBeans(personService, null, null, null, null, null, null);
         DisplayInterface display = heehawCommand.run("ooc Hey! This works!", marvin);
         assertThat(display).isNotNull();
         String log = CommunicationService.getCommunicationService(marvin).getLog(0);
@@ -136,8 +136,8 @@ public class OocCommandTest extends MudTest
     @BeforeMethod
     public void setUpMethod() throws Exception
     {
-        logBean = new LogBeanStub();
-        personBean = new PersonBean()
+        logBean = new LogServiceStub();
+        personService = new PersonService()
         {
             @Override
             public User getActiveUser(String name)
@@ -160,7 +160,7 @@ public class OocCommandTest extends MudTest
             }
 
         };
-        setField(PersonBean.class, "logBean", personBean, logBean);
+        setField(PersonService.class, "logBean", personService, logBean);
 
         karn = TestingConstants.getKarn();
         final Room room = TestingConstants.getRoom(TestingConstants.getArea());

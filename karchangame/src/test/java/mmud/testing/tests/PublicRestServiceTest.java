@@ -40,9 +40,9 @@ import mmud.rest.webentities.Fortune;
 import mmud.rest.webentities.News;
 import mmud.rest.webentities.PublicGuild;
 import mmud.rest.webentities.PublicPerson;
-import mmud.services.BoardBean;
+import mmud.services.BoardService;
 import mmud.services.IdleUsersService;
-import mmud.services.PersonBean;
+import mmud.services.PersonService;
 import mmud.testing.TestingConstants;
 import mmud.testing.TestingUtils;
 import org.mockito.ArgumentMatchers;
@@ -254,7 +254,7 @@ public class PublicRestServiceTest
         return entityManager;
       }
     };
-    publicRestService.setPersonBean(new PersonBean()
+    publicRestService.setPersonBean(new PersonService()
     {
       @Override
       protected EntityManager getEntityManager()
@@ -289,7 +289,7 @@ public class PublicRestServiceTest
         return entityManager;
       }
     };
-    publicRestService.setPersonBean(new PersonBean()
+    publicRestService.setPersonBean(new PersonService()
     {
       @Override
       protected EntityManager getEntityManager()
@@ -341,7 +341,7 @@ public class PublicRestServiceTest
         return entityManager;
       }
     };
-    publicRestService.setBoardBean(new BoardBean()
+    publicRestService.setBoardBean(new BoardService()
     {
       @Override
       protected EntityManager getEntityManager()
@@ -390,7 +390,7 @@ public class PublicRestServiceTest
         return entityManager;
       }
     };
-    publicRestService.setBoardBean(new BoardBean()
+    publicRestService.setBoardBean(new BoardService()
     {
       @Override
       protected EntityManager getEntityManager()

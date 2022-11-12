@@ -21,7 +21,7 @@ import mmud.database.entities.characters.User;
 import mmud.database.entities.game.DisplayInterface;
 import mmud.exceptions.MudException;
 import mmud.services.CommunicationService;
-import mmud.services.PersonBean;
+import mmud.services.PersonService;
 
 /**
  * Shows the current date in the game: "date".
@@ -52,10 +52,10 @@ public class OocCommand extends NormalCommand
           CommunicationService.getCommunicationService(aUser).writeMessage("Sorry, you have your OOC channel turned off.<br/>\r\n");
         } else
         {
-          PersonBean personBean = getPersonBean();
+          PersonService personService = getPersonBean();
           final String message = command.substring(4);
             //  "#4c76a2"
-          personBean.sendWall("<span class=\"chat-cyanblue\">[OOC: <b>" + aUser.getName() + "</b>] " + message + "</span><br/>\r\n", User::getOoc);
+          personService.sendWall("<span class=\"chat-cyanblue\">[OOC: <b>" + aUser.getName() + "</b>] " + message + "</span><br/>\r\n", User::getOoc);
         }
         return aUser.getRoom();
     }

@@ -27,7 +27,7 @@ import mmud.database.entities.items.Item;
 import mmud.exceptions.MudException;
 import mmud.exceptions.ParseException;
 import mmud.services.CommunicationService;
-import mmud.services.ItemBean;
+import mmud.services.ItemService;
 import mmud.services.PersonCommunicationService;
 
 /**
@@ -123,17 +123,17 @@ public class PutCommand extends NormalCommand
             communicationService.writeMessage("You do not have that many items in your inventory.<br/>\r\n");
             return aUser.getRoom();
         }
-        boolean put = false;
-        ItemBean itemBean = getItemBean();
+      boolean put = false;
+      ItemService itemService = getItemBean();
         for (Item item : itemsFound)
         {
             if (aUser.unused(item) && !item.isBound() && !item.isContainer())
             {
                 // item is not used.
-                if (!itemBean.put(item, container, aUser))
-                {
-                    continue;
-                }
+              if (!itemService.put(item, container, aUser))
+              {
+                continue;
+              }
                 CommunicationService.getCommunicationService(aUser.getRoom()).sendMessage(aUser, "%SNAME put%VERB2 " + item.getDescription() + " in " + container.getDescription() + ".<br/>\r\n");
                 put = true;
                 amount--;

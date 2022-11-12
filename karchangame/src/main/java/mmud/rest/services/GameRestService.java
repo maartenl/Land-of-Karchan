@@ -71,11 +71,11 @@ import mmud.exceptions.MudWebException;
 import mmud.rest.webentities.PrivateDisplay;
 import mmud.rest.webentities.PrivateLog;
 import mmud.rest.webentities.PrivatePerson;
-import mmud.services.BoardBean;
+import mmud.services.BoardService;
 import mmud.services.CommunicationService;
 import mmud.services.IdleUsersService;
-import mmud.services.LogBean;
-import mmud.services.MailBean;
+import mmud.services.LogService;
+import mmud.services.MailService;
 import mmud.services.PersonCommunicationService;
 import static mmud.Constants.DATETIME_FORMAT;
 
@@ -102,19 +102,19 @@ public class GameRestService
 {
 
   @Inject
-  private BoardBean boardBean;
+  private BoardService boardService;
 
   @Inject
   private IdleUsersService idleUsersService;
 
   @Inject
-  private MailBean mailBean;
+  private MailService mailService;
 
   @Inject
   private CommandRunner commandRunner;
 
   @Inject
-  private LogBean logBean;
+  private LogService logService;
 
   @PersistenceContext(unitName = "karchangamePU")
   private EntityManager em;
@@ -423,7 +423,7 @@ public class GameRestService
 
       getEntityManager().persist(person);
       // TODO automatically add a welcome mail.
-      logBean.writeLog(person, "character created.");
+      logService.writeLog(person, "character created.");
     } catch (MudWebException e)
     {
       //ignore
@@ -578,9 +578,9 @@ public class GameRestService
     LOGGER.finer("entering getLogonMessage");
     User person = authenticateToEnterGame(name);
     // write logon message
-    Board newsBoard = boardBean.getNewsBoard();
+    Board newsBoard = boardService.getNewsBoard();
     StringBuilder buffer = new StringBuilder(newsBoard.getDescription());
-    List<BoardMessage> news = boardBean.getNews();
+    List<BoardMessage> news = boardService.getNews();
     for (BoardMessage newMessage : news)
     {
       buffer.append("<hr/>");
@@ -635,7 +635,7 @@ public class GameRestService
       String message = "You have entered the game. (" + LocalDateTime.now().format(DATETIME_FORMAT) + ")<br>";
       communicationService.writeMessage(message);
       // check mail
-      if (mailBean.hasNewMail(person))
+      if (mailService.hasNewMail(person))
       {
         communicationService.writeMessage("You have new Mudmail!<br>");
       } else
@@ -643,7 +643,7 @@ public class GameRestService
         communicationService.writeMessage("You have no new Mudmail...<br>");
       }
       // write log "entered game."
-      logBean.writeLog(person, "entered game.");
+      logService.writeLog(person, "entered game.");
     } catch (WebApplicationException e)
     {
       //ignore
@@ -790,7 +790,7 @@ public class GameRestService
   {
     LOGGER.log(Level.FINER, "{0}.gameMain", this.getClass().getName());
     command = command.replace("&#39;", "'");
-    logBean.writeCommandLog(person, command);
+    logService.writeCommandLog(person, command);
     if (CommandFactory.noUserCommands())
     {
       // get all user commands
@@ -928,7 +928,7 @@ public class GameRestService
       CommunicationService.getCommunicationService(person).writeMessage(person, message);
       person.deactivate();
       idleUsersService.removeUser(person.getName());
-      logBean.writeLog(person, "left the game.");
+      logService.writeLog(person, "left the game.");
     } catch (WebApplicationException e)
     {
       //ignore

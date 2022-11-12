@@ -23,7 +23,7 @@ import mmud.database.entities.characters.User;
 import mmud.database.entities.game.DisplayInterface;
 import mmud.exceptions.MudException;
 import mmud.services.CommunicationService;
-import mmud.services.LogBean;
+import mmud.services.LogService;
 import mmud.services.PersonCommunicationService;
 
 /**
@@ -50,7 +50,7 @@ public class ChangeMasterCommand extends GuildMasterCommand
     public DisplayInterface run(String command, User aUser) throws MudException
     {
         PersonCommunicationService communicationService = CommunicationService.getCommunicationService(aUser);
-        LogBean logBean = getLogBean();
+        LogService logService = getLogBean();
         String[] myParsed = parseCommand(command);
         // TODO : casting is nasty, there must be a better way!
         Person toChar2 = aUser.getRoom().retrievePerson(myParsed[1]);
@@ -68,9 +68,9 @@ public class ChangeMasterCommand extends GuildMasterCommand
             throw new MudException(
                     "error occurred, the person to promote to guildmaster is either not in a guild or not in the correct guild.");
         }
-        logBean.writeLog(aUser, " stepped down as guildmaster of "
-                + aUser.getGuild().getName() + " in favor of "
-                + toChar.getName());
+        logService.writeLog(aUser, " stepped down as guildmaster of "
+          + aUser.getGuild().getName() + " in favor of "
+          + toChar.getName());
         aUser.getGuild().setBoss(toChar);
         CommunicationService.getCommunicationService(aUser.getGuild()).sendMessage(toChar.getName()
                 + " is now the guildmaster.<BR>\r\n");

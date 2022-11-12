@@ -32,8 +32,8 @@ import mmud.database.entities.game.Guild;
 import mmud.database.entities.game.Guildrank;
 import mmud.database.entities.game.Room;
 import mmud.services.CommunicationService;
-import mmud.services.LogBean;
-import mmud.testing.tests.LogBeanStub;
+import mmud.services.LogService;
+import mmud.testing.tests.LogServiceStub;
 import mmud.testing.tests.MudTest;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
@@ -51,7 +51,7 @@ public class RemoveCommandTest extends MudTest
   private Room room1;
 
 
-  private LogBean logBean = new LogBeanStub();
+  private LogService logService = new LogServiceStub();
 
   private CommandRunner commandRunner = new CommandRunner();
   private Guild deputy;
@@ -70,7 +70,7 @@ public class RemoveCommandTest extends MudTest
     RemoveCommand removeCommand = new RemoveCommand("guildremove (\\w)+");
     removeCommand.setCallback(commandRunner);
     assertThat(removeCommand.getRegExpr()).isEqualTo("guildremove (\\w)+");
-    commandRunner.setBeans(null, logBean, null, null, null, null, null);
+    commandRunner.setBeans(null, logService, null, null, null, null, null);
     DisplayInterface display = removeCommand.run("guildremove hotblack", karn);
     assertThat(display).isNotNull();
     assertThat(display.getBody()).isEqualTo("You are in a small room.");
@@ -93,7 +93,7 @@ public class RemoveCommandTest extends MudTest
     RemoveCommand removeCommand = new RemoveCommand("guildremove (\\w)+");
     removeCommand.setCallback(commandRunner);
     assertThat(removeCommand.getRegExpr()).isEqualTo("guildremove (\\w)+");
-    commandRunner.setBeans(null, logBean, null, null, null, null, null);
+    commandRunner.setBeans(null, logService, null, null, null, null, null);
     DisplayInterface display = removeCommand.run("guildremove karcas", karn);
     assertThat(display).isNotNull();
     assertThat(display.getBody()).isEqualTo("You are in a small room.");
@@ -112,7 +112,7 @@ public class RemoveCommandTest extends MudTest
     RemoveCommand removeCommand = new RemoveCommand("guildremove (\\w)+");
     removeCommand.setCallback(commandRunner);
     assertThat(removeCommand.getRegExpr()).isEqualTo("guildremove (\\w)+");
-    commandRunner.setBeans(null, logBean, null, null, null, null, null);
+    commandRunner.setBeans(null, logService, null, null, null, null, null);
     DisplayInterface display = removeCommand.run("guildremove karn", karn);
     assertThat(display).isNotNull();
     assertThat(display.getBody()).isEqualTo("You are in a small room.");
@@ -131,7 +131,7 @@ public class RemoveCommandTest extends MudTest
     RemoveCommand removeCommand = new RemoveCommand("guildremove (\\w)+");
     removeCommand.setCallback(commandRunner);
     assertThat(removeCommand.getRegExpr()).isEqualTo("guildremove (\\w)+");
-    commandRunner.setBeans(null, logBean, null, null, null, null, null);
+    commandRunner.setBeans(null, logService, null, null, null, null, null);
     DisplayInterface display = removeCommand.run("guildremove marvin", karn);
     assertThat(display).isNotNull();
     assertThat(display.getBody()).isEqualTo("You are in a small room.");

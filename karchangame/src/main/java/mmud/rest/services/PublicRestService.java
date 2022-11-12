@@ -46,9 +46,9 @@ import mmud.rest.webentities.PublicFamily;
 import mmud.rest.webentities.PublicGuild;
 import mmud.rest.webentities.PublicPerson;
 import mmud.rest.webentities.admin.AdminAdmin;
-import mmud.services.BoardBean;
+import mmud.services.BoardService;
 import mmud.services.IdleUsersService;
-import mmud.services.PersonBean;
+import mmud.services.PersonService;
 
 /**
  * Contains all rest calls that are available to the world, without
@@ -62,10 +62,10 @@ public class PublicRestService
 {
 
   @Inject
-  private BoardBean boardBean;
+  private BoardService boardService;
 
   @Inject
-  private PersonBean personBean;
+  private PersonService personService;
 
   @Inject
   private IdleUsersService idleUsersService;
@@ -141,7 +141,7 @@ public class PublicRestService
     List<PublicPerson> res = new ArrayList<>();
     try
     {
-      List<User> list = personBean.getActivePlayers();
+      List<User> list = personService.getActivePlayers();
 
       for (User person : list)
       {
@@ -188,7 +188,7 @@ public class PublicRestService
     try
     {
       LOGGER.finer("news: getting news");
-      List<BoardMessage> list = boardBean.getNews();
+      List<BoardMessage> list = boardService.getNews();
       LOGGER.log(Level.FINER, "news: found {0} entries.", list.size());
       for (BoardMessage message : list)
       {
@@ -345,14 +345,14 @@ public class PublicRestService
   }
 
   @VisibleForTesting
-  public void setPersonBean(PersonBean personBean)
+  public void setPersonBean(PersonService personService)
   {
-    this.personBean = personBean;
+    this.personService = personService;
   }
 
   @VisibleForTesting
-  public void setBoardBean(BoardBean boardBean)
+  public void setBoardBean(BoardService boardService)
   {
-    this.boardBean = boardBean;
+    this.boardService = boardService;
   }
 }

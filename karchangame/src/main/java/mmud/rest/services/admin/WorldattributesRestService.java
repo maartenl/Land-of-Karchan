@@ -42,7 +42,7 @@ import mmud.database.entities.game.Admin;
 import mmud.database.entities.game.Worldattribute;
 import mmud.exceptions.MudWebException;
 import mmud.rest.webentities.admin.AdminWorldattribute;
-import mmud.services.LogBean;
+import mmud.services.LogService;
 
 /**
  * @author maartenl
@@ -60,7 +60,7 @@ public class WorldattributesRestService
   private EntityManager em;
 
   @Inject
-  private LogBean logBean;
+  private LogService logService;
 
   @POST
   @Consumes(
@@ -86,7 +86,7 @@ public class WorldattributesRestService
     entity.setOwner(admin);
     ValidationUtils.checkValidation(name, entity);
     getEntityManager().persist(entity);
-    logBean.writeDeputyLog(admin, "New worldattribute '" + adminWorldattribute.name + "' created.");
+    logService.writeDeputyLog(admin, "New worldattribute '" + adminWorldattribute.name + "' created.");
     return entity.getName();
   }
 
@@ -115,7 +115,7 @@ public class WorldattributesRestService
     attribute.setType(adminWorldattribute.type);
     attribute.setOwner(OwnerHelper.getNewOwner(adminWorldattribute.owner, admin, getEntityManager()));
     ValidationUtils.checkValidation(name, attribute);
-    logBean.writeDeputyLog(admin, "Worldattribute '" + id + "' updated.");
+    logService.writeDeputyLog(admin, "Worldattribute '" + id + "' updated.");
   }
 
   @DELETE
@@ -130,7 +130,7 @@ public class WorldattributesRestService
     }
     Admin admin = (new OwnerHelper(getEntityManager())).authorize(name, attribute);
     getEntityManager().remove(attribute);
-    logBean.writeDeputyLog(admin, "Worldattribute '" + id + "' deleted.");
+    logService.writeDeputyLog(admin, "Worldattribute '" + id + "' deleted.");
   }
 
   @GET

@@ -33,8 +33,8 @@ import mmud.database.entities.game.Guildrank;
 import mmud.database.entities.game.GuildrankPK;
 import mmud.database.entities.game.Room;
 import mmud.services.CommunicationService;
-import mmud.services.LogBean;
-import mmud.testing.tests.LogBeanStub;
+import mmud.services.LogService;
+import mmud.testing.tests.LogServiceStub;
 import mmud.testing.tests.MudTest;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
@@ -52,7 +52,7 @@ public class RankDeleteCommandTest extends MudTest
   private User marvin;
   private Room room1;
 
-  private LogBean logBean = new LogBeanStub();
+  private LogService logService = new LogServiceStub();
 
   private CommandRunner commandRunner = new CommandRunner();
   private Guild deputy;
@@ -73,7 +73,7 @@ public class RankDeleteCommandTest extends MudTest
     RankDeleteCommand rankCommand = new RankDeleteCommand("guilddelrank (\\d){1,3} (\\w)+");
     rankCommand.setCallback(commandRunner);
     assertThat(rankCommand.getRegExpr()).isEqualTo("guilddelrank (\\d){1,3} (\\w)+");
-commandRunner.setBeans(null, logBean, null, null, null, null, null);
+    commandRunner.setBeans(null, logService, null, null, null, null, null);
     DisplayInterface display = rankCommand.run("guilddelrank 100", karn);
     assertThat(display).isNotNull();
     assertThat(display.getBody()).isEqualTo("You are in a small room.");
@@ -95,7 +95,7 @@ commandRunner.setBeans(null, logBean, null, null, null, null, null);
     RankDeleteCommand rankCommand = new RankDeleteCommand("guilddelrank (\\d){1,3} (\\w)+");
     rankCommand.setCallback(commandRunner);
     assertThat(rankCommand.getRegExpr()).isEqualTo("guilddelrank (\\d){1,3} (\\w)+");
-commandRunner.setBeans(null, logBean, null, null, null, null, null);
+    commandRunner.setBeans(null, logService, null, null, null, null, null);
     DisplayInterface display = rankCommand.run("guilddelrank 50", karn);
     assertThat(display).isNotNull();
     assertThat(display.getBody()).isEqualTo("You are in a small room.");

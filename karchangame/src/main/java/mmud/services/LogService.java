@@ -33,31 +33,30 @@ import mmud.exceptions.ExceptionUtils;
 import mmud.exceptions.MudWebException;
 
 /**
- *
  * @author maartenl
  */
 
 
-public class LogBean
+public class LogService
 {
 
-    @PersistenceContext(unitName = "karchangamePU")
-    private EntityManager em;
+  @PersistenceContext(unitName = "karchangamePU")
+  private EntityManager em;
 
-    /**
-     * Returns the entity manager of JPA. This is defined in
-     * build/web/WEB-INF/classes/META-INF/persistence.xml.
-     *
-     * @return EntityManager
+  /**
+   * Returns the entity manager of JPA. This is defined in
+   * build/web/WEB-INF/classes/META-INF/persistence.xml.
+   *
+   * @return EntityManager
      */
     protected EntityManager getEntityManager()
     {
         return em;
     }
 
-    private static final Logger LOGGER = Logger.getLogger(LogBean.class.getName());
+    private static final Logger LOGGER = Logger.getLogger(LogService.class.getName());
 
-    /**
+  /**
      * <p>
      * Create and persist a new log entity.</p>
      * <p>

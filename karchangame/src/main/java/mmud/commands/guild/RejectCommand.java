@@ -23,9 +23,9 @@ import mmud.database.entities.characters.User;
 import mmud.database.entities.game.DisplayInterface;
 import mmud.exceptions.MudException;
 import mmud.services.CommunicationService;
-import mmud.services.LogBean;
-import mmud.services.PersonBean;
+import mmud.services.LogService;
 import mmud.services.PersonCommunicationService;
+import mmud.services.PersonService;
 
 /**
  * Makes you, as guildmaster, reject a person wanting to join your guild. There
@@ -53,10 +53,10 @@ public class RejectCommand extends GuildMasterCommand
     PersonCommunicationService communicationService = CommunicationService.getCommunicationService(aUser);
 
     // TODO : similar to acceptcommand, refactor?
-    PersonBean personBean = getPersonBean();
-    LogBean logBean = getLogBean();
+    PersonService personService = getPersonBean();
+    LogService logService = getLogBean();
     String[] myParsed = parseCommand(command);
-    User potentialGuildmember = personBean.getUser(myParsed[1]);
+    User potentialGuildmember = personService.getUser(myParsed[1]);
     if (potentialGuildmember == null)
     {
       communicationService.writeMessage("Cannot find that person.<BR>\r\n");
@@ -74,8 +74,8 @@ public class RejectCommand extends GuildMasterCommand
               "error occurred, a person is a member of a guild, yet has a guildwish parameter!");
     }
     potentialGuildmember.removeAttribute(Attributes.GUILDWISH);
-    logBean.writeLog(aUser, "denied " + potentialGuildmember.getName()
-            + " membership into guild " + aUser.getGuild().getName());
+    logService.writeLog(aUser, "denied " + potentialGuildmember.getName()
+      + " membership into guild " + aUser.getGuild().getName());
     communicationService.writeMessage("You have denied " + potentialGuildmember.getName()
             + " admittance to your guild.<BR>\r\n");
     if (potentialGuildmember.isActive())

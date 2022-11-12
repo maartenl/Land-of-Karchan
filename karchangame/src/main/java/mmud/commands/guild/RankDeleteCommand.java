@@ -22,7 +22,7 @@ import mmud.database.entities.game.DisplayInterface;
 import mmud.database.entities.game.Guildrank;
 import mmud.exceptions.MudException;
 import mmud.services.CommunicationService;
-import mmud.services.LogBean;
+import mmud.services.LogService;
 import mmud.services.PersonCommunicationService;
 
 /**
@@ -46,7 +46,7 @@ public class RankDeleteCommand extends GuildMasterCommand
   public DisplayInterface run(String command, User aUser) throws MudException
   {
     PersonCommunicationService communicationService = CommunicationService.getCommunicationService(aUser);
-    LogBean logBean = getLogBean();
+    LogService logService = getLogBean();
     String[] myParsed = parseCommand(command);
     String rankString = myParsed[1];
     int rankIndex = 0;
@@ -67,8 +67,8 @@ public class RankDeleteCommand extends GuildMasterCommand
     // TODO: verify that nobody is using the rank.
     aUser.getGuild().deleteGuildrank(rank);
     communicationService.writeMessage("Rank removed.<BR>\r\n");
-    logBean.writeLog(aUser, " rank removed " + rankIndex
-            + " from guild " + aUser.getGuild().getName());
+    logService.writeLog(aUser, " rank removed " + rankIndex
+      + " from guild " + aUser.getGuild().getName());
     return aUser.getRoom();
   }
 

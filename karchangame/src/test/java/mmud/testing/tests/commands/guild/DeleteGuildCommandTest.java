@@ -37,8 +37,8 @@ import mmud.database.entities.game.Room;
 import mmud.exceptions.MudWebException;
 import mmud.rest.services.GuildRestService;
 import mmud.services.CommunicationService;
-import mmud.services.LogBean;
-import mmud.testing.tests.LogBeanStub;
+import mmud.services.LogService;
+import mmud.testing.tests.LogServiceStub;
 import mmud.testing.tests.MudTest;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
@@ -79,7 +79,7 @@ public class DeleteGuildCommandTest extends MudTest
 
   };
 
-  private LogBean logBean = new LogBeanStub();
+  private LogService logService = new LogServiceStub();
 
   private CommandRunner commandRunner = new CommandRunner();
 
@@ -128,7 +128,7 @@ public class DeleteGuildCommandTest extends MudTest
     DeleteGuildCommand deleteguildCommand = new DeleteGuildCommand("deleteguild");
     deleteguildCommand.setCallback(commandRunner);
     assertThat(deleteguildCommand.getRegExpr()).isEqualTo("deleteguild");
-    commandRunner.setBeans(null, logBean, guildRestService, null, null, null, null);
+    commandRunner.setBeans(null, logService, guildRestService, null, null, null, null);
     DisplayInterface display = deleteguildCommand.run("deleteguild", karn);
     assertThat(display).isNotNull();
     assertThat(display.getBody()).isEqualTo("You are in a small room.");

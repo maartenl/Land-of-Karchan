@@ -41,7 +41,7 @@ import mmud.database.entities.game.Admin;
 import mmud.database.entities.game.Help;
 import mmud.exceptions.MudWebException;
 import mmud.rest.webentities.admin.AdminManpage;
-import mmud.services.LogBean;
+import mmud.services.LogService;
 
 /**
  * @author maartenl
@@ -59,7 +59,7 @@ public class ManpagesRestService // extends AbstractFacade<Area>
   private EntityManager em;
 
   @Inject
-  private LogBean logBean;
+  private LogService logService;
 
   @POST
   @Consumes(
@@ -92,7 +92,7 @@ public class ManpagesRestService // extends AbstractFacade<Area>
     help.setExample2b(adminManpage.example2b);
     help.setExample2c(adminManpage.example2c);
     ValidationUtils.checkValidation(name, help);
-    logBean.writeDeputyLog(admin, "New manpage '" + help.getCommand() + "' created.");
+    logService.writeDeputyLog(admin, "New manpage '" + help.getCommand() + "' created.");
     getEntityManager().persist(help);
     return help.getCommand();
   }
@@ -128,7 +128,7 @@ public class ManpagesRestService // extends AbstractFacade<Area>
     help.setExample2b(adminManpage.example2b);
     help.setExample2c(adminManpage.example2c);
     ValidationUtils.checkValidation(name, help);
-    logBean.writeDeputyLog(admin, "Manpage '" + help.getCommand() + "' updated.");
+    logService.writeDeputyLog(admin, "Manpage '" + help.getCommand() + "' updated.");
   }
 
   @DELETE
@@ -143,7 +143,7 @@ public class ManpagesRestService // extends AbstractFacade<Area>
     }
     Admin admin = getEntityManager().find(Admin.class, name);
     getEntityManager().remove(help);
-    logBean.writeDeputyLog(admin, "Manpage '" + help.getCommand() + "' deleted.");
+    logService.writeDeputyLog(admin, "Manpage '" + help.getCommand() + "' deleted.");
   }
 
   @GET

@@ -20,15 +20,14 @@ import jakarta.persistence.EntityManager;
 import mmud.database.entities.characters.Administrator;
 import mmud.database.entities.characters.User;
 import mmud.database.entities.game.Room;
-import mmud.services.LogBean;
+import mmud.services.LogService;
 import mmud.testing.TestingConstants;
 import org.testng.annotations.BeforeMethod;
 
 /**
- *
  * @author maartenl
  */
-public class LogBeanTest extends MudTest
+public class LogServiceTest extends MudTest
 {
 
     private Administrator karn;
@@ -37,7 +36,7 @@ public class LogBeanTest extends MudTest
 
     private EntityManager entityManager;
 
-    private final LogBean logBean = new LogBean()
+    private final LogService logService = new LogService()
     {
 
         @Override
@@ -47,7 +46,7 @@ public class LogBeanTest extends MudTest
         }
     };
 
-    public LogBeanTest()
+    public LogServiceTest()
     {
     }
 

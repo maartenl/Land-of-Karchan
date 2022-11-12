@@ -25,10 +25,9 @@ import jakarta.persistence.TypedQuery;
 import mmud.database.entities.web.Image;
 
 /**
- *
  * @author maartenl
  */
-public class ImageBean
+public class ImageService
 {
 
   @PersistenceContext

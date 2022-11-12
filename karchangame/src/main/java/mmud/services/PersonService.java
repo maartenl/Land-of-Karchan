@@ -33,11 +33,11 @@ import mmud.scripting.PersonsInterface;
 /**
  * @author maartenl
  */
-public class PersonBean implements PersonsInterface
+public class PersonService implements PersonsInterface
 {
 
   @Inject
-  LogBean logBean;
+  LogService logService;
 
   @PersistenceContext(unitName = "karchangamePU")
   private EntityManager em;
@@ -53,7 +53,7 @@ public class PersonBean implements PersonsInterface
     return em;
   }
 
-  private static final Logger LOGGER = Logger.getLogger(PersonBean.class.getName());
+  private static final Logger LOGGER = Logger.getLogger(PersonService.class.getName());
 
   /**
    * Retrieves a person from the pool of all persons. Bear in mind that

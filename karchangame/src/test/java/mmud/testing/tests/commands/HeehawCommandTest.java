@@ -30,9 +30,9 @@ import mmud.database.entities.characters.User;
 import mmud.database.entities.game.DisplayInterface;
 import mmud.database.entities.game.Room;
 import mmud.services.CommunicationService;
-import mmud.services.PersonBean;
+import mmud.services.PersonService;
 import mmud.testing.TestingConstants;
-import mmud.testing.tests.LogBeanStub;
+import mmud.testing.tests.LogServiceStub;
 import mmud.testing.tests.MudTest;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
@@ -47,11 +47,11 @@ public class HeehawCommandTest extends MudTest
   private Administrator karn;
   private User marvin;
 
-  private LogBeanStub logBean;
+  private LogServiceStub logBean;
 
   private CommandRunner commandRunner = new CommandRunner();
 
-  private PersonBean personBean;
+  private PersonService personService;
 
   public HeehawCommandTest()
   {
@@ -117,9 +117,9 @@ public class HeehawCommandTest extends MudTest
   @BeforeMethod
   public void setUpMethod() throws Exception
   {
-    logBean = new LogBeanStub();
+    logBean = new LogServiceStub();
 
-    personBean = new PersonBean()
+    personService = new PersonService()
     {
       @Override
       public User getActiveUser(String name)
@@ -135,7 +135,7 @@ public class HeehawCommandTest extends MudTest
         return null;
       }
     };
-    setField(PersonBean.class, "logBean", personBean, logBean);
+    setField(PersonService.class, "logBean", personService, logBean);
 
     karn = TestingConstants.getKarn();
     final Room room = TestingConstants.getRoom(TestingConstants.getArea());

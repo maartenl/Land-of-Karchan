@@ -20,53 +20,45 @@ import java.util.logging.Logger;
 
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
-import mmud.database.entities.game.Help;
+import mmud.database.entities.characters.Person;
+import mmud.rest.services.PrivateRestService;
 
 /**
- * Takes care of the help topics.
+ * TODO : add all mail here instead of in {@link PrivateRestService}. use Path:{name}/mail
  *
  * @author maartenl
  */
 
 
-public class HelpBean
+public class MailService
 {
 
-    @PersistenceContext(unitName = "karchangamePU")
-    private EntityManager em;
+  @PersistenceContext(unitName = "karchangamePU")
+  private EntityManager em;
 
-    /**
-     * Returns the entity manager of JPA. This is defined in
-     * build/web/WEB-INF/classes/META-INF/persistence.xml.
-     *
-     * @return EntityManager
+  /**
+   * Returns the entity manager of JPA. This is defined in
+   * build/web/WEB-INF/classes/META-INF/persistence.xml.
+   *
+   * @return EntityManager
      */
     protected EntityManager getEntityManager()
     {
         return em;
     }
-    private static final Logger LOGGER = Logger.getLogger(HelpBean.class.getName());
 
-    /**
-     * returns a help message on the current command, or general help
-     *
-     * @param name
-     * the command to enlist help for. If this is a null pointer,
-     * general help will be requested.
-     * @return Help entity.
-     */
-    public Help getHelp(String name)
+  private static final Logger LOGGER = Logger.getLogger(MailService.class.getName());
+
+    public boolean hasNewMail(Person person)
     {
-        if (name == null)
-        {
-            name = "general help";
-        }
-        Help help = getEntityManager().find(Help.class, name);
-        if (help == null)
-        {
-            help = getEntityManager().find(Help.class, "sorry");
+      var query = getEntityManager().createNamedQuery("Mail.hasnewmail");
+        query.setParameter("name", person);
 
+        Long count = (Long) query.getSingleResult();
+        if (count > 0)
+        {
+            return true;
         }
-        return help;
+        return false;
     }
 }

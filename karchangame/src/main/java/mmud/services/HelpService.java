@@ -20,44 +20,54 @@ import java.util.logging.Logger;
 
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
-import mmud.database.entities.characters.Person;
-import mmud.rest.services.PrivateRestService;
+import mmud.database.entities.game.Help;
 
 /**
- * TODO : add all mail here instead of in {@link PrivateRestService}. use Path:{name}/mail
+ * Takes care of the help topics.
  *
  * @author maartenl
  */
 
 
-public class MailBean
+public class HelpService
 {
 
-    @PersistenceContext(unitName = "karchangamePU")
-    private EntityManager em;
+  @PersistenceContext(unitName = "karchangamePU")
+  private EntityManager em;
 
-    /**
-     * Returns the entity manager of JPA. This is defined in
-     * build/web/WEB-INF/classes/META-INF/persistence.xml.
-     *
-     * @return EntityManager
+  /**
+   * Returns the entity manager of JPA. This is defined in
+   * build/web/WEB-INF/classes/META-INF/persistence.xml.
+   *
+   * @return EntityManager
      */
     protected EntityManager getEntityManager()
     {
         return em;
     }
-    private static final Logger LOGGER = Logger.getLogger(MailBean.class.getName());
 
-    public boolean hasNewMail(Person person)
+  private static final Logger LOGGER = Logger.getLogger(HelpService.class.getName());
+
+    /**
+     * returns a help message on the current command, or general help
+     *
+     * @param name
+     * the command to enlist help for. If this is a null pointer,
+     * general help will be requested.
+     * @return Help entity.
+     */
+    public Help getHelp(String name)
     {
-      var query = getEntityManager().createNamedQuery("Mail.hasnewmail");
-        query.setParameter("name", person);
-
-        Long count = (Long) query.getSingleResult();
-        if (count > 0)
+        if (name == null)
         {
-            return true;
+            name = "general help";
         }
-        return false;
+        Help help = getEntityManager().find(Help.class, name);
+        if (help == null)
+        {
+            help = getEntityManager().find(Help.class, "sorry");
+
+        }
+        return help;
     }
 }

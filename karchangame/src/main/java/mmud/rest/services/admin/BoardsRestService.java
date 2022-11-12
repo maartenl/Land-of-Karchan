@@ -46,7 +46,7 @@ import mmud.database.entities.game.Room;
 import mmud.exceptions.MudWebException;
 import mmud.rest.webentities.admin.AdminBoard;
 import mmud.rest.webentities.admin.AdminBoardMessage;
-import mmud.services.LogBean;
+import mmud.services.LogService;
 
 /**
  * @author maartenl
@@ -64,7 +64,7 @@ public class BoardsRestService
   private EntityManager em;
 
   @Inject
-  private LogBean logBean;
+  private LogService logService;
 
   @POST
   @Consumes(
@@ -97,7 +97,7 @@ public class BoardsRestService
     board.setCreation(LocalDateTime.now());
     board.setOwner(admin);
     ValidationUtils.checkValidation(name, board);
-    logBean.writeDeputyLog(admin, "New board '" + board.getName() + "' created.");
+    logService.writeDeputyLog(admin, "New board '" + board.getName() + "' created.");
     getEntityManager().persist(board);
     return board.getId();
   }
@@ -138,7 +138,7 @@ public class BoardsRestService
     }
     board.setOwner(OwnerHelper.getNewOwner(adminBoard.owner, admin, getEntityManager()));
     ValidationUtils.checkValidation(name, board);
-    logBean.writeDeputyLog(admin, "Board '" + board.getName() + "' updated.");
+    logService.writeDeputyLog(admin, "Board '" + board.getName() + "' updated.");
   }
 
   @DELETE
@@ -153,7 +153,7 @@ public class BoardsRestService
     }
     Admin admin = (new OwnerHelper(getEntityManager())).authorize(name, board);
     getEntityManager().remove(board);
-    logBean.writeDeputyLog(admin, "Board '" + board.getName() + "' deleted.");
+    logService.writeDeputyLog(admin, "Board '" + board.getName() + "' deleted.");
   }
 
   @GET
@@ -220,7 +220,7 @@ public class BoardsRestService
       throw new MudWebException(name, "Boardmessage " + messageid + " does not belong to board " + id + ".", Response.Status.NOT_FOUND);
     }
     boardmessage.setRemoved(adminBoardMessage.removed);
-    logBean.writeDeputyLog(admin, "Boardmessage '" + messageid + "' updated.");
+    logService.writeDeputyLog(admin, "Boardmessage '" + messageid + "' updated.");
   }
 
   @GET

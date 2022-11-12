@@ -26,8 +26,8 @@ import mmud.exceptions.MudException;
 import mmud.exceptions.PersonNotFoundException;
 import mmud.rest.services.EventsRestService;
 import mmud.services.CommunicationService;
-import mmud.services.PersonBean;
 import mmud.services.PersonCommunicationService;
+import mmud.services.PersonService;
 
 /**
  * Shows the current date in the game: "date".
@@ -61,9 +61,9 @@ public class AdminCommand extends NormalCommand
     }
     if (command.toLowerCase().startsWith("admin wall"))
     {
-      PersonBean personBean = getPersonBean();
+      PersonService personService = getPersonBean();
       final String message = command.substring(11);
-      personBean.sendWall(message);
+      personService.sendWall(message);
       getLogBean().writeLog(administrator, "admin command 'wall' executed.", message);
       communicationService.writeMessage("Wall message sent.<br/>\r\n");
     }
@@ -101,14 +101,14 @@ public class AdminCommand extends NormalCommand
     }
     if (command.toLowerCase().startsWith("admin frog"))
     {
-      PersonBean personBean = getPersonBean();
+      PersonService personService = getPersonBean();
       String[] commands = command.split(" ");
       if (commands.length < 3)
       {
         throw new MudException("Expected admin frog command in the shape of 'admin frog personname amount'.");
       }
       Integer amount = 0;
-      User person = personBean.getActiveUser(commands[2]);
+      User person = personService.getActiveUser(commands[2]);
       if (person == null)
       {
         throw new PersonNotFoundException(commands[2] + " not found.");
@@ -130,14 +130,14 @@ public class AdminCommand extends NormalCommand
     }
     if (command.toLowerCase().startsWith("admin jackass"))
     {
-      PersonBean personBean = getPersonBean();
+      PersonService personService = getPersonBean();
       String[] commands = command.split(" ");
       if (commands.length < 3)
       {
         throw new MudException("Expected admin jackass command in the shape of 'admin jackass personname amount'.");
       }
       int amount = 0;
-      User person = personBean.getActiveUser(commands[2]);
+      User person = personService.getActiveUser(commands[2]);
       if (person == null)
       {
         throw new PersonNotFoundException(commands[2] + " not found.");
@@ -159,14 +159,14 @@ public class AdminCommand extends NormalCommand
     }
     if (command.toLowerCase().startsWith("admin kick"))
     {
-      PersonBean personBean = getPersonBean();
+      PersonService personService = getPersonBean();
       String[] commands = command.split(" ");
       if (commands.length < 3)
       {
         throw new MudException("Expected admin kick command in the shape of 'admin kick personname minutes'.");
       }
       Integer minutes = 0;
-      User person = personBean.getActiveUser(commands[2]);
+      User person = personService.getActiveUser(commands[2]);
       if (person == null)
       {
         throw new PersonNotFoundException(commands[2] + " not found.");
@@ -187,7 +187,7 @@ public class AdminCommand extends NormalCommand
         }
       }
       person.deactivate();
-      personBean.sendWall(administrator.getName() + " causes " + person.getName() + " to cease to exist for " + minutes + " minutes.<br/>\n");
+      personService.sendWall(administrator.getName() + " causes " + person.getName() + " to cease to exist for " + minutes + " minutes.<br/>\n");
       getLogBean().writeLog(person, " has been kicked out of the game by " + aUser.getName() + " for " + minutes + " minutes.");
     }
     if (command.equalsIgnoreCase("admin help"))

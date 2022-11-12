@@ -41,7 +41,7 @@ import mmud.database.entities.game.Admin;
 import mmud.database.entities.items.ItemDefinition;
 import mmud.exceptions.MudWebException;
 import mmud.rest.webentities.admin.AdminItem;
-import mmud.services.LogBean;
+import mmud.services.LogService;
 
 /**
  * @author maartenl
@@ -60,7 +60,7 @@ public class ItemsRestService
   private EntityManager em;
 
   @Inject
-  private LogBean logBean;
+  private LogService logService;
 
   @POST
   @Consumes(
@@ -116,7 +116,7 @@ public class ItemsRestService
     item.setOwner(admin);
     ValidationUtils.checkValidation(name, item);
     getEntityManager().persist(item);
-    logBean.writeDeputyLog(admin, "New item definition '" + item.getId() + "' created.");
+    logService.writeDeputyLog(admin, "New item definition '" + item.getId() + "' created.");
   }
 
   @PUT
@@ -194,7 +194,7 @@ public class ItemsRestService
     }
     item.setOwner(OwnerHelper.getNewOwner(adminItem.owner, admin, getEntityManager()));
     ValidationUtils.checkValidation(name, item);
-    logBean.writeDeputyLog(admin, "Item definition '" + item.getId() + "' updated.");
+    logService.writeDeputyLog(admin, "Item definition '" + item.getId() + "' updated.");
   }
 
   @DELETE
@@ -210,7 +210,7 @@ public class ItemsRestService
     }
     Admin admin = (new OwnerHelper(getEntityManager())).authorize(name, item);
     getEntityManager().remove(item);
-    logBean.writeDeputyLog(admin, "Item definition '" + item.getId() + "' deleted.");
+    logService.writeDeputyLog(admin, "Item definition '" + item.getId() + "' deleted.");
   }
 
   @GET

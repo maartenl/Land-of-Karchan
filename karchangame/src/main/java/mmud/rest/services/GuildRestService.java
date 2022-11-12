@@ -58,7 +58,7 @@ import mmud.exceptions.MudWebException;
 import mmud.rest.webentities.PrivateGuild;
 import mmud.rest.webentities.PrivatePerson;
 import mmud.rest.webentities.PrivateRank;
-import mmud.services.PersonBean;
+import mmud.services.PersonService;
 
 /**
  * Takes care of the guilds. All the REST services in this bean, can be
@@ -86,7 +86,7 @@ public class GuildRestService
   private PrivateRestService privateRestService;
 
   @Inject
-  private PersonBean personBean;
+  private PersonService personService;
 
   /**
    * Returns the entity manager of JPA. This is defined in
@@ -190,7 +190,7 @@ public class GuildRestService
     Guild guild = person.getGuild();
     if (cinfo.bossname == null || !cinfo.bossname.equals(person.getName()))
     {
-      User newGuildMaster = personBean.getUser(cinfo.bossname);
+      User newGuildMaster = personService.getUser(cinfo.bossname);
       if (newGuildMaster == null)
       {
         throw new MudWebException(name, "New boss " + cinfo.bossname + " not found.", Response.Status.NOT_FOUND);
@@ -419,7 +419,7 @@ public class GuildRestService
     User person = authenticateGuildMaster(name);
     Guild guild = person.getGuild();
     String membername = member.name;
-    User possibleMember = personBean.getUser(membername);
+    User possibleMember = personService.getUser(membername);
     if (possibleMember == null)
     {
       throw new MudWebException(name, membername + " is not a user.", Response.Status.NOT_FOUND);
@@ -543,7 +543,7 @@ public class GuildRestService
     LOGGER.finer("entering getGuildHopefuls");
     User person = authenticateGuildMaster(name);
     Guild guild = person.getGuild();
-    User possibleMember = personBean.getUser(hopefulname);
+    User possibleMember = personService.getUser(hopefulname);
     if (possibleMember == null)
     {
       throw new MudWebException(name, hopefulname + " is not a user.", Response.Status.NOT_FOUND);

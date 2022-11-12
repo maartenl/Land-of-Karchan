@@ -22,9 +22,9 @@ import mmud.database.entities.characters.User;
 import mmud.database.entities.game.DisplayInterface;
 import mmud.exceptions.MudException;
 import mmud.services.CommunicationService;
-import mmud.services.LogBean;
-import mmud.services.PersonBean;
+import mmud.services.LogService;
 import mmud.services.PersonCommunicationService;
+import mmud.services.PersonService;
 
 /**
  * Makes you, as guildmaster, accept a new member to the guild. There are some
@@ -51,10 +51,10 @@ public class AcceptCommand extends GuildMasterCommand
   {
     // TODO : similar to rejectcommand, refactor?
     PersonCommunicationService communicationService = CommunicationService.getCommunicationService(aUser);
-    PersonBean personBean = getPersonBean();
-    LogBean logBean = getLogBean();
+    PersonService personService = getPersonBean();
+    LogService logService = getLogBean();
     String[] myParsed = parseCommand(command);
-    User potentialGuildmember = personBean.getUser(myParsed[1]);
+    User potentialGuildmember = personService.getUser(myParsed[1]);
     if (potentialGuildmember == null)
     {
       communicationService.writeMessage("Cannot find that person.<BR>\r\n");
@@ -75,8 +75,8 @@ public class AcceptCommand extends GuildMasterCommand
     potentialGuildmember.setGuild(aUser.getGuild());
     // TODO : does this need work?
     // aUser.getGuild().increaseAmountOfMembers();
-    logBean.writeLog(aUser, " accepted " + potentialGuildmember.getName()
-            + " into guild " + aUser.getGuild().getName());
+    logService.writeLog(aUser, " accepted " + potentialGuildmember.getName()
+      + " into guild " + aUser.getGuild().getName());
     communicationService.writeMessage(potentialGuildmember.getName()
             + " has joined your guild.<BR>\r\n");
     if (potentialGuildmember.isActive())

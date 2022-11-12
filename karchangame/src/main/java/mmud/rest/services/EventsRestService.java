@@ -53,9 +53,9 @@ import mmud.scripting.WorldInterface;
 import mmud.services.AttributeService;
 import mmud.services.CommunicationService;
 import mmud.services.IdleUsersService;
-import mmud.services.ItemBean;
-import mmud.services.LogBean;
-import mmud.services.PersonBean;
+import mmud.services.ItemService;
+import mmud.services.LogService;
+import mmud.services.PersonService;
 
 /**
  * Takes care of all the events.
@@ -74,9 +74,9 @@ public class EventsRestService
   public static final String LOCALHOST = "localhost";
   public static final String ONLY_LOCALHOST_MAY_ACCESS_THIS = "Only localhost may access this.";
   @Inject
-  private PersonBean personBean;
+  private PersonService personService;
   @Inject
-  private ItemBean itemBean;
+  private ItemService itemService;
   @Inject
   private RoomsRestService roomBean;
   @Inject
@@ -86,7 +86,7 @@ public class EventsRestService
   private IdleUsersService idleUsersService;
 
   @Inject
-  private LogBean logBean;
+  private LogService logService;
   @PersistenceContext(unitName = "karchangamePU")
   private EntityManager em;
 
@@ -138,7 +138,7 @@ public class EventsRestService
     {
       throw new MudWebException(null, "Event was not found.", Response.Status.NOT_FOUND);
     }
-    Persons persons = new Persons(personBean);
+    Persons persons = new Persons(personService);
     Rooms rooms = new Rooms(new RoomsInterface()
     {
       @Override
@@ -152,7 +152,7 @@ public class EventsRestService
       @Override
       public Item createItem(long itemdefnr)
       {
-        return itemBean.createItem(itemdefnr);
+        return itemService.createItem(itemdefnr);
       }
     });
     World world = new World(new WorldInterface()
@@ -183,7 +183,7 @@ public class EventsRestService
       // TODO: that's for debugging,...
       // event.setCallable(Boolean.FALSE);
       // log it but keep going with the next event.
-      logBean.writeLogException(ex);
+      logService.writeLogException(ex);
       LOGGER.throwing(EventsRestService.class.getName(), "events()", ex);
       throw new MudWebException(aUser == null ? null : aUser.getName(), ex.getMessage(), ex, Response.Status.BAD_REQUEST);
     }
@@ -220,7 +220,7 @@ public class EventsRestService
     query.setParameter("hour", calendar.get(Calendar.HOUR_OF_DAY));
     query.setParameter("minute", calendar.get(Calendar.MINUTE));
     List<Event> list = query.getResultList();
-    Persons persons = new Persons(personBean);
+    Persons persons = new Persons(personService);
     Rooms rooms = new Rooms(new RoomsInterface()
     {
       @Override
@@ -234,7 +234,7 @@ public class EventsRestService
       @Override
       public Item createItem(long itemdefnr)
       {
-        return itemBean.createItem(itemdefnr);
+        return itemService.createItem(itemdefnr);
       }
     });
     World world = new World(new WorldInterface()
@@ -249,7 +249,7 @@ public class EventsRestService
     for (Event event : list)
     {
       // LOGGER.log(Level.INFO, "Event {0} executed.", event.getEventid());
-      logBean.writeLog("Event " + event.getEventid() + " executed.");
+      logService.writeLog("Event " + event.getEventid() + " executed.");
       Method method = event.getMethod();
       if (event.getRoom() != null)
       {
@@ -262,7 +262,7 @@ public class EventsRestService
           // TODO: that's for debugging,...
           // event.setCallable(Boolean.FALSE);
           // log it but keep going with the next event.
-          logBean.writeLogException(ex);
+          logService.writeLogException(ex);
           LOGGER.throwing(EventsRestService.class.getName(), String.format("events(room=%d, method=%s)", event.getRoom().getId(), method.getName()), ex);
         }
       } else if (event.getPerson() != null)
@@ -276,7 +276,7 @@ public class EventsRestService
           // TODO: that's for debugging,...
           // event.setCallable(Boolean.FALSE);
           // log it but keep going with the next event.
-          logBean.writeLogException(ex);
+          logService.writeLogException(ex);
           LOGGER.throwing(EventsRestService.class.getName(), String.format("events(person=%s, method=%s)", event.getPerson().getName(), method.getName()), ex);
         }
       } else
@@ -290,7 +290,7 @@ public class EventsRestService
           // TODO: that's for debugging,...
           // event.setCallable(Boolean.FALSE);
           // log it but keep going with the next event.
-          logBean.writeLogException(ex);
+          logService.writeLogException(ex);
           LOGGER.throwing(EventsRestService.class.getName(), String.format("events(method=%s)", method.getName()), ex);
         }
       }
@@ -324,7 +324,7 @@ public class EventsRestService
       {
         final String message = "executeIdleCleanup(): " + user.getName() + " was idle for " + idleUsersService.getIdleTime(user.getName()) + " minutes. Deactivated.";
         LOGGER.info(message);
-        logBean.writeLog(message);
+        logService.writeLog(message);
         CommunicationService.getCommunicationService(user.getRoom()).sendMessageExcl(user, "%SNAME fade%VERB2 slowly from existence.<br/>\r\n");
         user.deactivate();
       }

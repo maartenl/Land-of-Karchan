@@ -42,7 +42,7 @@ import mmud.database.entities.game.Admin;
 import mmud.database.entities.web.Blog;
 import mmud.exceptions.MudWebException;
 import mmud.rest.webentities.admin.AdminBlog;
-import mmud.services.LogBean;
+import mmud.services.LogService;
 
 /**
  * The REST service for dealing with Blogs.
@@ -62,7 +62,7 @@ public class BlogsRestService
   private EntityManager em;
 
   @Inject
-  private LogBean logBean;
+  private LogService logService;
 
   private Admin getAdmin(String name)
   {
@@ -98,7 +98,7 @@ public class BlogsRestService
     ValidationUtils.checkValidation(name, entity);
     getEntityManager().persist(entity);
     getEntityManager().flush();
-    logBean.writeDeputyLog(getAdmin(name), "Blog " + entity.getUrlTitle() + " created.");
+    logService.writeDeputyLog(getAdmin(name), "Blog " + entity.getUrlTitle() + " created.");
     return new AdminBlog(entity);
   }
 
@@ -125,7 +125,7 @@ public class BlogsRestService
     entity.setTitle(blog.title);
     entity.setUrlTitle(blog.urlTitle);
     ValidationUtils.checkValidation(name, entity);
-    logBean.writeDeputyLog(getAdmin(name), "Blog " + entity.getUrlTitle() + " edited.");
+    logService.writeDeputyLog(getAdmin(name), "Blog " + entity.getUrlTitle() + " edited.");
   }
 
   @DELETE
@@ -139,7 +139,7 @@ public class BlogsRestService
       throw new MudWebException(name, "Blog " + id + " not found.", Response.Status.NOT_FOUND);
     }
     Admin admin = (new OwnerHelper(getEntityManager())).authorize(name, blog);
-    logBean.writeDeputyLog(getAdmin(name), "Blog " + blog.getUrlTitle() + " removed.");
+    logService.writeDeputyLog(getAdmin(name), "Blog " + blog.getUrlTitle() + " removed.");
     em.remove(blog);
   }
 

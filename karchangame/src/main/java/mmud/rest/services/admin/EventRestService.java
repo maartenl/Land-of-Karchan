@@ -44,7 +44,7 @@ import mmud.database.entities.game.Method;
 import mmud.database.entities.game.Room;
 import mmud.exceptions.MudWebException;
 import mmud.rest.webentities.admin.AdminEvent;
-import mmud.services.LogBean;
+import mmud.services.LogService;
 import static mmud.rest.services.admin.ValidationUtils.checkValidation;
 
 /**
@@ -63,7 +63,7 @@ public class EventRestService // extends AbstractFacade<Event>
   private EntityManager em;
 
   @Inject
-  private LogBean logBean;
+  private LogService logService;
 
   @POST
   @Consumes(
@@ -79,7 +79,7 @@ public class EventRestService // extends AbstractFacade<Event>
     Event newEvent = createEvent(entity, name);
     newEvent.setEventid(entity.eventid);
     create(newEvent, sc);
-    logBean.writeDeputyLog(admin, "New event '" + entity.eventid + "' created.");
+    logService.writeDeputyLog(admin, "New event '" + entity.eventid + "' created.");
   }
 
   private Event createEvent(AdminEvent entity, final String name) throws MudWebException
@@ -171,7 +171,7 @@ public class EventRestService // extends AbstractFacade<Event>
     event.setRoom(newEvent.getRoom());
     event.setOwner(OwnerHelper.getNewOwner(entity.owner, admin, getEntityManager()));
     checkValidation(name, event);
-    logBean.writeDeputyLog(admin, "Event '" + event.getEventid() + "' updated.");
+    logService.writeDeputyLog(admin, "Event '" + event.getEventid() + "' updated.");
   }
 
   @DELETE
@@ -182,7 +182,7 @@ public class EventRestService // extends AbstractFacade<Event>
     Event event = getEntityManager().find(Event.class, id);
     Admin admin = (new OwnerHelper(getEntityManager())).authorize(name, event);
     getEntityManager().remove(event);
-    logBean.writeDeputyLog(admin, "Event '" + event.getEventid() + "' deleted.");
+    logService.writeDeputyLog(admin, "Event '" + event.getEventid() + "' deleted.");
   }
 
   @GET

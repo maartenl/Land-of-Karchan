@@ -24,7 +24,7 @@ import mmud.database.entities.game.Area;
 import mmud.database.entities.game.Display;
 import mmud.database.entities.game.DisplayInterface;
 import mmud.exceptions.MudException;
-import mmud.services.PersonBean;
+import mmud.services.PersonService;
 
 /**
  * Provide a list of who is currently logged onto the game: "who".
@@ -42,15 +42,15 @@ public class WhoCommand extends NormalCommand
     @Override
     public DisplayInterface run(String command, User aUser) throws MudException
     {
-        PersonBean personBean = getPersonBean();
-        List<User> persons = new ArrayList<>();
-        for (User user : personBean.getActivePlayers())
+      PersonService personService = getPersonBean();
+      List<User> persons = new ArrayList<>();
+      for (User user : personService.getActivePlayers())
+      {
+        if (user.getVisible())
         {
-            if (user.getVisible())
-            {
-                persons.add(user);
-            }
+          persons.add(user);
         }
+      }
         StringBuilder whoList = new StringBuilder();
         if (persons.isEmpty())
         {

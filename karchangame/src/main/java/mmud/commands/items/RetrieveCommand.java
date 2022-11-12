@@ -27,7 +27,7 @@ import mmud.database.entities.items.Item;
 import mmud.exceptions.MudException;
 import mmud.exceptions.ParseException;
 import mmud.services.CommunicationService;
-import mmud.services.ItemBean;
+import mmud.services.ItemService;
 import mmud.services.PersonCommunicationService;
 
 /**
@@ -123,17 +123,17 @@ public class RetrieveCommand extends NormalCommand
             communicationService.writeMessage("It doesn't contain enough requested items.<br/>\r\n");
             return aUser.getRoom();
         }
-        boolean retrieve = false;
-        ItemBean itemBean = getItemBean();
+      boolean retrieve = false;
+      ItemService itemService = getItemBean();
         for (Item item : itemsFound)
         {
             if (item.isGetable())
             {
                 // let's get 'em!
-                if (!itemBean.retrieve(item, container, aUser))
-                {
-                    continue;
-                }
+              if (!itemService.retrieve(item, container, aUser))
+              {
+                continue;
+              }
                 CommunicationService.getCommunicationService(aUser.getRoom()).sendMessage(aUser, "%SNAME retrieve%VERB2 " + item.getDescription() + " from" + container.getDescription() + ".<br/>\r\n");
                 retrieve = true;
                 amount--;

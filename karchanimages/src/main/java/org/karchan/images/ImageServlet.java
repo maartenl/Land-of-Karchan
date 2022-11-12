@@ -42,7 +42,7 @@ public class ImageServlet extends HttpServlet
   private final static Logger LOGGER = Logger.getLogger(ImageServlet.class.getName());
 
   @Inject
-  private ImageBean imageBean;
+  private ImageService imageService;
 
   @Override
   protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException
@@ -70,7 +70,7 @@ public class ImageServlet extends HttpServlet
       return;
     }
 
-    Optional<Image> optionalImage = imageBean.getImage(imageData.getImageUrl(), imageData.getPlayerName());
+    Optional<Image> optionalImage = imageService.getImage(imageData.getImageUrl(), imageData.getPlayerName());
 
     if (!optionalImage.isPresent()) {
       LOGGER.log(Level.SEVERE, "Image {0} of {1} not found.", new Object[]

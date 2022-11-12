@@ -24,7 +24,7 @@ import mmud.database.entities.game.DisplayInterface;
 import mmud.database.entities.game.Guild;
 import mmud.exceptions.MudException;
 import mmud.services.CommunicationService;
-import mmud.services.LogBean;
+import mmud.services.LogService;
 
 /**
  * Creates a guild. Command syntax something like : <TT>createguild &lt;name&gt;
@@ -51,7 +51,7 @@ public class CreateGuildCommand extends NormalCommand
       CommunicationService.getCommunicationService(aUser).writeMessage("You are a member of a guild, and can therefore not start a new guild.<br/>\n");
       return aUser.getRoom();
     }
-    LogBean logBean = getLogBean();
+    LogService logService = getLogBean();
     String[] myParsed = parseCommand(command, 3);
     Guild guild = new Guild();
     guild.setBoss(aUser);
@@ -61,7 +61,7 @@ public class CreateGuildCommand extends NormalCommand
     guild.setTitle(myParsed[2]);
     aUser.setGuild(guild);
     CommunicationService.getCommunicationService(aUser).writeMessage("Guild " + myParsed[1] + " created.<br/ >\r\n");
-    logBean.writeLog(aUser, " guild " + myParsed[1] + " created/updated");
+    logService.writeLog(aUser, " guild " + myParsed[1] + " created/updated");
     return aUser.getRoom();
   }
 

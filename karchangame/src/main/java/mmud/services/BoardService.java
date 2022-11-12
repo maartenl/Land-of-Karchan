@@ -33,10 +33,10 @@ import mmud.database.entities.game.BoardMessage;
  *
  * @author maartenl
  */
-public class BoardBean
+public class BoardService
 {
 
-  private static final Logger LOGGER = Logger.getLogger(BoardBean.class.getName());
+  private static final Logger LOGGER = Logger.getLogger(BoardService.class.getName());
 
   @PersistenceContext(unitName = "karchangamePU")
   private EntityManager em;

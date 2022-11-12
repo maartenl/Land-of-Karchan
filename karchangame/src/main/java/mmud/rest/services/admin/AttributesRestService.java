@@ -46,7 +46,7 @@ import mmud.database.entities.game.Charattribute;
 import mmud.exceptions.MudWebException;
 import mmud.rest.webentities.admin.AdminAttribute;
 import mmud.rest.webentities.admin.AdminMudType;
-import mmud.services.LogBean;
+import mmud.services.LogService;
 
 /**
  * @author maartenl
@@ -64,7 +64,7 @@ public class AttributesRestService
   private EntityManager em;
 
   @Inject
-  private LogBean logBean;
+  private LogService logService;
 
   @PUT
   @Path("byType/{type}/{objectid}")
@@ -107,10 +107,10 @@ public class AttributesRestService
         ValidationUtils.checkValidation(name, attribute);
         if (attribute.getAttributeId() == null)
         {
-          logBean.writeDeputyLog(admin, "Charattribute '" + attribute.getName() + "' created for person " + objectid + ".");
+          logService.writeDeputyLog(admin, "Charattribute '" + attribute.getName() + "' created for person " + objectid + ".");
         } else
         {
-          logBean.writeDeputyLog(admin, "Charattribute '" + attribute.getName() + "' updated for person " + objectid + ".");
+          logService.writeDeputyLog(admin, "Charattribute '" + attribute.getName() + "' updated for person " + objectid + ".");
         }
         break;
       default:
@@ -149,7 +149,7 @@ public class AttributesRestService
           throw new MudWebException(name, "Charattribute " + id + "' not found.", Response.Status.NOT_FOUND);
         }
         getEntityManager().remove(attribute);
-        logBean.writeDeputyLog(admin, "Charattribute '" + attribute.getName() + "' deleted for person " + attribute.getPerson().getName() + ".");
+        logService.writeDeputyLog(admin, "Charattribute '" + attribute.getName() + "' deleted for person " + attribute.getPerson().getName() + ".");
         break;
       default:
         throw new MudWebException(name, "Type of attribute not supported.", Response.Status.BAD_REQUEST);
@@ -168,7 +168,7 @@ public class AttributesRestService
     Admin admin = getEntityManager().find(Admin.class, adminName);
     int results =
       getEntityManager().createNamedQuery("Charattribute.deleteByName", Charattribute.class).setParameter("name", adminName).executeUpdate();
-    logBean.writeDeputyLog(admin, results + " charattributes with name '" + adminName + "' deleted for persons.");
+    logService.writeDeputyLog(admin, results + " charattributes with name '" + adminName + "' deleted for persons.");
   }
 
   @GET

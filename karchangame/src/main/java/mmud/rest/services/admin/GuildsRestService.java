@@ -43,7 +43,7 @@ import mmud.database.entities.game.Admin;
 import mmud.database.entities.game.Guild;
 import mmud.exceptions.MudWebException;
 import mmud.rest.webentities.admin.AdminGuild;
-import mmud.services.LogBean;
+import mmud.services.LogService;
 
 /**
  * @author maartenl
@@ -61,7 +61,7 @@ public class GuildsRestService
   private EntityManager em;
 
   @Inject
-  private LogBean logBean;
+  private LogService logService;
 
   @POST
   @Consumes(
@@ -100,7 +100,7 @@ public class GuildsRestService
     guild.setCreation(LocalDateTime.now());
     guild.setOwner(admin);
     ValidationUtils.checkValidation(name, guild);
-    logBean.writeDeputyLog(admin, "New guild '" + guild.getName() + "' created.");
+    logService.writeDeputyLog(admin, "New guild '" + guild.getName() + "' created.");
     getEntityManager().persist(guild);
     return guild.getName();
   }
@@ -143,7 +143,7 @@ public class GuildsRestService
     guild.setImage(adminGuild.imageurl);
     guild.setOwner(OwnerHelper.getNewOwner(adminGuild.owner, admin, getEntityManager()));
     ValidationUtils.checkValidation(name, guild);
-    logBean.writeDeputyLog(admin, "Guild '" + guild.getName() + "' updated.");
+    logService.writeDeputyLog(admin, "Guild '" + guild.getName() + "' updated.");
   }
 
   @DELETE
@@ -158,7 +158,7 @@ public class GuildsRestService
     }
     Admin admin = (new OwnerHelper(getEntityManager())).authorize(name, guild);
     getEntityManager().remove(guild);
-    logBean.writeDeputyLog(admin, "Guild '" + guild.getName() + "' deleted.");
+    logService.writeDeputyLog(admin, "Guild '" + guild.getName() + "' deleted.");
   }
 
   @GET

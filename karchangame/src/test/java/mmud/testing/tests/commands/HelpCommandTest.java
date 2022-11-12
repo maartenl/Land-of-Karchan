@@ -30,9 +30,9 @@ import mmud.database.entities.game.DisplayInterface;
 import mmud.database.entities.game.Help;
 import mmud.database.entities.game.Room;
 import mmud.services.CommunicationService;
-import mmud.services.HelpBean;
+import mmud.services.HelpService;
 import mmud.testing.TestingConstants;
-import mmud.testing.tests.LogBeanStub;
+import mmud.testing.tests.LogServiceStub;
 import mmud.testing.tests.MudTest;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
@@ -47,11 +47,11 @@ public class HelpCommandTest extends MudTest
   private Administrator karn;
   private User marvin;
 
-  private LogBeanStub logBean;
+  private LogServiceStub logBean;
 
   private CommandRunner commandRunner = new CommandRunner();
 
-  private HelpBean helpBean = new HelpBean();
+  private HelpService helpService = new HelpService();
 
   public HelpCommandTest()
   {
@@ -66,7 +66,7 @@ public class HelpCommandTest extends MudTest
     HelpCommand helpCommand = new HelpCommand("help( (\\w)+)?");
     helpCommand.setCallback(commandRunner);
     assertThat(helpCommand.getRegExpr()).isEqualTo("help( (\\w)+)?");
-    commandRunner.setBeans(null, logBean, null, null, null, null, helpBean);
+    commandRunner.setBeans(null, logBean, null, null, null, null, helpService);
     DisplayInterface display = helpCommand.run("help drop", marvin);
     assertThat(display).isNotNull();
     assertThat(display.getImage()).isNull();
@@ -85,7 +85,7 @@ public class HelpCommandTest extends MudTest
     HelpCommand helpCommand = new HelpCommand("help( (\\w)+)?");
     helpCommand.setCallback(commandRunner);
     assertThat(helpCommand.getRegExpr()).isEqualTo("help( (\\w)+)?");
-    commandRunner.setBeans(null, logBean, null, null, null, null, helpBean);
+    commandRunner.setBeans(null, logBean, null, null, null, null, helpService);
     DisplayInterface display = helpCommand.run("help awesomeness", marvin);
     assertThat(display).isNotNull();
     assertThat(display.getImage()).isNull();
@@ -104,7 +104,7 @@ public class HelpCommandTest extends MudTest
     HelpCommand helpCommand = new HelpCommand("help( (\\w)+)?");
     helpCommand.setCallback(commandRunner);
     assertThat(helpCommand.getRegExpr()).isEqualTo("help( (\\w)+)?");
-    commandRunner.setBeans(null, logBean, null, null, null, null, helpBean);
+    commandRunner.setBeans(null, logBean, null, null, null, null, helpService);
     DisplayInterface display = helpCommand.run("help", marvin);
     assertThat(display).isNotNull();
     assertThat(display.getImage()).isNull();
@@ -117,9 +117,9 @@ public class HelpCommandTest extends MudTest
   @BeforeMethod
   public void setUpMethod() throws Exception
   {
-    logBean = new LogBeanStub();
+    logBean = new LogServiceStub();
 
-    helpBean = new HelpBean()
+    helpService = new HelpService()
     {
 
       private final Help generalHelp;

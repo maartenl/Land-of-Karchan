@@ -25,10 +25,10 @@ import mmud.exceptions.MudException;
 import mmud.rest.services.EventsRestService;
 import mmud.rest.services.GuildRestService;
 import mmud.rest.services.admin.AdminRestService;
-import mmud.services.HelpBean;
-import mmud.services.ItemBean;
-import mmud.services.LogBean;
-import mmud.services.PersonBean;
+import mmud.services.HelpService;
+import mmud.services.ItemService;
+import mmud.services.LogService;
+import mmud.services.PersonService;
 
 /**
  * An abstract class for the most normal commands.
@@ -150,10 +150,10 @@ public abstract class NormalCommand implements Command
         this.callback = callback;
     }
 
-    protected PersonBean getPersonBean()
-    {
-        return callback.getPersonBean();
-    }
+  protected PersonService getPersonBean()
+  {
+    return callback.getPersonBean();
+  }
 
   protected EventsRestService getEventsBean()
   {
@@ -165,24 +165,24 @@ public abstract class NormalCommand implements Command
     return callback.getAdminBean();
   }
 
-    protected HelpBean getHelpBean()
-    {
-        return callback.getHelpBean();
-    }
+  protected HelpService getHelpBean()
+  {
+    return callback.getHelpBean();
+  }
 
-    protected LogBean getLogBean()
-    {
-        return callback.getLogBean();
-    }
+  protected LogService getLogBean()
+  {
+    return callback.getLogBean();
+  }
 
   protected GuildRestService getGuildBean()
   {
     return callback.getGuildBean();
   }
 
-    protected ItemBean getItemBean()
-    {
-        return callback.getItemBean();
-    }
+  protected ItemService getItemBean()
+  {
+    return callback.getItemBean();
+  }
 
 }

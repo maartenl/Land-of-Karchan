@@ -23,7 +23,7 @@ import mmud.database.entities.characters.User;
 import mmud.database.entities.game.DisplayInterface;
 import mmud.exceptions.MudException;
 import mmud.services.CommunicationService;
-import mmud.services.LogBean;
+import mmud.services.LogService;
 import mmud.services.PersonCommunicationService;
 
 /**
@@ -47,7 +47,7 @@ public class RemoveCommand extends GuildMasterCommand
   {
 
     PersonCommunicationService communicationService = CommunicationService.getCommunicationService(aUser);
-    LogBean logBean = getLogBean();
+    LogService logService = getLogBean();
     String[] myParsed = parseCommand(command);
     User guildmember = aUser.getGuild().getMember(myParsed[1]);
     if (guildmember == null)
@@ -68,8 +68,8 @@ public class RemoveCommand extends GuildMasterCommand
     guildmember.setGuild(null);
     // TODO?
     // aUser.getGuild().decreaseAmountOfMembers();
-    logBean.writeLog(aUser, "removed " + guildmember.getName()
-            + " from guild " + aUser.getGuild().getName());
+    logService.writeLog(aUser, "removed " + guildmember.getName()
+      + " from guild " + aUser.getGuild().getName());
     communicationService.writeMessage("You have removed " + guildmember.getName()
             + " from your guild.<BR>\r\n");
     CommunicationService.getCommunicationService(aUser.getGuild()).sendMessage("<B>"

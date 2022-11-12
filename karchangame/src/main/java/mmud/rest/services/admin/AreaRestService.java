@@ -42,7 +42,7 @@ import mmud.database.entities.game.Admin;
 import mmud.database.entities.game.Area;
 import mmud.exceptions.MudWebException;
 import mmud.rest.webentities.admin.AdminArea;
-import mmud.services.LogBean;
+import mmud.services.LogService;
 
 /**
  * @author maartenl
@@ -60,7 +60,7 @@ public class AreaRestService // extends AbstractFacade<Area>
   private EntityManager em;
 
   @Inject
-  private LogBean logBean;
+  private LogService logService;
 
   @POST
   @Consumes(
@@ -80,7 +80,7 @@ public class AreaRestService // extends AbstractFacade<Area>
     area.setCreation(LocalDateTime.now());
     area.setOwner(admin);
     ValidationUtils.checkValidation(name, area);
-    logBean.writeDeputyLog(admin, "New area '" + area.getArea() + "' created.");
+    logService.writeDeputyLog(admin, "New area '" + area.getArea() + "' created.");
     getEntityManager().persist(area);
   }
 
@@ -109,7 +109,7 @@ public class AreaRestService // extends AbstractFacade<Area>
     area.setShortdescription(adminArea.shortdesc);
     area.setOwner(OwnerHelper.getNewOwner(adminArea.owner, admin, getEntityManager()));
     ValidationUtils.checkValidation(name, area);
-    logBean.writeDeputyLog(admin, "Area '" + area.getArea() + "' updated.");
+    logService.writeDeputyLog(admin, "Area '" + area.getArea() + "' updated.");
   }
 
   @DELETE
@@ -124,7 +124,7 @@ public class AreaRestService // extends AbstractFacade<Area>
     }
     Admin admin = (new OwnerHelper(getEntityManager())).authorize(name, area);
     getEntityManager().remove(area);
-    logBean.writeDeputyLog(admin, "Area '" + area.getArea() + "' deleted.");
+    logService.writeDeputyLog(admin, "Area '" + area.getArea() + "' deleted.");
   }
 
   @GET
