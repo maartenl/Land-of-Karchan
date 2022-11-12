@@ -7,7 +7,8 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
-import javax.inject.Singleton;
+
+import jakarta.inject.Singleton;
 
 /**
  * Keeps a registration on when which user has last issued a command.

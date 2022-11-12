@@ -16,13 +16,13 @@
  */
 package mmud.commands.guild;
 
-import mmud.commands.*;
+import mmud.commands.GuildMasterCommand;
 import mmud.database.entities.characters.User;
 import mmud.database.entities.game.DisplayInterface;
 import mmud.database.entities.game.Guild;
 import mmud.exceptions.MudException;
-import mmud.rest.services.LogBean;
 import mmud.services.CommunicationService;
+import mmud.services.LogBean;
 
 /**
  * Deletes a guild.

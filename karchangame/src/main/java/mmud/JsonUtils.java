@@ -1,7 +1,6 @@
 package mmud;
 
-import javax.json.bind.JsonbBuilder;
-
+import jakarta.json.bind.JsonbBuilder;
 import mmud.exceptions.JsonException;
 
 public class JsonUtils

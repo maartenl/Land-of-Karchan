@@ -16,6 +16,15 @@
  */
 package mmud.testing.tests.commands.guild;
 
+import java.io.File;
+import java.io.PrintWriter;
+import java.util.Comparator;
+import java.util.HashSet;
+import java.util.SortedSet;
+import java.util.TreeSet;
+
+import jakarta.persistence.EntityManager;
+import jakarta.ws.rs.core.Response;
 import mmud.Constants;
 import mmud.commands.CommandRunner;
 import mmud.commands.guild.DeleteGuildCommand;
@@ -26,24 +35,14 @@ import mmud.database.entities.game.Guild;
 import mmud.database.entities.game.Guildrank;
 import mmud.database.entities.game.Room;
 import mmud.exceptions.MudWebException;
-import mmud.rest.services.GameBean;
-import mmud.rest.services.GuildBean;
-import mmud.rest.services.LogBean;
+import mmud.rest.services.GuildRestService;
+import mmud.services.CommunicationService;
+import mmud.services.LogBean;
 import mmud.testing.tests.LogBeanStub;
 import mmud.testing.tests.MudTest;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
-
-import java.io.File;
-import java.io.PrintWriter;
-import java.util.*;
-
-import mmud.services.CommunicationService;
-
-import javax.persistence.EntityManager;
-import javax.ws.rs.core.Response;
-
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.mockito.Mockito.mock;
 
@@ -57,7 +56,8 @@ public class DeleteGuildCommandTest extends MudTest
   private User karn;
   private Room room1;
 
-  private GuildBean guildBean = new GuildBean(){
+  private GuildRestService guildRestService = new GuildRestService()
+  {
     @Override
     protected User authenticateGuildMaster(String name)
     {
@@ -112,7 +112,7 @@ public class DeleteGuildCommandTest extends MudTest
   public void deleteGuild()
   {
     EntityManager entityManager = mock(EntityManager.class);
-    setField(GuildBean.class, "em", guildBean, entityManager);
+    setField(GuildRestService.class, "em", guildRestService, entityManager);
 
     karn.setGuild(new Guild());
     karn.getGuild().setName("oldguild");
@@ -128,7 +128,7 @@ public class DeleteGuildCommandTest extends MudTest
     DeleteGuildCommand deleteguildCommand = new DeleteGuildCommand("deleteguild");
     deleteguildCommand.setCallback(commandRunner);
     assertThat(deleteguildCommand.getRegExpr()).isEqualTo("deleteguild");
-    commandRunner.setBeans(null, logBean, guildBean, null, null, null, null);
+    commandRunner.setBeans(null, logBean, guildRestService, null, null, null, null);
     DisplayInterface display = deleteguildCommand.run("deleteguild", karn);
     assertThat(display).isNotNull();
     assertThat(display.getBody()).isEqualTo("You are in a small room.");

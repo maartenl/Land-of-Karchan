@@ -17,13 +17,13 @@
 package org.karchan.menus;
 
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.persistence.EntityManager;
+
+import jakarta.persistence.EntityManager;
 
 /**
  *
@@ -41,10 +41,9 @@ public class Menu
   private Menu parent;
 
   /**
-   * 
-   * @see #Menu(java.lang.String, java.lang.String, java.util.List) 
    * @param name the name of the menu
-   * @param url the url the menu refers to (any .html extension will be removed)
+   * @param url  the url the menu refers to (any .html extension will be removed)
+   * @see #Menu(java.lang.String, java.lang.String, java.util.List)
    */
   Menu(String name, String url)
   {

@@ -17,14 +17,13 @@
 package mmud.commands.guild;
 
 
-
 import mmud.commands.GuildMasterCommand;
 import mmud.database.entities.characters.Person;
 import mmud.database.entities.characters.User;
 import mmud.database.entities.game.DisplayInterface;
 import mmud.exceptions.MudException;
-import mmud.rest.services.LogBean;
 import mmud.services.CommunicationService;
+import mmud.services.LogBean;
 import mmud.services.PersonCommunicationService;
 
 /**

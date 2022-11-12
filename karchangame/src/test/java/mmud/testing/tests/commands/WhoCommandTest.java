@@ -16,6 +16,12 @@
  */
 package mmud.testing.tests.commands;
 
+import java.io.File;
+import java.io.PrintWriter;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.List;
+
 import mmud.Constants;
 import mmud.commands.CommandRunner;
 import mmud.commands.WhoCommand;
@@ -24,23 +30,13 @@ import mmud.database.entities.characters.Person;
 import mmud.database.entities.characters.User;
 import mmud.database.entities.game.DisplayInterface;
 import mmud.database.entities.game.Room;
-import mmud.rest.services.LogBean;
-import mmud.rest.services.PersonBean;
 import mmud.services.CommunicationService;
+import mmud.services.LogBean;
+import mmud.services.PersonBean;
 import mmud.testing.TestingConstants;
 import mmud.testing.tests.MudTest;
-import org.testng.annotations.AfterClass;
-import org.testng.annotations.AfterMethod;
-import org.testng.annotations.BeforeClass;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
-
-import java.io.File;
-import java.io.PrintWriter;
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.List;
-
 import static org.assertj.core.api.Assertions.assertThat;
 
 /**

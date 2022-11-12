@@ -21,23 +21,24 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.logging.Logger;
-import javax.persistence.Basic;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.Lob;
-import javax.persistence.ManyToOne;
-import javax.persistence.NamedQueries;
-import javax.persistence.NamedQuery;
-import javax.persistence.OneToMany;
-import javax.persistence.OrderBy;
-import javax.persistence.Table;
-import javax.persistence.Transient;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Pattern;
-import javax.validation.constraints.Size;
+
+import jakarta.persistence.Basic;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.Lob;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.NamedQueries;
+import jakarta.persistence.NamedQuery;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.OrderBy;
+import jakarta.persistence.Table;
+import jakarta.persistence.Transient;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Pattern;
+import jakarta.validation.constraints.Size;
 import mmud.database.RegularExpressions;
 
 /**
@@ -58,7 +59,7 @@ public class Wikipage implements Serializable
 {
 
   private static final long serialVersionUID = 1L;
-  
+
   private final static Logger LOGGER = Logger.getLogger(Wikipage.class.getName());
 
   @Id
@@ -126,7 +127,7 @@ public class Wikipage implements Serializable
 
   @Transient
   private String htmlContent;
-  
+
   public Wikipage()
   {
   }
@@ -305,13 +306,14 @@ public class Wikipage implements Serializable
   {
     version = new BigDecimal(version).add(new BigDecimal("0.1")).toPlainString();
   }
-  
+
   /**
    * As this Wikipage does not know anything about processing a wiki format,
    * this just returns a transient field. Formatting is done elsewhere.
    * Simply make sure to call {@link #setHtmlContent(java.lang.String) } appropriately beforehand.
+   *
    * @return a string
-   * @see #setHtmlContent(java.lang.String) 
+   * @see #setHtmlContent(java.lang.String)
    */
   public String getHtmlContent()
   {
@@ -321,12 +323,12 @@ public class Wikipage implements Serializable
   /**
    * Set the appropriate HTML format of the wikipage. This sets a transient field
    * which can then be used for displaying. This field is not stored in the database.
-   * 
+   *
    * @param htmlContent the html content representation of the {@link #getContent() }.
    */
   public void setHtmlContent(String htmlContent)
   {
     this.htmlContent = htmlContent;
   }
-  
+
 }

@@ -16,6 +16,11 @@
  */
 package mmud.testing.tests.commands;
 
+import java.io.File;
+import java.io.PrintWriter;
+import java.util.Arrays;
+import java.util.List;
+
 import mmud.Constants;
 import mmud.commands.CommandRunner;
 import mmud.commands.DeputiesCommand;
@@ -25,20 +30,13 @@ import mmud.database.entities.game.DisplayInterface;
 import mmud.database.entities.game.Room;
 import mmud.database.entities.items.ItemDefinition;
 import mmud.database.entities.items.NormalItem;
-import mmud.rest.services.ItemBean;
-import mmud.rest.services.admin.AdminBean;
+import mmud.rest.services.admin.AdminRestService;
+import mmud.services.CommunicationService;
+import mmud.services.ItemBean;
 import mmud.testing.tests.LogBeanStub;
 import mmud.testing.tests.MudTest;
-import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
-
-import java.io.File;
-import java.io.PrintWriter;
-import java.util.Arrays;
-import java.util.List;
-import mmud.services.CommunicationService;
-
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
 /**
@@ -57,7 +55,7 @@ public class DeputiesCommandTest extends MudTest
     private LogBeanStub logBean;
 
     private CommandRunner commandRunner = new CommandRunner();
-    private AdminBean adminBean;
+    private AdminRestService adminRestService;
     private Admin karnAdmin;
     private Admin mideviaAdmin;
 
@@ -71,9 +69,9 @@ public class DeputiesCommandTest extends MudTest
         DeputiesCommand deputiesCommand = new DeputiesCommand("deputies")
         {
             @Override
-            protected AdminBean getAdminBean()
+            protected AdminRestService getAdminBean()
             {
-                return adminBean;
+                return adminRestService;
             }
         };
         deputiesCommand.setCallback(commandRunner);
@@ -104,7 +102,7 @@ public class DeputiesCommandTest extends MudTest
         karn.setName("Karn");
         karn.setRoom(room1);
 
-        adminBean = new AdminBean()
+        adminRestService = new AdminRestService()
         {
             @Override
             public List<Admin> getAdministrators()

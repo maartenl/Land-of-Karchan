@@ -16,23 +16,23 @@
  */
 package mmud.commands;
 
+import java.io.File;
+import java.io.PrintWriter;
+import java.util.HashSet;
+import java.util.List;
+
 import mmud.Constants;
 import mmud.database.entities.characters.Administrator;
 import mmud.database.entities.characters.Person;
 import mmud.database.entities.characters.User;
 import mmud.database.entities.game.Room;
-import mmud.rest.services.PersonBean;
+import mmud.services.CommunicationService;
+import mmud.services.PersonBean;
 import mmud.testing.TestingConstants;
 import mmud.testing.tests.LogBeanStub;
 import mmud.testing.tests.MudTest;
-import org.testng.annotations.*;
-
-import java.io.File;
-import java.io.PrintWriter;
-import java.util.HashSet;
-import java.util.List;
-import mmud.services.CommunicationService;
-
+import org.testng.annotations.BeforeMethod;
+import org.testng.annotations.Test;
 import static org.assertj.core.api.Assertions.assertThat;
 
 /**

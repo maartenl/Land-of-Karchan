@@ -16,7 +16,7 @@
  */
 package mmud.exceptions;
 
-import javax.ws.rs.core.Response;
+import jakarta.ws.rs.core.Response;
 
 /**
  * An exception to be thrown when attempting to serialize or deserialize a Java object from/to JSON.

@@ -5,9 +5,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
-import javax.persistence.EntityManager;
-import javax.persistence.TypedQuery;
 
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.TypedQuery;
 import mmud.database.entities.game.Guild;
 import org.apache.commons.lang3.StringUtils;
 import org.karchan.webentities.PublicGuild;

@@ -16,24 +16,47 @@
  */
 package mmud.database.entities.items;
 
+import java.io.Serializable;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
+import jakarta.persistence.Basic;
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
+import jakarta.persistence.DiscriminatorColumn;
+import jakarta.persistence.DiscriminatorType;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.Inheritance;
+import jakarta.persistence.InheritanceType;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.NamedQueries;
+import jakarta.persistence.NamedQuery;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.Table;
+import jakarta.validation.constraints.NotNull;
+import mmud.database.Attributes;
+import mmud.database.InputSanitizer;
+import mmud.database.OutputFormatter;
 import mmud.database.entities.Ownage;
 import mmud.database.entities.characters.Person;
-import mmud.database.entities.game.*;
+import mmud.database.entities.game.Admin;
+import mmud.database.entities.game.Attribute;
+import mmud.database.entities.game.AttributeWrangler;
+import mmud.database.entities.game.DisplayInterface;
+import mmud.database.entities.game.Room;
 import mmud.database.enums.Wearing;
 import mmud.database.enums.Wielding;
 import mmud.exceptions.ItemException;
 import mmud.exceptions.MudException;
-
-import javax.persistence.*;
-import javax.validation.constraints.NotNull;
-import java.io.Serializable;
-import java.time.LocalDateTime;
-import java.util.*;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import mmud.database.Attributes;
-import mmud.database.InputSanitizer;
-import mmud.database.OutputFormatter;
 
 /**
  * An item. To be more precise an instance of an item definition. An item can

@@ -16,6 +16,10 @@
  */
 package mmud.testing.tests.commands;
 
+import java.io.File;
+import java.io.PrintWriter;
+import java.util.HashSet;
+
 import mmud.Constants;
 import mmud.commands.CommandRunner;
 import mmud.commands.HelpCommand;
@@ -25,161 +29,156 @@ import mmud.database.entities.characters.User;
 import mmud.database.entities.game.DisplayInterface;
 import mmud.database.entities.game.Help;
 import mmud.database.entities.game.Room;
-import mmud.rest.services.HelpBean;
+import mmud.services.CommunicationService;
+import mmud.services.HelpBean;
 import mmud.testing.TestingConstants;
 import mmud.testing.tests.LogBeanStub;
 import mmud.testing.tests.MudTest;
-import org.testng.annotations.*;
-
-import java.io.File;
-import java.io.PrintWriter;
-import java.util.HashSet;
-import mmud.services.CommunicationService;
-
+import org.testng.annotations.BeforeMethod;
+import org.testng.annotations.Test;
 import static org.assertj.core.api.Assertions.assertThat;
 
 /**
- *
  * @author maartenl
  */
 public class HelpCommandTest extends MudTest
 {
 
-    private Administrator karn;
-    private User marvin;
+  private Administrator karn;
+  private User marvin;
 
-    private LogBeanStub logBean;
+  private LogBeanStub logBean;
 
-    private CommandRunner commandRunner = new CommandRunner();
+  private CommandRunner commandRunner = new CommandRunner();
 
-    private HelpBean helpBean = new HelpBean();
+  private HelpBean helpBean = new HelpBean();
 
-    public HelpCommandTest()
+  public HelpCommandTest()
+  {
+  }
+
+  /**
+   * Runs the help command.
+   */
+  @Test
+  public void runHelpDrop()
+  {
+    HelpCommand helpCommand = new HelpCommand("help( (\\w)+)?");
+    helpCommand.setCallback(commandRunner);
+    assertThat(helpCommand.getRegExpr()).isEqualTo("help( (\\w)+)?");
+    commandRunner.setBeans(null, logBean, null, null, null, null, helpBean);
+    DisplayInterface display = helpCommand.run("help drop", marvin);
+    assertThat(display).isNotNull();
+    assertThat(display.getImage()).isNull();
+    assertThat(display.getMainTitle()).isEqualTo("Drop");
+    assertThat(display.getBody()).isEqualTo(" <dl><dt><b>NAME</b></dt><dd><b>Drop</b> - formatted output</dd><p/><dt><b>SYNOPSIS</b></dt><dd><b>drop</b> &lt;item&gt;</dd><p/><dt><b>DESCRIPTION</b></dt><dd><b>Drop</b> makes your character <b>drop</b> an item out of your inventory and onto the ground. Once it is lying on the ground, it can be picked up again by anyone coming by. An added effect is that you have to carry around less stuff. </dd><p/><dt><b>EXAMPLES</b></dt><dd>\"drop leather jerkin\"<p/>You: <tt>You drop a black, leather jerkin.</tt><br/>Anybody: <tt>Hotblack drops a black, leather jerkin.</tt><p/></dd><dt><b>SEE ALSO</b></dt><dd>get, remove, wield, unwield<p/></dd></dl>");
+    String log = CommunicationService.getCommunicationService(marvin).getLog(0);
+    assertThat(log).isEmpty();
+  }
+
+  /**
+   * Runs the help command, without a recognized command.
+   */
+  @Test
+  public void runUnknownHelp()
+  {
+    HelpCommand helpCommand = new HelpCommand("help( (\\w)+)?");
+    helpCommand.setCallback(commandRunner);
+    assertThat(helpCommand.getRegExpr()).isEqualTo("help( (\\w)+)?");
+    commandRunner.setBeans(null, logBean, null, null, null, null, helpBean);
+    DisplayInterface display = helpCommand.run("help awesomeness", marvin);
+    assertThat(display).isNotNull();
+    assertThat(display.getImage()).isNull();
+    assertThat(display.getMainTitle()).isEqualTo("Sorry");
+    assertThat(display.getBody()).isEqualTo(" <dl><dt><b>NAME</b></dt><dd><b>Sorry</b> - formatted output</dd><p/><dt><b>SYNOPSIS</b></dt><dd>Error messages.</dd><p/><dt><b>DESCRIPTION</b></dt><dd><H1><b>Sorry</b></H1><li><b>Sorry</b>, I don't recognise that command.<li>I am afraid I do not understand.Readouts for mistyped, absent, or broken commands.  If this is a command you are certain should work, or one that worked previously, please make use of the bugs screen to inform Admin.</dd><p/><dt><b>EXAMPLES</b></dt><dd></dd><dt><b>SEE ALSO</b></dt><dd>null<p/></dd></dl>");
+    String log = CommunicationService.getCommunicationService(marvin).getLog(0);
+    assertThat(log).isEmpty();
+  }
+
+  /**
+   * Runs the help command, giving general help.
+   */
+  @Test
+  public void runGeneralHelp()
+  {
+    HelpCommand helpCommand = new HelpCommand("help( (\\w)+)?");
+    helpCommand.setCallback(commandRunner);
+    assertThat(helpCommand.getRegExpr()).isEqualTo("help( (\\w)+)?");
+    commandRunner.setBeans(null, logBean, null, null, null, null, helpBean);
+    DisplayInterface display = helpCommand.run("help", marvin);
+    assertThat(display).isNotNull();
+    assertThat(display.getImage()).isNull();
+    assertThat(display.getMainTitle()).isEqualTo("General help");
+    assertThat(display.getBody()).isEqualTo(" <dl><dt><b>NAME</b></dt><dd><b>General help</b> - formatted output</dd><p/><dt><b>SYNOPSIS</b></dt><dd></dd><p/><dt><b>DESCRIPTION</b></dt><dd>This is <b>general help</b>.</dd><p/><dt><b>EXAMPLES</b></dt><dd></dd><dt><b>SEE ALSO</b></dt><dd>null<p/></dd></dl>");
+    String log = CommunicationService.getCommunicationService(marvin).getLog(0);
+    assertThat(log).isEmpty();
+  }
+
+  @BeforeMethod
+  public void setUpMethod() throws Exception
+  {
+    logBean = new LogBeanStub();
+
+    helpBean = new HelpBean()
     {
-    }
 
-    /**
-     * Runs the help command.
-     */
-    @Test
-    public void runHelpDrop()
-    {
-        HelpCommand helpCommand = new HelpCommand("help( (\\w)+)?");
-        helpCommand.setCallback(commandRunner);
-        assertThat(helpCommand.getRegExpr()).isEqualTo("help( (\\w)+)?");
-commandRunner.setBeans(null, logBean, null, null, null, null, helpBean);
-        DisplayInterface display = helpCommand.run("help drop", marvin);
-        assertThat(display).isNotNull();
-        assertThat(display.getImage()).isNull();
-        assertThat(display.getMainTitle()).isEqualTo("Drop");
-        assertThat(display.getBody()).isEqualTo(" <dl><dt><b>NAME</b></dt><dd><b>Drop</b> - formatted output</dd><p/><dt><b>SYNOPSIS</b></dt><dd><b>drop</b> &lt;item&gt;</dd><p/><dt><b>DESCRIPTION</b></dt><dd><b>Drop</b> makes your character <b>drop</b> an item out of your inventory and onto the ground. Once it is lying on the ground, it can be picked up again by anyone coming by. An added effect is that you have to carry around less stuff. </dd><p/><dt><b>EXAMPLES</b></dt><dd>\"drop leather jerkin\"<p/>You: <tt>You drop a black, leather jerkin.</tt><br/>Anybody: <tt>Hotblack drops a black, leather jerkin.</tt><p/></dd><dt><b>SEE ALSO</b></dt><dd>get, remove, wield, unwield<p/></dd></dl>");
-        String log = CommunicationService.getCommunicationService(marvin).getLog(0);
-        assertThat(log).isEmpty();
-    }
+      private final Help generalHelp;
+      private final Help sorry;
+      private final Help drop;
 
-    /**
-     * Runs the help command, without a recognized command.
-     */
-    @Test
-    public void runUnknownHelp()
-    {
-        HelpCommand helpCommand = new HelpCommand("help( (\\w)+)?");
-        helpCommand.setCallback(commandRunner);
-        assertThat(helpCommand.getRegExpr()).isEqualTo("help( (\\w)+)?");
-commandRunner.setBeans(null, logBean, null, null, null, null, helpBean);
-        DisplayInterface display = helpCommand.run("help awesomeness", marvin);
-        assertThat(display).isNotNull();
-        assertThat(display.getImage()).isNull();
-        assertThat(display.getMainTitle()).isEqualTo("Sorry");
-        assertThat(display.getBody()).isEqualTo(" <dl><dt><b>NAME</b></dt><dd><b>Sorry</b> - formatted output</dd><p/><dt><b>SYNOPSIS</b></dt><dd>Error messages.</dd><p/><dt><b>DESCRIPTION</b></dt><dd><H1><b>Sorry</b></H1><li><b>Sorry</b>, I don't recognise that command.<li>I am afraid I do not understand.Readouts for mistyped, absent, or broken commands.  If this is a command you are certain should work, or one that worked previously, please make use of the bugs screen to inform Admin.</dd><p/><dt><b>EXAMPLES</b></dt><dd></dd><dt><b>SEE ALSO</b></dt><dd>null<p/></dd></dl>");
-        String log = CommunicationService.getCommunicationService(marvin).getLog(0);
-        assertThat(log).isEmpty();
-    }
 
-    /**
-     * Runs the help command, giving general help.
-     */
-    @Test
-    public void runGeneralHelp()
-    {
-        HelpCommand helpCommand = new HelpCommand("help( (\\w)+)?");
-        helpCommand.setCallback(commandRunner);
-        assertThat(helpCommand.getRegExpr()).isEqualTo("help( (\\w)+)?");
-commandRunner.setBeans(null, logBean, null, null, null, null, helpBean);
-        DisplayInterface display = helpCommand.run("help", marvin);
-        assertThat(display).isNotNull();
-        assertThat(display.getImage()).isNull();
-        assertThat(display.getMainTitle()).isEqualTo("General help");
-        assertThat(display.getBody()).isEqualTo(" <dl><dt><b>NAME</b></dt><dd><b>General help</b> - formatted output</dd><p/><dt><b>SYNOPSIS</b></dt><dd></dd><p/><dt><b>DESCRIPTION</b></dt><dd>This is <b>general help</b>.</dd><p/><dt><b>EXAMPLES</b></dt><dd></dd><dt><b>SEE ALSO</b></dt><dd>null<p/></dd></dl>");
-        String log = CommunicationService.getCommunicationService(marvin).getLog(0);
-        assertThat(log).isEmpty();
-    }
+      {
+        generalHelp = new Help();
+        generalHelp.setCommand("general help");
+        generalHelp.setContents("This is general help.");
+        generalHelp.setSynopsis(null);
+        sorry = new Help();
+        sorry.setCommand("sorry");
+        sorry.setContents("<H1>Sorry</H1><li>Sorry, I don't recognise that command.<li>I am afraid I do not understand.Readouts for mistyped, absent, or broken commands.  If this is a command you are certain should work, or one that worked previously, please make use of the bugs screen to inform Admin.");
+        sorry.setSynopsis("Error messages.");
+        drop = new Help();
+        drop.setCommand("drop");
+        drop.setContents("Drop makes your character drop an item out of your inventory and onto the ground. Once it is lying on the ground, it can be picked up again by anyone coming by. An added effect is that you have to carry around less stuff. ");
+        drop.setSynopsis("drop <item>");
+        drop.setSeealso("get, remove, wield, unwield");
+        drop.setExample1("drop leather jerkin");
+        drop.setExample1a("You drop a black, leather jerkin.");
+        drop.setExample1b("Hotblack drops a black, leather jerkin.");
+      }
 
-    @BeforeMethod
-    public void setUpMethod() throws Exception
-    {
-        logBean = new LogBeanStub();
-
-        helpBean = new HelpBean()
+      @Override
+      public Help getHelp(String name)
+      {
+        if (name == null)
         {
+          return generalHelp;
 
-            private final Help generalHelp;
-            private final Help sorry;
-            private final Help drop;
+        }
+        if (name.equalsIgnoreCase("drop"))
+        {
+          return drop;
+        }
+        return sorry;
+      }
 
+    };
 
-            {
-                generalHelp = new Help();
-                generalHelp.setCommand("general help");
-                generalHelp.setContents("This is general help.");
-                generalHelp.setSynopsis(null);
-                sorry = new Help();
-                sorry.setCommand("sorry");
-                sorry.setContents("<H1>Sorry</H1><li>Sorry, I don't recognise that command.<li>I am afraid I do not understand.Readouts for mistyped, absent, or broken commands.  If this is a command you are certain should work, or one that worked previously, please make use of the bugs screen to inform Admin.");
-                sorry.setSynopsis("Error messages.");
-                drop = new Help();
-                drop.setCommand("drop");
-                drop.setContents("Drop makes your character drop an item out of your inventory and onto the ground. Once it is lying on the ground, it can be picked up again by anyone coming by. An added effect is that you have to carry around less stuff. ");
-                drop.setSynopsis("drop <item>");
-                drop.setSeealso("get, remove, wield, unwield");
-                drop.setExample1("drop leather jerkin");
-                drop.setExample1a("You drop a black, leather jerkin.");
-                drop.setExample1b("Hotblack drops a black, leather jerkin.");
-            }
-
-            @Override
-            public Help getHelp(String name)
-            {
-                if (name == null)
-                {
-                    return generalHelp;
-
-                }
-                if (name.equalsIgnoreCase("drop"))
-                {
-                    return drop;
-                }
-                return sorry;
-            }
-
-        };
-
-        karn = TestingConstants.getKarn();
-        final Room room = TestingConstants.getRoom(TestingConstants.getArea());
-        karn.setRoom(room);
-        marvin = TestingConstants.getMarvin(room);
-        CommunicationService.getCommunicationService(karn).clearLog();
-        CommunicationService.getCommunicationService(marvin).clearLog();
-        HashSet<Person> persons = new HashSet<>();
-        persons.add(karn);
-        persons.add(marvin);
-        setField(Room.class, "persons", room, persons);
-        File file = new File(Constants.getMudfilepath() + File.separator + "Karn.log");
-        PrintWriter writer = new PrintWriter(file);
-        writer.close();
-        file = new File(Constants.getMudfilepath() + File.separator + "Marvin.log");
-        writer = new PrintWriter(file);
-        writer.close();
-    }
+    karn = TestingConstants.getKarn();
+    final Room room = TestingConstants.getRoom(TestingConstants.getArea());
+    karn.setRoom(room);
+    marvin = TestingConstants.getMarvin(room);
+    CommunicationService.getCommunicationService(karn).clearLog();
+    CommunicationService.getCommunicationService(marvin).clearLog();
+    HashSet<Person> persons = new HashSet<>();
+    persons.add(karn);
+    persons.add(marvin);
+    setField(Room.class, "persons", room, persons);
+    File file = new File(Constants.getMudfilepath() + File.separator + "Karn.log");
+    PrintWriter writer = new PrintWriter(file);
+    writer.close();
+    file = new File(Constants.getMudfilepath() + File.separator + "Marvin.log");
+    writer = new PrintWriter(file);
+    writer.close();
+  }
 
 }

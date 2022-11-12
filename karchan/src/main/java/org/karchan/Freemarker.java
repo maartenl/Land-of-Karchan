@@ -16,21 +16,21 @@
  */
 package org.karchan;
 
-import freemarker.cache.TemplateLoader;
-import freemarker.template.Configuration;
-import freemarker.template.TemplateExceptionHandler;
 import java.io.IOException;
 import java.io.Reader;
 import java.util.List;
 import java.util.Locale;
 import java.util.logging.Logger;
-import javax.annotation.PostConstruct;
-import javax.ejb.LocalBean;
-import javax.ejb.Singleton;
-import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
-import javax.persistence.PersistenceUnit;
-import javax.persistence.TypedQuery;
+
+import freemarker.cache.TemplateLoader;
+import freemarker.template.Configuration;
+import freemarker.template.TemplateExceptionHandler;
+import jakarta.annotation.PostConstruct;
+import jakarta.inject.Singleton;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.EntityManagerFactory;
+import jakarta.persistence.PersistenceUnit;
+import jakarta.persistence.TypedQuery;
 import mmud.database.entities.web.HtmlTemplate;
 import no.api.freemarker.java8.Java8ObjectWrapper;
 
@@ -39,7 +39,6 @@ import no.api.freemarker.java8.Java8ObjectWrapper;
  * @author maartenl
  */
 @Singleton
-@LocalBean
 public class Freemarker implements TemplateLoader
 {
   private static final Logger LOGGER = Logger.getLogger(Freemarker.class.getName());

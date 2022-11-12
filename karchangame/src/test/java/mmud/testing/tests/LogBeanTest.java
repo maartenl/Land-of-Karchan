@@ -16,19 +16,13 @@
  */
 package mmud.testing.tests;
 
+import jakarta.persistence.EntityManager;
 import mmud.database.entities.characters.Administrator;
 import mmud.database.entities.characters.User;
-import mmud.database.entities.game.Commandlog;
-import mmud.database.entities.game.Log;
 import mmud.database.entities.game.Room;
-import mmud.rest.services.LogBean;
+import mmud.services.LogBean;
 import mmud.testing.TestingConstants;
-import org.testng.annotations.*;
-
-import javax.persistence.EntityManager;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.testng.Assert.fail;
+import org.testng.annotations.BeforeMethod;
 
 /**
  *

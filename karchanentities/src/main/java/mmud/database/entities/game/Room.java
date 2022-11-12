@@ -24,22 +24,23 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.logging.Logger;
-import javax.persistence.Basic;
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.Lob;
-import javax.persistence.ManyToOne;
-import javax.persistence.NamedQueries;
-import javax.persistence.NamedQuery;
-import javax.persistence.OneToMany;
-import javax.persistence.Table;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
 
+import com.google.common.annotations.VisibleForTesting;
+import jakarta.persistence.Basic;
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.Lob;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.NamedQueries;
+import jakarta.persistence.NamedQuery;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.Table;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 import mmud.database.Attributes;
 import mmud.database.entities.Ownage;
 import mmud.database.entities.characters.Person;
@@ -680,5 +681,16 @@ public class Room implements Serializable, DisplayInterface, ItemWrangler, Attri
     }
     item.assignTo(this);
     return item;
+  }
+
+  /**
+   * Should ONLY be used for testing!!!!
+   *
+   * @param hotblack
+   */
+  @VisibleForTesting
+  public void addPerson(Person hotblack)
+  {
+    persons.add(hotblack);
   }
 }

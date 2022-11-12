@@ -20,7 +20,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-
 import mmud.commands.NormalCommand;
 import mmud.database.entities.characters.Person;
 import mmud.database.entities.characters.User;
@@ -28,8 +27,8 @@ import mmud.database.entities.game.DisplayInterface;
 import mmud.database.entities.items.Item;
 import mmud.exceptions.MudException;
 import mmud.exceptions.PersonNotFoundException;
-import mmud.rest.services.ItemBean;
 import mmud.services.CommunicationService;
+import mmud.services.ItemBean;
 import mmud.services.PersonCommunicationService;
 
 /**

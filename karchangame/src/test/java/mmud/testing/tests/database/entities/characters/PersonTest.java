@@ -16,14 +16,16 @@
  */
 package mmud.testing.tests.database.entities.characters;
 
+import java.util.function.Consumer;
+
 import mmud.database.entities.characters.Person;
 import mmud.database.entities.characters.User;
 import mmud.services.CommunicationService;
-import org.testng.annotations.*;
-
-import java.io.IOException;
-import java.util.function.Consumer;
-
+import org.testng.annotations.AfterClass;
+import org.testng.annotations.AfterMethod;
+import org.testng.annotations.BeforeClass;
+import org.testng.annotations.BeforeMethod;
+import org.testng.annotations.Test;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
 /**

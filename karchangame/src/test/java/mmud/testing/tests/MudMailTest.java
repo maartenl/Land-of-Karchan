@@ -22,10 +22,10 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.logging.Logger;
-import javax.persistence.EntityManager;
-import javax.persistence.TypedQuery;
-import javax.ws.rs.core.Response;
 
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.TypedQuery;
+import jakarta.ws.rs.core.Response;
 import mmud.database.entities.characters.User;
 import mmud.database.entities.game.Admin;
 import mmud.database.entities.game.Area;
@@ -36,10 +36,8 @@ import mmud.database.entities.items.Item;
 import mmud.database.entities.items.ItemDefinition;
 import mmud.exceptions.MudException;
 import mmud.exceptions.MudWebException;
-import mmud.rest.services.ItemBean;
-import mmud.rest.services.LogBean;
-import mmud.rest.services.PrivateBean;
-import mmud.rest.services.PublicBean;
+import mmud.rest.services.PrivateRestService;
+import mmud.rest.services.PublicRestService;
 import mmud.rest.webentities.PrivateMail;
 import mmud.testing.TestingConstants;
 import mmud.testing.TestingUtils;
@@ -127,7 +125,7 @@ public class MudMailTest
     LOGGER.fine("listMailAuthenticate2");
     EntityManager entityManager = mock(EntityManager.class);
     when(entityManager.find(User.class, "Marvin")).thenReturn(null);
-    PrivateBean privateBean = new PrivateBean()
+    PrivateRestService privateRestService = new PrivateRestService()
     {
       @Override
       protected EntityManager getEntityManager()
@@ -142,7 +140,7 @@ public class MudMailTest
       }
     };
     // Unit under test is exercised.
-    assertThatThrownBy(() -> privateBean.listMail("Marvin", null)).isInstanceOf(MudWebException.class)
+    assertThatThrownBy(() -> privateRestService.listMail("Marvin", null)).isInstanceOf(MudWebException.class)
       .hasMessage("User was not found  (Marvin)");
   }
 
@@ -161,7 +159,7 @@ public class MudMailTest
     when(entityManager.createNamedQuery("Mail.nonewmail")).thenReturn(nonewmailQuery);
     when(nonewmailQuery.setParameter("name", marvin)).thenReturn(nonewmailQuery);
 
-    PrivateBean privateBean = new PrivateBean()
+    PrivateRestService privateRestService = new PrivateRestService()
     {
       @Override
       protected EntityManager getEntityManager()
@@ -176,7 +174,7 @@ public class MudMailTest
       }
     };
     // Unit under test is exercised.
-    List<PrivateMail> result = privateBean.listMail("Marvin", null);
+    List<PrivateMail> result = privateRestService.listMail("Marvin", null);
     verify(nonewmailQuery, times(1)).executeUpdate();
     // Verification code (JUnit/TestNG asserts), if any.
     assertEquals(result.size(), 0);
@@ -233,7 +231,7 @@ public class MudMailTest
     when(entityManager.createNamedQuery("Mail.nonewmail")).thenReturn(nonewmailQuery);
     when(nonewmailQuery.setParameter("name", marvin)).thenReturn(nonewmailQuery);
 
-    PrivateBean privateBean = new PrivateBean()
+    PrivateRestService privateRestService = new PrivateRestService()
     {
       @Override
       protected EntityManager getEntityManager()
@@ -249,7 +247,7 @@ public class MudMailTest
     };
 
     // Unit under test is exercised.
-    List<PrivateMail> result = privateBean.listMail("Marvin", null);
+    List<PrivateMail> result = privateRestService.listMail("Marvin", null);
     // Verification code (JUnit/TestNG asserts), if any.
     verify(nonewmailQuery, times(1)).executeUpdate();
     assertEquals(result.size(), 2);
@@ -293,7 +291,7 @@ public class MudMailTest
     EntityManager entityManager = mock(EntityManager.class);
     when(entityManager.find(User.class, "Marvin")).thenReturn(marvin);
     when(entityManager.find(User.class, "Hotblack")).thenReturn(hotblack);
-    PrivateBean privateBean = new PrivateBean()
+    PrivateRestService privateRestService = new PrivateRestService()
     {
       @Override
       protected EntityManager getEntityManager()
@@ -335,7 +333,7 @@ public class MudMailTest
       assertThat(mail.getDeleted()).isFalse();
       return null;
     }).when(entityManager).persist(any(MailReceiver.class));
-    privateBean.newMail(privateMail, "Marvin");
+    privateRestService.newMail(privateMail, "Marvin");
     // Verification code (JUnit/TestNG asserts), if any.
   }
 
@@ -348,7 +346,7 @@ public class MudMailTest
     privateMail.subject = "Subject";
     privateMail.toname = "deputies";
 
-    PublicBean publicBean = new PublicBean()
+    PublicRestService publicRestService = new PublicRestService()
     {
       @Override
       public List<User> getDeputies()
@@ -366,7 +364,7 @@ public class MudMailTest
     when(entityManager.find(User.class, "Marvin")).thenReturn(marvin);
 
     // all other props are ignored by the method under test
-    PrivateBean privateBean = new PrivateBean()
+    PrivateRestService privateRestService = new PrivateRestService()
     {
       @Override
       protected EntityManager getEntityManager()
@@ -381,9 +379,9 @@ public class MudMailTest
       }
 
       @Override
-      public PublicBean getPublicBean()
+      public PublicRestService getPublicBean()
       {
-        return publicBean;
+        return publicRestService;
       }
 
     };
@@ -397,7 +395,7 @@ public class MudMailTest
       return null;
     }).when(entityManager).persist(any(Object.class));
 
-    privateBean.newMail(privateMail, "Marvin");
+    privateRestService.newMail(privateMail, "Marvin");
     // Verification code (JUnit/TestNG asserts), if any.
     assertThat(persisted).hasSize(4);
     assertThat(persisted.get(0)).isInstanceOf(Mail.class);
@@ -440,7 +438,7 @@ public class MudMailTest
     // all other props are ignored by the method under test
     EntityManager entityManager = mock(EntityManager.class);
     when(entityManager.find(User.class, "Marvin")).thenReturn(marvin);
-    PrivateBean privateBean = new PrivateBean()
+    PrivateRestService privateRestService = new PrivateRestService()
     {
       @Override
       protected EntityManager getEntityManager()
@@ -455,7 +453,7 @@ public class MudMailTest
       }
     };
     // Unit under test is exercised.
-    assertThatThrownBy(() -> privateBean.newMail(privateMail, "Marvin"))
+    assertThatThrownBy(() -> privateRestService.newMail(privateMail, "Marvin"))
       .isInstanceOf(MudWebException.class)
       .hasMessage("User was not found (Unknown)");
   }
@@ -468,7 +466,7 @@ public class MudMailTest
     EntityManager entityManager = mock(EntityManager.class);
     when(entityManager.find(User.class, "Marvin")).thenReturn(marvin);
 
-    PrivateBean privateBean = new PrivateBean()
+    PrivateRestService privateRestService = new PrivateRestService()
     {
       @Override
       protected EntityManager getEntityManager()
@@ -484,7 +482,7 @@ public class MudMailTest
 
     };
     // Unit under test is exercised.
-    assertThatThrownBy(() -> privateBean.getMailInfo("Marvin", 1L))
+    assertThatThrownBy(() -> privateRestService.getMailInfo("Marvin", 1L))
       .isInstanceOf(MudWebException.class)
       .hasMessage("mmud.exceptions.MudWebException: Mail 1 not found.");
   }
@@ -510,7 +508,7 @@ public class MudMailTest
     when(entityManager.find(User.class, "Marvin")).thenReturn(marvin);
     when(entityManager.find(MailReceiver.class, 1L)).thenReturn(mailreceiver);
 
-    PrivateBean privateBean = new PrivateBean()
+    PrivateRestService privateRestService = new PrivateRestService()
     {
       @Override
       protected EntityManager getEntityManager()
@@ -526,7 +524,7 @@ public class MudMailTest
 
     };
     // Unit under test is exercised.
-    assertThatThrownBy(() -> privateBean.getMailInfo("Marvin", 1L))
+    assertThatThrownBy(() -> privateRestService.getMailInfo("Marvin", 1L))
       .isInstanceOf(MudWebException.class)
       .hasMessage("mmud.exceptions.MudWebException: Mail with id 1 was not for Marvin.");
   }
@@ -552,7 +550,7 @@ public class MudMailTest
     when(entityManager.find(User.class, "Marvin")).thenReturn(marvin);
     when(entityManager.find(MailReceiver.class, 1L)).thenReturn(mailreceiver);
 
-    PrivateBean privateBean = new PrivateBean()
+    PrivateRestService privateRestService = new PrivateRestService()
     {
       @Override
       protected EntityManager getEntityManager()
@@ -568,7 +566,7 @@ public class MudMailTest
 
     };
     // Unit under test is exercised.
-    assertThatThrownBy(() -> privateBean.getMailInfo("Marvin", 1L))
+    assertThatThrownBy(() -> privateRestService.getMailInfo("Marvin", 1L))
       .isInstanceOf(MudWebException.class)
       .hasMessage("mmud.exceptions.MudWebException: Mail with id 1 was deleted.");
   }
@@ -594,7 +592,7 @@ public class MudMailTest
     when(entityManager.find(User.class, "Marvin")).thenReturn(marvin);
     when(entityManager.find(MailReceiver.class, 1L)).thenReturn(mailreceiver);
 
-    PrivateBean privateBean = new PrivateBean()
+    PrivateRestService privateRestService = new PrivateRestService()
     {
       @Override
       protected EntityManager getEntityManager()
@@ -610,7 +608,7 @@ public class MudMailTest
 
     };
     // Unit under test is exercised.
-    PrivateMail actual = privateBean.getMailInfo("Marvin", 1L);
+    PrivateMail actual = privateRestService.getMailInfo("Marvin", 1L);
     // Verification code (JUnit/TestNG asserts), if any.
     assertNotNull(actual);
     PrivateMail expected = new PrivateMail();
@@ -660,7 +658,7 @@ public class MudMailTest
     when(entityManager.find(MailReceiver.class, 1L)).thenReturn(mailreceiver);
     when(entityManager.find(ItemDefinition.class, 8009L)).thenReturn(itemDef);
 
-    PrivateBean privateBean = new PrivateBean()
+    PrivateRestService privateRestService = new PrivateRestService()
     {
       @Override
       protected EntityManager getEntityManager()
@@ -681,9 +679,9 @@ public class MudMailTest
       }
     };
     LogBeanStub logBean = new LogBeanStub();
-    privateBean.setLogBean(logBean);
+    privateRestService.setLogBean(logBean);
     // Unit under test is exercised.
-    privateBean.createMailItem("Marvin", 1L, 1);
+    privateRestService.createMailItem("Marvin", 1L, 1);
     // Verification code (JUnit/TestNG asserts), if any.
     assertThat(marvin.getItems()).hasSize(1);
     Item item = marvin.getItems().stream().findFirst().orElseThrow(() -> new AssertionError("Expected at least one"));
@@ -736,7 +734,7 @@ public class MudMailTest
     when(entityManager.find(MailReceiver.class, 1L)).thenReturn(mailreceiver);
     when(entityManager.find(ItemDefinition.class, 8009L)).thenReturn(itemDef);
 
-    PrivateBean privateBean = new PrivateBean()
+    PrivateRestService privateRestService = new PrivateRestService()
     {
       @Override
       protected EntityManager getEntityManager()
@@ -758,9 +756,9 @@ public class MudMailTest
 
     };
     LogBeanStub logBean = new LogBeanStub();
-    privateBean.setLogBean(logBean);
+    privateRestService.setLogBean(logBean);
     // Unit under test is exercised.
-    privateBean.createMailItem("Marvin", 1L, 1);
+    privateRestService.createMailItem("Marvin", 1L, 1);
     // Verification code (JUnit/TestNG asserts), if any.
     assertThat(logBean.getLog()).isEqualTo("Marvin:item small piece of paper from mail 1 created.\n");
   }
@@ -790,7 +788,7 @@ public class MudMailTest
     when(entityManager.find(MailReceiver.class, 1L)).thenReturn(mailreceiver);
     when(entityManager.find(ItemDefinition.class, 8009L)).thenReturn(null);
 
-    PrivateBean privateBean = new PrivateBean()
+    PrivateRestService privateRestService = new PrivateRestService()
     {
       @Override
       protected EntityManager getEntityManager()
@@ -806,7 +804,7 @@ public class MudMailTest
 
     };
     // Unit under test is exercised.
-    assertThatThrownBy(() -> privateBean.createMailItem("Marvin", 1L, -1))
+    assertThatThrownBy(() -> privateRestService.createMailItem("Marvin", 1L, -1))
       .isInstanceOf(MudWebException.class)
       .hasMessage("mmud.exceptions.MudWebException: Could not create item from mail.");
     // Verification code (JUnit/TestNG asserts), if any.
@@ -834,7 +832,7 @@ public class MudMailTest
     when(entityManager.find(User.class, "Marvin")).thenReturn(marvin);
     when(entityManager.find(MailReceiver.class, 1L)).thenReturn(mailreceiver);
 
-    PrivateBean privateBean = new PrivateBean()
+    PrivateRestService privateRestService = new PrivateRestService()
     {
       @Override
       protected EntityManager getEntityManager()
@@ -855,7 +853,7 @@ public class MudMailTest
       }
     };
     // Unit under test is exercised.
-    assertThatThrownBy(() -> privateBean.createMailItem("Marvin", 1L, 8))
+    assertThatThrownBy(() -> privateRestService.createMailItem("Marvin", 1L, 8))
       .isInstanceOf(MudWebException.class)
       .hasMessage("mmud.exceptions.MudWebException: Could not create item from mail.");
     // Verification code (JUnit/TestNG asserts), if any.
@@ -881,7 +879,7 @@ public class MudMailTest
     EntityManager entityManager = mock(EntityManager.class);
     when(entityManager.find(User.class, "Marvin")).thenReturn(marvin);
     when(entityManager.find(MailReceiver.class, 1L)).thenReturn(mailreceiver);
-    PrivateBean privateBean = new PrivateBean()
+    PrivateRestService privateRestService = new PrivateRestService()
     {
       @Override
       protected EntityManager getEntityManager()
@@ -902,9 +900,9 @@ public class MudMailTest
       }
     };
     LogBeanStub logBean = new LogBeanStub();
-    privateBean.setLogBean(logBean);
+    privateRestService.setLogBean(logBean);
     // Unit under test is exercised.
-    privateBean.deleteMail("Marvin", 1L);
+    privateRestService.deleteMail("Marvin", 1L);
     // Verification code (JUnit/TestNG asserts), if any.
     assertEquals(mailreceiver.getDeleted(), Boolean.TRUE);
     assertThat(logBean.getLog()).isEqualTo("Marvin:mail 1 deleted.\n");
@@ -930,7 +928,7 @@ public class MudMailTest
     EntityManager entityManager = mock(EntityManager.class);
     when(entityManager.find(User.class, "Marvin")).thenReturn(marvin);
     when(entityManager.find(MailReceiver.class, 1L)).thenReturn(mailreceiver);
-    PrivateBean privateBean = new PrivateBean()
+    PrivateRestService privateRestService = new PrivateRestService()
     {
       @Override
       protected EntityManager getEntityManager()
@@ -946,7 +944,7 @@ public class MudMailTest
 
     };
     // Unit under test is exercised.
-    assertThatThrownBy(() -> privateBean.deleteMail("Marvin", 1L))
+    assertThatThrownBy(() -> privateRestService.deleteMail("Marvin", 1L))
       .isInstanceOf(MudWebException.class)
       .hasMessage("Mail with id 1 was not for Marvin.");
     // Verification code (JUnit/TestNG asserts), if any.
@@ -960,7 +958,7 @@ public class MudMailTest
     EntityManager entityManager = mock(EntityManager.class);
     when(entityManager.find(User.class, "Marvin")).thenReturn(marvin);
     when(entityManager.find(MailReceiver.class, 1L)).thenReturn(null);
-    PrivateBean privateBean = new PrivateBean()
+    PrivateRestService privateRestService = new PrivateRestService()
     {
       @Override
       protected EntityManager getEntityManager()
@@ -976,7 +974,7 @@ public class MudMailTest
 
     };
     // Unit under test is exercised.
-    assertThatThrownBy(() -> privateBean.deleteMail("Marvin", 1L))
+    assertThatThrownBy(() -> privateRestService.deleteMail("Marvin", 1L))
       .isInstanceOf(MudWebException.class)
       .hasMessage("Mail 1 not found.");
   }

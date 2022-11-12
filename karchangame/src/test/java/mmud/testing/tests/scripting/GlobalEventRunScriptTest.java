@@ -20,11 +20,11 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.script.ScriptException;
+
 import mmud.scripting.RunScript;
-import mmud.testing.TestingConstants;
+import org.testng.annotations.Test;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.fail;
-import org.testng.annotations.Test;
 
 /**
  *
@@ -52,7 +52,7 @@ public class GlobalEventRunScriptTest extends RunScriptTest
             fail("No error message was expected.");
         } catch (NoSuchMethodException ex)
         {
-            assertEquals(ex.getMessage(), TestingConstants.NO_SUCH_METHOD + "event");
+          assertEquals(ex.getMessage(), "event");
         }
     }
 

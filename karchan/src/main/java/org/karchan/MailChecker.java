@@ -17,24 +17,23 @@
 package org.karchan;
 
 import java.util.logging.Logger;
-import javax.ejb.Stateless;
-import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
-import javax.persistence.PersistenceUnit;
-import javax.persistence.Query;
+
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.EntityManagerFactory;
+import jakarta.persistence.PersistenceUnit;
+import jakarta.persistence.Query;
 
 /**
  *
  * @author maartenl
  */
-@Stateless
 public class MailChecker
 {
   private static final Logger LOGGER = Logger.getLogger(MailChecker.class.getName());
 
   @PersistenceUnit
   private EntityManagerFactory entityManagerFactory;
-  
+
   public boolean checkMail(String name)
   {
     LOGGER.entering(this.getClass().getName(), "checkMail");

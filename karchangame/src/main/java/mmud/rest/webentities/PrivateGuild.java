@@ -16,7 +16,7 @@
  */
 package mmud.rest.webentities;
 
-import javax.xml.bind.annotation.XmlRootElement;
+import jakarta.xml.bind.annotation.XmlRootElement;
 import mmud.database.entities.game.Guild;
 
 /**
@@ -31,9 +31,9 @@ public class PrivateGuild extends PublicGuild
 
     public String name;
     public String logonmessage;
-    
-    /**
-     * @see Guild#getColour() 
-     */
+
+  /**
+   * @see Guild#getColour()
+   */
     public String colour;
 }

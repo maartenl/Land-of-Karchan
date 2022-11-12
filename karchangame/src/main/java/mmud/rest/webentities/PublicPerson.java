@@ -20,8 +20,8 @@ import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import javax.xml.bind.annotation.XmlRootElement;
 
+import jakarta.xml.bind.annotation.XmlRootElement;
 import mmud.database.entities.characters.User;
 
 /**
@@ -74,7 +74,7 @@ public class PublicPerson
     }
     this.name = publicName;
     this.title = person.getTitle();
-    this.sleep = (person.getSleep() != null && person.getSleep()) ? "sleeping" : "";
+    this.sleep = person.getSleep() ? "sleeping" : "";
     this.area = person.getRoom().getArea().getShortdescription();
     if (person.getLastlogin() != null)
     {

@@ -25,23 +25,18 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.ejb.LocalBean;
-import javax.ejb.Stateless;
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
-import javax.persistence.TypedQuery;
 
 import com.google.common.annotations.VisibleForTesting;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
+import jakarta.persistence.TypedQuery;
 import mmud.database.entities.web.Blog;
-import mmud.database.entities.web.Faq;
 import mmud.database.entities.web.Wikipage;
 import org.karchan.wiki.WikiRenderer;
 
 /**
  * @author maartenl
  */
-@Stateless
-@LocalBean
 public class MenuFactory
 {
 

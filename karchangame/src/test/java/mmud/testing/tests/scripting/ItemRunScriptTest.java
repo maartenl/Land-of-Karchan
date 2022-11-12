@@ -16,16 +16,15 @@
  */
 package mmud.testing.tests.scripting;
 
-import mmud.database.entities.items.Item;
-import mmud.scripting.RunScript;
-import org.testng.annotations.Test;
-
-import javax.script.ScriptException;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.script.ScriptException;
 
+import mmud.database.entities.items.Item;
+import mmud.scripting.RunScript;
+import org.testng.annotations.Test;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.testng.Assert.fail;
 
@@ -76,9 +75,9 @@ public class ItemRunScriptTest extends RunScriptTest
         StringBuilder sourceCode = new StringBuilder();
         sourceCode.append("function command(person, command) {");
         sourceCode.append("person.sendMessage('%SNAME writes his name in big flowing letters on a piece of paper.');");
-        sourceCode.append("var newitem = items.createItem(4);");
-        sourceCode.append("person.room.addItem(newitem);");
-        sourceCode.append("return;");
+      sourceCode.append("var newitem = items.createItem(4);");
+      sourceCode.append("person.getRoom().addItem(newitem);");
+      sourceCode.append("return;");
         sourceCode.append("}");
         try
         {

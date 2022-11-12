@@ -17,7 +17,8 @@
 package org.karchan.security;
 
 import java.util.Set;
-import javax.security.enterprise.credential.Credential;
+
+import jakarta.security.enterprise.credential.Credential;
 
 /**
  *

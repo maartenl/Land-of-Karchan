@@ -20,13 +20,14 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.logging.Logger;
-import javax.enterprise.context.ApplicationScoped;
-import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
-import javax.persistence.PersistenceUnit;
-import javax.persistence.Query;
-import javax.security.enterprise.identitystore.CredentialValidationResult;
-import javax.security.enterprise.identitystore.IdentityStore;
+
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.EntityManagerFactory;
+import jakarta.persistence.PersistenceUnit;
+import jakarta.persistence.Query;
+import jakarta.security.enterprise.identitystore.CredentialValidationResult;
+import jakarta.security.enterprise.identitystore.IdentityStore;
 
 /**
  * Can retrieve the groups a user has access to.
@@ -51,11 +52,11 @@ public class KarchanAuthorizationStore implements IdentityStore
     // named parameters are not defined in the JPA spec for Native queries.
     query.setParameter(1, validationResult.getCallerPrincipal().getName());
     Set<String> roles = new HashSet<>();
-    query.getResultList().forEach((object) -> 
+    query.getResultList().forEach((object) ->
     {
       roles.add(object.toString());
     });
-    
+
     return roles;
   }
 

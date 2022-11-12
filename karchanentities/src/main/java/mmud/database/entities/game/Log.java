@@ -18,22 +18,20 @@ package mmud.database.entities.game;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
-
 import java.util.Objects;
-import javax.persistence.Basic;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.Lob;
-import javax.persistence.NamedQueries;
-import javax.persistence.NamedQuery;
-import javax.persistence.Table;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
+
+import jakarta.persistence.Basic;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.Lob;
+import jakarta.persistence.NamedQueries;
+import jakarta.persistence.NamedQuery;
+import jakarta.persistence.Table;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 
 /**
  * Event logging. For instance when somebody logs on or logs off or
@@ -58,29 +56,29 @@ public class Log implements Serializable
     @Basic(optional = false)
     @Column(name = "id")
     private Long id;
-    
-    @Basic(optional = false)
+
+  @Basic(optional = false)
     @NotNull
     @Column(name = "creation_date")
     private LocalDateTime creation;
-    
-    @Basic(optional = true)
+
+  @Basic(optional = true)
     @Size(min = 1, max = 20)
     @Column(name = "name")
     private String name;
-    
-    @Basic(optional = false)
+
+  @Basic(optional = false)
     @NotNull
     @Size(min = 1, max = 255)
     @Column(name = "message")
     private String message;
-    
-    @Lob
+
+  @Lob
     @Size(max = 65535)
     @Column(name = "addendum")
     private String addendum;
-    
-    @Basic(optional = false)
+
+  @Basic(optional = false)
     @Column(name = "deputy")
     private boolean deputy;
 

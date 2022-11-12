@@ -17,7 +17,8 @@
 package mmud.rest.webentities.admin;
 
 import java.time.LocalDateTime;
-import javax.xml.bind.annotation.XmlRootElement;
+
+import jakarta.xml.bind.annotation.XmlRootElement;
 import mmud.database.entities.web.Blog;
 
 /**

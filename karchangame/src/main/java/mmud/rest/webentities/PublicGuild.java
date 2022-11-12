@@ -18,7 +18,8 @@ package mmud.rest.webentities;
 
 
 import java.time.LocalDateTime;
-import javax.xml.bind.annotation.XmlRootElement;
+
+import jakarta.xml.bind.annotation.XmlRootElement;
 
 /**
  * Information on a certain guild that is available to the big unwashed public.

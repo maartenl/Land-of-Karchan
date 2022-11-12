@@ -16,7 +16,7 @@
  */
 package mmud.exceptions;
 
-import javax.ws.rs.core.Response;
+import jakarta.ws.rs.core.Response;
 
 /**
  *
@@ -59,7 +59,7 @@ public class MudWebException extends MudException
     this.status = Response.Status.BAD_REQUEST;
     this.friendlyMessage = friendlyMessage;
   }
-  
+
   /**
    * Create a new MudWebException.
    *
@@ -136,6 +136,6 @@ public class MudWebException extends MudException
   {
     return friendlyMessage;
   }
-  
-  
+
+
 }

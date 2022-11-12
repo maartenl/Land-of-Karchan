@@ -16,10 +16,9 @@
  */
 package mmud.rest.services.admin;
 
-import javax.persistence.EntityManager;
-import javax.ws.rs.core.Response;
-import javax.ws.rs.core.SecurityContext;
-
+import jakarta.persistence.EntityManager;
+import jakarta.ws.rs.core.Response;
+import jakarta.ws.rs.core.SecurityContext;
 import mmud.database.entities.Ownage;
 import mmud.database.entities.game.Admin;
 import mmud.exceptions.MudWebException;

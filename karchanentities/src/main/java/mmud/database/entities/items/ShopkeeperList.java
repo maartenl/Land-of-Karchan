@@ -17,11 +17,12 @@
 package mmud.database.entities.items;
 
 import java.util.logging.Logger;
-import javax.persistence.DiscriminatorValue;
-import javax.persistence.Entity;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.validation.constraints.NotNull;
+
+import jakarta.persistence.DiscriminatorValue;
+import jakarta.persistence.Entity;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.validation.constraints.NotNull;
 import mmud.database.OutputFormatter;
 import mmud.database.entities.characters.Shopkeeper;
 import mmud.database.entities.game.DisplayInterface;

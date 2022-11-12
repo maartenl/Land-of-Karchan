@@ -16,13 +16,12 @@
  */
 package mmud.services;
 
+import java.util.function.Consumer;
+
 import com.google.common.annotations.VisibleForTesting;
 import mmud.database.entities.characters.Person;
 import mmud.database.entities.game.Guild;
 import mmud.database.entities.game.Room;
-import mmud.exceptions.MudException;
-
-import java.util.function.Consumer;
 
 /**
  *

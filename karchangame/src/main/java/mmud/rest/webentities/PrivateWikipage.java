@@ -17,8 +17,8 @@
 package mmud.rest.webentities;
 
 import java.time.LocalDateTime;
-import javax.xml.bind.annotation.XmlRootElement;
 
+import jakarta.xml.bind.annotation.XmlRootElement;
 import mmud.JsonUtils;
 import mmud.database.entities.web.Wikipage;
 

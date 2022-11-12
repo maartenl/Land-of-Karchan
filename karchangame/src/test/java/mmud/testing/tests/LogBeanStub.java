@@ -17,7 +17,7 @@
 package mmud.testing.tests;
 
 import mmud.database.entities.characters.Person;
-import mmud.rest.services.LogBean;
+import mmud.services.LogBean;
 
 /**
  *

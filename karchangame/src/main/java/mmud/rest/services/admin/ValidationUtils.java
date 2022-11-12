@@ -17,11 +17,12 @@
 package mmud.rest.services.admin;
 
 import java.util.Set;
-import javax.validation.ConstraintViolation;
-import javax.validation.Validation;
-import javax.validation.Validator;
-import javax.validation.ValidatorFactory;
-import javax.ws.rs.core.Response;
+
+import jakarta.validation.ConstraintViolation;
+import jakarta.validation.Validation;
+import jakarta.validation.Validator;
+import jakarta.validation.ValidatorFactory;
+import jakarta.ws.rs.core.Response;
 import mmud.exceptions.MudWebException;
 
 /**
@@ -37,8 +38,9 @@ public class ValidationUtils
   }
 
   /**
-   * Checks the validation of a JPA entity. 
-   * @param name the player/user
+   * Checks the validation of a JPA entity.
+   *
+   * @param name      the player/user
    * @param attribute the entity to check
    * @throws MudWebException with the ConstraintViolations
    */

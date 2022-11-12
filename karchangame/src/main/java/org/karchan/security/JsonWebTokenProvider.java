@@ -16,21 +16,24 @@
  */
 package org.karchan.security;
 
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
-import io.jsonwebtoken.SignatureException;
+import java.security.Key;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.Arrays;
+import java.util.Base64;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import java.util.stream.Collectors;
-import static java.util.stream.Collectors.joining;
-import javax.enterprise.context.ApplicationScoped;
-import javax.inject.Inject;
+
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.JwtException;
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.security.Keys;
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.inject.Inject;
 import org.eclipse.microprofile.config.inject.ConfigProperty;
 
 /**
@@ -61,25 +64,27 @@ public class JsonWebTokenProvider
   {
     long now = Instant.now().toEpochMilli();
 
+    byte[] keyBytes = getSecretKey();
+    Key key = Keys.hmacShaKeyFor(keyBytes);
+
     return Jwts.builder()
-            .setSubject(username)
-            .claim(AUTHORITIES_KEY, authorities.stream().collect(joining(",")))
-            .signWith(SignatureAlgorithm.HS512, secretKey)
-            .setExpiration(Date.from(Instant.now().plus(TOKEN_VALIDITY_HOURS, ChronoUnit.HOURS)))
-            .compact();
+      .setSubject(username)
+      .claim(AUTHORITIES_KEY, String.join(",", authorities))
+      .signWith(key, SignatureAlgorithm.HS512)
+      .setExpiration(Date.from(Instant.now().plus(TOKEN_VALIDITY_HOURS, ChronoUnit.HOURS)))
+      .compact();
   }
 
   public JsonWebTokenCredential getCredential(String token)
   {
-    Claims claims = Jwts.parser()
-            .setSigningKey(secretKey)
-            .parseClaimsJws(token)
-            .getBody();
+    byte[] keyBytes = getSecretKey();
+
+    Claims claims = Jwts.parserBuilder().setSigningKey(keyBytes).build()
+      .parseClaimsJws(token)
+      .getBody();
 
     Set<String> authorities
-            = Arrays.asList(claims.get(AUTHORITIES_KEY).toString().split(","))
-                    .stream()
-                    .collect(Collectors.toSet());
+      = new HashSet<>(Arrays.asList(claims.get(AUTHORITIES_KEY).toString().split(",")));
 
     return new JsonWebTokenCredential(claims.getSubject(), authorities);
   }
@@ -88,13 +93,20 @@ public class JsonWebTokenProvider
   {
     try
     {
-      Jwts.parser().setSigningKey(secretKey).parseClaimsJws(authToken);
+      byte[] keyBytes = getSecretKey();
+      Jwts.parserBuilder().setSigningKey(keyBytes).build().parseClaimsJws(authToken);
       return true;
-    } catch (SignatureException e)
+    } catch (JwtException e)
     {
-      LOGGER.log(Level.INFO, "Invalid JWT signature: {0}", e.getMessage());
+      LOGGER.log(Level.SEVERE, "Invalid JWT signature", e);
       return false;
     }
+  }
+
+  private byte[] getSecretKey()
+  {
+    LOGGER.log(Level.SEVERE, "secretKey : " + secretKey);
+    return Base64.getUrlDecoder().decode(secretKey);
   }
 
 }

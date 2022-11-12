@@ -24,7 +24,7 @@ import mmud.database.entities.game.Area;
 import mmud.database.entities.game.Display;
 import mmud.database.entities.game.DisplayInterface;
 import mmud.exceptions.MudException;
-import mmud.rest.services.PersonBean;
+import mmud.services.PersonBean;
 
 /**
  * Provide a list of who is currently logged onto the game: "who".

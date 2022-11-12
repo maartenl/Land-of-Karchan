@@ -1,9 +1,8 @@
 package mmud.database.entities.characters;
 
+import jakarta.persistence.AttributeConverter;
+import jakarta.persistence.Converter;
 import mmud.database.enums.Sex;
-
-import javax.persistence.AttributeConverter;
-import javax.persistence.Converter;
 
 @Converter(autoApply = true)
 public class SexConverter implements AttributeConverter<Sex, String>

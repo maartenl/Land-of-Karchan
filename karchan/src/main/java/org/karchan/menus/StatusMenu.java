@@ -3,8 +3,8 @@ package org.karchan.menus;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
-import javax.persistence.EntityManager;
 
+import jakarta.persistence.EntityManager;
 import mmud.database.entities.characters.User;
 import org.karchan.webentities.PublicAdmin;
 

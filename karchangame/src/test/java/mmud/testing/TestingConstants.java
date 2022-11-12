@@ -17,6 +17,7 @@
 package mmud.testing;
 
 import java.time.LocalDateTime;
+
 import mmud.database.entities.characters.Administrator;
 import mmud.database.entities.characters.User;
 import mmud.database.entities.game.Admin;
@@ -34,8 +35,6 @@ import mmud.services.CommunicationService;
  */
 public class TestingConstants
 {
-
-  public static final String NO_SUCH_METHOD = "No such function ";
 
   public static Area getArea()
   {

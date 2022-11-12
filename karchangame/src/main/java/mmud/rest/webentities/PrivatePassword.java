@@ -16,10 +16,8 @@
  */
 package mmud.rest.webentities;
 
-import javax.xml.bind.annotation.XmlRootElement;
-
+import jakarta.xml.bind.annotation.XmlRootElement;
 import mmud.JsonUtils;
-import mmud.rest.webentities.admin.AdminCharacter;
 
 /**
  *

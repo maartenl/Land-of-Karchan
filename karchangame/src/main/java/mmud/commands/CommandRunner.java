@@ -20,29 +20,28 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.ejb.EJB;
-import javax.ejb.LocalBean;
-import javax.ejb.Stateless;
 
 import com.google.common.annotations.VisibleForTesting;
+import jakarta.inject.Inject;
 import mmud.database.entities.characters.User;
 import mmud.database.entities.game.DisplayInterface;
 import mmud.database.entities.game.UserCommand;
 import mmud.exceptions.MudException;
-import mmud.rest.services.EventsBean;
-import mmud.rest.services.GameBean;
-import mmud.rest.services.GuildBean;
-import mmud.rest.services.HelpBean;
-import mmud.rest.services.ItemBean;
-import mmud.rest.services.LogBean;
-import mmud.rest.services.PersonBean;
-import mmud.rest.services.admin.AdminBean;
+import mmud.rest.services.EventsRestService;
+import mmud.rest.services.GuildRestService;
+import mmud.rest.services.admin.AdminRestService;
+import mmud.rest.services.admin.RoomsRestService;
 import mmud.scripting.Items;
 import mmud.scripting.Persons;
 import mmud.scripting.Rooms;
 import mmud.scripting.RunScript;
 import mmud.scripting.World;
+import mmud.services.AttributeService;
 import mmud.services.CommunicationService;
+import mmud.services.HelpBean;
+import mmud.services.ItemBean;
+import mmud.services.LogBean;
+import mmud.services.PersonBean;
 
 /**
  * Will run the command provided.
@@ -50,36 +49,37 @@ import mmud.services.CommunicationService;
  * @see CommandFactory
  * @author maartenl
  */
-@Stateless
-@LocalBean
 public class CommandRunner
 {
 
   private static final Logger LOGGER = Logger.getLogger(CommandRunner.class.getName());
 
-  @EJB
+  @Inject
   private PersonBean personBean;
 
-  @EJB
-  private GameBean gameBean;
+  @Inject
+  private AttributeService attributeService;
 
-  @EJB
+  @Inject
+  private RoomsRestService roomBean;
+
+  @Inject
   private HelpBean helpBean;
 
-  @EJB
+  @Inject
   private LogBean logBean;
 
-  @EJB
-  private GuildBean guildBean;
+  @Inject
+  private GuildRestService guildRestService;
 
-  @EJB
+  @Inject
   private ItemBean itemBean;
 
-  @EJB
-  private EventsBean eventsBean;
+  @Inject
+  private EventsRestService eventsRestService;
 
-  @EJB
-  private AdminBean adminBean;
+  @Inject
+  private AdminRestService adminRestService;
 
   /**
    * Runs a specific command. If this person appears to be asleep, the only
@@ -116,9 +116,9 @@ public class CommandRunner
       }
       List<NormalCommand> myCol = new ArrayList<>();
       Persons persons = new Persons(personBean);
-      Rooms rooms = new Rooms(id -> gameBean.find(id));
+      Rooms rooms = new Rooms(id -> roomBean.find(id));
       Items items = new Items(itemdefnr -> itemBean.createItem(itemdefnr));
-      World world = new World(name -> gameBean.getAttribute(name));
+      World world = new World(name -> attributeService.getAttribute(name));
       RunScript runScript = new RunScript(persons, rooms, items, world);
       for (UserCommand myCom : userCommands)
       {
@@ -203,9 +203,9 @@ public class CommandRunner
     return logBean;
   }
 
-  public GuildBean getGuildBean()
+  public GuildRestService getGuildBean()
   {
-    return guildBean;
+    return guildRestService;
   }
 
   public ItemBean getItemBean()
@@ -213,24 +213,25 @@ public class CommandRunner
     return itemBean;
   }
 
-  EventsBean getEventsBean()
+  EventsRestService getEventsBean()
   {
-    return eventsBean;
+    return eventsRestService;
   }
 
-  AdminBean getAdminBean()
+  AdminRestService getAdminBean()
   {
-    return adminBean;
+    return adminRestService;
   }
 
   @VisibleForTesting
-  public void setBeans(PersonBean personBean, LogBean logBean, GuildBean guildBean, ItemBean itemBean, EventsBean eventsBean, AdminBean adminBean, HelpBean helpBean) {
+  public void setBeans(PersonBean personBean, LogBean logBean, GuildRestService guildRestService, ItemBean itemBean, EventsRestService eventsRestService, AdminRestService adminRestService, HelpBean helpBean)
+  {
     this.personBean = personBean;
     this.logBean = logBean;
-    this.guildBean = guildBean;
+    this.guildRestService = guildRestService;
     this.itemBean = itemBean;
-    this.eventsBean = eventsBean;
-    this.adminBean = adminBean;
+    this.eventsRestService = eventsRestService;
+    this.adminRestService = adminRestService;
     this.helpBean = helpBean;
   }
 

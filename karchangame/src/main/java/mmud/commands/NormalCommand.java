@@ -22,13 +22,13 @@ import java.util.logging.Logger;
 import mmud.database.entities.characters.User;
 import mmud.database.entities.game.DisplayInterface;
 import mmud.exceptions.MudException;
-import mmud.rest.services.EventsBean;
-import mmud.rest.services.GuildBean;
-import mmud.rest.services.HelpBean;
-import mmud.rest.services.ItemBean;
-import mmud.rest.services.LogBean;
-import mmud.rest.services.PersonBean;
-import mmud.rest.services.admin.AdminBean;
+import mmud.rest.services.EventsRestService;
+import mmud.rest.services.GuildRestService;
+import mmud.rest.services.admin.AdminRestService;
+import mmud.services.HelpBean;
+import mmud.services.ItemBean;
+import mmud.services.LogBean;
+import mmud.services.PersonBean;
 
 /**
  * An abstract class for the most normal commands.
@@ -155,15 +155,15 @@ public abstract class NormalCommand implements Command
         return callback.getPersonBean();
     }
 
-    protected EventsBean getEventsBean()
-    {
-        return callback.getEventsBean();
-    }
+  protected EventsRestService getEventsBean()
+  {
+    return callback.getEventsBean();
+  }
 
-    protected AdminBean getAdminBean()
-    {
-        return callback.getAdminBean();
-    }
+  protected AdminRestService getAdminBean()
+  {
+    return callback.getAdminBean();
+  }
 
     protected HelpBean getHelpBean()
     {
@@ -175,10 +175,10 @@ public abstract class NormalCommand implements Command
         return callback.getLogBean();
     }
 
-    protected GuildBean getGuildBean()
-    {
-        return callback.getGuildBean();
-    }
+  protected GuildRestService getGuildBean()
+  {
+    return callback.getGuildBean();
+  }
 
     protected ItemBean getItemBean()
     {

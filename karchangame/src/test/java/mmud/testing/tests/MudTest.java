@@ -16,21 +16,18 @@
  */
 package mmud.testing.tests;
 
-import mmud.commands.CommandRunner;
-import mmud.database.entities.characters.Person;
-import mmud.rest.services.PersonBean;
-import mmud.services.CommunicationService;
-import org.testng.annotations.BeforeMethod;
-
 import java.lang.reflect.Field;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import mmud.database.entities.characters.Person;
+import mmud.services.CommunicationService;
+
 /**
- *
  * @author maartenl
  */
-public class MudTest {
+public class MudTest
+{
 
   /**
    * Sets the field 'fieldname' in object 'object' to the value 'value'. Where 'object' is an object

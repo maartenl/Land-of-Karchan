@@ -24,13 +24,13 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import javax.validation.ConstraintViolation;
-import javax.validation.Validation;
-import javax.validation.Validator;
-import javax.validation.ValidatorFactory;
 
 import com.google.common.escape.Escaper;
 import com.google.common.html.HtmlEscapers;
+import jakarta.validation.ConstraintViolation;
+import jakarta.validation.Validation;
+import jakarta.validation.Validator;
+import jakarta.validation.ValidatorFactory;
 import mmud.database.OutputFormatter;
 import mmud.database.entities.items.Item;
 import mmud.database.entities.items.ItemDefinition;
@@ -42,13 +42,18 @@ import mmud.rest.webentities.PrivateItem;
 public class Constants
 {
 
-  private static final String BASEPATH = "/home/jelastic";
+  private static final String BASEPATH = System.getProperty("user.home");
 
   public static final String DEPUTIES_EMAILADDRESS = "deputiesofkarchan@outlook.com";
 
   private static final String PLAYERLOG_DIR = "temp";
 
   public static final String MMUD_BASE_PATH_PROPERTY = "mmud.base.path";
+
+  private Constants()
+  {
+    // create private constructor to hide the public one
+  }
 
   /**
    * For example 2020-05-17 13:23:34.
@@ -89,11 +94,11 @@ public class Constants
     Map<ItemDefinition, Integer> inventory = OutputFormatter.inventory(set);
 
     builder.append("<ul>");
-    for (ItemDefinition definition : inventory.keySet())
+    for (Map.Entry<ItemDefinition, Integer> definition : inventory.entrySet())
     {
-      String desc = definition.getShortDescription();
+      String desc = definition.getKey().getShortDescription();
       builder.append("<li>");
-      int amount = inventory.get(definition);
+      int amount = definition.getValue();
       if (amount != 1)
       {
         // 5 gold, hard cups
@@ -164,22 +169,24 @@ public class Constants
    */
   public static <T> String checkValidation(T entity)
   {
-    ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
-    Validator validator = factory.getValidator();
-    Set<ConstraintViolation<T>> constraintViolations = validator.validate(entity);
-    StringBuilder buffer = null;
-    if (!constraintViolations.isEmpty())
+    try (ValidatorFactory factory = Validation.buildDefaultValidatorFactory())
     {
-      for (ConstraintViolation<T> cv : constraintViolations)
+      Validator validator = factory.getValidator();
+      Set<ConstraintViolation<T>> constraintViolations = validator.validate(entity);
+      StringBuilder buffer = null;
+      if (!constraintViolations.isEmpty())
       {
-        if (buffer == null)
+        for (ConstraintViolation<T> cv : constraintViolations)
         {
-          buffer = new StringBuilder();
+          if (buffer == null)
+          {
+            buffer = new StringBuilder();
+          }
+          buffer.append(cv.getRootBeanClass().getSimpleName()).append(".").append(cv.getPropertyPath()).append(" ").append(cv.getMessage());
         }
-        buffer.append(cv.getRootBeanClass().getSimpleName()).append(".").append(cv.getPropertyPath()).append(" ").append(cv.getMessage());
       }
+      return buffer == null ? null : buffer.toString();
     }
-    return buffer == null ? null : buffer.toString();
   }
 
 }

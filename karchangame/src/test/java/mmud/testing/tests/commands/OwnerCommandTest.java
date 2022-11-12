@@ -16,6 +16,11 @@
  */
 package mmud.testing.tests.commands;
 
+import java.io.File;
+import java.io.PrintWriter;
+import java.util.Arrays;
+import java.util.List;
+
 import mmud.Constants;
 import mmud.commands.CommandRunner;
 import mmud.commands.OwnerCommand;
@@ -25,19 +30,17 @@ import mmud.database.entities.game.DisplayInterface;
 import mmud.database.entities.game.Room;
 import mmud.database.entities.items.ItemDefinition;
 import mmud.database.entities.items.NormalItem;
-import mmud.rest.services.ItemBean;
-import mmud.rest.services.LogBean;
-import mmud.rest.services.admin.AdminBean;
+import mmud.rest.services.admin.AdminRestService;
+import mmud.services.CommunicationService;
+import mmud.services.ItemBean;
+import mmud.services.LogBean;
 import mmud.testing.tests.LogBeanStub;
 import mmud.testing.tests.MudTest;
-import org.testng.annotations.*;
-
-import java.io.File;
-import java.io.PrintWriter;
-import java.util.Arrays;
-import java.util.List;
-import mmud.services.CommunicationService;
-
+import org.testng.annotations.AfterClass;
+import org.testng.annotations.AfterMethod;
+import org.testng.annotations.BeforeClass;
+import org.testng.annotations.BeforeMethod;
+import org.testng.annotations.Test;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
 /**
@@ -56,7 +59,7 @@ public class OwnerCommandTest extends MudTest
     private LogBeanStub logBean;
 
     private CommandRunner commandRunner = new CommandRunner();
-    private AdminBean adminBean;
+    private AdminRestService adminRestService;
     private Admin karnAdmin;
     private Admin mideviaAdmin;
 
@@ -127,9 +130,9 @@ public class OwnerCommandTest extends MudTest
         OwnerCommand ownerCommand = new OwnerCommand("owner( (\\w)+)?")
         {
             @Override
-            protected AdminBean getAdminBean()
+            protected AdminRestService getAdminBean()
             {
-                return adminBean;
+                return adminRestService;
             }
 
             @Override
@@ -158,9 +161,9 @@ public class OwnerCommandTest extends MudTest
         OwnerCommand ownerCommand = new OwnerCommand("owner( (\\w)+)?")
         {
             @Override
-            protected AdminBean getAdminBean()
+            protected AdminRestService getAdminBean()
             {
-                return adminBean;
+                return adminRestService;
             }
 
             @Override
@@ -210,7 +213,7 @@ public class OwnerCommandTest extends MudTest
         karn.setName("Karn");
         karn.setRoom(room1);
 
-        adminBean = new AdminBean()
+        adminRestService = new AdminRestService()
         {
             @Override
             public List<Admin> getAdministrators()

@@ -7,10 +7,10 @@ import java.io.Writer;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.logging.Logger;
 import java.util.stream.Stream;
-import javax.persistence.EntityManager;
-import javax.persistence.Query;
-import javax.ws.rs.core.StreamingOutput;
 
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.Query;
+import jakarta.ws.rs.core.StreamingOutput;
 import org.eclipse.persistence.config.HintValues;
 import org.eclipse.persistence.config.QueryHints;
 import org.eclipse.persistence.config.ResultSetConcurrency;

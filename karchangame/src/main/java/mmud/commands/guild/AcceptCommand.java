@@ -21,9 +21,9 @@ import mmud.database.Attributes;
 import mmud.database.entities.characters.User;
 import mmud.database.entities.game.DisplayInterface;
 import mmud.exceptions.MudException;
-import mmud.rest.services.LogBean;
-import mmud.rest.services.PersonBean;
 import mmud.services.CommunicationService;
+import mmud.services.LogBean;
+import mmud.services.PersonBean;
 import mmud.services.PersonCommunicationService;
 
 /**

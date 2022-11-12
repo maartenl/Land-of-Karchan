@@ -1,10 +1,9 @@
 package mmud.services.websocket;
 
+import jakarta.websocket.DecodeException;
+import jakarta.websocket.Decoder;
+import jakarta.websocket.EndpointConfig;
 import mmud.rest.webentities.Message;
-
-import javax.websocket.DecodeException;
-import javax.websocket.Decoder;
-import javax.websocket.EndpointConfig;
 
 public class MessageDecoder implements Decoder.Text<Message>
 {

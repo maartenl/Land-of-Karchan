@@ -17,15 +17,14 @@
 package mmud.commands.communication;
 
 
-
 import mmud.commands.TargetCommand;
 import mmud.database.entities.characters.Person;
 import mmud.database.entities.characters.User;
 import mmud.database.entities.game.DisplayInterface;
 import mmud.exceptions.MudException;
 import mmud.exceptions.PersonNotFoundException;
-import mmud.rest.services.PersonBean;
 import mmud.services.CommunicationService;
+import mmud.services.PersonBean;
 
 /**
  *

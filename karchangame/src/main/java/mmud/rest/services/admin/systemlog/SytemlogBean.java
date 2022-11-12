@@ -24,22 +24,18 @@ import java.util.Collections;
 import java.util.List;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
-import javax.annotation.security.DeclareRoles;
-import javax.annotation.security.RolesAllowed;
-import javax.ejb.LocalBean;
-import javax.ejb.Stateless;
-import javax.inject.Inject;
-import javax.json.bind.JsonbBuilder;
-import javax.security.enterprise.SecurityContext;
-import javax.ws.rs.GET;
-import javax.ws.rs.Path;
-import javax.ws.rs.Produces;
-import javax.ws.rs.WebApplicationException;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
+
+import jakarta.annotation.security.DeclareRoles;
+import jakarta.annotation.security.RolesAllowed;
+import jakarta.inject.Inject;
+import jakarta.security.enterprise.SecurityContext;
+import jakarta.ws.rs.GET;
+import jakarta.ws.rs.Path;
+import jakarta.ws.rs.WebApplicationException;
+import jakarta.ws.rs.core.Response;
 import mmud.exceptions.MudWebException;
-import org.karchan.security.Roles;
 import org.eclipse.microprofile.config.inject.ConfigProperty;
+import org.karchan.security.Roles;
 
 /**
  * <p>
@@ -50,8 +46,8 @@ import org.eclipse.microprofile.config.inject.ConfigProperty;
  */
 @DeclareRoles(Roles.DEPUTY)
 @RolesAllowed(Roles.DEPUTY)
-@Stateless
-@LocalBean
+
+
 @Path("/administration/systemlog")
 public class SytemlogBean
 {

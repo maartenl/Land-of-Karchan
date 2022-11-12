@@ -22,7 +22,7 @@ import mmud.database.entities.characters.User;
 import mmud.database.entities.game.DisplayInterface;
 import mmud.database.entities.game.Help;
 import mmud.exceptions.MudException;
-import mmud.rest.services.HelpBean;
+import mmud.services.HelpBean;
 
 /**
  * Show help regarding possible commands: "help".

@@ -16,7 +16,6 @@
  */
 package mmud.scripting;
 
-import mmud.scripting.entities.Item;
 import mmud.scripting.entities.Person;
 
 /**

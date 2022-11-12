@@ -18,6 +18,7 @@ package mmud.testing.tests.scripting;
 
 import java.util.HashSet;
 import java.util.Set;
+
 import mmud.database.entities.characters.Person;
 import mmud.database.entities.characters.User;
 import mmud.database.entities.game.Room;
@@ -25,7 +26,6 @@ import mmud.database.entities.items.Item;
 import mmud.database.entities.items.ItemDefinition;
 import mmud.database.entities.items.NormalItem;
 import mmud.database.enums.Sex;
-import mmud.exceptions.MudException;
 import mmud.scripting.Items;
 import mmud.scripting.ItemsInterface;
 import mmud.scripting.Persons;
@@ -90,7 +90,7 @@ public class RunScriptTest
     protected PersonsInterface personsInterface;
     protected Person marvin;
     protected Person hotblack;
-    protected RoomStub room;
+  protected Room room;
 
     @BeforeClass
     public static void setUpClass() throws Exception
@@ -105,7 +105,7 @@ public class RunScriptTest
     @BeforeMethod
     public void setUpMethod() throws Exception
     {
-        room = new RoomStub();
+      room = new Room();
 
         hotblack = new User();
         hotblack.setName("Hotblack");
@@ -116,7 +116,7 @@ public class RunScriptTest
         marvin.setSex(Sex.MALE);
         marvin.setRoom(room);
 
-        final Room room2 = new RoomStub();
+      final Room room2 = new Room();
         room2.setId(2L);
         room2.setContents("the stimulation of thin air; the intense blueness of the sky; the towering "
                 + "thunderheads of summer that ramble and flash and produce sheets of rain with "
@@ -131,7 +131,7 @@ public class RunScriptTest
         room2.setTitle("Outside The Cave");
         room2.setPicture("/images/gif/cave-ent.gif");
 
-        final Room room3 = new RoomStub();
+      final Room room3 = new Room();
         room3.setId(3L);
         room3.setContents("you are standing in the  exuberant air on a road which leads to "
                 + "the north and south. In the north, you can see a little  village; little in "

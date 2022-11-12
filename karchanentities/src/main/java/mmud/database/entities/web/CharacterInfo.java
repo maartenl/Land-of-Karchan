@@ -17,22 +17,19 @@
 package mmud.database.entities.web;
 
 import java.io.Serializable;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import javax.persistence.Basic;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Lob;
-import javax.persistence.NamedQueries;
-import javax.persistence.NamedQuery;
-import javax.persistence.Table;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
+
+import jakarta.persistence.Basic;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
+import jakarta.persistence.Lob;
+import jakarta.persistence.NamedQueries;
+import jakarta.persistence.NamedQuery;
+import jakarta.persistence.Table;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 import mmud.database.InputSanitizer;
-//import mmud.Utils;
 import mmud.exceptions.MudException;
-import org.apache.commons.validator.routines.UrlValidator;
 
 /**
  *
@@ -116,12 +113,7 @@ public class CharacterInfo implements Serializable
         imageurl = null;
       } else
       {
-        String[] schemes =
-        {
-          "http", "https"
-        };
-        UrlValidator urlValidator = new UrlValidator(schemes);
-        if (!urlValidator.isValid(imageurl))
+        if (!UrlValidator.isValid(imageurl))
         {
           throw new MudException("imageurl '" + imageurl + "' invalid");
         }
@@ -149,12 +141,7 @@ public class CharacterInfo implements Serializable
         homepageurl = null;
       } else
       {
-        String[] schemes =
-        {
-          "http", "https"
-        };
-        UrlValidator urlValidator = new UrlValidator(schemes);
-        if (!urlValidator.isValid(homepageurl))
+        if (!UrlValidator.isValid(homepageurl))
         {
           throw new MudException("Homepage url '" + homepageurl + "' invalid.");
         }

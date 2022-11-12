@@ -24,9 +24,9 @@ import mmud.database.entities.game.DisplayInterface;
 import mmud.database.enums.God;
 import mmud.exceptions.MudException;
 import mmud.exceptions.PersonNotFoundException;
-import mmud.rest.services.EventsBean;
-import mmud.rest.services.PersonBean;
+import mmud.rest.services.EventsRestService;
 import mmud.services.CommunicationService;
+import mmud.services.PersonBean;
 import mmud.services.PersonCommunicationService;
 
 /**
@@ -69,8 +69,8 @@ public class AdminCommand extends NormalCommand
     }
     if (command.toLowerCase().startsWith("admin runevent"))
     {
-      EventsBean eventsBean = getEventsBean();
-      eventsBean.runSingleEvent(administrator, Integer.valueOf(command.substring(15)));
+      EventsRestService eventsRestService = getEventsBean();
+      eventsRestService.runSingleEvent(administrator, Integer.valueOf(command.substring(15)));
       communicationService.writeMessage("Event run attempted.<br/>\r\n");
     }
     if (command.toLowerCase().startsWith("admin visible"))

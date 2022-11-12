@@ -18,7 +18,8 @@ package org.karchan.menus;
 
 import java.util.List;
 import java.util.Map;
-import javax.persistence.EntityManager;
+
+import jakarta.persistence.EntityManager;
 
 /**
  * A simple menu that does not require a datamodel of any kind.
@@ -26,9 +27,9 @@ import javax.persistence.EntityManager;
  */
 public final class SimpleMenu extends Menu
 {
-  
+
   /**
-   * @see Menu#Menu(java.lang.String, java.lang.String) 
+   * @see Menu#Menu(java.lang.String, java.lang.String)
    */
   public SimpleMenu(String name, String url)
   {
@@ -45,7 +46,6 @@ public final class SimpleMenu extends Menu
   {
     super.setDatamodel(entityManager, root, parameters); //To change body of generated methods, choose Tools | Templates.
   }
-  
-  
-  
+
+
 }

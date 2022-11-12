@@ -20,8 +20,8 @@ import mmud.commands.NormalCommand;
 import mmud.database.entities.characters.User;
 import mmud.database.entities.game.DisplayInterface;
 import mmud.exceptions.MudException;
-import mmud.rest.services.PersonBean;
 import mmud.services.CommunicationService;
+import mmud.services.PersonBean;
 
 /**
  * Shows the current date in the game: "date".
