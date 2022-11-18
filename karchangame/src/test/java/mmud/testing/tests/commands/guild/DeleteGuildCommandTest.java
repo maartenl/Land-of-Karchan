@@ -24,7 +24,6 @@ import java.util.SortedSet;
 import java.util.TreeSet;
 
 import jakarta.persistence.EntityManager;
-import jakarta.ws.rs.core.Response;
 import mmud.Constants;
 import mmud.commands.CommandRunner;
 import mmud.commands.guild.DeleteGuildCommand;
@@ -34,9 +33,8 @@ import mmud.database.entities.game.DisplayInterface;
 import mmud.database.entities.game.Guild;
 import mmud.database.entities.game.Guildrank;
 import mmud.database.entities.game.Room;
-import mmud.exceptions.MudWebException;
-import mmud.rest.services.GuildRestService;
 import mmud.services.CommunicationService;
+import mmud.services.GuildService;
 import mmud.services.LogService;
 import mmud.testing.tests.LogServiceStub;
 import mmud.testing.tests.MudTest;
@@ -47,7 +45,6 @@ import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.mockito.Mockito.mock;
 
 /**
- *
  * @author maartenl
  */
 public class DeleteGuildCommandTest extends MudTest
@@ -56,26 +53,8 @@ public class DeleteGuildCommandTest extends MudTest
   private User karn;
   private Room room1;
 
-  private GuildRestService guildRestService = new GuildRestService()
+  private GuildService guildService = new GuildService()
   {
-    @Override
-    protected User authenticateGuildMaster(String name)
-    {
-      if (!karn.getName().equals(name))
-      {
-        throw new MudWebException(name, "You are not logged in as " + name, Response.Status.UNAUTHORIZED);
-      }
-      User person = karn;
-      if (person.getGuild() == null)
-      {
-        throw new MudWebException(name, name + " is not a member of a guild.", "Person (" + name + ") is not a member of a guild", Response.Status.NOT_FOUND);
-      }
-      if (!person.getGuild().getBoss().getName().equals(person.getName()))
-      {
-        throw new MudWebException(name, name + " is not the guild master of " + person.getGuild().getTitle() + ".", "Person (" + name + ") is not the guild master of " + person.getGuild().getName(), Response.Status.UNAUTHORIZED);
-      }
-      return person;
-    }
 
   };
 
@@ -112,7 +91,7 @@ public class DeleteGuildCommandTest extends MudTest
   public void deleteGuild()
   {
     EntityManager entityManager = mock(EntityManager.class);
-    setField(GuildRestService.class, "em", guildRestService, entityManager);
+    setField(GuildService.class, "em", guildService, entityManager);
 
     karn.setGuild(new Guild());
     karn.getGuild().setName("oldguild");
@@ -128,7 +107,7 @@ public class DeleteGuildCommandTest extends MudTest
     DeleteGuildCommand deleteguildCommand = new DeleteGuildCommand("deleteguild");
     deleteguildCommand.setCallback(commandRunner);
     assertThat(deleteguildCommand.getRegExpr()).isEqualTo("deleteguild");
-    commandRunner.setBeans(null, logService, guildRestService, null, null, null, null);
+    commandRunner.setServices(null, logService, guildService, null, null, null, null);
     DisplayInterface display = deleteguildCommand.run("deleteguild", karn);
     assertThat(display).isNotNull();
     assertThat(display.getBody()).isEqualTo("You are in a small room.");

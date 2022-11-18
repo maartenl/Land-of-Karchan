@@ -17,6 +17,7 @@
 package mmud.commands;
 
 import java.util.Optional;
+
 import mmud.database.entities.characters.User;
 import mmud.database.entities.game.Admin;
 import mmud.database.entities.game.DisplayInterface;
@@ -53,27 +54,27 @@ public class OwnerCommand extends NormalCommand
             {
                 communicationService.writeMessage("Your current owner is " + aUser.getOwner().getName() + ".<br/>");
             }
-            return aUser.getRoom();
+          return aUser.getRoom();
         }
-        if (command.equalsIgnoreCase("owner remove"))
-        {
-            getLogBean().writeLog(aUser, "has removed owner " + (aUser.getOwner() == null ? "null" : aUser.getOwner().getName()));
-            aUser.setOwner(null);
-            communicationService.writeMessage("Owner removed.<br/>");
-            return aUser.getRoom();
-        }
-        String adminName = command.substring("owner ".length());
-        Optional<Admin> administrator = getAdminBean().getAdministrator(adminName);
-        if (administrator.isPresent())
-        {
-            Admin admin = administrator.get();
-            aUser.setOwner(admin);
-            communicationService.writeMessage("You are now owned by " + admin.getName() + ".<br/>");
-            getLogBean().writeLog(aUser, "has set owner to " + aUser.getOwner().getName());
-            return aUser.getRoom();
-        }
-        communicationService.writeMessage("Owner " + adminName + " is unknown.<br/>");
+      if (command.equalsIgnoreCase("owner remove"))
+      {
+        getLogService().writeLog(aUser, "has removed owner " + (aUser.getOwner() == null ? "null" : aUser.getOwner().getName()));
+        aUser.setOwner(null);
+        communicationService.writeMessage("Owner removed.<br/>");
         return aUser.getRoom();
+      }
+      String adminName = command.substring("owner ".length());
+      Optional<Admin> administrator = getAdminService().getAdministrator(adminName);
+      if (administrator.isPresent())
+      {
+        Admin admin = administrator.get();
+        aUser.setOwner(admin);
+        communicationService.writeMessage("You are now owned by " + admin.getName() + ".<br/>");
+        getLogService().writeLog(aUser, "has set owner to " + aUser.getOwner().getName());
+        return aUser.getRoom();
+      }
+      communicationService.writeMessage("Owner " + adminName + " is unknown.<br/>");
+      return aUser.getRoom();
     }
 
 }

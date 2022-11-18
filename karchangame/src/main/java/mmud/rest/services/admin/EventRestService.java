@@ -25,6 +25,7 @@ import jakarta.annotation.security.RolesAllowed;
 import jakarta.inject.Inject;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
+import jakarta.transaction.Transactional;
 import jakarta.ws.rs.Consumes;
 import jakarta.ws.rs.DELETE;
 import jakarta.ws.rs.GET;
@@ -52,7 +53,7 @@ import static mmud.rest.services.admin.ValidationUtils.checkValidation;
  */
 @DeclareRoles("deputy")
 @RolesAllowed("deputy")
-
+@Transactional
 @Path("/administration/events")
 public class EventRestService // extends AbstractFacade<Event>
 {
@@ -217,7 +218,7 @@ public class EventRestService // extends AbstractFacade<Event>
   @Path("{offset}/{pageSize}")
   @Produces(
     {
-      "application/xml", "application/json"
+      "application/json"
     })
   public String findRange(@Context UriInfo info, @PathParam("offset") Integer offset,
                           @PathParam("pageSize") Integer pageSize)

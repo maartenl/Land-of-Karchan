@@ -44,13 +44,13 @@ public class LeaveCommand extends GuildCommand
     @Override
     public DisplayInterface run(String command, User aUser) throws MudException
     {
-        LogService logService = getLogBean();
-        Guild guild = aUser.getGuild();
-        aUser.setGuild(null);
-        CommunicationService.getCommunicationService(aUser).writeMessage("You leave guild <i>" + guild.getTitle() + "</i>.<br/>\r\n");
-        logService.writeLog(aUser, "left guild "
-          + guild.getName());
-        return aUser.getRoom();
+      LogService logService = getLogService();
+      Guild guild = aUser.getGuild();
+      aUser.setGuild(null);
+      CommunicationService.getCommunicationService(aUser).writeMessage("You leave guild <i>" + guild.getTitle() + "</i>.<br/>\r\n");
+      logService.writeLog(aUser, "left guild "
+        + guild.getName());
+      return aUser.getRoom();
     }
 
 }

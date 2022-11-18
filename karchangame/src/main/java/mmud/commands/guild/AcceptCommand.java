@@ -51,8 +51,8 @@ public class AcceptCommand extends GuildMasterCommand
   {
     // TODO : similar to rejectcommand, refactor?
     PersonCommunicationService communicationService = CommunicationService.getCommunicationService(aUser);
-    PersonService personService = getPersonBean();
-    LogService logService = getLogBean();
+    PersonService personService = getPersonService();
+    LogService logService = getLogService();
     String[] myParsed = parseCommand(command);
     User potentialGuildmember = personService.getUser(myParsed[1]);
     if (potentialGuildmember == null)

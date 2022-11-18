@@ -70,7 +70,7 @@ public class RemoveCommandTest extends MudTest
     RemoveCommand removeCommand = new RemoveCommand("guildremove (\\w)+");
     removeCommand.setCallback(commandRunner);
     assertThat(removeCommand.getRegExpr()).isEqualTo("guildremove (\\w)+");
-    commandRunner.setBeans(null, logService, null, null, null, null, null);
+    commandRunner.setServices(null, logService, null, null, null, null, null);
     DisplayInterface display = removeCommand.run("guildremove hotblack", karn);
     assertThat(display).isNotNull();
     assertThat(display.getBody()).isEqualTo("You are in a small room.");
@@ -93,7 +93,7 @@ public class RemoveCommandTest extends MudTest
     RemoveCommand removeCommand = new RemoveCommand("guildremove (\\w)+");
     removeCommand.setCallback(commandRunner);
     assertThat(removeCommand.getRegExpr()).isEqualTo("guildremove (\\w)+");
-    commandRunner.setBeans(null, logService, null, null, null, null, null);
+    commandRunner.setServices(null, logService, null, null, null, null, null);
     DisplayInterface display = removeCommand.run("guildremove karcas", karn);
     assertThat(display).isNotNull();
     assertThat(display.getBody()).isEqualTo("You are in a small room.");
@@ -112,7 +112,7 @@ public class RemoveCommandTest extends MudTest
     RemoveCommand removeCommand = new RemoveCommand("guildremove (\\w)+");
     removeCommand.setCallback(commandRunner);
     assertThat(removeCommand.getRegExpr()).isEqualTo("guildremove (\\w)+");
-    commandRunner.setBeans(null, logService, null, null, null, null, null);
+    commandRunner.setServices(null, logService, null, null, null, null, null);
     DisplayInterface display = removeCommand.run("guildremove karn", karn);
     assertThat(display).isNotNull();
     assertThat(display.getBody()).isEqualTo("You are in a small room.");
@@ -131,7 +131,7 @@ public class RemoveCommandTest extends MudTest
     RemoveCommand removeCommand = new RemoveCommand("guildremove (\\w)+");
     removeCommand.setCallback(commandRunner);
     assertThat(removeCommand.getRegExpr()).isEqualTo("guildremove (\\w)+");
-    commandRunner.setBeans(null, logService, null, null, null, null, null);
+    commandRunner.setServices(null, logService, null, null, null, null, null);
     DisplayInterface display = removeCommand.run("guildremove marvin", karn);
     assertThat(display).isNotNull();
     assertThat(display.getBody()).isEqualTo("You are in a small room.");

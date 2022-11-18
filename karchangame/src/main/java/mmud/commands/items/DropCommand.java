@@ -80,7 +80,7 @@ public class DropCommand extends NormalCommand
       return aUser.getRoom();
     }
     boolean dropped = false;
-    ItemService itemService = getItemBean();
+    ItemService itemService = getItemService();
     for (Item item : itemsFound)
     {
       if (aUser.unused(item) && item.isDroppable())

@@ -20,6 +20,7 @@ import java.util.logging.Logger;
 
 import jakarta.persistence.EntityManager;
 import jakarta.ws.rs.core.Response;
+import jakarta.ws.rs.core.SecurityContext;
 import mmud.database.entities.characters.Person;
 import mmud.database.entities.characters.User;
 import mmud.database.entities.game.Area;
@@ -33,6 +34,7 @@ import mmud.exceptions.MudWebException;
 import mmud.rest.services.PrivateRestService;
 import mmud.rest.webentities.PrivatePassword;
 import mmud.rest.webentities.PrivatePerson;
+import mmud.services.PlayerAuthenticationService;
 import mmud.testing.TestingConstants;
 import org.mockito.invocation.InvocationOnMock;
 import org.testng.annotations.AfterClass;
@@ -63,6 +65,25 @@ public class PrivateRestServiceTest
 
   private User hotblack;
   private User marvin;
+
+  private PlayerAuthenticationService playerAuthenticationService = new PlayerAuthenticationService()
+  {
+    @Override
+    public String getPlayerName(SecurityContext context) throws IllegalStateException
+    {
+      return "Marvin";
+    }
+
+    @Override
+    public User authenticate(String name, SecurityContext context)
+    {
+      if (name.equals("Marvin"))
+      {
+        return marvin;
+      }
+      return null;
+    }
+  };
 
   public PrivateRestServiceTest()
   {
@@ -118,19 +139,14 @@ public class PrivateRestServiceTest
       }
 
       @Override
-      protected String getPlayerName() throws IllegalStateException
-      {
-        return "Marvin";
-      }
-
-      @Override
       protected Response createResponse()
       {
         return null;
       }
     };
+    privateRestService.setPlayerAuthenticationService(playerAuthenticationService);
     LogServiceStub logBean = new LogServiceStub();
-    privateRestService.setLogBean(logBean);
+    privateRestService.setLogService(logBean);
     // Unit under test is exercised.
     final PrivatePerson person = new PrivatePerson();
     person.name = "Marvin";
@@ -140,7 +156,7 @@ public class PrivateRestServiceTest
     person.cityofbirth = "Sirius";
     person.storyline = "Life, don&#39;t talk to me about life.";
     privateRestService.updateCharacterSheet("Marvin", person);
-      // Verification code (JUnit/TestNG asserts), if any.
+    // Verification code (JUnit/TestNG asserts), if any.
     assertEquals(cinfo.getName(), person.name);
     assertEquals(cinfo.getImageurl(), person.imageurl);
     assertEquals(cinfo.getHomepageurl(), person.homepageurl);
@@ -157,8 +173,8 @@ public class PrivateRestServiceTest
 
     final PrivatePassword privatePassword = new PrivatePassword();
     privatePassword.name = "Marvin";
-    privatePassword.oldpassword ="secret";
-    privatePassword.password ="itsasecret";
+    privatePassword.oldpassword = "secret";
+    privatePassword.password = "itsasecret";
     privatePassword.password2 = "itsasecret";
 
     EntityManager entityManager = mock(EntityManager.class);
@@ -172,11 +188,6 @@ public class PrivateRestServiceTest
         return entityManager;
       }
 
-      @Override
-      protected String getPlayerName() throws IllegalStateException
-      {
-        return "Marvin";
-      }
 
       @Override
       protected Response createResponse()
@@ -185,9 +196,10 @@ public class PrivateRestServiceTest
       }
     };
     LogServiceStub logBean = new LogServiceStub();
-    privateRestService.setLogBean(logBean);
+    privateRestService.setLogService(logBean);
+    privateRestService.setPlayerAuthenticationService(playerAuthenticationService);
     // Unit under test is exercised.
-    privateRestService.resetPassword("Marvin", privatePassword.toJson(), null);
+    privateRestService.resetPassword("Marvin", privatePassword.toJson());
     // Verification code (JUnit/TestNG asserts), if any.
     assertThat(marvin.verifyPassword("itsasecret")).isTrue();
     assertThat(logBean.getLog()).isEqualTo("Marvin:password changed.\n");
@@ -200,8 +212,8 @@ public class PrivateRestServiceTest
 
     final PrivatePassword privatePassword = new PrivatePassword();
     privatePassword.name = "Marvin";
-    privatePassword.oldpassword ="itsasecret";
-    privatePassword.password ="itsasecret";
+    privatePassword.oldpassword = "itsasecret";
+    privatePassword.password = "itsasecret";
     privatePassword.password2 = "itsasecre2t";
 
     EntityManager entityManager = mock(EntityManager.class);
@@ -216,21 +228,16 @@ public class PrivateRestServiceTest
       }
 
       @Override
-      protected String getPlayerName() throws IllegalStateException
-      {
-        return "Marvin";
-      }
-
-      @Override
       protected Response createResponse()
       {
         return null;
       }
     };
     LogServiceStub logBean = new LogServiceStub();
-    privateRestService.setLogBean(logBean);
+    privateRestService.setLogService(logBean);
+    privateRestService.setPlayerAuthenticationService(playerAuthenticationService);
     // Unit under test is exercised.
-    privateRestService.resetPassword("Marvin", privatePassword.toJson(), null);
+    privateRestService.resetPassword("Marvin", privatePassword.toJson());
     // Verification code (JUnit/TestNG asserts), if any.
     assertThat(logBean.getLog()).isEqualTo("Marvin:settings changed.\n");
   }
@@ -242,8 +249,8 @@ public class PrivateRestServiceTest
 
     final PrivatePassword privatePassword = new PrivatePassword();
     privatePassword.name = "Marvin";
-    privatePassword.oldpassword ="itsase2cret";
-    privatePassword.password ="itsasecret";
+    privatePassword.oldpassword = "itsase2cret";
+    privatePassword.password = "itsasecret";
     privatePassword.password2 = "itsasecret";
 
     EntityManager entityManager = mock(EntityManager.class);
@@ -258,21 +265,16 @@ public class PrivateRestServiceTest
       }
 
       @Override
-      protected String getPlayerName() throws IllegalStateException
-      {
-        return "Marvin";
-      }
-
-      @Override
       protected Response createResponse()
       {
         return null;
       }
     };
+    privateRestService.setPlayerAuthenticationService(playerAuthenticationService);
     LogServiceStub logBean = new LogServiceStub();
-    privateRestService.setLogBean(logBean);
+    privateRestService.setLogService(logBean);
     // Unit under test is exercised.
-    privateRestService.resetPassword("Marvin", privatePassword.toJson(), null);
+    privateRestService.resetPassword("Marvin", privatePassword.toJson());
     // Verification code (JUnit/TestNG asserts), if any.
     assertThat(logBean.getLog()).isEqualTo("Marvin:settings changed.\n");
   }
@@ -284,8 +286,8 @@ public class PrivateRestServiceTest
 
     final PrivatePassword privatePassword = new PrivatePassword();
     privatePassword.name = "Hotblack";
-    privatePassword.oldpassword ="secret";
-    privatePassword.password ="itsasecret";
+    privatePassword.oldpassword = "secret";
+    privatePassword.password = "itsasecret";
     privatePassword.password2 = "itsasecret";
 
     EntityManager entityManager = mock(EntityManager.class);
@@ -300,21 +302,16 @@ public class PrivateRestServiceTest
       }
 
       @Override
-      protected String getPlayerName() throws IllegalStateException
-      {
-        return "Marvin";
-      }
-
-      @Override
       protected Response createResponse()
       {
         return null;
       }
     };
     LogServiceStub logBean = new LogServiceStub();
-    privateRestService.setLogBean(logBean);
+    privateRestService.setLogService(logBean);
+    privateRestService.setPlayerAuthenticationService(playerAuthenticationService);
     // Unit under test is exercised.
-    privateRestService.resetPassword("Marvin", privatePassword.toJson(), null);
+    privateRestService.resetPassword("Marvin", privatePassword.toJson());
     // Verification code (JUnit/TestNG asserts), if any.
     assertThat(logBean.getLog()).isEqualTo("Marvin:settings changed.\n");
   }
@@ -336,19 +333,14 @@ public class PrivateRestServiceTest
       }
 
       @Override
-      protected String getPlayerName() throws IllegalStateException
-      {
-        return "Marvin";
-      }
-
-      @Override
       protected Response createResponse()
       {
         return null;
       }
     };
+    privateRestService.setPlayerAuthenticationService(playerAuthenticationService);
     LogServiceStub logBean = new LogServiceStub();
-    privateRestService.setLogBean(logBean);
+    privateRestService.setLogService(logBean);
     // Unit under test is exercised.
     final PrivatePerson person = new PrivatePerson();
     person.name = "Marvin";
@@ -370,7 +362,7 @@ public class PrivateRestServiceTest
       return null;
     }).when(entityManager).persist(any(CharacterInfo.class));
     privateRestService.updateCharacterSheet("Marvin", person);
-      // Verification code (JUnit/TestNG asserts), if any.
+    // Verification code (JUnit/TestNG asserts), if any.
     assertThat(logBean.getLog()).isEqualTo("Marvin:settings changed.\n");
   }
 
@@ -399,19 +391,14 @@ public class PrivateRestServiceTest
       }
 
       @Override
-      protected String getPlayerName() throws IllegalStateException
-      {
-        return "Marvin";
-      }
-
-      @Override
       protected Response createResponse()
       {
         return null;
       }
     };
+    privateRestService.setPlayerAuthenticationService(playerAuthenticationService);
     LogServiceStub logBean = new LogServiceStub();
-    privateRestService.setLogBean(logBean);
+    privateRestService.setLogService(logBean);
     final PrivatePerson person = new PrivatePerson();
     person.name = "Marvin";
     person.imageurl = "http://www.images.com/newimage.jpg";
@@ -420,7 +407,7 @@ public class PrivateRestServiceTest
     person.cityofbirth = "Sirius";
     person.storyline = "Life, don't talk to me about <script>alert('woaj');</script>life.";
     privateRestService.updateCharacterSheet("Marvin", person);
-      // Verification code (JUnit/TestNG asserts), if any.
+    // Verification code (JUnit/TestNG asserts), if any.
 
     assertEquals(cinfo.getName(), person.name);
     assertEquals(cinfo.getImageurl(), person.imageurl);
@@ -455,12 +442,8 @@ public class PrivateRestServiceTest
         return entityManager;
       }
 
-      @Override
-      protected String getPlayerName() throws IllegalStateException
-      {
-        return "Marvin";
-      }
     };
+    privateRestService.setPlayerAuthenticationService(playerAuthenticationService);
     // Unit under test is exercised.
     final PrivatePerson person = new PrivatePerson();
     person.name = "Hotblack";
@@ -503,17 +486,12 @@ public class PrivateRestServiceTest
       }
 
       @Override
-      protected String getPlayerName() throws IllegalStateException
-      {
-        return "Marvin";
-      }
-
-      @Override
       protected Response createResponse()
       {
         return null;
       }
     };
+    privateRestService.setPlayerAuthenticationService(playerAuthenticationService);
     // Unit under test is exercised.
     privateRestService.updateFamilyvalues("Marvin", "Hotblack", 2);
     // Verification code (JUnit/TestNG asserts), if any.
@@ -536,12 +514,8 @@ public class PrivateRestServiceTest
         return entityManager;
       }
 
-      @Override
-      protected String getPlayerName() throws IllegalStateException
-      {
-        return "Marvin";
-      }
     };
+    privateRestService.setPlayerAuthenticationService(playerAuthenticationService);
     assertThatThrownBy(() -> privateRestService.updateFamilyvalues("Marvin", "Hotblack", 12))
       .isInstanceOf(MudWebException.class)
       .hasMessage("Family value 12 was not found.");
@@ -568,24 +542,20 @@ public class PrivateRestServiceTest
       }
 
       @Override
-      protected String getPlayerName() throws IllegalStateException
-      {
-        return "Marvin";
-      }
-      @Override
       protected Response createResponse()
       {
         return null;
       }
     };
+    privateRestService.setPlayerAuthenticationService(playerAuthenticationService);
 
     doAnswer((InvocationOnMock invocation) ->
     {
       Family fam = (Family) invocation.getArguments()[0];
       assertThat(fam).isNotNull();
       assertThat(fam.getDescription()).isEqualTo(value);
-      assertThat(fam.getFamilyPK().getName()).isEqualTo( "Marvin");
-      assertThat(fam.getFamilyPK().getToname()).isEqualTo( "Hotblack");
+      assertThat(fam.getFamilyPK().getName()).isEqualTo("Marvin");
+      assertThat(fam.getFamilyPK().getToname()).isEqualTo("Hotblack");
       return null;
     }).when(entityManager).persist(any(Family.class));
     // Unit under test is exercised.
@@ -621,17 +591,12 @@ public class PrivateRestServiceTest
       }
 
       @Override
-      protected String getPlayerName() throws IllegalStateException
-      {
-        return "Marvin";
-      }
-
-      @Override
       protected Response createResponse()
       {
         return null;
       }
     };
+    privateRestService.setPlayerAuthenticationService(playerAuthenticationService);
     // Unit under test is exercised.
     privateRestService.deleteFamilyvalues("Marvin", "Hotblack");
     // Verification code (JUnit/TestNG asserts), if any.

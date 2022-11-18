@@ -24,8 +24,8 @@ import mmud.database.entities.game.DisplayInterface;
 import mmud.database.enums.God;
 import mmud.exceptions.MudException;
 import mmud.exceptions.PersonNotFoundException;
-import mmud.rest.services.EventsRestService;
 import mmud.services.CommunicationService;
+import mmud.services.EventsService;
 import mmud.services.PersonCommunicationService;
 import mmud.services.PersonService;
 
@@ -61,16 +61,16 @@ public class AdminCommand extends NormalCommand
     }
     if (command.toLowerCase().startsWith("admin wall"))
     {
-      PersonService personService = getPersonBean();
+      PersonService personService = getPersonService();
       final String message = command.substring(11);
       personService.sendWall(message);
-      getLogBean().writeLog(administrator, "admin command 'wall' executed.", message);
+      getLogService().writeLog(administrator, "admin command 'wall' executed.", message);
       communicationService.writeMessage("Wall message sent.<br/>\r\n");
     }
     if (command.toLowerCase().startsWith("admin runevent"))
     {
-      EventsRestService eventsRestService = getEventsBean();
-      eventsRestService.runSingleEvent(administrator, Integer.valueOf(command.substring(15)));
+      EventsService eventsService = getEventsService();
+      eventsService.runSingleEvent(administrator, Integer.valueOf(command.substring(15)));
       communicationService.writeMessage("Event run attempted.<br/>\r\n");
     }
     if (command.toLowerCase().startsWith("admin visible"))
@@ -79,20 +79,20 @@ public class AdminCommand extends NormalCommand
       {
         aUser.setVisible(false);
         communicationService.writeMessage("Setting visibility to false.<br/>\r\n");
-        getLogBean().writeLog(aUser, " turned invisible.");
+        getLogService().writeLog(aUser, " turned invisible.");
       }
       if (command.equalsIgnoreCase("admin visible on"))
       {
         aUser.setVisible(true);
         communicationService.writeMessage("Setting visibility to true.<br/>\r\n");
-        getLogBean().writeLog(aUser, " turned visible.");
+        getLogService().writeLog(aUser, " turned visible.");
       }
     }
     if (command.toLowerCase().startsWith("admin chatlines"))
     {
       String table =
         "<table><tr><th>id</th><th>name</th><th>attribute</th><th>colour</th><th>last used</th></tr>" +
-          getPersonBean().getChatlines().stream()
+          getPersonService().getChatlines().stream()
             .map(chat -> "<tr><td>" + chat.getId() + "</td><td>" + chat.getChatname() + "</td><td>" + chat.getAttributename() + "</td><td>" + chat.getColour() + "</td><td>" + chat.getLastchattime() +
               "</td></tr>")
             .collect(Collectors.joining()) +
@@ -101,7 +101,7 @@ public class AdminCommand extends NormalCommand
     }
     if (command.toLowerCase().startsWith("admin frog"))
     {
-      PersonService personService = getPersonBean();
+      PersonService personService = getPersonService();
       String[] commands = command.split(" ");
       if (commands.length < 3)
       {
@@ -126,11 +126,11 @@ public class AdminCommand extends NormalCommand
       }
       communicationService.writeMessage("Changed " + person.getName() + " into frog (" + amount + ").<br/>\r\n");
       CommunicationService.getCommunicationService(person.getRoom()).sendMessage(person, "%SNAME %SISARE suddenly changed into a frog!<br/>\r\n");
-      getLogBean().writeLog(person, " was changed into a frog by " + aUser.getName() + " for " + amount + ".");
+      getLogService().writeLog(person, " was changed into a frog by " + aUser.getName() + " for " + amount + ".");
     }
     if (command.toLowerCase().startsWith("admin jackass"))
     {
-      PersonService personService = getPersonBean();
+      PersonService personService = getPersonService();
       String[] commands = command.split(" ");
       if (commands.length < 3)
       {
@@ -155,11 +155,11 @@ public class AdminCommand extends NormalCommand
       }
       communicationService.writeMessage("Changed " + person.getName() + " into jackass (" + amount + ").<br/>\r\n");
       CommunicationService.getCommunicationService(person.getRoom()).sendMessage(person, "%SNAME %SISARE suddenly changed into a jackass!<br/>\r\n");
-      getLogBean().writeLog(person, " was changed into a jackass by " + aUser.getName() + " for " + amount + ".");
+      getLogService().writeLog(person, " was changed into a jackass by " + aUser.getName() + " for " + amount + ".");
     }
     if (command.toLowerCase().startsWith("admin kick"))
     {
-      PersonService personService = getPersonBean();
+      PersonService personService = getPersonService();
       String[] commands = command.split(" ");
       if (commands.length < 3)
       {
@@ -188,7 +188,7 @@ public class AdminCommand extends NormalCommand
       }
       person.deactivate();
       personService.sendWall(administrator.getName() + " causes " + person.getName() + " to cease to exist for " + minutes + " minutes.<br/>\n");
-      getLogBean().writeLog(person, " has been kicked out of the game by " + aUser.getName() + " for " + minutes + " minutes.");
+      getLogService().writeLog(person, " has been kicked out of the game by " + aUser.getName() + " for " + minutes + " minutes.");
     }
     if (command.equalsIgnoreCase("admin help"))
     {

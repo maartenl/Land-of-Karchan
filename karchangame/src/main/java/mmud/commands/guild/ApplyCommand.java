@@ -22,8 +22,8 @@ import mmud.database.entities.characters.User;
 import mmud.database.entities.game.DisplayInterface;
 import mmud.database.entities.game.Guild;
 import mmud.exceptions.MudException;
-import mmud.rest.services.GuildRestService;
 import mmud.services.CommunicationService;
+import mmud.services.GuildService;
 import mmud.services.PersonCommunicationService;
 
 /**
@@ -55,8 +55,8 @@ public class ApplyCommand extends NormalCommand
         communicationService.writeMessage("You have no longer applied to any guild.<BR>\r\n");
         return aUser.getRoom();
       }
-      GuildRestService guildRestService = getGuildBean();
-      Guild guild = guildRestService.getGuild(myParsed[1]);
+      GuildService guildService = getGuildService();
+      Guild guild = guildService.getGuild(myParsed[1]);
       if (guild == null)
       {
         communicationService.writeMessage("Unable to find guild <I>" + myParsed[1]

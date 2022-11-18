@@ -51,7 +51,7 @@ public class CreateGuildCommand extends NormalCommand
       CommunicationService.getCommunicationService(aUser).writeMessage("You are a member of a guild, and can therefore not start a new guild.<br/>\n");
       return aUser.getRoom();
     }
-    LogService logService = getLogBean();
+    LogService logService = getLogService();
     String[] myParsed = parseCommand(command, 3);
     Guild guild = new Guild();
     guild.setBoss(aUser);

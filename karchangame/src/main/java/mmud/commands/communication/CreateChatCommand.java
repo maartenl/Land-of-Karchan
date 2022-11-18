@@ -49,7 +49,7 @@ public class CreateChatCommand extends NormalCommand
     String attribute = strings[2].equalsIgnoreCase("none") ? null : strings[2];
     String colour = strings[3];
 
-    if (getPersonBean().getChatline(chatlinename).isPresent())
+    if (getPersonService().getChatline(chatlinename).isPresent())
     {
       CommunicationService.getCommunicationService(aUser).writeMessage("Chatline already exists.<BR>\r\n");
       return aUser.getRoom();

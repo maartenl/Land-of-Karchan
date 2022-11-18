@@ -29,6 +29,7 @@ import jakarta.inject.Inject;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import jakarta.persistence.TypedQuery;
+import jakarta.transaction.Transactional;
 import jakarta.ws.rs.Consumes;
 import jakarta.ws.rs.DELETE;
 import jakarta.ws.rs.GET;
@@ -53,7 +54,7 @@ import mmud.services.LogService;
  */
 @DeclareRoles("deputy")
 @RolesAllowed("deputy")
-
+@Transactional
 @Path("/administration/attributes")
 public class AttributesRestService
 {

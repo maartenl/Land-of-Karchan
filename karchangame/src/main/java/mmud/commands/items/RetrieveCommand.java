@@ -124,7 +124,7 @@ public class RetrieveCommand extends NormalCommand
             return aUser.getRoom();
         }
       boolean retrieve = false;
-      ItemService itemService = getItemBean();
+      ItemService itemService = getItemService();
         for (Item item : itemsFound)
         {
             if (item.isGetable())

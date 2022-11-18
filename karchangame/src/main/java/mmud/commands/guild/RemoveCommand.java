@@ -47,7 +47,7 @@ public class RemoveCommand extends GuildMasterCommand
   {
 
     PersonCommunicationService communicationService = CommunicationService.getCommunicationService(aUser);
-    LogService logService = getLogBean();
+    LogService logService = getLogService();
     String[] myParsed = parseCommand(command);
     User guildmember = aUser.getGuild().getMember(myParsed[1]);
     if (guildmember == null)

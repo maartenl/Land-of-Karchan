@@ -26,6 +26,7 @@ import java.util.logging.Logger;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.TypedQuery;
 import jakarta.ws.rs.core.Response;
+import jakarta.ws.rs.core.SecurityContext;
 import mmud.database.entities.characters.User;
 import mmud.database.entities.game.Admin;
 import mmud.database.entities.game.Area;
@@ -37,8 +38,9 @@ import mmud.database.entities.items.ItemDefinition;
 import mmud.exceptions.MudException;
 import mmud.exceptions.MudWebException;
 import mmud.rest.services.PrivateRestService;
-import mmud.rest.services.PublicRestService;
 import mmud.rest.webentities.PrivateMail;
+import mmud.services.PlayerAuthenticationService;
+import mmud.services.PublicService;
 import mmud.testing.TestingConstants;
 import mmud.testing.TestingUtils;
 import org.mockito.invocation.InvocationOnMock;
@@ -69,6 +71,25 @@ public class MudMailTest
 
   private User hotblack;
   private User marvin;
+
+  private PlayerAuthenticationService playerAuthenticationService = new PlayerAuthenticationService()
+  {
+    @Override
+    public String getPlayerName(SecurityContext context) throws IllegalStateException
+    {
+      return "Marvin";
+    }
+
+    @Override
+    public User authenticate(String name, SecurityContext context)
+    {
+      if (name.equals("Marvin"))
+      {
+        return marvin;
+      }
+      return null;
+    }
+  };
 
   public MudMailTest()
   {
@@ -133,12 +154,20 @@ public class MudMailTest
         return entityManager;
       }
 
+    };
+    privateRestService.setPlayerAuthenticationService(new PlayerAuthenticationService()
+    {
+      {
+        setEntityManager(entityManager);
+      }
+
       @Override
-      protected String getPlayerName() throws IllegalStateException
+      public String getPlayerName(SecurityContext context) throws IllegalStateException
       {
         return "Marvin";
       }
-    };
+
+    });
     // Unit under test is exercised.
     assertThatThrownBy(() -> privateRestService.listMail("Marvin", null)).isInstanceOf(MudWebException.class)
       .hasMessage("User was not found  (Marvin)");
@@ -167,12 +196,8 @@ public class MudMailTest
         return entityManager;
       }
 
-      @Override
-      protected String getPlayerName() throws IllegalStateException
-      {
-        return "Marvin";
-      }
     };
+    privateRestService.setPlayerAuthenticationService(playerAuthenticationService);
     // Unit under test is exercised.
     List<PrivateMail> result = privateRestService.listMail("Marvin", null);
     verify(nonewmailQuery, times(1)).executeUpdate();
@@ -239,12 +264,8 @@ public class MudMailTest
         return entityManager;
       }
 
-      @Override
-      protected String getPlayerName() throws IllegalStateException
-      {
-        return "Marvin";
-      }
     };
+    privateRestService.setPlayerAuthenticationService(playerAuthenticationService);
 
     // Unit under test is exercised.
     List<PrivateMail> result = privateRestService.listMail("Marvin", null);
@@ -299,12 +320,8 @@ public class MudMailTest
         return entityManager;
       }
 
-      @Override
-      protected String getPlayerName() throws IllegalStateException
-      {
-        return "Marvin";
-      }
     };
+    privateRestService.setPlayerAuthenticationService(playerAuthenticationService);
 
     // Unit under test is exercised.
     doAnswer((InvocationOnMock invocation) ->
@@ -346,7 +363,7 @@ public class MudMailTest
     privateMail.subject = "Subject";
     privateMail.toname = "deputies";
 
-    PublicRestService publicRestService = new PublicRestService()
+    PublicService publicService = new PublicService()
     {
       @Override
       public List<User> getDeputies()
@@ -373,18 +390,13 @@ public class MudMailTest
       }
 
       @Override
-      protected String getPlayerName() throws IllegalStateException
+      public PublicService getPublicService()
       {
-        return "Marvin";
-      }
-
-      @Override
-      public PublicRestService getPublicBean()
-      {
-        return publicRestService;
+        return publicService;
       }
 
     };
+    privateRestService.setPlayerAuthenticationService(playerAuthenticationService);
     // Unit under test is exercised.
 
     List<Object> persisted = new ArrayList<>();
@@ -446,12 +458,8 @@ public class MudMailTest
         return entityManager;
       }
 
-      @Override
-      protected String getPlayerName() throws IllegalStateException
-      {
-        return "Marvin";
-      }
     };
+    privateRestService.setPlayerAuthenticationService(playerAuthenticationService);
     // Unit under test is exercised.
     assertThatThrownBy(() -> privateRestService.newMail(privateMail, "Marvin"))
       .isInstanceOf(MudWebException.class)
@@ -474,13 +482,8 @@ public class MudMailTest
         return entityManager;
       }
 
-      @Override
-      protected String getPlayerName() throws IllegalStateException
-      {
-        return "Marvin";
-      }
-
     };
+    privateRestService.setPlayerAuthenticationService(playerAuthenticationService);
     // Unit under test is exercised.
     assertThatThrownBy(() -> privateRestService.getMailInfo("Marvin", 1L))
       .isInstanceOf(MudWebException.class)
@@ -516,13 +519,8 @@ public class MudMailTest
         return entityManager;
       }
 
-      @Override
-      protected String getPlayerName() throws IllegalStateException
-      {
-        return "Marvin";
-      }
-
     };
+    privateRestService.setPlayerAuthenticationService(playerAuthenticationService);
     // Unit under test is exercised.
     assertThatThrownBy(() -> privateRestService.getMailInfo("Marvin", 1L))
       .isInstanceOf(MudWebException.class)
@@ -558,13 +556,8 @@ public class MudMailTest
         return entityManager;
       }
 
-      @Override
-      protected String getPlayerName() throws IllegalStateException
-      {
-        return "Marvin";
-      }
-
     };
+    privateRestService.setPlayerAuthenticationService(playerAuthenticationService);
     // Unit under test is exercised.
     assertThatThrownBy(() -> privateRestService.getMailInfo("Marvin", 1L))
       .isInstanceOf(MudWebException.class)
@@ -600,13 +593,8 @@ public class MudMailTest
         return entityManager;
       }
 
-      @Override
-      protected String getPlayerName() throws IllegalStateException
-      {
-        return "Marvin";
-      }
-
     };
+    privateRestService.setPlayerAuthenticationService(playerAuthenticationService);
     // Unit under test is exercised.
     PrivateMail actual = privateRestService.getMailInfo("Marvin", 1L);
     // Verification code (JUnit/TestNG asserts), if any.
@@ -667,19 +655,14 @@ public class MudMailTest
       }
 
       @Override
-      protected String getPlayerName() throws IllegalStateException
-      {
-        return "Marvin";
-      }
-
-      @Override
       protected Response createResponse()
       {
         return null;
       }
     };
+    privateRestService.setPlayerAuthenticationService(playerAuthenticationService);
     LogServiceStub logBean = new LogServiceStub();
-    privateRestService.setLogBean(logBean);
+    privateRestService.setLogService(logBean);
     // Unit under test is exercised.
     privateRestService.createMailItem("Marvin", 1L, 1);
     // Verification code (JUnit/TestNG asserts), if any.
@@ -743,20 +726,15 @@ public class MudMailTest
       }
 
       @Override
-      protected String getPlayerName() throws IllegalStateException
-      {
-        return "Marvin";
-      }
-
-      @Override
       protected Response createResponse()
       {
         return null;
       }
 
     };
+    privateRestService.setPlayerAuthenticationService(playerAuthenticationService);
     LogServiceStub logBean = new LogServiceStub();
-    privateRestService.setLogBean(logBean);
+    privateRestService.setLogService(logBean);
     // Unit under test is exercised.
     privateRestService.createMailItem("Marvin", 1L, 1);
     // Verification code (JUnit/TestNG asserts), if any.
@@ -796,13 +774,8 @@ public class MudMailTest
         return entityManager;
       }
 
-      @Override
-      protected String getPlayerName() throws IllegalStateException
-      {
-        return "Marvin";
-      }
-
     };
+    privateRestService.setPlayerAuthenticationService(playerAuthenticationService);
     // Unit under test is exercised.
     assertThatThrownBy(() -> privateRestService.createMailItem("Marvin", 1L, -1))
       .isInstanceOf(MudWebException.class)
@@ -841,17 +814,12 @@ public class MudMailTest
       }
 
       @Override
-      protected String getPlayerName() throws IllegalStateException
-      {
-        return "Marvin";
-      }
-
-      @Override
       protected Response createResponse()
       {
         return null;
       }
     };
+    privateRestService.setPlayerAuthenticationService(playerAuthenticationService);
     // Unit under test is exercised.
     assertThatThrownBy(() -> privateRestService.createMailItem("Marvin", 1L, 8))
       .isInstanceOf(MudWebException.class)
@@ -888,19 +856,14 @@ public class MudMailTest
       }
 
       @Override
-      protected String getPlayerName() throws IllegalStateException
-      {
-        return "Marvin";
-      }
-
-      @Override
       protected Response createResponse()
       {
         return null;
       }
     };
+    privateRestService.setPlayerAuthenticationService(playerAuthenticationService);
     LogServiceStub logBean = new LogServiceStub();
-    privateRestService.setLogBean(logBean);
+    privateRestService.setLogService(logBean);
     // Unit under test is exercised.
     privateRestService.deleteMail("Marvin", 1L);
     // Verification code (JUnit/TestNG asserts), if any.
@@ -936,13 +899,9 @@ public class MudMailTest
         return entityManager;
       }
 
-      @Override
-      protected String getPlayerName() throws IllegalStateException
-      {
-        return "Marvin";
-      }
 
     };
+    privateRestService.setPlayerAuthenticationService(playerAuthenticationService);
     // Unit under test is exercised.
     assertThatThrownBy(() -> privateRestService.deleteMail("Marvin", 1L))
       .isInstanceOf(MudWebException.class)
@@ -966,13 +925,8 @@ public class MudMailTest
         return entityManager;
       }
 
-      @Override
-      protected String getPlayerName() throws IllegalStateException
-      {
-        return "Marvin";
-      }
-
     };
+    privateRestService.setPlayerAuthenticationService(playerAuthenticationService);
     // Unit under test is exercised.
     assertThatThrownBy(() -> privateRestService.deleteMail("Marvin", 1L))
       .isInstanceOf(MudWebException.class)

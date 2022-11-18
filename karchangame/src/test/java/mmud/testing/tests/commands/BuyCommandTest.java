@@ -187,7 +187,7 @@ public class BuyCommandTest extends MudTest
     BuyCommand buyCommand = new BuyCommand("buy( (\\w|-)+){1,4} from (\\w)+");
     buyCommand.setCallback(commandRunner);
     assertThat(buyCommand.getRegExpr()).isEqualTo("buy( (\\w|-)+){1,4} from (\\w)+");
-    commandRunner.setBeans(null, null, null, itemService, null, null, null);
+    commandRunner.setServices(null, null, null, itemService, null, null, null);
     DisplayInterface display = buyCommand.run("buy ring from karcas", karn);
     assertThat(display).isNotNull();
     assertThat(display.getBody()).isEqualTo("You are in a small room.");
@@ -213,7 +213,7 @@ public class BuyCommandTest extends MudTest
     BuyCommand buyCommand = new BuyCommand("buy( (\\w|-)+){1,4} from (\\w)+");
     buyCommand.setCallback(commandRunner);
     assertThat(buyCommand.getRegExpr()).isEqualTo("buy( (\\w|-)+){1,4} from (\\w)+");
-    commandRunner.setBeans(null, null, null, itemService, null, null, null);
+    commandRunner.setServices(null, null, null, itemService, null, null, null);
     DisplayInterface display = buyCommand.run("buy ring from karcas", karn);
     assertThat(display).isNotNull();
     assertThat(display.getBody()).isEqualTo("You are in a small room.");
@@ -241,7 +241,7 @@ public class BuyCommandTest extends MudTest
     BuyCommand buyCommand = new BuyCommand("buy( (\\w|-)+){1,4} from (\\w)+");
     buyCommand.setCallback(commandRunner);
     assertThat(buyCommand.getRegExpr()).isEqualTo("buy( (\\w|-)+){1,4} from (\\w)+");
-    commandRunner.setBeans(null, null, null, itemService, null, null, null);
+    commandRunner.setServices(null, null, null, itemService, null, null, null);
     DisplayInterface display = buyCommand.run("buy ring from karcas", karn);
     assertThat(display).isNotNull();
     assertThat(display.getBody()).isEqualTo("You are in a small room.");
@@ -269,7 +269,7 @@ public class BuyCommandTest extends MudTest
     BuyCommand buyCommand = new BuyCommand("buy( (\\w|-)+){1,4} from (\\w)+");
     buyCommand.setCallback(commandRunner);
     assertThat(buyCommand.getRegExpr()).isEqualTo("buy( (\\w|-)+){1,4} from (\\w)+");
-    commandRunner.setBeans(null, null, null, itemService, null, null, null);
+    commandRunner.setServices(null, null, null, itemService, null, null, null);
     DisplayInterface display = buyCommand.run("buy ring from karcas", karn);
     assertThat(display).isNotNull();
     assertThat(display.getBody()).isEqualTo("You are in a small room.");
@@ -296,7 +296,7 @@ public class BuyCommandTest extends MudTest
     BuyCommand buyCommand = new BuyCommand("buy( (\\w|-)+){1,4} from (\\w)+");
     buyCommand.setCallback(commandRunner);
     assertThat(buyCommand.getRegExpr()).isEqualTo("buy( (\\w|-)+){1,4} from (\\w)+");
-    commandRunner.setBeans(null, logService, null, itemService, null, null, null);
+    commandRunner.setServices(null, logService, null, itemService, null, null, null);
     DisplayInterface display = buyCommand.run("buy ring from karcas", karn);
     assertThat(display).isNotNull();
     assertThat(display.getBody()).isEqualTo("You are in a small room.");
@@ -308,7 +308,7 @@ public class BuyCommandTest extends MudTest
   public void setUpMethod() throws Exception
   {
     itemService = new ItemService();
-    setField(ItemService.class, "logBean", itemService, logService);
+    setField(ItemService.class, "logService", itemService, logService);
 
     itemDef = new ItemDefinition();
     itemDef.setId(1L);

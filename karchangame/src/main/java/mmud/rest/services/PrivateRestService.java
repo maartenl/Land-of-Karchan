@@ -33,6 +33,7 @@ import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import jakarta.persistence.TypedQuery;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.transaction.Transactional;
 import jakarta.validation.ConstraintViolationException;
 import jakarta.ws.rs.Consumes;
 import jakarta.ws.rs.DELETE;
@@ -71,6 +72,8 @@ import mmud.rest.webentities.PrivatePerson;
 import mmud.rest.webentities.PublicPerson;
 import mmud.services.LogService;
 import mmud.services.MailService;
+import mmud.services.PlayerAuthenticationService;
+import mmud.services.PublicService;
 import org.apache.commons.lang3.StringUtils;
 
 /**
@@ -83,6 +86,7 @@ import org.apache.commons.lang3.StringUtils;
 @DeclareRoles("player")
 @RolesAllowed("player")
 @Path("/private")
+@Transactional
 public class PrivateRestService
 {
 
@@ -92,12 +96,12 @@ public class PrivateRestService
   private MailService mailService;
 
   @Inject
-  private PublicRestService publicRestService;
+  private PublicService publicService;
 
   @Inject
   private GameRestService gameRestService;
 
-  @Inject
+  @Context
   private SecurityContext context;
 
   @Inject
@@ -111,6 +115,9 @@ public class PrivateRestService
 
   @PersistenceContext(unitName = "karchangamePU")
   private EntityManager em;
+
+  @Inject
+  private PlayerAuthenticationService playerAuthenticationService;
 
   public static class PrivateHasMail
   {
@@ -133,71 +140,12 @@ public class PrivateRestService
     return em;
   }
 
-  public PublicRestService getPublicBean()
+  public PublicService getPublicService()
   {
-    return publicRestService;
+    return publicService;
   }
 
   private static final Logger LOGGER = Logger.getLogger(PrivateRestService.class.getName());
-
-  /**
-   * This method should be called to verify that the target of a certain
-   * action is indeed a proper authenticated user.
-   *
-   * @param name the name to identify the person
-   * @return the User identified by the name.
-   * @throws WebApplicationException NOT_FOUND, if the user is either not
-   *                                 found or is not a proper user. BAD_REQUEST if an unexpected exception
-   *                                 crops up or provided info is really not proper. UNAUTHORIZED if session
-   *                                 passwords do not match.
-   */
-  public User authenticate(String name)
-  {
-    if (name == null || name.equals("null"))
-    {
-      throw new MudWebException(name, "You are not logged in.", Response.Status.UNAUTHORIZED);
-    }
-    if (!getPlayerName().equals(name))
-    {
-      throw new MudWebException(name, "You are not logged in as " + name + ".", Response.Status.UNAUTHORIZED);
-    }
-    User person = getEntityManager().find(User.class, name);
-    if (person == null)
-    {
-      throw new MudWebException(name, "User was not found.", "User was not found  (" + name + ")", Status.NOT_FOUND);
-    }
-    if (!person.isUser())
-    {
-      throw new MudWebException(name, "User was not a user.", "User was not a user (" + name + ")", Status.BAD_REQUEST);
-    }
-    return person;
-  }
-
-  /**
-   * Authenticates a guildmaster.
-   *
-   * @param name the name to identify the person
-   * @return WebApplicationException NOT_FOUND if you are not the member of a guild
-   * UNAUTHORIZED if you are not the guild master of your guild.
-   * @see #authenticate(java.lang.String)
-   */
-  public User authenticateGuildMaster(String name)
-  {
-    if (!getPlayerName().equals(name))
-    {
-      throw new MudWebException(name, "You are not logged in as " + name, Response.Status.UNAUTHORIZED);
-    }
-    User person = authenticate(name);
-    if (person.getGuild() == null)
-    {
-      throw new MudWebException(name, name + " is not a member of a guild.", "Person (" + name + ") is not a member of a guild", Status.NOT_FOUND);
-    }
-    if (!person.getGuild().getBoss().getName().equals(person.getName()))
-    {
-      throw new MudWebException(name, name + " is not the guild master of " + person.getGuild().getTitle() + ".", "Person (" + name + ") is not the guild master of " + person.getGuild().getName(), Status.UNAUTHORIZED);
-    }
-    return person;
-  }
 
   /**
    * Returns a List of your mail, with a maximum of 20 mails and an offset for
@@ -251,6 +199,11 @@ public class PrivateRestService
       throw new MudWebException(name, e, Response.Status.BAD_REQUEST);
     }
     return res;
+  }
+
+  private User authenticate(String name)
+  {
+    return playerAuthenticationService.authenticate(name, context);
   }
 
   /**
@@ -405,7 +358,7 @@ public class PrivateRestService
   {
     if ("deputies".equalsIgnoreCase(toname))
     {
-      return getPublicBean().getDeputies().stream();
+      return getPublicService().getDeputies().stream();
     }
 
     if ("guild".equalsIgnoreCase(toname))
@@ -495,8 +448,8 @@ public class PrivateRestService
    * Returns a single mail based by id. Can only retrieve mail destined for
    * the user requesting the mail.
    *
-   * @param name the name of the user
-   * @param id   the id of the mail to get
+   * @param name            the name of the user
+   * @param id              the id of the mail to get
    * @return A specific mail.
    * @throws WebApplicationException UNAUTHORIZED, if the authorisation
    *                                 failed. BAD_REQUEST if an unexpected exception crops up.
@@ -626,7 +579,7 @@ public class PrivateRestService
       throw new MudWebException(name, ExceptionUtils.createMessage(e), e, Response.Status.BAD_REQUEST);
     } catch (Exception e)
     {
-      LOGGER.throwing("PrivateBean", "createMailItem", e);
+      LOGGER.throwing("PrivateRestService", "createMailItem", e);
       throw new MudWebException(e, Response.Status.BAD_REQUEST);
     }
     LOGGER.finer("exiting createMailItem");
@@ -641,8 +594,8 @@ public class PrivateRestService
   /**
    * Deletes a single mail based by id.
    *
-   * @param name the name of the user
-   * @param id   the id of the mail to delete
+   * @param name            the name of the user
+   * @param id              the id of the mail to delete
    * @return Response.ok() if all is well.
    * @throws WebApplicationException UNAUTHORIZED, if the authorisation
    *                                 failed. BAD_REQUEST if an unexpected exception crops up.
@@ -668,9 +621,9 @@ public class PrivateRestService
   /**
    * Deletes an entire character.
    *
-   * @param name           the name of the user
-   * @param requestContext the context to log the player off who just deleted
-   *                       his entire character.
+   * @param requestContext  the context to log the player off who just deleted
+   *                        his entire character.
+   * @param name            the name of the user
    * @return Response.ok() if all is well.
    * @throws WebApplicationException UNAUTHORIZED, if the authorisation failed.
    *                                 BAD_REQUEST if an unexpected exception crops up.
@@ -703,8 +656,8 @@ public class PrivateRestService
   /**
    * Adds or updates your current character info.
    *
-   * @param name  the name of the user
-   * @param cinfo the object containing the new stuff to update.
+   * @param name            the name of the user
+   * @param cinfo           the object containing the new stuff to update.
    * @return Response.ok if everything is okay.
    * @throws WebApplicationException UNAUTHORIZED, if the authorisation
    *                                 failed. BAD_REQUEST if an unexpected exception crops up.
@@ -759,8 +712,8 @@ public class PrivateRestService
   /**
    * Resets your current password
    *
-   * @param name the name of the user
-   * @param json the object containing the new stuff to update.
+   * @param name            the name of the user
+   * @param json            the object containing the new stuff to update.
    * @return Response.ok if everything is okay.
    * @throws WebApplicationException UNAUTHORIZED, if the authorisation
    *                                 failed. BAD_REQUEST if an unexpected exception crops up.
@@ -771,7 +724,7 @@ public class PrivateRestService
     {
       MediaType.APPLICATION_JSON
     })
-  public Response resetPassword(@PathParam("name") String name, String json, @Context SecurityContext sc)
+  public Response resetPassword(@PathParam("name") String name, String json)
   {
     LOGGER.finer("entering resetPassword");
     User person = authenticate(name);
@@ -822,7 +775,7 @@ public class PrivateRestService
   /**
    * Deletes a character, permanently. Use with extreme caution.
    *
-   * @param name the name of the user
+   * @param name            the name of the user
    * @return Response.ok
    * @throws WebApplicationException BAD_REQUEST if an unexpected exception
    *                                 crops up.
@@ -855,7 +808,7 @@ public class PrivateRestService
   /**
    * Gets your current character info.
    *
-   * @param name the name of the user
+   * @param name            the name of the user
    * @return Response.ok if everything is okay.
    * @throws WebApplicationException UNAUTHORIZED, if the authorisation
    *                                 failed. BAD_REQUEST if an unexpected exception crops up.
@@ -869,16 +822,16 @@ public class PrivateRestService
   public PublicPerson getCharacterSheet(@PathParam("name") String name)
   {
     User person = authenticate(name);
-    return getPublicBean().charactersheet(name);
+    return getPublicService().charactersheet(name);
   }
 
   /**
    * Add or updates some family values from your family tree.
    *
-   * @param name        the name of the user
-   * @param toname      the name of the user you are related to
-   * @param description the description of the family relation, for example
-   *                    "mother".
+   * @param name            the name of the user
+   * @param toname          the name of the user you are related to
+   * @param description     the description of the family relation, for example
+   *                        "mother".
    * @return Response.ok if everything's okay.
    * @throws WebApplicationException UNAUTHORIZED, if the authorisation
    *                                 failed. BAD_REQUEST if an unexpected exception crops up.
@@ -939,8 +892,8 @@ public class PrivateRestService
   /**
    * Deletes some family values from your family tree.
    *
-   * @param name   the name of the user
-   * @param toname the name of the user you are related to
+   * @param name            the name of the user
+   * @param toname          the name of the user you are related to
    * @return Response.ok if everything is okay.
    * @throws WebApplicationException UNAUTHORIZED, if the authorisation
    *                                 failed. BAD_REQUEST if an unexpected exception crops up.
@@ -968,24 +921,15 @@ public class PrivateRestService
     return createResponse();
   }
 
-  /**
-   * Provides the player who is logged in during this session.
-   *
-   * @return name of the player
-   */
-  protected String getPlayerName()
+  @VisibleForTesting
+  public void setLogService(LogService logService)
   {
-    final String name = context.getUserPrincipal().getName();
-    if (name.equals("ANONYMOUS"))
-    {
-      throw new MudWebException(null, "Not logged in.", Response.Status.UNAUTHORIZED);
-    }
-    return name;
+    this.logService = logService;
   }
 
   @VisibleForTesting
-  public void setLogBean(LogService logService)
+  public void setPlayerAuthenticationService(PlayerAuthenticationService playerAuthenticationService)
   {
-    this.logService = logService;
+    this.playerAuthenticationService = playerAuthenticationService;
   }
 }

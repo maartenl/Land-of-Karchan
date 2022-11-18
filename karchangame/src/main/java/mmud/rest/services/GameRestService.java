@@ -24,6 +24,7 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import com.google.common.annotations.VisibleForTesting;
 import jakarta.annotation.security.DeclareRoles;
 import jakarta.annotation.security.PermitAll;
 import jakarta.annotation.security.RolesAllowed;
@@ -35,6 +36,7 @@ import jakarta.persistence.Query;
 import jakarta.persistence.TypedQuery;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.transaction.Transactional;
 import jakarta.validation.ConstraintViolationException;
 import jakarta.ws.rs.DELETE;
 import jakarta.ws.rs.GET;
@@ -77,6 +79,7 @@ import mmud.services.IdleUsersService;
 import mmud.services.LogService;
 import mmud.services.MailService;
 import mmud.services.PersonCommunicationService;
+import mmud.services.PlayerAuthenticationService;
 import static mmud.Constants.DATETIME_FORMAT;
 
 /**
@@ -98,6 +101,7 @@ import static mmud.Constants.DATETIME_FORMAT;
 @DeclareRoles("player")
 @RolesAllowed("player")
 @Path("/game")
+@Transactional
 public class GameRestService
 {
 
@@ -116,10 +120,13 @@ public class GameRestService
   @Inject
   private LogService logService;
 
+  @Inject
+  private PlayerAuthenticationService playerAuthenticationService;
+
   @PersistenceContext(unitName = "karchangamePU")
   private EntityManager em;
 
-  @Inject
+  @Context
   private SecurityContext context;
 
   /**
@@ -156,7 +163,7 @@ public class GameRestService
    * <img
    * src="doc-files/Gamebean_authenticate.png"></p>
    *
-   * @param name the name to identify the person
+   * @param name    the name to identify the person
    * @throws WebApplicationException NOT_FOUND, if the user is either not found
    *                                 or is not a proper user. BAD_REQUEST if an unexpected exception crops up or
    *                                 provided info is really not proper. UNAUTHORIZED if session passwords do
@@ -171,10 +178,7 @@ public class GameRestService
    */
   private User authenticate(String name)
   {
-    if (!getPlayerName().equals(name))
-    {
-      throw new MudWebException(name, "You are not logged in as " + name, Response.Status.UNAUTHORIZED);
-    }
+    playerAuthenticationService.authenticate(name, context);
     User person = getPlayer(name);
     if (!person.isActive())
     {
@@ -191,7 +195,7 @@ public class GameRestService
    */
   private User authenticateToEnterGame(String name)
   {
-    if (!getPlayerName().equals(name))
+    if (!playerAuthenticationService.getPlayerName(context).equals(name))
     {
       throw new MudWebException(name, "You are not logged in as " + name, Response.Status.UNAUTHORIZED);
     }
@@ -664,21 +668,6 @@ public class GameRestService
     }
   }
 
-  /**
-   * Provides the player who is logged in during this session.
-   *
-   * @return name of the player
-   * @throws IllegalStateException
-   */
-  protected String getPlayerName() throws IllegalStateException
-  {
-    final String name = context.getUserPrincipal().getName();
-    if (name.equals("ANONYMOUS"))
-    {
-      throw new MudWebException(null, "Not logged in.", Response.Status.UNAUTHORIZED);
-    }
-    return name;
-  }
 
   /**
    * Main function for executing a command in the game.
@@ -826,8 +815,8 @@ public class GameRestService
   /**
    * Retrieves the log of a player.
    *
-   * @param name   the name of the user
-   * @param offset the offset from whence to read the log
+   * @param name    the name of the user
+   * @param offset  the offset from whence to read the log
    * @return returns the log
    * @throws WebApplicationException BAD_REQUEST if an unexpected exception
    *                                 crops up.
@@ -873,7 +862,7 @@ public class GameRestService
   /**
    * Removes the log of a player, i.e. creates a new empty log.
    *
-   * @param name the name of the user
+   * @param name    the name of the user
    * @return Response.ok if everything's okay
    * @throws WebApplicationException BAD_REQUEST if an unexpected exception
    *                                 crops up.
@@ -906,7 +895,7 @@ public class GameRestService
   /**
    * Stops a playing character from playing.
    *
-   * @param name the name of the user
+   * @param name    the name of the user
    * @return An Ok response.
    * @throws WebApplicationException BAD_REQUEST if an unexpected exception
    *                                 crops up.
@@ -992,4 +981,9 @@ public class GameRestService
     return result;
   }
 
+  @VisibleForTesting
+  public void setPlayerAuthenticationService(PlayerAuthenticationService playerAuthenticationService)
+  {
+    this.playerAuthenticationService = playerAuthenticationService;
+  }
 }

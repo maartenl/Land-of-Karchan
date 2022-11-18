@@ -172,7 +172,7 @@ public class SellCommandTest extends MudTest
     SellCommand sellCommand = new SellCommand("sell( (\\w|-)+){1,4} to (\\w)+");
     sellCommand.setCallback(commandRunner);
     assertThat(sellCommand.getRegExpr()).isEqualTo("sell( (\\w|-)+){1,4} to (\\w)+");
-    commandRunner.setBeans(null, null, null, itemService, null, null, null);
+    commandRunner.setServices(null, null, null, itemService, null, null, null);
     DisplayInterface display = sellCommand.run("sell ring to karcas", karn);
     assertThat(display).isNotNull();
     assertThat(display.getBody()).isEqualTo("You are in a small room.");
@@ -198,7 +198,7 @@ public class SellCommandTest extends MudTest
     SellCommand sellCommand = new SellCommand("sell( (\\w|-)+){1,4} to (\\w)+");
     sellCommand.setCallback(commandRunner);
     assertThat(sellCommand.getRegExpr()).isEqualTo("sell( (\\w|-)+){1,4} to (\\w)+");
-    commandRunner.setBeans(null, null, null, itemService, null, null, null);
+    commandRunner.setServices(null, null, null, itemService, null, null, null);
     DisplayInterface display = sellCommand.run("sell ring to karcas", karn);
     assertThat(display).isNotNull();
     assertThat(display.getBody()).isEqualTo("You are in a small room.");
@@ -225,7 +225,7 @@ public class SellCommandTest extends MudTest
     SellCommand sellCommand = new SellCommand("sell( (\\w|-)+){1,4} to (\\w)+");
     sellCommand.setCallback(commandRunner);
     assertThat(sellCommand.getRegExpr()).isEqualTo("sell( (\\w|-)+){1,4} to (\\w)+");
-    commandRunner.setBeans(null, null, null, itemService, null, null, null);
+    commandRunner.setServices(null, null, null, itemService, null, null, null);
     DisplayInterface display = sellCommand.run("sell ring to karcas", karn);
     assertThat(display).isNotNull();
     assertThat(display.getBody()).isEqualTo("You are in a small room.");
@@ -253,7 +253,7 @@ public class SellCommandTest extends MudTest
     SellCommand sellCommand = new SellCommand("sell( (\\w|-)+){1,4} to (\\w)+");
     sellCommand.setCallback(commandRunner);
     assertThat(sellCommand.getRegExpr()).isEqualTo("sell( (\\w|-)+){1,4} to (\\w)+");
-    commandRunner.setBeans(null, null, null, itemService, null, null, null);
+    commandRunner.setServices(null, null, null, itemService, null, null, null);
     DisplayInterface display = sellCommand.run("sell ring to karcas", karn);
     assertThat(display).isNotNull();
     assertThat(display.getBody()).isEqualTo("You are in a small room.");
@@ -281,7 +281,7 @@ public class SellCommandTest extends MudTest
     SellCommand sellCommand = new SellCommand("sell( (\\w|-)+){1,4} to (\\w)+");
     sellCommand.setCallback(commandRunner);
     assertThat(sellCommand.getRegExpr()).isEqualTo("sell( (\\w|-)+){1,4} to (\\w)+");
-    commandRunner.setBeans(null, null, null, itemService, null, null, null);
+    commandRunner.setServices(null, null, null, itemService, null, null, null);
     DisplayInterface display = sellCommand.run("sell ring to karcas", karn);
     assertThat(display).isNotNull();
     assertThat(display.getBody()).isEqualTo("You are in a small room.");
@@ -309,7 +309,7 @@ public class SellCommandTest extends MudTest
     SellCommand sellCommand = new SellCommand("sell( (\\w|-)+){1,4} to (\\w)+");
     sellCommand.setCallback(commandRunner);
     assertThat(sellCommand.getRegExpr()).isEqualTo("sell( (\\w|-)+){1,4} to (\\w)+");
-    commandRunner.setBeans(null, null, null, itemService, null, null, null);
+    commandRunner.setServices(null, null, null, itemService, null, null, null);
     DisplayInterface display = sellCommand.run("sell ring to karcas", karn);
     assertThat(display).isNotNull();
     assertThat(display.getBody()).isEqualTo("You are in a small room.");
@@ -336,7 +336,7 @@ public class SellCommandTest extends MudTest
     SellCommand sellCommand = new SellCommand("sell( (\\w|-)+){1,4} to (\\w)+");
     sellCommand.setCallback(commandRunner);
     assertThat(sellCommand.getRegExpr()).isEqualTo("sell( (\\w|-)+){1,4} to (\\w)+");
-    commandRunner.setBeans(null, logService, null, itemService, null, null, null);
+    commandRunner.setServices(null, logService, null, itemService, null, null, null);
     DisplayInterface display = sellCommand.run("sell ring to karcas", karn);
     assertThat(display).isNotNull();
     assertThat(display.getBody()).isEqualTo("You are in a small room.");
@@ -348,7 +348,7 @@ public class SellCommandTest extends MudTest
   public void setUpMethod() throws Exception
   {
     itemService = new ItemService();
-    setField(ItemService.class, "logBean", itemService, logService);
+    setField(ItemService.class, "logService", itemService, logService);
 
     itemDef = new ItemDefinition();
     itemDef.setId(1L);

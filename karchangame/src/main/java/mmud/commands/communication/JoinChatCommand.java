@@ -49,7 +49,7 @@ public class JoinChatCommand extends NormalCommand
       return null;
     }
     String chatlinename = strings[1];
-    Optional<Chatline> chatline = getPersonBean().getChatline(chatlinename);
+    Optional<Chatline> chatline = getPersonService().getChatline(chatlinename);
     if (chatline.isEmpty())
     {
       CommunicationService.getCommunicationService(aUser).writeMessage("Chatline not found.<BR>\r\n");

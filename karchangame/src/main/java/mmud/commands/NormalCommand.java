@@ -22,9 +22,9 @@ import java.util.logging.Logger;
 import mmud.database.entities.characters.User;
 import mmud.database.entities.game.DisplayInterface;
 import mmud.exceptions.MudException;
-import mmud.rest.services.EventsRestService;
-import mmud.rest.services.GuildRestService;
-import mmud.rest.services.admin.AdminRestService;
+import mmud.services.AdminService;
+import mmud.services.EventsService;
+import mmud.services.GuildService;
 import mmud.services.HelpService;
 import mmud.services.ItemService;
 import mmud.services.LogService;
@@ -150,39 +150,39 @@ public abstract class NormalCommand implements Command
         this.callback = callback;
     }
 
-  protected PersonService getPersonBean()
+  protected PersonService getPersonService()
   {
-    return callback.getPersonBean();
+    return callback.getPersonService();
   }
 
-  protected EventsRestService getEventsBean()
+  protected EventsService getEventsService()
   {
-    return callback.getEventsBean();
+    return callback.getEventsService();
   }
 
-  protected AdminRestService getAdminBean()
+  protected AdminService getAdminService()
   {
-    return callback.getAdminBean();
+    return callback.getAdminService();
   }
 
-  protected HelpService getHelpBean()
+  protected HelpService getHelpService()
   {
-    return callback.getHelpBean();
+    return callback.getHelpService();
   }
 
-  protected LogService getLogBean()
+  protected LogService getLogService()
   {
-    return callback.getLogBean();
+    return callback.getLogService();
   }
 
-  protected GuildRestService getGuildBean()
+  protected GuildService getGuildService()
   {
-    return callback.getGuildBean();
+    return callback.getGuildService();
   }
 
-  protected ItemService getItemBean()
+  protected ItemService getItemService()
   {
-    return callback.getItemBean();
+    return callback.getItemService();
   }
 
 }

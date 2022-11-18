@@ -16,7 +16,6 @@
  */
 package mmud.services.admin;
 
-import jakarta.inject.Inject;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import jakarta.ws.rs.core.Response;
@@ -35,15 +34,12 @@ public class IdentificationService
   @PersistenceContext(unitName = "karchangamePU")
   private EntityManager em;
 
-  @Inject
-  private SecurityContext context;
-
   /**
    * Provides the player who is logged in during this session.
    *
    * @return the current user, for example "Karn".
    */
-  public String getCurrentUser()
+  public String getCurrentUser(SecurityContext context)
   {
     String currentUser = context.getUserPrincipal().getName();
     if (currentUser.equals("ANONYMOUS"))
@@ -59,7 +55,7 @@ public class IdentificationService
    * @return the admin identified by the current user, or null if no
    * proper admin can be found.
    */
-  public Admin getCurrentAdmin()
+  public Admin getCurrentAdmin(SecurityContext context)
   {
     String currentUser = context.getUserPrincipal().getName();
     Admin admin = em.find(Admin.class, currentUser);

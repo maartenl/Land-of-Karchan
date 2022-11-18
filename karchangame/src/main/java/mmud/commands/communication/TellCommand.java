@@ -90,14 +90,14 @@ public class TellCommand extends TargetCommand
     {
         if (myParsed.length > 2 && myParsed[1].equalsIgnoreCase("to"))
         {
-            PersonService personService = getPersonBean();
-            Person toChar = personService.getActiveUser(myParsed[2]);
-            if (toChar == null)
-            {
-                // action to unknown
-                throw new PersonNotFoundException("Cannot find " + myParsed[2] + ".<br/>\r\n");
-            }
-            return toChar;
+          PersonService personService = getPersonService();
+          Person toChar = personService.getActiveUser(myParsed[2]);
+          if (toChar == null)
+          {
+            // action to unknown
+            throw new PersonNotFoundException("Cannot find " + myParsed[2] + ".<br/>\r\n");
+          }
+          return toChar;
         }
         return null;
     }

@@ -63,7 +63,7 @@ public class CreateGuildCommandTest extends MudTest
     CreateGuildCommand rankCommand = new CreateGuildCommand("createguild (\\w)+ .+");
     rankCommand.setCallback(commandRunner);
     assertThat(rankCommand.getRegExpr()).isEqualTo("createguild (\\w)+ .+");
-    commandRunner.setBeans(null, logService, null, null, null, null, null);
+    commandRunner.setServices(null, logService, null, null, null, null, null);
     DisplayInterface display = rankCommand.run("createguild deputies The Royal Club Of Deputies", karn);
     assertThat(display).isNotNull();
     assertThat(display.getBody()).isEqualTo("You are in a small room.");

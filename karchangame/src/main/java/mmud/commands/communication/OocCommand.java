@@ -52,7 +52,7 @@ public class OocCommand extends NormalCommand
           CommunicationService.getCommunicationService(aUser).writeMessage("Sorry, you have your OOC channel turned off.<br/>\r\n");
         } else
         {
-          PersonService personService = getPersonBean();
+          PersonService personService = getPersonService();
           final String message = command.substring(4);
             //  "#4c76a2"
           personService.sendWall("<span class=\"chat-cyanblue\">[OOC: <b>" + aUser.getName() + "</b>] " + message + "</span><br/>\r\n", User::getOoc);

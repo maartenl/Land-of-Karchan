@@ -29,19 +29,18 @@ import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import jakarta.persistence.Query;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.transaction.Transactional;
 import jakarta.ws.rs.GET;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.PathParam;
 import jakarta.ws.rs.core.Context;
 import jakarta.ws.rs.core.Response;
-import mmud.database.entities.characters.Administrator;
 import mmud.database.entities.characters.User;
 import mmud.database.entities.game.Event;
 import mmud.database.entities.game.Method;
 import mmud.database.entities.game.Room;
 import mmud.database.entities.items.Item;
 import mmud.exceptions.MudWebException;
-import mmud.rest.services.admin.RoomsRestService;
 import mmud.scripting.Items;
 import mmud.scripting.ItemsInterface;
 import mmud.scripting.Persons;
@@ -52,10 +51,12 @@ import mmud.scripting.World;
 import mmud.scripting.WorldInterface;
 import mmud.services.AttributeService;
 import mmud.services.CommunicationService;
+import mmud.services.EventsService;
 import mmud.services.IdleUsersService;
 import mmud.services.ItemService;
 import mmud.services.LogService;
 import mmud.services.PersonService;
+import mmud.services.RoomsService;
 
 /**
  * Takes care of all the events.
@@ -66,7 +67,7 @@ import mmud.services.PersonService;
  * @startuml doc-files/Eventsbean.png class EventsBean { +events() }
  * @enduml
  */
-
+@Transactional
 @Path("/crontab/events")
 public class EventsRestService
 {
@@ -78,9 +79,11 @@ public class EventsRestService
   @Inject
   private ItemService itemService;
   @Inject
-  private RoomsRestService roomBean;
+  private RoomsService roomsService;
   @Inject
   private AttributeService attributeService;
+  @Inject
+  private EventsService eventsService;
 
   @Inject
   private IdleUsersService idleUsersService;
@@ -115,78 +118,9 @@ public class EventsRestService
     LOGGER.log(Level.INFO, "Run single event {0}. (accessed {1})", objects);
     if (eventid >= 0)
     {
-      runSingleEvent(null, eventid);
+      eventsService.runSingleEvent(null, eventid);
     }
     return "Ok";
-  }
-
-  /**
-   * Runs a single event, right now. Used by administrators for testing.
-   *
-   * @param aUser   the administrator running the event
-   * @param eventid an event id, a number.
-   */
-  public void runSingleEvent(Administrator aUser, Integer eventid)
-  {
-    LOGGER.entering(this.getClass().getName(), "runSingleEvent");
-    if (eventid == null)
-    {
-      throw new MudWebException(null, "Event id was empty.", Response.Status.BAD_REQUEST);
-    }
-    Event event = getEntityManager().find(Event.class, eventid);
-    if (event == null)
-    {
-      throw new MudWebException(null, "Event was not found.", Response.Status.NOT_FOUND);
-    }
-    Persons persons = new Persons(personService);
-    Rooms rooms = new Rooms(new RoomsInterface()
-    {
-      @Override
-      public Room find(Long id)
-      {
-        return roomBean.find(id);
-      }
-    });
-    Items items = new Items(new ItemsInterface()
-    {
-      @Override
-      public Item createItem(long itemdefnr)
-      {
-        return itemService.createItem(itemdefnr);
-      }
-    });
-    World world = new World(new WorldInterface()
-    {
-      @Override
-      public String getAttribute(String name)
-      {
-        return attributeService.getAttribute(name);
-      }
-    });
-    RunScript runScript = new RunScript(persons, rooms, items, world);
-    Method method = event.getMethod();
-    try
-    {
-      if (event.getRoom() != null)
-      {
-        boolean result = runScript.run(event.getRoom(), method.getSrc());
-      } else if (event.getPerson() != null)
-      {
-        boolean result = runScript.run(event.getPerson(), method.getSrc());
-      } else
-      {
-        boolean result = runScript.run(method.getSrc());
-      }
-    } catch (InvocationTargetException | InstantiationException | IllegalAccessException | ScriptException | NoSuchMethodException ex)
-    {
-      // Error occurred: turn this event off!
-      // TODO: that's for debugging,...
-      // event.setCallable(Boolean.FALSE);
-      // log it but keep going with the next event.
-      logService.writeLogException(ex);
-      LOGGER.throwing(EventsRestService.class.getName(), "events()", ex);
-      throw new MudWebException(aUser == null ? null : aUser.getName(), ex.getMessage(), ex, Response.Status.BAD_REQUEST);
-    }
   }
 
   /**
@@ -226,7 +160,7 @@ public class EventsRestService
       @Override
       public Room find(Long id)
       {
-        return roomBean.find(id);
+        return roomsService.find(id);
       }
     });
     Items items = new Items(new ItemsInterface()

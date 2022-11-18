@@ -39,18 +39,18 @@ public class HelpCommand extends NormalCommand
     @Override
     public DisplayInterface run(String command, User aUser) throws MudException
     {
-        HelpService helpService = getHelpBean();
-        Help help;
-        String[] myParsed = parseCommand(command, 3);
-        if (myParsed.length == 1)
-        {
-            help = helpService.getHelp(null);
-        } else if (myParsed.length == 2)
-        {
-            help = helpService.getHelp(myParsed[1]);
-        } else
-        {
-            help = helpService.getHelp("sorry");
+      HelpService helpService = getHelpService();
+      Help help;
+      String[] myParsed = parseCommand(command, 3);
+      if (myParsed.length == 1)
+      {
+        help = helpService.getHelp(null);
+      } else if (myParsed.length == 2)
+      {
+        help = helpService.getHelp(myParsed[1]);
+      } else
+      {
+        help = helpService.getHelp("sorry");
         }
         return help;
     }

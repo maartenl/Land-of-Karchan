@@ -43,13 +43,13 @@ public class RunScript
 
   private static final Logger LOGGER = Logger.getLogger(RunScript.class.getName());
 
-  private Persons persons;
+  private final Persons persons;
 
-  private Rooms rooms;
+  private final Rooms rooms;
 
-  private Items items;
+  private final Items items;
 
-  private World world;
+  private final World world;
 
   public RunScript(Persons persons, Rooms rooms, Items items, World world)
   {
@@ -82,9 +82,6 @@ public class RunScript
    * @return false if failed, true if successful
    * @throws ScriptException                             if an error occurred in the javascript
    * @throws NoSuchMethodException                       if the function cannot be found,
-   * @throws java.lang.IllegalAccessException
-   * @throws java.lang.InstantiationException
-   * @throws java.lang.reflect.InvocationTargetException
    */
   public DisplayInterface run(mmud.database.entities.characters.Person person, String command, String sourceCode) throws ScriptException, NoSuchMethodException, IllegalAccessException, InstantiationException, InvocationTargetException
   {

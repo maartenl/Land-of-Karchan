@@ -25,6 +25,7 @@ import jakarta.annotation.security.DeclareRoles;
 import jakarta.annotation.security.RolesAllowed;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
+import jakarta.transaction.Transactional;
 import jakarta.ws.rs.Consumes;
 import jakarta.ws.rs.DELETE;
 import jakarta.ws.rs.GET;
@@ -49,8 +50,7 @@ import mmud.rest.webentities.admin.AdminUserCommand;
  */
 @DeclareRoles("deputy")
 @RolesAllowed("deputy")
-
-
+@Transactional
 @Path("/administration/commands")
 public class UserCommandsRestService
 {

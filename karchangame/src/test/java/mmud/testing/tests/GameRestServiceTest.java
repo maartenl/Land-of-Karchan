@@ -22,6 +22,7 @@ import java.util.logging.Logger;
 
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.TypedQuery;
+import jakarta.ws.rs.core.SecurityContext;
 import mmud.commands.CommandRunner;
 import mmud.database.entities.characters.Administrator;
 import mmud.database.entities.characters.Person;
@@ -35,6 +36,7 @@ import mmud.exceptions.MudException;
 import mmud.rest.services.GameRestService;
 import mmud.rest.webentities.PrivateDisplay;
 import mmud.services.IdleUsersService;
+import mmud.services.PlayerAuthenticationService;
 import mmud.testing.TestingConstants;
 import org.mockito.invocation.InvocationOnMock;
 import org.testng.annotations.AfterClass;
@@ -66,15 +68,30 @@ public class GameRestServiceTest extends MudTest
   private User marvin;
   private Room room;
 
-  private final GameRestService gameRestService = new GameRestService()
+  private PlayerAuthenticationService playerAuthenticationService = new PlayerAuthenticationService()
   {
-
     @Override
-    protected String getPlayerName() throws IllegalStateException
+    public String getPlayerName(SecurityContext context) throws IllegalStateException
     {
       return "Marvin";
     }
 
+    @Override
+    public User authenticate(String name, SecurityContext context)
+    {
+      if (name.equals("Marvin"))
+      {
+        return marvin;
+      }
+      return null;
+    }
+  };
+
+  private final GameRestService gameRestService = new GameRestService()
+  {
+    {
+      setPlayerAuthenticationService(playerAuthenticationService);
+    }
   };
 
   public GameRestServiceTest()
@@ -108,7 +125,7 @@ public class GameRestServiceTest extends MudTest
     persons.add(karn);
     setField(Room.class, "persons", room, persons);
 
-    setField(GameRestService.class, "logBean", gameRestService, logBean);
+    setField(GameRestService.class, "logService", gameRestService, logBean);
     setField(GameRestService.class, "commandRunner", gameRestService, commandRunner);
   }
 

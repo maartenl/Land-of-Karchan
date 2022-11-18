@@ -30,7 +30,7 @@ import mmud.database.entities.game.DisplayInterface;
 import mmud.database.entities.game.Room;
 import mmud.database.entities.items.ItemDefinition;
 import mmud.database.entities.items.NormalItem;
-import mmud.rest.services.admin.AdminRestService;
+import mmud.services.AdminService;
 import mmud.services.CommunicationService;
 import mmud.services.ItemService;
 import mmud.services.LogService;
@@ -50,27 +50,27 @@ import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 public class OwnerCommandTest extends MudTest
 {
 
-    private User karn;
-    private Room room1;
-    private NormalItem ring;
-    private ItemDefinition itemDef;
-    private ItemService itemService;
+  private User karn;
+  private Room room1;
+  private NormalItem ring;
+  private ItemDefinition itemDef;
+  private ItemService itemService;
 
-    private LogServiceStub logBean;
+  private LogServiceStub logBean;
 
-    private CommandRunner commandRunner = new CommandRunner();
-    private AdminRestService adminRestService;
-    private Admin karnAdmin;
-    private Admin mideviaAdmin;
+  private CommandRunner commandRunner = new CommandRunner();
+  private AdminService adminService;
+  private Admin karnAdmin;
+  private Admin mideviaAdmin;
 
-    public OwnerCommandTest()
-    {
-    }
+  public OwnerCommandTest()
+  {
+  }
 
-    @Test
-    public void showEmptyOwner()
-    {
-        OwnerCommand ownerCommand = new OwnerCommand("owner( (\\w)+)?");
+  @Test
+  public void showEmptyOwner()
+  {
+    OwnerCommand ownerCommand = new OwnerCommand("owner( (\\w)+)?");
         ownerCommand.setCallback(commandRunner);
         assertThat(ownerCommand.getRegExpr()).isEqualTo("owner( (\\w)+)?");
         DisplayInterface display = ownerCommand.run("owner", karn);
@@ -105,11 +105,11 @@ public class OwnerCommandTest extends MudTest
         OwnerCommand ownerCommand = new OwnerCommand("owner( (\\w)+)?")
         {
 
-            @Override
-            protected LogService getLogBean()
-            {
-                return logBean;
-            }
+          @Override
+          protected LogService getLogService()
+          {
+            return logBean;
+          }
         };
         ownerCommand.setCallback(commandRunner);
         assertThat(ownerCommand.getRegExpr()).isEqualTo("owner( (\\w)+)?");
@@ -129,17 +129,17 @@ public class OwnerCommandTest extends MudTest
         karn.setOwner(null);
         OwnerCommand ownerCommand = new OwnerCommand("owner( (\\w)+)?")
         {
-            @Override
-            protected AdminRestService getAdminBean()
-            {
-                return adminRestService;
-            }
+          @Override
+          protected AdminService getAdminService()
+          {
+            return adminService;
+          }
 
-            @Override
-            protected LogService getLogBean()
-            {
-                return logBean;
-            }
+          @Override
+          protected LogService getLogService()
+          {
+            return logBean;
+          }
         };
         ownerCommand.setCallback(commandRunner);
         assertThat(ownerCommand.getRegExpr()).isEqualTo("owner( (\\w)+)?");
@@ -160,17 +160,17 @@ public class OwnerCommandTest extends MudTest
         karn.setOwner(mideviaAdmin);
         OwnerCommand ownerCommand = new OwnerCommand("owner( (\\w)+)?")
         {
-            @Override
-            protected AdminRestService getAdminBean()
-            {
-                return adminRestService;
-            }
+          @Override
+          protected AdminService getAdminService()
+          {
+            return adminService;
+          }
 
-            @Override
-            protected LogService getLogBean()
-            {
-                return logBean;
-            }
+          @Override
+          protected LogService getLogService()
+          {
+            return logBean;
+          }
 
         };
         ownerCommand.setCallback(commandRunner);
@@ -203,30 +203,30 @@ public class OwnerCommandTest extends MudTest
         room1.setId(1L);
         room1.setContents("You are in a small room.");
 
-        karnAdmin = new Admin();
-        karnAdmin.setName("Karn");
+      karnAdmin = new Admin();
+      karnAdmin.setName("Karn");
 
-        mideviaAdmin = new Admin();
-        mideviaAdmin.setName("Midevia");
+      mideviaAdmin = new Admin();
+      mideviaAdmin.setName("Midevia");
 
-        karn = new User();
-        karn.setName("Karn");
-        karn.setRoom(room1);
+      karn = new User();
+      karn.setName("Karn");
+      karn.setRoom(room1);
 
-        adminRestService = new AdminRestService()
+      adminService = new AdminService()
+      {
+        @Override
+        public List<Admin> getAdministrators()
         {
-            @Override
-            public List<Admin> getAdministrators()
-            {
-                return Arrays.asList(karnAdmin, mideviaAdmin);
-            }
+          return Arrays.asList(karnAdmin, mideviaAdmin);
+        }
 
-        };
-//        setField(PersonBean.class, "logBean", personBean, logBean);
+      };
+//        setField(PersonBean.class, "logService", personBean, logBean);
 
-        File file = new File(Constants.getMudfilepath() + File.separator + "Karn.log");
-        PrintWriter writer = new PrintWriter(file);
-        writer.close();
+      File file = new File(Constants.getMudfilepath() + File.separator + "Karn.log");
+      PrintWriter writer = new PrintWriter(file);
+      writer.close();
     }
 
     @AfterMethod

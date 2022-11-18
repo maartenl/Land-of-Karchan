@@ -28,6 +28,7 @@ import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import jakarta.persistence.Query;
 import jakarta.persistence.TypedQuery;
+import jakarta.transaction.Transactional;
 import jakarta.ws.rs.GET;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.PathParam;
@@ -37,18 +38,16 @@ import jakarta.ws.rs.core.Response;
 import mmud.database.entities.characters.User;
 import mmud.database.entities.game.BoardMessage;
 import mmud.database.entities.game.Guild;
-import mmud.database.entities.web.CharacterInfo;
-import mmud.database.entities.web.Family;
 import mmud.exceptions.MudWebException;
 import mmud.rest.webentities.Fortune;
 import mmud.rest.webentities.News;
-import mmud.rest.webentities.PublicFamily;
 import mmud.rest.webentities.PublicGuild;
 import mmud.rest.webentities.PublicPerson;
 import mmud.rest.webentities.admin.AdminAdmin;
 import mmud.services.BoardService;
 import mmud.services.IdleUsersService;
 import mmud.services.PersonService;
+import mmud.services.PublicService;
 
 /**
  * Contains all rest calls that are available to the world, without
@@ -57,15 +56,20 @@ import mmud.services.PersonService;
  *
  * @author maartenl
  */
+@Transactional
 @Path("/public")
 public class PublicRestService
 {
+  private static final Logger LOGGER = Logger.getLogger(PublicRestService.class.getName());
 
   @Inject
   private BoardService boardService;
 
   @Inject
   private PersonService personService;
+
+  @Inject
+  private PublicService publicService;
 
   @Inject
   private IdleUsersService idleUsersService;
@@ -84,12 +88,9 @@ public class PublicRestService
     return em;
   }
 
-  private static final Logger LOGGER = Logger.getLogger(PublicRestService.class.getName());
-
   /**
    * Returns a Fortune 100 of players on karchan. The URL:
-   * /karchangame/resources/public/fortunes. Can produce both application/xml
-   * and application/json.
+   * /karchangame/resources/public/fortunes.
    *
    * @return a list of fortunes
    */
@@ -124,8 +125,7 @@ public class PublicRestService
 
   /**
    * Returns a List of people currently online. The URL:
-   * /karchangame/resources/public/who. Can produce both application/xml and
-   * application/json.
+   * /karchangame/resources/public/who.
    *
    * @return List of PublicPersons.
    */
@@ -169,8 +169,7 @@ public class PublicRestService
 
   /**
    * Returns a List of news, recent first. The URL:
-   * /karchangame/resources/public/news. Can produce both application/xml and
-   * application/json.
+   * /karchangame/resources/public/news.
    *
    * @return a list of news items.
    */
@@ -225,7 +224,7 @@ public class PublicRestService
     List<String> items;
     try
     {
-      items = getDeputies().stream().map(person -> new AdminAdmin(person).toJson()).collect(Collectors.toList());
+      items = publicService.getDeputies().stream().map(person -> new AdminAdmin(person).toJson()).collect(Collectors.toList());
     } catch (Exception e)
     {
       throw new MudWebException(e, Response.Status.BAD_REQUEST);
@@ -235,14 +234,8 @@ public class PublicRestService
     return "[" + String.join(",", items) + "]";
   }
 
-  public List<User> getDeputies()
-  {
-    return getEntityManager().createNamedQuery("User.status", User.class).getResultList();
-  }
-
   /**
    * Returns a list of Guilds. The URL: /karchangame/resources/public/guilds.
-   * Can produce both application/xml and application/json.
    *
    * @return List of Guilds
    */
@@ -288,8 +281,7 @@ public class PublicRestService
 
   /**
    * Returns all the info of a character. The URL:
-   * /karchangame/resources/public/charactersheets/&lt;name&gt;. Can produce
-   * both application/xml and application/json.
+   * /karchangame/resources/public/charactersheets/&lt;name&gt;.
    *
    * @param name the name of the character/player
    * @return all person data that should be visible to the public.
@@ -302,46 +294,7 @@ public class PublicRestService
     })
   public PublicPerson charactersheet(@PathParam("name") String name)
   {
-    LOGGER.finer("entering charactersheet");
-    PublicPerson res = new PublicPerson();
-
-    User person = getEntityManager().find(User.class, name);
-    if (person == null)
-    {
-      throw new MudWebException(name, "Charactersheet not found.", Response.Status.NOT_FOUND);
-    }
-    res.name = person.getName();
-    res.title = person.getTitle();
-    res.sex = person.getSex().toString();
-    res.description = person.getDescription();
-    CharacterInfo characterInfo = getEntityManager().find(CharacterInfo.class, person.getName());
-    if (characterInfo != null)
-    {
-      res.imageurl = characterInfo.getImageurl();
-      res.homepageurl = characterInfo.getHomepageurl();
-      res.dateofbirth = characterInfo.getDateofbirth();
-      res.cityofbirth = characterInfo.getCityofbirth();
-      res.storyline = characterInfo.getStoryline();
-    }
-    if (person.getGuild() != null)
-    {
-      res.guild = person.getGuild().getTitle();
-    }
-
-    TypedQuery<Family> query = getEntityManager().createNamedQuery("Family.findByName", Family.class);
-    query.setParameter("name", person.getName());
-    List<Family> list = query.getResultList();
-    for (Family fam : list)
-    {
-      LOGGER.log(Level.FINER, "{0}", fam);
-      PublicFamily pfam = new PublicFamily();
-      pfam.description = fam.getDescription().getDescription();
-      pfam.toname = fam.getFamilyPK().getToname();
-      res.familyvalues.add(pfam);
-    }
-
-    LOGGER.finer("exiting charactersheet");
-    return res;
+    return publicService.charactersheet(name);
   }
 
   @VisibleForTesting
@@ -354,5 +307,11 @@ public class PublicRestService
   public void setBoardBean(BoardService boardService)
   {
     this.boardService = boardService;
+  }
+
+  @VisibleForTesting
+  public void setPublicService(PublicService publicService)
+  {
+    this.publicService = publicService;
   }
 }

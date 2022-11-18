@@ -49,19 +49,19 @@ public class ChangeMasterCommand extends GuildMasterCommand
     @Override
     public DisplayInterface run(String command, User aUser) throws MudException
     {
-        PersonCommunicationService communicationService = CommunicationService.getCommunicationService(aUser);
-        LogService logService = getLogBean();
-        String[] myParsed = parseCommand(command);
-        // TODO : casting is nasty, there must be a better way!
-        Person toChar2 = aUser.getRoom().retrievePerson(myParsed[1]);
-        if ((toChar2 == null) || (!(toChar2 instanceof User)))
-        {
-            communicationService.writeMessage("Cannot find that person.<BR>\r\n");
-            return aUser.getRoom();
-        }
+      PersonCommunicationService communicationService = CommunicationService.getCommunicationService(aUser);
+      LogService logService = getLogService();
+      String[] myParsed = parseCommand(command);
+      // TODO : casting is nasty, there must be a better way!
+      Person toChar2 = aUser.getRoom().retrievePerson(myParsed[1]);
+      if ((toChar2 == null) || (!(toChar2 instanceof User)))
+      {
+        communicationService.writeMessage("Cannot find that person.<BR>\r\n");
+        return aUser.getRoom();
+      }
 
-        User toChar = (User) toChar2;
-        if (toChar.getGuild() == null
+      User toChar = (User) toChar2;
+      if (toChar.getGuild() == null
                 || (!toChar.getGuild().getName().equals(
                         aUser.getGuild().getName())))
         {

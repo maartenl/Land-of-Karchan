@@ -43,6 +43,7 @@ import mmud.rest.webentities.PublicPerson;
 import mmud.services.BoardService;
 import mmud.services.IdleUsersService;
 import mmud.services.PersonService;
+import mmud.services.PublicService;
 import mmud.testing.TestingConstants;
 import mmud.testing.TestingUtils;
 import org.mockito.ArgumentMatchers;
@@ -432,7 +433,15 @@ public class PublicRestServiceTest
         return entityManager;
       }
     };
-    // Unit under test is exercised.
+    publicRestService.setPublicService(new PublicService()
+    {
+      @Override
+      protected EntityManager getEntityManager()
+      {
+        return entityManager;
+      }
+
+    });    // Unit under test is exercised.
     String result = publicRestService.status();
     // Verification code (JUnit/TestNG asserts), if any.
     assertNotNull(result, "list expected");
@@ -561,7 +570,17 @@ public class PublicRestServiceTest
       {
         return entityManager;
       }
+
     };
+    publicRestService.setPublicService(new PublicService()
+    {
+      @Override
+      protected EntityManager getEntityManager()
+      {
+        return entityManager;
+      }
+
+    });
     // Unit under test is exercised.
     assertThatThrownBy(() -> publicRestService.charactersheet("Marvin"))
       .isInstanceOf(MudWebException.class)
@@ -598,6 +617,15 @@ public class PublicRestServiceTest
         return entityManager;
       }
     };
+    publicRestService.setPublicService(new PublicService()
+    {
+      @Override
+      protected EntityManager getEntityManager()
+      {
+        return entityManager;
+      }
+
+    });
     // Unit under test is exercised.
     PublicPerson person = publicRestService.charactersheet("Marvin");
     // Verification code (JUnit/TestNG asserts), if any.

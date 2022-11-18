@@ -18,6 +18,7 @@ package mmud.commands;
 
 import java.util.List;
 import java.util.stream.Collectors;
+
 import mmud.database.entities.characters.User;
 import mmud.database.entities.game.Admin;
 import mmud.database.entities.game.DisplayInterface;
@@ -43,11 +44,11 @@ public class DeputiesCommand extends NormalCommand
     @Override
     public DisplayInterface run(String command, User aUser) throws MudException
     {
-        List<Admin> administrators = getAdminBean().getAdministrators();
-        String deps = administrators.stream().map(Admin::getName)
-                .collect(Collectors.joining(", "));
-        CommunicationService.getCommunicationService(aUser).writeMessage("Current deputies are " + deps + ".<br/>");
-        return aUser.getRoom();
+      List<Admin> administrators = getAdminService().getAdministrators();
+      String deps = administrators.stream().map(Admin::getName)
+        .collect(Collectors.joining(", "));
+      CommunicationService.getCommunicationService(aUser).writeMessage("Current deputies are " + deps + ".<br/>");
+      return aUser.getRoom();
     }
 
 }

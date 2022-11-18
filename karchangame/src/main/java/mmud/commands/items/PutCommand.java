@@ -124,7 +124,7 @@ public class PutCommand extends NormalCommand
             return aUser.getRoom();
         }
       boolean put = false;
-      ItemService itemService = getItemBean();
+      ItemService itemService = getItemService();
         for (Item item : itemsFound)
         {
             if (aUser.unused(item) && !item.isBound() && !item.isContainer())

@@ -49,9 +49,9 @@ public class DeleteGuildCommand extends GuildMasterCommand
       CommunicationService.getCommunicationService(aUser).writeMessage("You are not a member of a guild.<br/>\n");
       return aUser.getRoom();
     }
-    LogService logService = getLogBean();
+    LogService logService = getLogService();
     String guildName = guild.getName();
-    getGuildBean().deleteGuild(aUser.getName());
+    getGuildService().deleteGuild(aUser);
     aUser.setGuild(null);
     CommunicationService.getCommunicationService(aUser).writeMessage("Guild " + guildName + " deleted.<br/ >\r\n");
     logService.writeLog(aUser, " guild " + guildName + " deleted");

@@ -125,7 +125,7 @@ public class BuyCommand extends NormalCommand
       return aUser.getRoom();
     }
     boolean bought = false;
-    ItemService itemService = getItemBean();
+    ItemService itemService = getItemService();
     for (Item item : itemsFound)
     {
       // item is not used.

@@ -30,7 +30,7 @@ import mmud.database.entities.game.DisplayInterface;
 import mmud.database.entities.game.Room;
 import mmud.database.entities.items.ItemDefinition;
 import mmud.database.entities.items.NormalItem;
-import mmud.rest.services.admin.AdminRestService;
+import mmud.services.AdminService;
 import mmud.services.CommunicationService;
 import mmud.services.ItemService;
 import mmud.testing.tests.LogServiceStub;
@@ -46,34 +46,34 @@ import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 public class DeputiesCommandTest extends MudTest
 {
 
-    private User karn;
-    private Room room1;
-    private NormalItem ring;
-    private ItemDefinition itemDef;
-    private ItemService itemService;
+  private User karn;
+  private Room room1;
+  private NormalItem ring;
+  private ItemDefinition itemDef;
+  private ItemService itemService;
 
-    private LogServiceStub logBean;
+  private LogServiceStub logBean;
 
-    private CommandRunner commandRunner = new CommandRunner();
-    private AdminRestService adminRestService;
-    private Admin karnAdmin;
-    private Admin mideviaAdmin;
+  private CommandRunner commandRunner = new CommandRunner();
+  private AdminService adminService;
+  private Admin karnAdmin;
+  private Admin mideviaAdmin;
 
-    public DeputiesCommandTest()
+  public DeputiesCommandTest()
+  {
+  }
+
+  @Test
+  public void showDeputys()
+  {
+    DeputiesCommand deputiesCommand = new DeputiesCommand("deputies")
     {
-    }
-
-    @Test
-    public void showDeputys()
-    {
-        DeputiesCommand deputiesCommand = new DeputiesCommand("deputies")
-        {
-            @Override
-            protected AdminRestService getAdminBean()
-            {
-                return adminRestService;
-            }
-        };
+      @Override
+      protected AdminService getAdminService()
+      {
+        return adminService;
+      }
+    };
         deputiesCommand.setCallback(commandRunner);
         assertThat(deputiesCommand.getRegExpr()).isEqualTo("deputies");
         DisplayInterface display = deputiesCommand.run("deputies", karn);
@@ -92,29 +92,29 @@ public class DeputiesCommandTest extends MudTest
         room1.setId(1L);
         room1.setContents("You are in a small room.");
 
-        karnAdmin = new Admin();
-        karnAdmin.setName("Karn");
+      karnAdmin = new Admin();
+      karnAdmin.setName("Karn");
 
-        mideviaAdmin = new Admin();
-        mideviaAdmin.setName("Midevia");
+      mideviaAdmin = new Admin();
+      mideviaAdmin.setName("Midevia");
 
-        karn = new User();
-        karn.setName("Karn");
-        karn.setRoom(room1);
+      karn = new User();
+      karn.setName("Karn");
+      karn.setRoom(room1);
 
-        adminRestService = new AdminRestService()
+      adminService = new AdminService()
+      {
+        @Override
+        public List<Admin> getAdministrators()
         {
-            @Override
-            public List<Admin> getAdministrators()
-            {
-                return Arrays.asList(karnAdmin, mideviaAdmin);
-            }
+          return Arrays.asList(karnAdmin, mideviaAdmin);
+        }
 
-        };
+      };
 
-        File file = new File(Constants.getMudfilepath() + File.separator + "Karn.log");
-        PrintWriter writer = new PrintWriter(file);
-        writer.close();
+      File file = new File(Constants.getMudfilepath() + File.separator + "Karn.log");
+      PrintWriter writer = new PrintWriter(file);
+      writer.close();
     }
 
 }

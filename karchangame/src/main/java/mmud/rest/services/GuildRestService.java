@@ -22,8 +22,6 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
-import java.util.SortedSet;
-import java.util.TreeSet;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
@@ -35,6 +33,7 @@ import jakarta.inject.Inject;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import jakarta.persistence.TypedQuery;
+import jakarta.transaction.Transactional;
 import jakarta.validation.ConstraintViolationException;
 import jakarta.ws.rs.Consumes;
 import jakarta.ws.rs.DELETE;
@@ -44,8 +43,10 @@ import jakarta.ws.rs.PUT;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.PathParam;
 import jakarta.ws.rs.WebApplicationException;
+import jakarta.ws.rs.core.Context;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
+import jakarta.ws.rs.core.SecurityContext;
 import mmud.database.Attributes;
 import mmud.database.entities.characters.Person;
 import mmud.database.entities.characters.User;
@@ -58,7 +59,9 @@ import mmud.exceptions.MudWebException;
 import mmud.rest.webentities.PrivateGuild;
 import mmud.rest.webentities.PrivatePerson;
 import mmud.rest.webentities.PrivateRank;
+import mmud.services.GuildService;
 import mmud.services.PersonService;
+import mmud.services.PlayerAuthenticationService;
 
 /**
  * Takes care of the guilds. All the REST services in this bean, can be
@@ -76,6 +79,7 @@ import mmud.services.PersonService;
   })
 @RolesAllowed("player")
 @Path("/private/{name}/guild")
+@Transactional
 public class GuildRestService
 {
 
@@ -83,10 +87,16 @@ public class GuildRestService
   private EntityManager em;
 
   @Inject
-  private PrivateRestService privateRestService;
+  private PlayerAuthenticationService playerAuthenticationService;
 
   @Inject
   private PersonService personService;
+
+  @Inject
+  private GuildService guildService;
+
+  @Context
+  private SecurityContext context;
 
   /**
    * Returns the entity manager of JPA. This is defined in
@@ -100,18 +110,6 @@ public class GuildRestService
   }
 
   private static final Logger LOGGER = Logger.getLogger(GuildRestService.class.getName());
-
-  /**
-   * Retrieves the guild by name. Returns null if not found.
-   *
-   * @param name the name of the guild.
-   * @return a guild or null.
-   */
-  public Guild getGuild(String name)
-  {
-    return getEntityManager().find(Guild.class, name);
-
-  }
 
   /**
    * returns a list of persons that wish to become a member of a guild.
@@ -148,7 +146,7 @@ public class GuildRestService
   public PrivateGuild getGuildInfo(@PathParam("name") String name)
   {
     LOGGER.finer("entering getGuild");
-    Guild guild = authenticate(name);
+    Guild guild = authenticateMember(name);
     PrivateGuild privateGuild = new PrivateGuild();
     privateGuild.guildurl = guild.getHomepage();
     privateGuild.title = guild.getTitle();
@@ -206,6 +204,25 @@ public class GuildRestService
     return Response.ok().build();
   }
 
+  private User authenticateUser(String name)
+  {
+    return playerAuthenticationService.authenticate(name, context);
+  }
+
+  private Guild authenticateMember(String name)
+  {
+    User person = playerAuthenticationService.authenticate(name, context);
+    final Guild guild = person.getGuild();
+    if (guild == null)
+    {
+      throw new MudWebException(name,
+        "User is not a member of a guild.",
+        "User is not a member of a guild (" + name + ")",
+        Response.Status.NOT_FOUND);
+    }
+    return guild;
+  }
+
   /**
    * Creates a new guild.
    *
@@ -224,7 +241,7 @@ public class GuildRestService
   public Response createGuild(@PathParam("name") String name, PrivateGuild cinfo)
   {
     LOGGER.finer("entering createGuild");
-    User person = privateRestService.authenticate(name);
+    User person = authenticateUser(name);
     if (person.getGuild() != null)
     {
       throw new MudWebException(name, "You are already a member of a guild and therefore cannot start a guild.", Response.Status.UNAUTHORIZED);
@@ -270,28 +287,9 @@ public class GuildRestService
     })
   public Response deleteGuildRest(@PathParam("name") String name)
   {
-    deleteGuild(name);
-    return Response.ok().build();
-  }
-
-  public void deleteGuild(String name)
-  {
-    LOGGER.finer("entering deleteGuild");
     User person = authenticateGuildMaster(name);
-    Guild guild = person.getGuild();
-    for (User guildmember : guild.getMembers())
-    {
-      guildmember.setGuild(null);
-    }
-    SortedSet<User> emptySet = new TreeSet<>();
-    guild.setMembers(emptySet);
-    for (Guildrank rank : guild.getGuildrankCollection())
-    {
-      getEntityManager().remove(rank);
-    }
-    SortedSet<Guildrank> emptyRanks = new TreeSet<>();
-    guild.setGuildrankCollection(emptyRanks);
-    getEntityManager().remove(guild);
+    guildService.deleteGuild(person);
+    return Response.ok().build();
   }
 
   /**
@@ -310,7 +308,7 @@ public class GuildRestService
   public List<PrivatePerson> getMembers(@PathParam("name") String name)
   {
     LOGGER.finer("entering getGuildMembers");
-    Guild guild = authenticate(name);
+    Guild guild = authenticateMember(name);
     Collection<User> members = guild.getMembers();
     List<PrivatePerson> result = new ArrayList<>();
     for (User person : members)
@@ -323,15 +321,15 @@ public class GuildRestService
       }
       result.add(privatePerson);
     }
-    Collections.sort(result, (PrivatePerson o1, PrivatePerson o2) -> o1.name.compareTo(o2.name));
+    result.sort(Comparator.comparing((PrivatePerson o) -> o.name));
     return result;
   }
 
   /**
    * Get the member of the guild of the user.
    *
-   * @param membername the name of the guild member
    * @param name       the name of the user
+   * @param membername the name of the guild member
    * @return member
    */
   @GET
@@ -345,7 +343,7 @@ public class GuildRestService
                                  @PathParam("membername") String membername)
   {
     LOGGER.finer("entering getMember");
-    Guild guild = authenticate(name);
+    Guild guild = authenticateMember(name);
     User member = guild.getMember(membername);
     if (member == null)
     {
@@ -363,8 +361,8 @@ public class GuildRestService
   /**
    * Removes a member from the guild.
    *
-   * @param membername the name of the guild member to remove
    * @param name       the name of the user
+   * @param membername the name of the guild member to remove
    * @return member
    */
   @DELETE
@@ -440,9 +438,9 @@ public class GuildRestService
   /**
    * Set or deletes the rank of a member of the guild of the user.
    *
+   * @param name       the name of the user
    * @param membername the name of the guild member, to set the guild rank for
    * @param member     the member object that contains the changes
-   * @param name       the name of the user
    * @return Response.ok() if everything's okay.
    */
   @PUT
@@ -494,7 +492,7 @@ public class GuildRestService
   public List<PrivatePerson> getGuildHopefuls(@PathParam("name") String name)
   {
     LOGGER.finer("entering getGuildHopefuls");
-    Guild guild = authenticate(name);
+    Guild guild = authenticateMember(name);
     Collection<User> hopefuls = getGuildHopefuls(guild);
     List<PrivatePerson> result = new ArrayList<>();
     for (User person : hopefuls)
@@ -568,7 +566,7 @@ public class GuildRestService
   public List<PrivateRank> getGuildRanks(@PathParam("name") String name)
   {
     LOGGER.finer("entering getGuildRanks");
-    Guild guild = authenticate(name);
+    Guild guild = authenticateMember(name);
     Guildrank[] ranks = guild.getGuildrankCollection().toArray(new Guildrank[0]);
     Arrays.sort(ranks, new Comparator<Guildrank>()
     {
@@ -740,24 +738,15 @@ public class GuildRestService
     return Response.ok().build();
   }
 
-  private Guild authenticate(String name)
-  {
-    User person = privateRestService.authenticate(name);
-    final Guild guild = person.getGuild();
-    if (guild == null)
-    {
-      throw new MudWebException(name,
-        "User is not a member of a guild.",
-        "User is not a member of a guild (" + name + ")",
-        Response.Status.NOT_FOUND);
-    }
-    return guild;
-  }
-
   @VisibleForTesting
   protected User authenticateGuildMaster(String name)
   {
-    return privateRestService.authenticateGuildMaster(name);
+    return playerAuthenticationService.authenticateGuildMaster(name, context);
   }
 
+  @VisibleForTesting
+  public void setPlayerAuthenticationService(PlayerAuthenticationService playerAuthenticationService)
+  {
+    this.playerAuthenticationService = playerAuthenticationService;
+  }
 }

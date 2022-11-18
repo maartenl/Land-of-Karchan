@@ -109,18 +109,18 @@ public class TitleCommandTest extends MudTest
             @Override
             public User getActiveUser(String name)
             {
-                if (name.equalsIgnoreCase("Marvin"))
-                {
-                    return marvin;
-                }
-                if (name.equalsIgnoreCase("Karn"))
-                {
-                    return karn;
-                }
-                return null;
+              if (name.equalsIgnoreCase("Marvin"))
+              {
+                return marvin;
+              }
+              if (name.equalsIgnoreCase("Karn"))
+              {
+                return karn;
+              }
+              return null;
             }
         };
-        setField(PersonService.class, "logBean", personService, logBean);
+      setField(PersonService.class, "logService", personService, logBean);
 
         karn = TestingConstants.getKarn();
         final Room room = TestingConstants.getRoom(TestingConstants.getArea());

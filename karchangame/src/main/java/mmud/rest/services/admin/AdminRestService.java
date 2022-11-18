@@ -22,9 +22,10 @@ import java.util.logging.Logger;
 
 import jakarta.annotation.security.DeclareRoles;
 import jakarta.annotation.security.RolesAllowed;
+import jakarta.inject.Inject;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
-import jakarta.persistence.Query;
+import jakarta.transaction.Transactional;
 import jakarta.ws.rs.GET;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.Produces;
@@ -36,6 +37,7 @@ import mmud.database.entities.characters.User;
 import mmud.database.entities.game.Admin;
 import mmud.exceptions.MudWebException;
 import mmud.rest.webentities.admin.AdminAdmin;
+import mmud.services.AdminService;
 
 /**
  * Currently the only thing it is used for is for a player to reset the owner
@@ -48,7 +50,7 @@ import mmud.rest.webentities.admin.AdminAdmin;
     "deputy", "god", "player"
   })
 @RolesAllowed("deputy")
-
+@Transactional
 @Path("/administration/administrators")
 public class AdminRestService
 {
@@ -58,6 +60,9 @@ public class AdminRestService
   @PersistenceContext(unitName = "karchangamePU")
   private EntityManager em;
 
+  @Inject
+  private AdminService adminService;
+
   /**
    * Returns a list of currently valid administrators.
    *
@@ -66,22 +71,13 @@ public class AdminRestService
   @RolesAllowed("player")
   public List<Admin> getAdministrators()
   {
-    Query query = getEntityManager().createNamedQuery("Admin.findValid");
-    List<Admin> list = query.getResultList();
-    return list;
+    return adminService.getAdministrators();
   }
 
-  /**
-   * Returns the found valid administrator with that name.
-   *
-   * @param name the name of the administrator to look for, case insensitive.
-   * @return An optional which is either empty (not found) or contains
-   * the administrator.
-   */
   @RolesAllowed("player")
   public Optional<Admin> getAdministrator(String name)
   {
-    return getAdministrators().stream().filter(x -> x.getName().equalsIgnoreCase(name)).findFirst();
+    return adminService.getAdministrator(name);
   }
 
   /**

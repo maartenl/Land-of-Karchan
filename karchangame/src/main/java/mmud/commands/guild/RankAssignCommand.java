@@ -51,7 +51,7 @@ public class RankAssignCommand extends GuildMasterCommand
   public DisplayInterface run(String command, User aUser) throws MudException
   {
     PersonCommunicationService communicationService = CommunicationService.getCommunicationService(aUser);
-    LogService logService = getLogBean();
+    LogService logService = getLogService();
     String[] myParsed = parseCommand(command, 3);
     String rankString = myParsed[1];
     String memberName = myParsed[2];

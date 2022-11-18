@@ -42,6 +42,7 @@ import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.ws.rs.core.Context;
 import org.eclipse.microprofile.config.inject.ConfigProperty;
 import org.karchan.menus.Menu;
 import org.karchan.menus.MenuFactory;
@@ -70,6 +71,7 @@ public class WebsiteServlet extends HttpServlet
   private Optional<String> redirectHttps;
 
   @Inject
+  @Context
   private SecurityContext securityContext;
 
   @Inject

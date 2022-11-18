@@ -66,7 +66,7 @@ public class HelpCommandTest extends MudTest
     HelpCommand helpCommand = new HelpCommand("help( (\\w)+)?");
     helpCommand.setCallback(commandRunner);
     assertThat(helpCommand.getRegExpr()).isEqualTo("help( (\\w)+)?");
-    commandRunner.setBeans(null, logBean, null, null, null, null, helpService);
+    commandRunner.setServices(null, logBean, null, null, null, null, helpService);
     DisplayInterface display = helpCommand.run("help drop", marvin);
     assertThat(display).isNotNull();
     assertThat(display.getImage()).isNull();
@@ -85,7 +85,7 @@ public class HelpCommandTest extends MudTest
     HelpCommand helpCommand = new HelpCommand("help( (\\w)+)?");
     helpCommand.setCallback(commandRunner);
     assertThat(helpCommand.getRegExpr()).isEqualTo("help( (\\w)+)?");
-    commandRunner.setBeans(null, logBean, null, null, null, null, helpService);
+    commandRunner.setServices(null, logBean, null, null, null, null, helpService);
     DisplayInterface display = helpCommand.run("help awesomeness", marvin);
     assertThat(display).isNotNull();
     assertThat(display.getImage()).isNull();
@@ -104,7 +104,7 @@ public class HelpCommandTest extends MudTest
     HelpCommand helpCommand = new HelpCommand("help( (\\w)+)?");
     helpCommand.setCallback(commandRunner);
     assertThat(helpCommand.getRegExpr()).isEqualTo("help( (\\w)+)?");
-    commandRunner.setBeans(null, logBean, null, null, null, null, helpService);
+    commandRunner.setServices(null, logBean, null, null, null, null, helpService);
     DisplayInterface display = helpCommand.run("help", marvin);
     assertThat(display).isNotNull();
     assertThat(display.getImage()).isNull();

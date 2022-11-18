@@ -27,6 +27,7 @@ import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import jakarta.persistence.Query;
 import jakarta.security.enterprise.SecurityContext;
+import jakarta.transaction.Transactional;
 import jakarta.ws.rs.Consumes;
 import jakarta.ws.rs.GET;
 import jakarta.ws.rs.POST;
@@ -35,6 +36,7 @@ import jakarta.ws.rs.Path;
 import jakarta.ws.rs.PathParam;
 import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.WebApplicationException;
+import jakarta.ws.rs.core.Context;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import mmud.JsonUtils;
@@ -55,8 +57,7 @@ import org.karchan.security.Roles;
  */
 @DeclareRoles(Roles.PLAYER)
 @RolesAllowed(Roles.PLAYER)
-
-
+@Transactional
 @Path("/wikipages")
 public class WikipageRestService
 {
@@ -65,6 +66,7 @@ public class WikipageRestService
   private EntityManager em;
 
   @Inject
+  @Context
   private SecurityContext securityContext;
 
   @Inject

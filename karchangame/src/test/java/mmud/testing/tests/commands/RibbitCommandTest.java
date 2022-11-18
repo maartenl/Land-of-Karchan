@@ -132,7 +132,7 @@ public class RibbitCommandTest extends MudTest
         return null;
       }
     };
-    setField(PersonService.class, "logBean", personService, logBean);
+    setField(PersonService.class, "logService", personService, logBean);
 
     karn = TestingConstants.getKarn();
     final Room room = TestingConstants.getRoom(TestingConstants.getArea());

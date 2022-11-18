@@ -27,27 +27,27 @@ import mmud.database.entities.characters.User;
 import mmud.database.entities.game.DisplayInterface;
 import mmud.database.entities.game.UserCommand;
 import mmud.exceptions.MudException;
-import mmud.rest.services.EventsRestService;
-import mmud.rest.services.GuildRestService;
-import mmud.rest.services.admin.AdminRestService;
-import mmud.rest.services.admin.RoomsRestService;
 import mmud.scripting.Items;
 import mmud.scripting.Persons;
 import mmud.scripting.Rooms;
 import mmud.scripting.RunScript;
 import mmud.scripting.World;
+import mmud.services.AdminService;
 import mmud.services.AttributeService;
 import mmud.services.CommunicationService;
+import mmud.services.EventsService;
+import mmud.services.GuildService;
 import mmud.services.HelpService;
 import mmud.services.ItemService;
 import mmud.services.LogService;
 import mmud.services.PersonService;
+import mmud.services.RoomsService;
 
 /**
  * Will run the command provided.
  *
- * @see CommandFactory
  * @author maartenl
+ * @see CommandFactory
  */
 public class CommandRunner
 {
@@ -61,7 +61,7 @@ public class CommandRunner
   private AttributeService attributeService;
 
   @Inject
-  private RoomsRestService roomBean;
+  private RoomsService roomsService;
 
   @Inject
   private HelpService helpService;
@@ -70,16 +70,16 @@ public class CommandRunner
   private LogService logService;
 
   @Inject
-  private GuildRestService guildRestService;
+  private GuildService guildService;
 
   @Inject
   private ItemService itemService;
 
   @Inject
-  private EventsRestService eventsRestService;
+  private EventsService eventsService;
 
   @Inject
-  private AdminRestService adminRestService;
+  private AdminService adminService;
 
   /**
    * Runs a specific command. If this person appears to be asleep, the only
@@ -87,19 +87,19 @@ public class CommandRunner
    * false, i.e. nothing is executed, the method will call the standard
    * BogusCommand.
    *
-   * @param aUser the person executing the command
-   * @param aCommand the command to be run. Must not be null.
+   * @param aUser        the person executing the command
+   * @param aCommand     the command to be run. Must not be null.
    * @param userCommands the commands as defined by the user, instead of the
-   * standard commands. Must never be null.
+   *                     standard commands. Must never be null.
    * @return DisplayInterface object containing the result of the command
    * executed.
    */
   public DisplayInterface runCommand(User aUser, String aCommand, List<UserCommand> userCommands)
   {
     LOGGER.log(Level.FINER, " entering {0}.runCommand {1}:{2}", new Object[]
-    {
-      this.getClass().getName(), aUser.getName(), aCommand
-    });
+      {
+        this.getClass().getName(), aUser.getName(), aCommand
+      });
     try
     {
       if (aUser.getSleep())
@@ -116,7 +116,7 @@ public class CommandRunner
       }
       List<NormalCommand> myCol = new ArrayList<>();
       Persons persons = new Persons(personService);
-      Rooms rooms = new Rooms(id -> roomBean.find(id));
+      Rooms rooms = new Rooms(id -> roomsService.find(id));
       Items items = new Items(itemdefnr -> itemService.createItem(itemdefnr));
       World world = new World(name -> attributeService.getAttribute(name));
       RunScript runScript = new RunScript(persons, rooms, items, world);
@@ -188,50 +188,50 @@ public class CommandRunner
     return command.start(aCommand, aUser);
   }
 
-  public PersonService getPersonBean()
+  public PersonService getPersonService()
   {
     return personService;
   }
 
-  public HelpService getHelpBean()
+  public HelpService getHelpService()
   {
     return helpService;
   }
 
-  public LogService getLogBean()
+  public LogService getLogService()
   {
     return logService;
   }
 
-  public GuildRestService getGuildBean()
+  public GuildService getGuildService()
   {
-    return guildRestService;
+    return guildService;
   }
 
-  public ItemService getItemBean()
+  public ItemService getItemService()
   {
     return itemService;
   }
 
-  EventsRestService getEventsBean()
+  EventsService getEventsService()
   {
-    return eventsRestService;
+    return eventsService;
   }
 
-  AdminRestService getAdminBean()
+  AdminService getAdminService()
   {
-    return adminRestService;
+    return adminService;
   }
 
   @VisibleForTesting
-  public void setBeans(PersonService personService, LogService logService, GuildRestService guildRestService, ItemService itemService, EventsRestService eventsRestService, AdminRestService adminRestService, HelpService helpService)
+  public void setServices(PersonService personService, LogService logService, GuildService guildService, ItemService itemService, EventsService eventsService, AdminService adminService, HelpService helpService)
   {
     this.personService = personService;
     this.logService = logService;
-    this.guildRestService = guildRestService;
+    this.guildService = guildService;
     this.itemService = itemService;
-    this.eventsRestService = eventsRestService;
-    this.adminRestService = adminRestService;
+    this.eventsService = eventsService;
+    this.adminService = adminService;
     this.helpService = helpService;
   }
 

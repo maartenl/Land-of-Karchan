@@ -70,7 +70,7 @@ public class WhoCommandTest extends MudTest
     WhoCommand whoCommand = new WhoCommand("who");
     whoCommand.setCallback(commandRunner);
     assertThat(whoCommand.getRegExpr()).isEqualTo("who");
-    commandRunner.setBeans(personService, null, null, null, null, null, null);
+    commandRunner.setServices(personService, null, null, null, null, null, null);
     DisplayInterface display = whoCommand.run("who", marvin);
     assertThat(display).isNotNull();
     assertThat(CommunicationService.getCommunicationService(marvin).getLog(0)).isEmpty();
@@ -89,7 +89,7 @@ public class WhoCommandTest extends MudTest
     marvin.setSleep(true);
     whoCommand.setCallback(commandRunner);
     assertThat(whoCommand.getRegExpr()).isEqualTo("who");
-    commandRunner.setBeans(personService, null, null, null, null, null, null);
+    commandRunner.setServices(personService, null, null, null, null, null, null);
     DisplayInterface display = whoCommand.run("who", marvin);
     assertThat(display).isNotNull();
     assertThat(CommunicationService.getCommunicationService(marvin).getLog(0)).isEmpty();
@@ -107,7 +107,7 @@ public class WhoCommandTest extends MudTest
     karn.setVisible(false);
     whoCommand.setCallback(commandRunner);
     assertThat(whoCommand.getRegExpr()).isEqualTo("who");
-    commandRunner.setBeans(personService, null, null, null, null, null, null);
+    commandRunner.setServices(personService, null, null, null, null, null, null);
     DisplayInterface display = whoCommand.run("who", marvin);
     assertThat(display).isNotNull();
     assertThat(CommunicationService.getCommunicationService(marvin).getLog(0)).isEmpty();
@@ -125,7 +125,7 @@ public class WhoCommandTest extends MudTest
     karn.setFrogging(5);
     whoCommand.setCallback(commandRunner);
     assertThat(whoCommand.getRegExpr()).isEqualTo("who");
-    commandRunner.setBeans(personService, null, null, null, null, null, null);
+    commandRunner.setServices(personService, null, null, null, null, null, null);
     DisplayInterface display = whoCommand.run("who", marvin);
     assertThat(display).isNotNull();
     assertThat(CommunicationService.getCommunicationService(marvin).getLog(0)).isEmpty();
@@ -143,7 +143,7 @@ public class WhoCommandTest extends MudTest
     karn.setJackassing(5);
     whoCommand.setCallback(commandRunner);
     assertThat(whoCommand.getRegExpr()).isEqualTo("who");
-    commandRunner.setBeans(personService, null, null, null, null, null, null);
+    commandRunner.setServices(personService, null, null, null, null, null, null);
     DisplayInterface display = whoCommand.run("who", marvin);
     assertThat(display).isNotNull();
     assertThat(CommunicationService.getCommunicationService(marvin).getLog(0)).isEmpty();
@@ -180,7 +180,7 @@ public class WhoCommandTest extends MudTest
         return null;
       }
     };
-    setField(PersonService.class, "logBean", personService, logBean);
+    setField(PersonService.class, "logService", personService, logBean);
 
     karn = TestingConstants.getKarn();
     final Room room = TestingConstants.getRoom(TestingConstants.getArea());

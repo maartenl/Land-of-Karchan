@@ -16,7 +16,6 @@
  */
 package mmud.testing.tests;
 
-import java.lang.reflect.Field;
 import java.util.Comparator;
 import java.util.List;
 import java.util.SortedSet;
@@ -24,6 +23,7 @@ import java.util.TreeSet;
 import java.util.logging.Logger;
 
 import jakarta.persistence.EntityManager;
+import jakarta.ws.rs.core.SecurityContext;
 import mmud.database.entities.characters.Person;
 import mmud.database.entities.characters.User;
 import mmud.database.entities.game.Area;
@@ -32,8 +32,8 @@ import mmud.database.entities.game.Room;
 import mmud.exceptions.MudException;
 import mmud.exceptions.MudWebException;
 import mmud.rest.services.GuildRestService;
-import mmud.rest.services.PrivateRestService;
 import mmud.rest.webentities.PrivatePerson;
+import mmud.services.PlayerAuthenticationService;
 import mmud.testing.TestingConstants;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.AfterMethod;
@@ -56,15 +56,17 @@ public class GuildRestServiceTest
   private User hotblack;
   private User marvin;
 
-  private final PrivateRestService privateRestService = new PrivateRestService()
+  private PlayerAuthenticationService playerAuthenticationService = new PlayerAuthenticationService()
   {
     @Override
-    public User authenticate(String name)
+    public String getPlayerName(SecurityContext context) throws IllegalStateException
     {
-      if (name.equals("Hotblack"))
-      {
-        return hotblack;
-      }
+      return "Marvin";
+    }
+
+    @Override
+    public User authenticate(String name, SecurityContext context)
+    {
       if (name.equals("Marvin"))
       {
         return marvin;
@@ -117,9 +119,10 @@ public class GuildRestServiceTest
         return entityManager;
       }
     };
-    Field field = GuildRestService.class.getDeclaredField("privateRestService");
-    field.setAccessible(true);
-    field.set(guildRestService, privateRestService);
+    guildRestService.setPlayerAuthenticationService(playerAuthenticationService);
+//    Field field = GuildRestService.class.getDeclaredField("privateRestService");
+//    field.setAccessible(true);
+//    field.set(guildRestService, privateRestService);
     // Unit under test is exercised.
     assertThatThrownBy(() -> guildRestService.getMembers("Marvin"))
       .isInstanceOf(MudWebException.class)
@@ -148,9 +151,10 @@ public class GuildRestServiceTest
         return entityManager;
       }
     };
-    Field field = GuildRestService.class.getDeclaredField("privateRestService");
-    field.setAccessible(true);
-    field.set(guildRestService, privateRestService);
+    guildRestService.setPlayerAuthenticationService(playerAuthenticationService);
+//    Field field = GuildRestService.class.getDeclaredField("privateRestService");
+//    field.setAccessible(true);
+//    field.set(guildRestService, privateRestService);
     // Unit under test is exercised.
     List<PrivatePerson> result = guildRestService.getMembers("Marvin");
     assertThat(result).hasSize(2);
@@ -175,9 +179,10 @@ public class GuildRestServiceTest
         return entityManager;
       }
     };
-    Field field = GuildRestService.class.getDeclaredField("privateRestService");
-    field.setAccessible(true);
-    field.set(guildRestService, privateRestService);
+    guildRestService.setPlayerAuthenticationService(playerAuthenticationService);
+//    Field field = GuildRestService.class.getDeclaredField("privateRestService");
+//    field.setAccessible(true);
+//    field.set(guildRestService, privateRestService);
     // Unit under test is exercised.
     List<PrivatePerson> result = guildRestService.getMembers("Marvin");
     // Verification code (JUnit/TestNG asserts), if any.

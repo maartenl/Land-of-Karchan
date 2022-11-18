@@ -105,7 +105,6 @@ public class JsonWebTokenProvider
 
   private byte[] getSecretKey()
   {
-    LOGGER.log(Level.SEVERE, "secretKey : " + secretKey);
     return Base64.getUrlDecoder().decode(secretKey);
   }
 

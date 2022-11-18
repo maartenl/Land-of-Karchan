@@ -46,7 +46,7 @@ public class RankDeleteCommand extends GuildMasterCommand
   public DisplayInterface run(String command, User aUser) throws MudException
   {
     PersonCommunicationService communicationService = CommunicationService.getCommunicationService(aUser);
-    LogService logService = getLogBean();
+    LogService logService = getLogService();
     String[] myParsed = parseCommand(command);
     String rankString = myParsed[1];
     int rankIndex = 0;

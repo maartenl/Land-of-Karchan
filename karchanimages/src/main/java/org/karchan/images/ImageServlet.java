@@ -23,7 +23,6 @@ import java.util.logging.Logger;
 
 import jakarta.inject.Inject;
 import jakarta.servlet.ServletContext;
-import jakarta.servlet.ServletException;
 import jakarta.servlet.ServletOutputStream;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -39,13 +38,13 @@ import mmud.database.entities.web.Image;
 public class ImageServlet extends HttpServlet
 {
 
-  private final static Logger LOGGER = Logger.getLogger(ImageServlet.class.getName());
+  private static final Logger LOGGER = Logger.getLogger(ImageServlet.class.getName());
 
   @Inject
   private ImageService imageService;
 
   @Override
-  protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException
+  protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException
   {
     final String url = request.getRequestURI();
     LOGGER.entering(ImageServlet.class.getName(), "doGet " + url);
@@ -72,16 +71,17 @@ public class ImageServlet extends HttpServlet
 
     Optional<Image> optionalImage = imageService.getImage(imageData.getImageUrl(), imageData.getPlayerName());
 
-    if (!optionalImage.isPresent()) {
+    if (optionalImage.isEmpty())
+    {
       LOGGER.log(Level.SEVERE, "Image {0} of {1} not found.", new Object[]
-      {
-        imageData.getImageUrl(), imageData.getPlayerName()
-      });
+        {
+          imageData.getImageUrl(), imageData.getPlayerName()
+        });
       response.sendError(HttpServletResponse.SC_NOT_FOUND);
       return;
     }
 
-    response.addHeader("Cache-Control","private, max-age=31536000");
+    response.addHeader("Cache-Control", "private, max-age=31536000");
 
     Image image = optionalImage.get();
 

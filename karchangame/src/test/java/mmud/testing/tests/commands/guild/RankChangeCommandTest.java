@@ -73,7 +73,7 @@ public class RankChangeCommandTest extends MudTest
     RankChangeCommand rankCommand = new RankChangeCommand("guildrank (\\d){1,3} (\\w)+");
     rankCommand.setCallback(commandRunner);
     assertThat(rankCommand.getRegExpr()).isEqualTo("guildrank (\\d){1,3} (\\w)+");
-    commandRunner.setBeans(null, logService, null, null, null, null, null);
+    commandRunner.setServices(null, logService, null, null, null, null, null);
     DisplayInterface display = rankCommand.run("guildrank 1 Senior Deputy", karn);
     assertThat(display).isNotNull();
     assertThat(display.getBody()).isEqualTo("You are in a small room.");
@@ -98,7 +98,7 @@ public class RankChangeCommandTest extends MudTest
     RankChangeCommand rankCommand = new RankChangeCommand("guildrank (\\d){1,3} (\\w)+");
     rankCommand.setCallback(commandRunner);
     assertThat(rankCommand.getRegExpr()).isEqualTo("guildrank (\\d){1,3} (\\w)+");
-    commandRunner.setBeans(null, logService, null, null, null, null, null);
+    commandRunner.setServices(null, logService, null, null, null, null, null);
     assertThat(karn.getGuild().getRank(0).getTitle()).isEqualTo("Minion");
 
     DisplayInterface display = rankCommand.run("guildrank 0 Deputy", karn);

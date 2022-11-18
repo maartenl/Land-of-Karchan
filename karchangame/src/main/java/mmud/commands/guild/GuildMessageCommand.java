@@ -40,7 +40,7 @@ public class GuildMessageCommand extends GuildMasterCommand
     @Override
     public DisplayInterface run(String command, User aUser) throws MudException
     {
-        LogService logService = getLogBean();
+        LogService logService = getLogService();
 
         String message = command.substring("guildmessage".length() + 1).trim();
         aUser.getGuild().setLogonmessage(message);

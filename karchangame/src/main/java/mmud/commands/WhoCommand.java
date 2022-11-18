@@ -42,7 +42,7 @@ public class WhoCommand extends NormalCommand
     @Override
     public DisplayInterface run(String command, User aUser) throws MudException
     {
-      PersonService personService = getPersonBean();
+      PersonService personService = getPersonService();
       List<User> persons = new ArrayList<>();
       for (User user : personService.getActivePlayers())
       {

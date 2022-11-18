@@ -23,10 +23,12 @@ import java.util.stream.Collectors;
 
 import jakarta.annotation.security.DeclareRoles;
 import jakarta.annotation.security.RolesAllowed;
+import jakarta.inject.Inject;
 import jakarta.json.bind.JsonbBuilder;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import jakarta.persistence.Query;
+import jakarta.transaction.Transactional;
 import jakarta.ws.rs.Consumes;
 import jakarta.ws.rs.DELETE;
 import jakarta.ws.rs.GET;
@@ -46,6 +48,7 @@ import mmud.database.entities.game.UserCommand;
 import mmud.exceptions.MudWebException;
 import mmud.rest.webentities.admin.AdminRoom;
 import mmud.rest.webentities.admin.AdminUserCommand;
+import mmud.services.RoomsService;
 import org.eclipse.persistence.config.HintValues;
 import org.eclipse.persistence.config.QueryHints;
 import org.eclipse.persistence.config.ResultSetConcurrency;
@@ -57,9 +60,8 @@ import org.eclipse.persistence.queries.ScrollableCursor;
  */
 @DeclareRoles("deputy")
 @RolesAllowed("deputy")
-
+@Transactional
 @Path("/administration/rooms")
-
 public class RoomsRestService
 {
 
@@ -68,6 +70,9 @@ public class RoomsRestService
 
   @PersistenceContext(unitName = "karchangamePU")
   private EntityManager em;
+
+  @Inject
+  private RoomsService roomsService;
 
   @POST
   @Consumes(
@@ -257,17 +262,12 @@ public class RoomsRestService
                      @Context SecurityContext sc)
   {
     final String name = sc.getUserPrincipal().getName();
-    Room room = find(id);
+    Room room = roomsService.find(id);
     if (room == null)
     {
       throw new MudWebException(name, "Room " + id + " not found.", Response.Status.NOT_FOUND);
     }
     return new AdminRoom(room).toJson();
-  }
-
-  public Room find(Long id)
-  {
-    return getEntityManager().find(Room.class, id);
   }
 
   @GET

@@ -123,7 +123,7 @@ public class OocCommandTest extends MudTest
         OocCommand heehawCommand = new OocCommand("ooc .+");
         heehawCommand.setCallback(commandRunner);
         assertThat(heehawCommand.getRegExpr()).isEqualTo("ooc .+");
-        commandRunner.setBeans(personService, null, null, null, null, null, null);
+      commandRunner.setServices(personService, null, null, null, null, null, null);
         DisplayInterface display = heehawCommand.run("ooc Hey! This works!", marvin);
         assertThat(display).isNotNull();
         String log = CommunicationService.getCommunicationService(marvin).getLog(0);
@@ -144,23 +144,23 @@ public class OocCommandTest extends MudTest
             {
                 if (name.equalsIgnoreCase("Marvin"))
                 {
-                    return marvin;
+                  return marvin;
                 }
-                if (name.equalsIgnoreCase("Karn"))
-                {
-                    return karn;
-                }
-                return null;
+              if (name.equalsIgnoreCase("Karn"))
+              {
+                return karn;
+              }
+              return null;
             }
 
-            @Override
-            public List<User> getActivePlayers()
-            {
-                return Arrays.asList(karn, marvin);
-            }
+          @Override
+          public List<User> getActivePlayers()
+          {
+            return Arrays.asList(karn, marvin);
+          }
 
         };
-        setField(PersonService.class, "logBean", personService, logBean);
+      setField(PersonService.class, "logService", personService, logBean);
 
         karn = TestingConstants.getKarn();
         final Room room = TestingConstants.getRoom(TestingConstants.getArea());

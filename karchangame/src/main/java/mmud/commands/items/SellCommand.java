@@ -37,7 +37,6 @@ import mmud.services.PersonCommunicationService;
  * Sells an item to a shopkeeper. Syntax : sell [&lt;amount&gt;] &lt;item&gt; to &lt;character&gt;.
  * For example "sell bucket to Karcas".
  *
- *
  * @see BuyCommand
  * @author maartenl
  */
@@ -128,7 +127,7 @@ public class SellCommand extends NormalCommand
         }
         Shopkeeper shopkeeper = (Shopkeeper) keeper;
       boolean sold = false;
-      ItemService itemService = getItemBean();
+      ItemService itemService = getItemService();
         for (Item item : itemsFound)
         {
             // item is not used.

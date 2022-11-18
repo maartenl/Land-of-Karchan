@@ -142,7 +142,7 @@ public class GiveCommand extends NormalCommand
       return;
     }
     boolean given = false;
-    ItemService itemService = getItemBean();
+    ItemService itemService = getItemService();
     for (Item item : itemsFound)
     {
       if (aUser.unused(item) && !item.isBound())

@@ -66,7 +66,7 @@ public class ChatCommand extends NormalCommand
     Chatline chatline = chatLineOptional.get();
     chatline.updateTime();
     String chatmessage = "<span class=\"chat-" + chatline.getColour() + "\">[" + chatline.getChatname() + "]<b>" + aUser.getName() + "</b>: " + aMessage + "</span><br/>\r\n";
-    getPersonBean().getActivePlayers().stream()
+    getPersonService().getActivePlayers().stream()
       .filter(x -> x.hasChatLine(chatlinename))
       .forEach(aTarget ->
       {
