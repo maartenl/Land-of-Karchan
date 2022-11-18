@@ -62,12 +62,15 @@ public class ManpagesRestService // extends AbstractFacade<Area>
   @Inject
   private LogService logService;
 
+  @Context
+  private SecurityContext sc;
+
   @POST
   @Consumes(
     {
       "application/json"
     })
-  public String create(String json, @Context SecurityContext sc)
+  public String create(String json)
   {
     AdminManpage adminManpage = AdminManpage.fromJson(json);
 
@@ -104,7 +107,7 @@ public class ManpagesRestService // extends AbstractFacade<Area>
     {
       "application/json"
     })
-  public void edit(@PathParam("id") String id, String json, @Context SecurityContext sc)
+  public void edit(@PathParam("id") String id, String json)
   {
     AdminManpage adminManpage = AdminManpage.fromJson(json);
     final String name = sc.getUserPrincipal().getName();
@@ -134,7 +137,7 @@ public class ManpagesRestService // extends AbstractFacade<Area>
 
   @DELETE
   @Path("{id}")
-  public void remove(@PathParam("id") String id, @Context SecurityContext sc)
+  public void remove(@PathParam("id") String id)
   {
     final String name = sc.getUserPrincipal().getName();
     final Help help = getEntityManager().find(Help.class, id);
@@ -153,7 +156,7 @@ public class ManpagesRestService // extends AbstractFacade<Area>
     {
       "application/json"
     })
-  public String find(@PathParam("id") String id, @Context SecurityContext sc)
+  public String find(@PathParam("id") String id)
   {
     final String name = sc.getUserPrincipal().getName();
     final Help help = getEntityManager().find(Help.class, id);

@@ -62,6 +62,9 @@ public class BlogsRestService
   @PersistenceContext(unitName = "karchangamePU")
   private EntityManager em;
 
+  @Context
+  private SecurityContext sc;
+
   @Inject
   private LogService logService;
 
@@ -77,14 +80,14 @@ public class BlogsRestService
 
   @POST
   @Consumes(
-          {
-            "application/json"
-          })
+    {
+      "application/json"
+    })
   @Produces(
-          {
-            "application/json"
-          })
-  public AdminBlog create(AdminBlog blog, @Context SecurityContext sc)
+    {
+      "application/json"
+    })
+  public AdminBlog create(AdminBlog blog)
   {
     LOGGER.info("create");
     final String name = sc.getUserPrincipal().getName();
@@ -106,10 +109,10 @@ public class BlogsRestService
   @PUT
   @Path("{id}")
   @Consumes(
-          {
-            "application/json"
-          })
-  public void edit(@PathParam("id") Long id, AdminBlog blog, @Context SecurityContext sc)
+    {
+      "application/json"
+    })
+  public void edit(@PathParam("id") Long id, AdminBlog blog)
   {
     LOGGER.info("edit");
     final String name = sc.getUserPrincipal().getName();
@@ -131,7 +134,7 @@ public class BlogsRestService
 
   @DELETE
   @Path("{id}")
-  public void remove(@PathParam("id") Long id, @Context SecurityContext sc)
+  public void remove(@PathParam("id") Long id)
   {
     final String name = sc.getUserPrincipal().getName();
     final Blog blog = em.find(Blog.class, id);
@@ -147,10 +150,10 @@ public class BlogsRestService
   @GET
   @Path("{id}")
   @Produces(
-          {
-            "application/json"
-          })
-  public AdminBlog find(@PathParam("id") Long id, @Context SecurityContext sc)
+    {
+      "application/json"
+    })
+  public AdminBlog find(@PathParam("id") Long id)
   {
     final String name = sc.getUserPrincipal().getName();
     Blog entity = em.find(Blog.class, id);
@@ -172,7 +175,7 @@ public class BlogsRestService
     {
       "application/json"
     })
-  public List<AdminBlog> findAll(@Context SecurityContext sc)
+  public List<AdminBlog> findAll()
   {
     final String name = sc.getUserPrincipal().getName();
     Admin admin = getEntityManager().find(Admin.class, name);

@@ -74,13 +74,16 @@ public class RoomsRestService
   @Inject
   private RoomsService roomsService;
 
+  @Context
+  private SecurityContext sc;
+
   @POST
   @Consumes(
     {
       "application/json"
     })
 
-  public Long create(String json, @Context SecurityContext sc)
+  public Long create(String json)
   {
     AdminRoom adminRoom = AdminRoom.fromJson(json);
     final String name = sc.getUserPrincipal().getName();
@@ -157,7 +160,7 @@ public class RoomsRestService
       "application/json"
     })
 
-  public void edit(@PathParam("id") Long id, String json, @Context SecurityContext sc)
+  public void edit(@PathParam("id") Long id, String json)
   {
     AdminRoom adminRoom = AdminRoom.fromJson(json);
     final String name = sc.getUserPrincipal().getName();
@@ -238,9 +241,7 @@ public class RoomsRestService
   @DELETE
   @Path("{id}")
 
-  public void remove(@PathParam("id") Long id,
-                     @Context SecurityContext sc
-  )
+  public void remove(@PathParam("id") Long id)
   {
     final String name = sc.getUserPrincipal().getName();
     Room room = getEntityManager().find(Room.class, id);
@@ -258,8 +259,7 @@ public class RoomsRestService
     {
       "application/json"
     })
-  public String find(@PathParam("id") Long id,
-                     @Context SecurityContext sc)
+  public String find(@PathParam("id") Long id)
   {
     final String name = sc.getUserPrincipal().getName();
     Room room = roomsService.find(id);
@@ -277,8 +277,7 @@ public class RoomsRestService
       "application/json"
     })
 
-  public String getCommands(@PathParam("id") Long id,
-                            @Context SecurityContext sc)
+  public String getCommands(@PathParam("id") Long id)
   {
     final String name = sc.getUserPrincipal().getName();
     final List<UserCommand> userCommands = getEntityManager().createNamedQuery("UserCommand.findByRoom").setParameter("room", id).getResultList();

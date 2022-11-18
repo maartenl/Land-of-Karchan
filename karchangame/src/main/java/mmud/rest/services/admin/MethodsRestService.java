@@ -66,12 +66,15 @@ public class MethodsRestService
   @Inject
   private LogService logService;
 
+  @Context
+  private SecurityContext sc;
+
   @POST
   @Consumes(
     {
       "application/json"
     })
-  public void create(String json, @Context SecurityContext sc)
+  public void create(String json)
   {
     AdminMethod adminMethod = AdminMethod.fromJson(json);
     final String name = sc.getUserPrincipal().getName();
@@ -93,7 +96,7 @@ public class MethodsRestService
     {
       "application/json"
     })
-  public void edit(@PathParam("id") String id, String json, @Context SecurityContext sc)
+  public void edit(@PathParam("id") String id, String json)
   {
     AdminMethod adminMethod = AdminMethod.fromJson(json);
     final String name = sc.getUserPrincipal().getName();
@@ -116,7 +119,7 @@ public class MethodsRestService
   @DELETE
   @Path("{id}")
 
-  public void remove(@PathParam("id") String id, @Context SecurityContext sc)
+  public void remove(@PathParam("id") String id)
   {
     final String name = sc.getUserPrincipal().getName();
     final Method method = getEntityManager().find(Method.class, id);
@@ -135,7 +138,7 @@ public class MethodsRestService
       "application/json"
     })
 
-  public String find(@PathParam("id") String id, @Context SecurityContext sc)
+  public String find(@PathParam("id") String id)
   {
 
     final String name = sc.getUserPrincipal().getName();
@@ -154,8 +157,7 @@ public class MethodsRestService
       "application/json"
     })
 
-  public String getCommands(@PathParam("id") String id,
-                            @Context SecurityContext sc)
+  public String getCommands(@PathParam("id") String id)
   {
     final String name = sc.getUserPrincipal().getName();
     final List<UserCommand> userCommands = getEntityManager().createNamedQuery("UserCommand.findByMethodName").setParameter("methodname", id).getResultList();

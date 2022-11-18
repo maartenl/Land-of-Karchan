@@ -66,12 +66,15 @@ public class EventRestService // extends AbstractFacade<Event>
   @Inject
   private LogService logService;
 
+  @Context
+  private SecurityContext sc;
+
   @POST
   @Consumes(
     {
       "application/json"
     })
-  public void create(String json, @Context SecurityContext sc)
+  public void create(String json)
   {
     AdminEvent entity = AdminEvent.fromJson(json);
     final String name = sc.getUserPrincipal().getName();
@@ -79,7 +82,7 @@ public class EventRestService // extends AbstractFacade<Event>
 
     Event newEvent = createEvent(entity, name);
     newEvent.setEventid(entity.eventid);
-    create(newEvent, sc);
+    create(newEvent);
     logService.writeDeputyLog(admin, "New event '" + entity.eventid + "' created.");
   }
 
@@ -128,7 +131,7 @@ public class EventRestService // extends AbstractFacade<Event>
     return newEvent;
   }
 
-  public void create(Event entity, @Context SecurityContext sc)
+  public void create(Event entity)
   {
     final String name = sc.getUserPrincipal().getName();
     Admin admin = getEntityManager().find(Admin.class, name);
@@ -144,7 +147,7 @@ public class EventRestService // extends AbstractFacade<Event>
     {
       "application/json"
     })
-  public void edit(@PathParam("id") Integer id, String json, @Context SecurityContext sc)
+  public void edit(@PathParam("id") Integer id, String json)
   {
     AdminEvent entity = AdminEvent.fromJson(json);
     final String name = sc.getUserPrincipal().getName();
@@ -177,7 +180,7 @@ public class EventRestService // extends AbstractFacade<Event>
 
   @DELETE
   @Path("{id}")
-  public void remove(@PathParam("id") Integer id, @Context SecurityContext sc)
+  public void remove(@PathParam("id") Integer id)
   {
     final String name = sc.getUserPrincipal().getName();
     Event event = getEntityManager().find(Event.class, id);
@@ -192,7 +195,7 @@ public class EventRestService // extends AbstractFacade<Event>
     {
       "application/json"
     })
-  public String find(@PathParam("id") Integer id, @Context SecurityContext sc)
+  public String find(@PathParam("id") Integer id)
   {
     final String name = sc.getUserPrincipal().getName();
     Event item = getEntityManager().find(Event.class, id);

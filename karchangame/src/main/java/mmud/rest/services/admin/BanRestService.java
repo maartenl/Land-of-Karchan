@@ -65,6 +65,9 @@ public class BanRestService
   @Inject
   private LogService logService;
 
+  @Context
+  private SecurityContext sc;
+
   @GET
   @Path("bannedips")
   @Produces(
@@ -115,7 +118,7 @@ public class BanRestService
       "application/json"
     })
   @Path("bannedips")
-  public void createBannedIP(String json, @Context SecurityContext sc)
+  public void createBannedIP(String json)
   {
     AdminBannedIP adminItem = AdminBannedIP.fromJson(json);
     final String name = sc.getUserPrincipal().getName();
@@ -146,7 +149,7 @@ public class BanRestService
       "application/json"
     })
   @Path("bannednames")
-  public void createBannedName(String json, @Context SecurityContext sc)
+  public void createBannedName(String json)
   {
     AdminBannedName adminItem = AdminBannedName.fromJson(json);
     final String name = sc.getUserPrincipal().getName();
@@ -174,7 +177,7 @@ public class BanRestService
       "application/json"
     })
   @Path("sillynames")
-  public void createSillyName(String json, @Context SecurityContext sc)
+  public void createSillyName(String json)
   {
     AdminSillyName adminItem = AdminSillyName.fromJson(json);
     final String name = sc.getUserPrincipal().getName();
@@ -198,7 +201,7 @@ public class BanRestService
       "application/json"
     })
   @Path("unbannednames")
-  public void createUnbannedName(String json, @Context SecurityContext sc)
+  public void createUnbannedName(String json)
   {
     AdminUnbannedName adminItem = AdminUnbannedName.fromJson(json);
     final String name = sc.getUserPrincipal().getName();
@@ -218,7 +221,7 @@ public class BanRestService
 
   @DELETE
   @Path("bannedips/{address}")
-  public void removeBannedIP(@PathParam("address") String address, @Context SecurityContext sc)
+  public void removeBannedIP(@PathParam("address") String address)
   {
     final String name = sc.getUserPrincipal().getName();
     final BanTable item = getEntityManager().find(BanTable.class, address);
@@ -237,7 +240,7 @@ public class BanRestService
 
   @DELETE
   @Path("bannednames/{name}")
-  public void removeBannedName(@PathParam("name") String bannedName, @Context SecurityContext sc)
+  public void removeBannedName(@PathParam("name") String bannedName)
   {
     final String name = sc.getUserPrincipal().getName();
     final BannedName item = getEntityManager().find(BannedName.class, bannedName);
@@ -256,7 +259,7 @@ public class BanRestService
 
   @DELETE
   @Path("sillynames/{name}")
-  public void removeSillyName(@PathParam("name") String sillyName, @Context SecurityContext sc)
+  public void removeSillyName(@PathParam("name") String sillyName)
   {
     final String name = sc.getUserPrincipal().getName();
     final SillyName item = getEntityManager().find(SillyName.class, sillyName);
@@ -275,7 +278,7 @@ public class BanRestService
 
   @DELETE
   @Path("unbannednames/{name}")
-  public void removeUnbannedName(@PathParam("name") String unbannedName, @Context SecurityContext sc)
+  public void removeUnbannedName(@PathParam("name") String unbannedName)
   {
     final String name = sc.getUserPrincipal().getName();
     final UnbanTable item = getEntityManager().find(UnbanTable.class, unbannedName);

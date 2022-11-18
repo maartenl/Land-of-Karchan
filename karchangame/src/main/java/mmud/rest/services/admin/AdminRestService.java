@@ -63,6 +63,9 @@ public class AdminRestService
   @Inject
   private AdminService adminService;
 
+  @Context
+  private SecurityContext sc;
+
   /**
    * Returns a list of currently valid administrators.
    *
@@ -91,7 +94,7 @@ public class AdminRestService
     {
       MediaType.APPLICATION_JSON
     })
-  public String status(@Context SecurityContext sc)
+  public String status()
   {
     LOGGER.finer("entering status");
     final String name = sc.getUserPrincipal().getName();

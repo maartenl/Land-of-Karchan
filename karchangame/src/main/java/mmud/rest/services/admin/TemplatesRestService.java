@@ -64,13 +64,16 @@ public class TemplatesRestService
   @Inject
   private LogService logService;
 
+  @Context
+  private SecurityContext sc;
+
   @PUT
   @Path("{id}")
   @Consumes(
-          {
-            "application/json"
-          })
-  public void edit(@PathParam("id") Long id, AdminTemplate template, @Context SecurityContext sc)
+    {
+      "application/json"
+    })
+  public void edit(@PathParam("id") Long id, AdminTemplate template)
   {
     LOGGER.info("edit");
     final String name = sc.getUserPrincipal().getName();
@@ -97,10 +100,10 @@ public class TemplatesRestService
   @GET
   @Path("{id}")
   @Produces(
-          {
-            "application/json"
-          })
-  public AdminTemplate find(@PathParam("id") Long id, @Context SecurityContext sc)
+    {
+      "application/json"
+    })
+  public AdminTemplate find(@PathParam("id") Long id)
   {
     final String name = sc.getUserPrincipal().getName();
     HtmlTemplate entity = getEntityManager().find(HtmlTemplate.class, id);
@@ -113,10 +116,10 @@ public class TemplatesRestService
 
   @GET
   @Produces(
-          {
-            "application/json"
-          })
-  public List<AdminTemplate> findAll(@Context SecurityContext sc)
+    {
+      "application/json"
+    })
+  public List<AdminTemplate> findAll()
   {
     final String name = sc.getUserPrincipal().getName();
     Admin admin = getEntityManager().find(Admin.class, name);

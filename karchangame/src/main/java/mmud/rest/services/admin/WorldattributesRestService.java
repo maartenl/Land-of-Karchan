@@ -63,12 +63,15 @@ public class WorldattributesRestService
   @Inject
   private LogService logService;
 
+  @Context
+  private SecurityContext sc;
+
   @POST
   @Consumes(
     {
       "application/json"
     })
-  public String create(String json, @Context SecurityContext sc)
+  public String create(String json)
   {
     AdminWorldattribute adminWorldattribute = AdminWorldattribute.fromJson(json);
     final String name = sc.getUserPrincipal().getName();
@@ -97,7 +100,7 @@ public class WorldattributesRestService
     {
       "application/json"
     })
-  public void edit(@PathParam("id") String id, String json, @Context SecurityContext sc)
+  public void edit(@PathParam("id") String id, String json)
   {
     AdminWorldattribute adminWorldattribute = AdminWorldattribute.fromJson(json);
     final String name = sc.getUserPrincipal().getName();
@@ -121,7 +124,7 @@ public class WorldattributesRestService
 
   @DELETE
   @Path("{id}")
-  public void remove(@PathParam("id") String id, @Context SecurityContext sc)
+  public void remove(@PathParam("id") String id)
   {
     final String name = sc.getUserPrincipal().getName();
     final Worldattribute attribute = getEntityManager().find(Worldattribute.class, id);
@@ -140,7 +143,7 @@ public class WorldattributesRestService
     {
       "application/json"
     })
-  public String find(@PathParam("id") String id, @Context SecurityContext sc)
+  public String find(@PathParam("id") String id)
   {
     final String name = sc.getUserPrincipal().getName();
     final Worldattribute worldattribute = getEntityManager().find(Worldattribute.class, id);

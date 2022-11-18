@@ -69,12 +69,15 @@ public class PersonsRestService
   @Inject
   private LogService logService;
 
+  @Context
+  private SecurityContext sc;
+
   @POST
   @Consumes(
     {
       "application/json"
     })
-  public void create(String json, @Context SecurityContext sc)
+  public void create(String json)
   {
     LOGGER.finer("entering create");
     AdminCharacter adminCharacter = AdminCharacter.fromJson(json);
@@ -160,7 +163,7 @@ public class PersonsRestService
     {
       "application/json"
     })
-  public void edit(@PathParam("id") String id, String json, @Context SecurityContext sc)
+  public void edit(@PathParam("id") String id, String json)
   {
     LOGGER.finer("entering edit");
     AdminCharacter adminCharacter = AdminCharacter.fromJson(json);
@@ -221,7 +224,7 @@ public class PersonsRestService
 
   @DELETE
   @Path("{id}")
-  public void remove(@PathParam("id") String id, @Context SecurityContext sc)
+  public void remove(@PathParam("id") String id)
   {
     LOGGER.finer("entering remove");
     final String name = sc.getUserPrincipal().getName();
@@ -241,7 +244,7 @@ public class PersonsRestService
     {
       "application/json"
     })
-  public String find(@PathParam("id") String id, @Context SecurityContext sc)
+  public String find(@PathParam("id") String id)
   {
     LOGGER.finer("entering find");
     final String name = sc.getUserPrincipal().getName();

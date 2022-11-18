@@ -67,12 +67,15 @@ public class BoardsRestService
   @Inject
   private LogService logService;
 
+  @Context
+  private SecurityContext sc;
+
   @POST
   @Consumes(
     {
       "application/json"
     })
-  public Long create(String json, @Context SecurityContext sc)
+  public Long create(String json)
   {
     AdminBoard adminBoard = AdminBoard.fromJson(json);
 
@@ -82,7 +85,8 @@ public class BoardsRestService
     if (board != null)
     {
       throw new MudWebException(name, "Board " + adminBoard.id + " already exists.", Response.Status.PRECONDITION_FAILED);
-    }    board = new Board();
+    }
+    board = new Board();
     board.setId(adminBoard.id);
     board.setName(adminBoard.name);
     board.setDescription(adminBoard.description);
@@ -109,7 +113,7 @@ public class BoardsRestService
     {
       "application/json"
     })
-  public void edit(@PathParam("id") Long id, String json, @Context SecurityContext sc)
+  public void edit(@PathParam("id") Long id, String json)
   {
     AdminBoard adminBoard = AdminBoard.fromJson(json);
     final String name = sc.getUserPrincipal().getName();
@@ -144,7 +148,7 @@ public class BoardsRestService
 
   @DELETE
   @Path("{id}")
-  public void remove(@PathParam("id") Long id, @Context SecurityContext sc)
+  public void remove(@PathParam("id") Long id)
   {
     final String name = sc.getUserPrincipal().getName();
     final Board board = getEntityManager().find(Board.class, id);
@@ -163,7 +167,7 @@ public class BoardsRestService
     {
       "application/json"
     })
-  public String find(@PathParam("id") Long id, @Context SecurityContext sc)
+  public String find(@PathParam("id") Long id)
   {
     final String name = sc.getUserPrincipal().getName();
     final Board board = getEntityManager().find(Board.class, id);
@@ -181,7 +185,7 @@ public class BoardsRestService
     {
       "application/json"
     })
-  public String findRecentMessages(@PathParam("id") Long id, @Context SecurityContext sc)
+  public String findRecentMessages(@PathParam("id") Long id)
   {
     final String name = sc.getUserPrincipal().getName();
     final Board board = getEntityManager().find(Board.class, id);
@@ -202,7 +206,7 @@ public class BoardsRestService
     {
       "application/json"
     })
-  public void editMessage(@PathParam("id") Long id, @PathParam("messageid") Long messageid, String json, @Context SecurityContext sc)
+  public void editMessage(@PathParam("id") Long id, @PathParam("messageid") Long messageid, String json)
   {
     AdminBoardMessage adminBoardMessage = AdminBoardMessage.fromJson(json);
     final String name = sc.getUserPrincipal().getName();

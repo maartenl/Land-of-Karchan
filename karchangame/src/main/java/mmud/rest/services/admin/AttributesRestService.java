@@ -67,13 +67,16 @@ public class AttributesRestService
   @Inject
   private LogService logService;
 
+  @Context
+  private SecurityContext sc;
+
   @PUT
   @Path("byType/{type}/{objectid}")
   @Consumes(
     {
       "application/json"
     })
-  public void edit(@PathParam("type") String type, @PathParam("objectid") String objectid, String json, @Context SecurityContext sc)
+  public void edit(@PathParam("type") String type, @PathParam("objectid") String objectid, String json)
   {
     AdminAttribute adminAttribute = AdminAttribute.fromJson(json);
     final String name = sc.getUserPrincipal().getName();
@@ -136,7 +139,7 @@ public class AttributesRestService
     {
       "application/json"
     })
-  public void remove(@PathParam("type") String type, @PathParam("id") Long id, @Context SecurityContext sc)
+  public void remove(@PathParam("type") String type, @PathParam("id") Long id)
   {
     final String name = sc.getUserPrincipal().getName();
     Admin admin = getEntityManager().find(Admin.class, name);
@@ -163,7 +166,7 @@ public class AttributesRestService
     {
       "application/json"
     })
-  public void remove(@PathParam("name") String name, @Context SecurityContext sc)
+  public void remove(@PathParam("name") String name)
   {
     final String adminName = sc.getUserPrincipal().getName();
     Admin admin = getEntityManager().find(Admin.class, adminName);
@@ -178,7 +181,7 @@ public class AttributesRestService
     {
       "application/json"
     })
-  public String find(@PathParam("type") String type, @PathParam("objectid") String objectid, @Context SecurityContext sc)
+  public String find(@PathParam("type") String type, @PathParam("objectid") String objectid)
   {
     final String name = sc.getUserPrincipal().getName();
     AdminMudType adminMudType = getAdminMudType(type);
@@ -205,7 +208,7 @@ public class AttributesRestService
     {
       "application/json"
     })
-  public String find(@PathParam("name") String name, @Context SecurityContext sc)
+  public String find(@PathParam("name") String name)
   {
     final String adminname = sc.getUserPrincipal().getName();
     List<AdminAttribute> attribs = new ArrayList<>();

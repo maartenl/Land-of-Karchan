@@ -62,12 +62,15 @@ public class ItemsRestService
   @Inject
   private LogService logService;
 
+  @Context
+  private SecurityContext sc;
+
   @POST
   @Consumes(
     {
       "application/json"
     })
-  public void create(String json, @Context SecurityContext sc)
+  public void create(String json)
   {
     AdminItem adminItem = AdminItem.fromJson(json);
     final String name = sc.getUserPrincipal().getName();
@@ -125,7 +128,7 @@ public class ItemsRestService
     {
       "application/json"
     })
-  public void edit(@PathParam("id") Long id, String json, @Context SecurityContext sc)
+  public void edit(@PathParam("id") Long id, String json)
   {
     AdminItem adminItem = AdminItem.fromJson(json);
     final String name = sc.getUserPrincipal().getName();
@@ -200,7 +203,7 @@ public class ItemsRestService
   @DELETE
   @Path("{id}")
 
-  public void remove(@PathParam("id") String id, @Context SecurityContext sc)
+  public void remove(@PathParam("id") String id)
   {
     final String name = sc.getUserPrincipal().getName();
     final ItemDefinition item = getEntityManager().find(ItemDefinition.class, id);
@@ -220,7 +223,7 @@ public class ItemsRestService
       "application/json"
     })
 
-  public String find(@PathParam("id") Long id, @Context SecurityContext sc)
+  public String find(@PathParam("id") Long id)
   {
     final String name = sc.getUserPrincipal().getName();
     ItemDefinition item = getEntityManager().find(ItemDefinition.class, id);

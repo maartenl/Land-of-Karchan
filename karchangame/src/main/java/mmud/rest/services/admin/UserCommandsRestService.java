@@ -60,13 +60,16 @@ public class UserCommandsRestService
   @PersistenceContext(unitName = "karchangamePU")
   private EntityManager em;
 
+  @Context
+  private SecurityContext sc;
+
   @POST
   @Consumes(
     {
-            "application/json"
-          })
+      "application/json"
+    })
 
-  public void create(String json, @Context SecurityContext sc)
+  public void create(String json)
   {
     AdminUserCommand adminUserCommand = AdminUserCommand.fromJson(json);
     final String name = sc.getUserPrincipal().getName();
@@ -109,11 +112,11 @@ public class UserCommandsRestService
   @PUT
   @Path("{id}")
   @Consumes(
-          {
-            "application/json"
-          })
+    {
+      "application/json"
+    })
 
-  public void edit(@PathParam("id") Integer id, String json, @Context SecurityContext sc)
+  public void edit(@PathParam("id") Integer id, String json)
   {
     AdminUserCommand adminUserCommand = AdminUserCommand.fromJson(json);
     final String name = sc.getUserPrincipal().getName();
@@ -160,7 +163,7 @@ public class UserCommandsRestService
   @DELETE
   @Path("{id}")
 
-  public void remove(@PathParam("id") Integer id, @Context SecurityContext sc)
+  public void remove(@PathParam("id") Integer id)
   {
     final String name = sc.getUserPrincipal().getName();
     final UserCommand userCommand = getEntityManager().find(UserCommand.class, id);
@@ -175,11 +178,11 @@ public class UserCommandsRestService
   @GET
   @Path("{id}")
   @Produces(
-          {
-            "application/json"
-          })
+    {
+      "application/json"
+    })
 
-  public String find(@PathParam("id") Integer id, @Context SecurityContext sc)
+  public String find(@PathParam("id") Integer id)
   {
 
     final String name = sc.getUserPrincipal().getName();

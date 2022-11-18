@@ -64,12 +64,15 @@ public class GuildsRestService
   @Inject
   private LogService logService;
 
+  @Context
+  private SecurityContext sc;
+
   @POST
   @Consumes(
     {
       "application/json"
     })
-  public String create(String json, @Context SecurityContext sc)
+  public String create(String json)
   {
     AdminGuild adminGuild = AdminGuild.fromJson(json);
 
@@ -112,7 +115,7 @@ public class GuildsRestService
     {
       "application/json"
     })
-  public void edit(@PathParam("name") String guildname, String json, @Context SecurityContext sc)
+  public void edit(@PathParam("name") String guildname, String json)
   {
     AdminGuild adminGuild = AdminGuild.fromJson(json);
     final String name = sc.getUserPrincipal().getName();
@@ -149,7 +152,7 @@ public class GuildsRestService
 
   @DELETE
   @Path("{name}")
-  public void remove(@PathParam("name") String guildname, @Context SecurityContext sc)
+  public void remove(@PathParam("name") String guildname)
   {
     final String name = sc.getUserPrincipal().getName();
     final Guild guild = getEntityManager().find(Guild.class, guildname);
@@ -168,7 +171,7 @@ public class GuildsRestService
     {
       "application/json"
     })
-  public String find(@PathParam("name") String guildname, @Context SecurityContext sc)
+  public String find(@PathParam("name") String guildname)
   {
     final String name = sc.getUserPrincipal().getName();
     final Guild guild = getEntityManager().find(Guild.class, guildname);
