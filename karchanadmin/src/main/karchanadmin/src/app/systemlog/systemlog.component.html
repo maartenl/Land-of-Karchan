@@ -1,39 +1,53 @@
 <div class="container-fluid">
   <div class="row row-content">
+    <div class="col-xs-12">
+      <form [formGroup]="form" novalidate>
+        <fieldset class="form-group">
+          <input type="text" class="form-control" id="nameSearch" name="nameSearch" placeholder="Name"
+                 formControlName="nameSearch"
+                 #searchname>
+        </fieldset>
+        <fieldset class="form-group">
+          <input type="text" class="form-control" id="dateSearch" name="dateSearch" placeholder="Date (yyyy-mm-dd)"
+                 formControlName="dateSearch"
+                 #searchcreation>
+        </fieldset>
+        <button type="button" class="mx-1 btn btn-primary" (click)="search()">Search</button>
+      </form>
+    </div>
+  </div>
+</div>
+<div class="container-fluid">
+  <div class="row row-content">
     <div class="col-xs-12 col-xl-6">
       <div class="card sticky-top" *ngIf="log !== undefined">
         <div class="card-body">
-          <h5 class="card-title" *ngIf="log?.LogMessage !== undefined">Message</h5>
-          <h5 class="card-title" *ngIf="log?.Throwable !== undefined">Exception</h5>
-          <p class="card-text" *ngIf="log?.LogMessage !== undefined">{{ log?.LogMessage }}</p>
-          <p class="card-text" *ngIf="log?.Throwable !== undefined">{{ log?.Throwable?.Exception }}</p>
-          <p class="card-text" *ngIf="log?.Throwable !== undefined">Stacktrace</p>
-          <p class="card-text" *ngIf="log?.Throwable !== undefined">{{ log?.Throwable?.StackTrace }}</p>
+          <h5 class="card-title" *ngIf="log?.id !== undefined">Id {{ log?.id }}</h5>
+          <h5 class="card-title" *ngIf="log?.name !== undefined">Name {{ log?.name }}</h5>
+          <p class="card-text" *ngIf="log?.message !== undefined">{{ log?.message }}</p>
+          <p class="card-text" *ngIf="log?.addendum !== undefined">{{ log?.addendum }}</p>
+          <p class="card-text" *ngIf="log?.deputy !== undefined">{{ log?.deputy }}</p>
+          <p class="card-text" *ngIf="log?.creation !== undefined">{{ log?.creation }}</p>
         </div>
       </div>
     </div>
     <div class="col-xs-12 col-xl-6">
       <table class="table table-sm table-striped table-bordered">
         <thead class="thead-inverse">
-          <tr>
-            <th>#</th>
-            <th>loggerName</th>
-            <th>level</th>
-            <th>ThreadName</th>
-            <th>When</th>
-            <th>Message</th>
-          </tr>
+        <tr>
+          <th>#</th>
+          <th>Name</th>
+          <th>Message</th>
+          <th>Creation</th>
+        </tr>
         </thead>
         <tbody>
-          <tr *ngFor="let log of logs">
-            <td (click)="setLog(log)">{{ log?.MessageID }}</td>
-            <td (click)="setLog(log)">{{ log?.LoggerName }}</td>
-            <td (click)="setLog(log)">{{ log?.Level }}</td>
-            <td (click)="setLog(log)">{{ log?.ThreadName }}</td>
-            <td (click)="setLog(log)">{{ log?.Timestamp }}</td>
-            <td (click)="setLog(log)" *ngIf="log.LogMessage !== undefined">{{ log.LogMessage?.substring(0,40) }}</td>
-            <td (click)="setLog(log)" *ngIf="log.Throwable !== undefined">Exception</td>
-          </tr>
+        <tr *ngFor="let log of logs">
+          <td (click)="setLog(log)">{{ log?.id }}</td>
+          <td (click)="setLog(log)">{{ log?.name }}</td>
+          <td (click)="setLog(log)" *ngIf="log.message !== undefined">{{ log.message?.substring(0, 40) }}</td>
+          <td (click)="setLog(log)">{{ log?.creation }}</td>
+        </tr>
         </tbody>
       </table>
     </div>
