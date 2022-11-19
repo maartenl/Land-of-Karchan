@@ -4,6 +4,7 @@ import java.util.SortedSet;
 import java.util.TreeSet;
 import java.util.logging.Logger;
 
+import com.google.common.annotations.VisibleForTesting;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import mmud.database.entities.characters.User;
@@ -18,17 +19,6 @@ public class GuildService
   private EntityManager em;
 
   /**
-   * Returns the entity manager of JPA. This is defined in
-   * build/web/WEB-INF/classes/META-INF/persistence.xml.
-   *
-   * @return EntityManager
-   */
-  protected EntityManager getEntityManager()
-  {
-    return em;
-  }
-
-  /**
    * Retrieves the guild by name. Returns null if not found.
    *
    * @param name the name of the guild.
@@ -36,7 +26,7 @@ public class GuildService
    */
   public Guild getGuild(String name)
   {
-    return getEntityManager().find(Guild.class, name);
+    return em.find(Guild.class, name);
   }
 
   public void deleteGuild(User person)
@@ -51,12 +41,19 @@ public class GuildService
     guild.setMembers(emptySet);
     for (Guildrank rank : guild.getGuildrankCollection())
     {
-      getEntityManager().remove(rank);
+      em.remove(rank);
     }
     SortedSet<Guildrank> emptyRanks = new TreeSet<>();
     guild.setGuildrankCollection(emptyRanks);
-    getEntityManager().remove(guild);
+    em.remove(guild);
   }
 
-
+  /**
+   * Should only be used for TESTING! You hear that!
+   */
+  @VisibleForTesting
+  public void setEntityManager(EntityManager entityManager)
+  {
+    this.em = entityManager;
+  }
 }

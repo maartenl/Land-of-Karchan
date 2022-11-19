@@ -30,7 +30,6 @@ import mmud.database.entities.characters.User;
 import mmud.database.entities.game.DisplayInterface;
 import mmud.database.entities.game.Room;
 import mmud.services.CommunicationService;
-import mmud.services.PersonService;
 import mmud.testing.TestingConstants;
 import mmud.testing.tests.LogServiceStub;
 import mmud.testing.tests.MudTest;
@@ -47,11 +46,9 @@ public class HeehawCommandTest extends MudTest
   private Administrator karn;
   private User marvin;
 
-  private LogServiceStub logBean;
+  private LogServiceStub logService;
 
   private CommandRunner commandRunner = new CommandRunner();
-
-  private PersonService personService;
 
   public HeehawCommandTest()
   {
@@ -91,7 +88,7 @@ public class HeehawCommandTest extends MudTest
     String log = CommunicationService.getCommunicationService(marvin).getLog(0);
     assertThat(log).isEqualTo("A jackass called Marvin says &#34;Heeehaw!&#34;.<br />\nYou feel the need to say &#39;Heehaw&#39; just 4 times.<br />\r\n");
     assertThat(marvin.getJackassing()).isEqualTo(4);
-    assertThat(logBean.getLog()).isEmpty();
+    assertThat(logService.getLog()).isEmpty();
   }
 
   /**
@@ -111,31 +108,13 @@ public class HeehawCommandTest extends MudTest
     String log = CommunicationService.getCommunicationService(marvin).getLog(0);
     assertThat(log).isEqualTo("You cannot say &#39;Heehaw&#39; that fast! You will get tongue tied!<br />\r\n");
     assertThat(marvin.getJackassing()).isEqualTo(5);
-    assertThat(logBean.getLog()).isEmpty();
+    assertThat(logService.getLog()).isEmpty();
   }
 
   @BeforeMethod
   public void setUpMethod() throws Exception
   {
-    logBean = new LogServiceStub();
-
-    personService = new PersonService()
-    {
-      @Override
-      public User getActiveUser(String name)
-      {
-        if (name.equalsIgnoreCase("Marvin"))
-        {
-          return marvin;
-        }
-        if (name.equalsIgnoreCase("Karn"))
-        {
-          return karn;
-        }
-        return null;
-      }
-    };
-    setField(PersonService.class, "logService", personService, logBean);
+    logService = new LogServiceStub();
 
     karn = TestingConstants.getKarn();
     final Room room = TestingConstants.getRoom(TestingConstants.getArea());
@@ -144,9 +123,8 @@ public class HeehawCommandTest extends MudTest
     CommunicationService.getCommunicationService(karn).clearLog();
     CommunicationService.getCommunicationService(marvin).clearLog();
     HashSet<Person> persons = new HashSet<>();
-    persons.add(karn);
-    persons.add(marvin);
-    setField(Room.class, "persons", room, persons);
+    room.addPerson(karn);
+    room.addPerson(marvin);
     File file = new File(Constants.getMudfilepath() + File.separator + "Karn.log");
     PrintWriter writer = new PrintWriter(file);
     writer.close();

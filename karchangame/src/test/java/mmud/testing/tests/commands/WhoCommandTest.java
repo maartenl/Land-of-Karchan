@@ -19,7 +19,6 @@ package mmud.testing.tests.commands;
 import java.io.File;
 import java.io.PrintWriter;
 import java.util.Arrays;
-import java.util.HashSet;
 import java.util.List;
 
 import mmud.Constants;
@@ -48,7 +47,7 @@ public class WhoCommandTest extends MudTest
   private Administrator karn;
   private User marvin;
 
-  private LogServiceImpl logBean;
+  private LogServiceImpl logService;
 
   private final CommandRunner commandRunner = new CommandRunner();
 
@@ -61,7 +60,7 @@ public class WhoCommandTest extends MudTest
   @BeforeMethod
   public void setup()
   {
-    logBean = new LogServiceImpl();
+    logService = new LogServiceImpl();
   }
 
   @Test
@@ -157,7 +156,7 @@ public class WhoCommandTest extends MudTest
   @BeforeMethod
   public void setUpMethod() throws Exception
   {
-    personService = new PersonService()
+    personService = new PersonService(logService)
     {
 
       @Override
@@ -180,7 +179,6 @@ public class WhoCommandTest extends MudTest
         return null;
       }
     };
-    setField(PersonService.class, "logService", personService, logBean);
 
     karn = TestingConstants.getKarn();
     final Room room = TestingConstants.getRoom(TestingConstants.getArea());
@@ -188,10 +186,8 @@ public class WhoCommandTest extends MudTest
     marvin = TestingConstants.getMarvin(room);
     CommunicationService.getCommunicationService(karn).clearLog();
     CommunicationService.getCommunicationService(marvin).clearLog();
-    HashSet<Person> persons = new HashSet<>();
-    persons.add(karn);
-    persons.add(marvin);
-    setField(Room.class, "persons", room, persons);
+    room.addPerson(karn);
+    room.addPerson(marvin);
     File file = new File(Constants.getMudfilepath() + File.separator + "Karn.log");
     PrintWriter writer = new PrintWriter(file);
     writer.close();
@@ -200,7 +196,7 @@ public class WhoCommandTest extends MudTest
     writer.close();
   }
 
-  private class LogServiceImpl extends LogService
+  private static class LogServiceImpl extends LogService
   {
 
     public LogServiceImpl()

@@ -41,35 +41,39 @@ import mmud.exceptions.ItemException;
 
 public class ItemService
 {
+  private static final Logger LOGGER = Logger.getLogger(ItemService.class.getName());
 
   @PersistenceContext(unitName = "karchangamePU")
   private EntityManager em;
 
-  @Inject
   private LogService logService;
 
   /**
    * Returns the entity manager of JPA. This is defined in
-     * build/web/WEB-INF/classes/META-INF/persistence.xml.
-     *
-     * @return EntityManager
-     */
-    protected EntityManager getEntityManager()
-    {
-        return em;
-    }
+   * build/web/WEB-INF/classes/META-INF/persistence.xml.
+   *
+   * @return EntityManager
+   */
+  protected EntityManager getEntityManager()
+  {
+    return em;
+  }
 
-  private static final Logger LOGGER = Logger.getLogger(ItemService.class.getName());
+  @Inject
+  public ItemService(LogService logService)
+  {
+    this.logService = logService;
+  }
 
-    /**
-     * Drops an item on the floor.
-     *
-     * @param person the person
-     * @param item the item to be dropped.
-     * @return true if successful.
-     */
-    public boolean drop(Item item, Person person)
-    {
+  /**
+   * Drops an item on the floor.
+   *
+   * @param person the person
+   * @param item   the item to be dropped.
+   * @return true if successful.
+   */
+  public boolean drop(Item item, Person person)
+  {
         Query query = getEntityManager().createNamedQuery("Item.drop");
         query.setParameter("item", item);
         query.setParameter("person", person);

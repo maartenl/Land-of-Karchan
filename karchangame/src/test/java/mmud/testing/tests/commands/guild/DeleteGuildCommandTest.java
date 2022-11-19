@@ -19,7 +19,6 @@ package mmud.testing.tests.commands.guild;
 import java.io.File;
 import java.io.PrintWriter;
 import java.util.Comparator;
-import java.util.HashSet;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
@@ -27,7 +26,6 @@ import jakarta.persistence.EntityManager;
 import mmud.Constants;
 import mmud.commands.CommandRunner;
 import mmud.commands.guild.DeleteGuildCommand;
-import mmud.database.entities.characters.Person;
 import mmud.database.entities.characters.User;
 import mmud.database.entities.game.DisplayInterface;
 import mmud.database.entities.game.Guild;
@@ -91,7 +89,7 @@ public class DeleteGuildCommandTest extends MudTest
   public void deleteGuild()
   {
     EntityManager entityManager = mock(EntityManager.class);
-    setField(GuildService.class, "em", guildService, entityManager);
+    guildService.setEntityManager(entityManager);
 
     karn.setGuild(new Guild());
     karn.getGuild().setName("oldguild");
@@ -133,9 +131,7 @@ public class DeleteGuildCommandTest extends MudTest
     PrintWriter writer = new PrintWriter(file);
     writer.close();
 
-    HashSet<Person> persons = new HashSet<>();
-    persons.add(karn);
-    setField(Room.class, "persons", room1, persons);
+    room1.addPerson(karn);
 
   }
 

@@ -21,6 +21,7 @@ import java.util.Optional;
 import java.util.function.Predicate;
 import java.util.logging.Logger;
 
+import com.google.common.annotations.VisibleForTesting;
 import jakarta.inject.Inject;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
@@ -35,25 +36,18 @@ import mmud.scripting.PersonsInterface;
  */
 public class PersonService implements PersonsInterface
 {
+  private static final Logger LOGGER = Logger.getLogger(PersonService.class.getName());
 
-  @Inject
   LogService logService;
 
   @PersistenceContext(unitName = "karchangamePU")
   private EntityManager em;
 
-  /**
-   * Returns the entity manager of JPA. This is defined in
-   * build/web/WEB-INF/classes/META-INF/persistence.xml.
-   *
-   * @return EntityManager
-   */
-  protected EntityManager getEntityManager()
+  @Inject
+  public PersonService(LogService logService)
   {
-    return em;
+    this.logService = logService;
   }
-
-  private static final Logger LOGGER = Logger.getLogger(PersonService.class.getName());
 
   /**
    * Retrieves a person from the pool of all persons. Bear in mind that
@@ -65,7 +59,7 @@ public class PersonService implements PersonsInterface
    */
   public Person getPerson(String name)
   {
-    TypedQuery<Person> query = getEntityManager().createNamedQuery("Person.findByName", Person.class);
+    TypedQuery<Person> query = em.createNamedQuery("Person.findByName", Person.class);
     query.setParameter("name", name);
     List<Person> result = query.getResultList();
     if (result.isEmpty())
@@ -90,7 +84,7 @@ public class PersonService implements PersonsInterface
   @Override
   public Person find(String name)
   {
-    Person result = getEntityManager().find(Person.class, name);
+    Person result = em.find(Person.class, name);
     if (result == null)
     {
       return null;
@@ -111,7 +105,7 @@ public class PersonService implements PersonsInterface
    */
   public User getUser(String name)
   {
-    TypedQuery<User> query = getEntityManager().createNamedQuery("User.findByName", User.class);
+    TypedQuery<User> query = em.createNamedQuery("User.findByName", User.class);
     query.setParameter("name", name);
     List<User> result = query.getResultList();
     if (result.isEmpty())
@@ -135,7 +129,7 @@ public class PersonService implements PersonsInterface
    */
   public User getActiveUser(String name)
   {
-    TypedQuery<User> query = getEntityManager().createNamedQuery("User.findActiveByName", User.class);
+    TypedQuery<User> query = em.createNamedQuery("User.findActiveByName", User.class);
     query.setParameter("name", name);
     List<User> result = query.getResultList();
     if (result.isEmpty())
@@ -155,13 +149,13 @@ public class PersonService implements PersonsInterface
 
   public List<User> getActivePlayers()
   {
-    TypedQuery<User> query = getEntityManager().createNamedQuery("User.who", User.class);
+    TypedQuery<User> query = em.createNamedQuery("User.who", User.class);
     return query.getResultList();
   }
 
   public Optional<Chatline> getChatline(String name)
   {
-    TypedQuery<Chatline> namedQuery = getEntityManager().createNamedQuery("Chatline.findByName", Chatline.class);
+    TypedQuery<Chatline> namedQuery = em.createNamedQuery("Chatline.findByName", Chatline.class);
     namedQuery.setParameter("name", name);
     List<Chatline> chatlines = namedQuery.getResultList();
     return chatlines.stream().findFirst();
@@ -169,7 +163,7 @@ public class PersonService implements PersonsInterface
 
   public List<Chatline> getChatlines()
   {
-    return getEntityManager().createNamedQuery("Chatline.all", Chatline.class).getResultList();
+    return em.createNamedQuery("Chatline.all", Chatline.class).getResultList();
   }
 
   /**
@@ -186,5 +180,11 @@ public class PersonService implements PersonsInterface
   public void sendWall(String message, Predicate<User> predicate)
   {
     getActivePlayers().stream().filter(predicate).forEach(p -> CommunicationService.getCommunicationService(p).writeMessage(message));
+  }
+
+  @VisibleForTesting
+  public void setEntityManager(EntityManager em)
+  {
+    this.em = em;
   }
 }

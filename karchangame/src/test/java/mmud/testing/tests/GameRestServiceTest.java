@@ -17,7 +17,6 @@
 package mmud.testing.tests;
 
 import java.util.Collections;
-import java.util.HashSet;
 import java.util.logging.Logger;
 
 import jakarta.persistence.EntityManager;
@@ -25,7 +24,6 @@ import jakarta.persistence.TypedQuery;
 import jakarta.ws.rs.core.SecurityContext;
 import mmud.commands.CommandRunner;
 import mmud.database.entities.characters.Administrator;
-import mmud.database.entities.characters.Person;
 import mmud.database.entities.characters.User;
 import mmud.database.entities.game.Area;
 import mmud.database.entities.game.Macro;
@@ -59,7 +57,7 @@ public class GameRestServiceTest extends MudTest
   // Obtain a suitable LOGGER.
   private static final Logger LOGGER = Logger.getLogger(GameRestServiceTest.class.getName());
 
-  private LogServiceStub logBean;
+  private LogServiceStub logService;
 
   private CommandRunner commandRunner = new CommandRunner();
 
@@ -87,12 +85,7 @@ public class GameRestServiceTest extends MudTest
     }
   };
 
-  private final GameRestService gameRestService = new GameRestService()
-  {
-    {
-      setPlayerAuthenticationService(playerAuthenticationService);
-    }
-  };
+  private GameRestService gameRestService;
 
   public GameRestServiceTest()
   {
@@ -111,7 +104,7 @@ public class GameRestServiceTest extends MudTest
   @BeforeMethod
   public void setUp() throws MudException
   {
-    logBean = new LogServiceStub();
+    logService = new LogServiceStub();
 
     Area aArea = TestingConstants.getArea();
     room = TestingConstants.getRoom(aArea);
@@ -119,14 +112,11 @@ public class GameRestServiceTest extends MudTest
     karn = TestingConstants.getKarn();
     karn.setRoom(room);
     marvin = TestingConstants.getMarvin(room);
-    HashSet<Person> persons = new HashSet<>();
-    persons.add(hotblack);
-    persons.add(marvin);
-    persons.add(karn);
-    setField(Room.class, "persons", room, persons);
+    room.addPerson(hotblack);
+    room.addPerson(marvin);
+    room.addPerson(karn);
 
-    setField(GameRestService.class, "logService", gameRestService, logBean);
-    setField(GameRestService.class, "commandRunner", gameRestService, commandRunner);
+    gameRestService = new GameRestService(null, new IdleUsersService(), null, commandRunner, logService, playerAuthenticationService);
   }
 
   @AfterMethod
@@ -145,8 +135,7 @@ public class GameRestServiceTest extends MudTest
 
     TypedQuery typedQuery = mock(TypedQuery.class);
     EntityManager entityManager = mock(EntityManager.class);
-    setField(GameRestService.class, "em", gameRestService, entityManager);
-    setField(GameRestService.class, "idleUsersService", gameRestService, new IdleUsersService());
+    gameRestService.setEntityManager(entityManager);
     when(entityManager.find(User.class, "Marvin")).thenReturn(marvin);
     when(entityManager.find(User.class, "Karn")).thenReturn(karn);
     when(entityManager.createNamedQuery("UserCommand.findActive", UserCommand.class)).thenReturn(typedQuery);
@@ -193,8 +182,7 @@ public class GameRestServiceTest extends MudTest
     hotblack.setFrogging(5);
     TypedQuery typedQuery = mock(TypedQuery.class);
     EntityManager entityManager = mock(EntityManager.class);
-    setField(GameRestService.class, "em", gameRestService, entityManager);
-    setField(GameRestService.class, "idleUsersService", gameRestService, new IdleUsersService());
+    gameRestService.setEntityManager(entityManager);
     when(entityManager.find(User.class, "Marvin")).thenReturn(marvin);
     when(entityManager.find(User.class, "Karn")).thenReturn(karn);
     when(entityManager.createNamedQuery("UserCommand.findActive", UserCommand.class)).thenReturn(typedQuery);
@@ -243,8 +231,7 @@ public class GameRestServiceTest extends MudTest
     hotblack.setJackassing(5);
     TypedQuery typedQuery = mock(TypedQuery.class);
     EntityManager entityManager = mock(EntityManager.class);
-    setField(GameRestService.class, "em", gameRestService, entityManager);
-    setField(GameRestService.class, "idleUsersService", gameRestService, new IdleUsersService());
+    gameRestService.setEntityManager(entityManager);
     when(entityManager.find(User.class, "Marvin")).thenReturn(marvin);
     when(entityManager.find(User.class, "Karn")).thenReturn(karn);
     when(entityManager.createNamedQuery("UserCommand.findActive", UserCommand.class)).thenReturn(typedQuery);
@@ -294,8 +281,7 @@ public class GameRestServiceTest extends MudTest
     karn.setVisible(false);
     TypedQuery typedQuery = mock(TypedQuery.class);
     EntityManager entityManager = mock(EntityManager.class);
-    setField(GameRestService.class, "em", gameRestService, entityManager);
-    setField(GameRestService.class, "idleUsersService", gameRestService, new IdleUsersService());
+    gameRestService.setEntityManager(entityManager);
     when(entityManager.find(User.class, "Marvin")).thenReturn(marvin);
     when(entityManager.find(User.class, "Karn")).thenReturn(karn);
     when(entityManager.createNamedQuery("UserCommand.findActive", UserCommand.class)).thenReturn(typedQuery);

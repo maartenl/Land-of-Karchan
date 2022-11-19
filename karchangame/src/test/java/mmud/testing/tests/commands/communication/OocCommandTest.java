@@ -19,14 +19,12 @@ package mmud.testing.tests.commands.communication;
 import java.io.File;
 import java.io.PrintWriter;
 import java.util.Arrays;
-import java.util.HashSet;
 import java.util.List;
 
 import mmud.Constants;
 import mmud.commands.CommandRunner;
 import mmud.commands.communication.OocCommand;
 import mmud.database.entities.characters.Administrator;
-import mmud.database.entities.characters.Person;
 import mmud.database.entities.characters.User;
 import mmud.database.entities.game.DisplayInterface;
 import mmud.database.entities.game.Room;
@@ -40,144 +38,140 @@ import org.testng.annotations.Test;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
 /**
- *
  * @author maartenl
  */
 public class OocCommandTest extends MudTest
 {
 
-    private Administrator karn;
-    private User marvin;
+  private Administrator karn;
+  private User marvin;
 
-    private LogServiceStub logBean;
+  private LogServiceStub logService;
 
-    private CommandRunner commandRunner = new CommandRunner();
+  private CommandRunner commandRunner = new CommandRunner();
 
-    private PersonService personService;
+  private PersonService personService;
 
-    public OocCommandTest()
+  public OocCommandTest()
+  {
+  }
+
+  /**
+   * Runs the ooc command, in order to turn it on.
+   */
+  @Test
+  public void runTurnOn()
+  {
+    assertThat(marvin.getOoc()).isFalse();
+    OocCommand heehawCommand = new OocCommand("ooc .+");
+    heehawCommand.setCallback(commandRunner);
+    assertThat(heehawCommand.getRegExpr()).isEqualTo("ooc .+");
+    DisplayInterface display = heehawCommand.run("ooc on", marvin);
+    assertThat(display).isNotNull();
+    String log = CommunicationService.getCommunicationService(marvin).getLog(0);
+    assertThat(log).isEqualTo("Your OOC channel is now turned on.<br />\r\n");
+    assertThat(marvin.getOoc()).isEqualTo(true);
+  }
+
+  /**
+   * Runs the ooc command, in order to turn it off.
+   */
+  @Test
+  public void runTurnOff()
+  {
+    marvin.setOoc(true);
+    assertThat(marvin.getOoc()).isTrue();
+    OocCommand heehawCommand = new OocCommand("ooc .+");
+    heehawCommand.setCallback(commandRunner);
+    assertThat(heehawCommand.getRegExpr()).isEqualTo("ooc .+");
+    DisplayInterface display = heehawCommand.run("ooc off", marvin);
+    assertThat(display).isNotNull();
+    String log = CommunicationService.getCommunicationService(marvin).getLog(0);
+    assertThat(log).isEqualTo("Your OOC channel is now turned off.<br />\r\n");
+    assertThat(marvin.getOoc()).isEqualTo(false);
+  }
+
+  /**
+   * Runs the ooc command, to tell everyone, but it's turned off.
+   */
+  @Test
+  public void runMessageTurnedOff()
+  {
+    assertThat(marvin.getOoc()).isFalse();
+    OocCommand heehawCommand = new OocCommand("ooc .+");
+    heehawCommand.setCallback(commandRunner);
+    assertThat(heehawCommand.getRegExpr()).isEqualTo("ooc .+");
+    DisplayInterface display = heehawCommand.run("ooc Hey! This doesn't work!", marvin);
+    assertThat(display).isNotNull();
+    String log = CommunicationService.getCommunicationService(marvin).getLog(0);
+    assertThat(log).isEqualTo("Sorry, you have your OOC channel turned off.<br />\r\n");
+    assertThat(marvin.getOoc()).isFalse();
+  }
+
+  /**
+   * Runs the ooc command, to tell everyone.
+   */
+  @Test
+  public void runMessageTurnedOn()
+  {
+    marvin.setOoc(true);
+    karn.setOoc(true);
+    assertThat(marvin.getOoc()).isTrue();
+    OocCommand heehawCommand = new OocCommand("ooc .+");
+    heehawCommand.setCallback(commandRunner);
+    assertThat(heehawCommand.getRegExpr()).isEqualTo("ooc .+");
+    commandRunner.setServices(personService, null, null, null, null, null, null);
+    DisplayInterface display = heehawCommand.run("ooc Hey! This works!", marvin);
+    assertThat(display).isNotNull();
+    String log = CommunicationService.getCommunicationService(marvin).getLog(0);
+    assertThat(log).isEqualTo("<span class=\"chat-cyanblue\">[OOC: <b>Marvin</b>] Hey! This works!</span><br />\r\n");
+    log = CommunicationService.getCommunicationService(karn).getLog(0);
+    assertThat(log).isEqualTo("<span class=\"chat-cyanblue\">[OOC: <b>Marvin</b>] Hey! This works!</span><br />\r\n");
+    assertThat(marvin.getOoc()).isTrue();
+  }
+
+  @BeforeMethod
+  public void setUpMethod() throws Exception
+  {
+    logService = new LogServiceStub();
+    personService = new PersonService(logService)
     {
-    }
-
-    /**
-     * Runs the ooc command, in order to turn it on.
-     */
-    @Test
-    public void runTurnOn()
-    {
-        assertThat(marvin.getOoc()).isFalse();
-        OocCommand heehawCommand = new OocCommand("ooc .+");
-        heehawCommand.setCallback(commandRunner);
-        assertThat(heehawCommand.getRegExpr()).isEqualTo("ooc .+");
-        DisplayInterface display = heehawCommand.run("ooc on", marvin);
-        assertThat(display).isNotNull();
-        String log = CommunicationService.getCommunicationService(marvin).getLog(0);
-        assertThat(log).isEqualTo("Your OOC channel is now turned on.<br />\r\n");
-        assertThat(marvin.getOoc()).isEqualTo(true);
-    }
-
-    /**
-     * Runs the ooc command, in order to turn it off.
-     */
-    @Test
-    public void runTurnOff()
-    {
-        marvin.setOoc(true);
-        assertThat(marvin.getOoc()).isTrue();
-        OocCommand heehawCommand = new OocCommand("ooc .+");
-        heehawCommand.setCallback(commandRunner);
-        assertThat(heehawCommand.getRegExpr()).isEqualTo("ooc .+");
-        DisplayInterface display = heehawCommand.run("ooc off", marvin);
-        assertThat(display).isNotNull();
-        String log = CommunicationService.getCommunicationService(marvin).getLog(0);
-        assertThat(log).isEqualTo("Your OOC channel is now turned off.<br />\r\n");
-        assertThat(marvin.getOoc()).isEqualTo(false);
-    }
-
-    /**
-     * Runs the ooc command, to tell everyone, but it's turned off.
-     */
-    @Test
-    public void runMessageTurnedOff()
-    {
-        assertThat(marvin.getOoc()).isFalse();
-        OocCommand heehawCommand = new OocCommand("ooc .+");
-        heehawCommand.setCallback(commandRunner);
-        assertThat(heehawCommand.getRegExpr()).isEqualTo("ooc .+");
-        DisplayInterface display = heehawCommand.run("ooc Hey! This doesn't work!", marvin);
-        assertThat(display).isNotNull();
-        String log = CommunicationService.getCommunicationService(marvin).getLog(0);
-        assertThat(log).isEqualTo("Sorry, you have your OOC channel turned off.<br />\r\n");
-        assertThat(marvin.getOoc()).isFalse();
-    }
-
-    /**
-     * Runs the ooc command, to tell everyone.
-     */
-    @Test
-    public void runMessageTurnedOn()
-    {
-        marvin.setOoc(true);
-        karn.setOoc(true);
-        assertThat(marvin.getOoc()).isTrue();
-        OocCommand heehawCommand = new OocCommand("ooc .+");
-        heehawCommand.setCallback(commandRunner);
-        assertThat(heehawCommand.getRegExpr()).isEqualTo("ooc .+");
-      commandRunner.setServices(personService, null, null, null, null, null, null);
-        DisplayInterface display = heehawCommand.run("ooc Hey! This works!", marvin);
-        assertThat(display).isNotNull();
-        String log = CommunicationService.getCommunicationService(marvin).getLog(0);
-      assertThat(log).isEqualTo("<span class=\"chat-cyanblue\">[OOC: <b>Marvin</b>] Hey! This works!</span><br />\r\n");
-      log = CommunicationService.getCommunicationService(karn).getLog(0);
-      assertThat(log).isEqualTo("<span class=\"chat-cyanblue\">[OOC: <b>Marvin</b>] Hey! This works!</span><br />\r\n");
-      assertThat(marvin.getOoc()).isTrue();
-    }
-
-    @BeforeMethod
-    public void setUpMethod() throws Exception
-    {
-        logBean = new LogServiceStub();
-        personService = new PersonService()
+      @Override
+      public User getActiveUser(String name)
+      {
+        if (name.equalsIgnoreCase("Marvin"))
         {
-            @Override
-            public User getActiveUser(String name)
-            {
-                if (name.equalsIgnoreCase("Marvin"))
-                {
-                  return marvin;
-                }
-              if (name.equalsIgnoreCase("Karn"))
-              {
-                return karn;
-              }
-              return null;
-            }
+          return marvin;
+        }
+        if (name.equalsIgnoreCase("Karn"))
+        {
+          return karn;
+        }
+        return null;
+      }
 
-          @Override
-          public List<User> getActivePlayers()
-          {
-            return Arrays.asList(karn, marvin);
-          }
+      @Override
+      public List<User> getActivePlayers()
+      {
+        return Arrays.asList(karn, marvin);
+      }
 
-        };
-      setField(PersonService.class, "logService", personService, logBean);
+    };
 
-        karn = TestingConstants.getKarn();
-        final Room room = TestingConstants.getRoom(TestingConstants.getArea());
-        karn.setRoom(room);
-        marvin = TestingConstants.getMarvin(room);
-        CommunicationService.getCommunicationService(karn).clearLog();
-        CommunicationService.getCommunicationService(marvin).clearLog();
-        HashSet<Person> persons = new HashSet<>();
-        persons.add(karn);
-        persons.add(marvin);
-        setField(Room.class, "persons", room, persons);
-        File file = new File(Constants.getMudfilepath() + File.separator + "Karn.log");
-        PrintWriter writer = new PrintWriter(file);
-        writer.close();
-        file = new File(Constants.getMudfilepath() + File.separator + "Marvin.log");
-        writer = new PrintWriter(file);
-        writer.close();
-    }
+    karn = TestingConstants.getKarn();
+    final Room room = TestingConstants.getRoom(TestingConstants.getArea());
+    karn.setRoom(room);
+    marvin = TestingConstants.getMarvin(room);
+    CommunicationService.getCommunicationService(karn).clearLog();
+    CommunicationService.getCommunicationService(marvin).clearLog();
+    room.addPerson(karn);
+    room.addPerson(marvin);
+    File file = new File(Constants.getMudfilepath() + File.separator + "Karn.log");
+    PrintWriter writer = new PrintWriter(file);
+    writer.close();
+    file = new File(Constants.getMudfilepath() + File.separator + "Marvin.log");
+    writer = new PrintWriter(file);
+    writer.close();
+  }
 
 }

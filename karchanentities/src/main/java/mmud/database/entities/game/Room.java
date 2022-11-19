@@ -686,11 +686,12 @@ public class Room implements Serializable, DisplayInterface, ItemWrangler, Attri
   /**
    * Should ONLY be used for testing!!!!
    *
-   * @param hotblack
+   * @param person
    */
   @VisibleForTesting
-  public void addPerson(Person hotblack)
+  public void addPerson(Person person)
   {
-    persons.add(hotblack);
+    persons.add(person);
   }
+
 }

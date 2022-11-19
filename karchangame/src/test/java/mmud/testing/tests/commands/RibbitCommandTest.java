@@ -19,18 +19,15 @@ package mmud.testing.tests.commands;
 import java.io.File;
 import java.io.PrintWriter;
 import java.time.LocalDateTime;
-import java.util.HashSet;
 
 import mmud.Constants;
 import mmud.commands.CommandRunner;
 import mmud.commands.RibbitCommand;
 import mmud.database.entities.characters.Administrator;
-import mmud.database.entities.characters.Person;
 import mmud.database.entities.characters.User;
 import mmud.database.entities.game.DisplayInterface;
 import mmud.database.entities.game.Room;
 import mmud.services.CommunicationService;
-import mmud.services.PersonService;
 import mmud.testing.TestingConstants;
 import mmud.testing.tests.LogServiceStub;
 import mmud.testing.tests.MudTest;
@@ -47,11 +44,9 @@ public class RibbitCommandTest extends MudTest
   private Administrator karn;
   private User marvin;
 
-  private LogServiceStub logBean;
+  private LogServiceStub logService;
 
   private CommandRunner commandRunner = new CommandRunner();
-
-  private PersonService personService;
 
   public RibbitCommandTest()
   {
@@ -89,7 +84,7 @@ public class RibbitCommandTest extends MudTest
     assertThat(display).isNotNull();
     String log = CommunicationService.getCommunicationService(marvin).getLog(0);
     assertThat(log).isEqualTo("A frog called Marvin says &#34;Rrribbit!&#34;.<br />\nYou feel the need to say &#39;Ribbit&#39; just 4 times.<br />\r\n");
-    assertThat(logBean.getLog()).isEmpty();
+    assertThat(logService.getLog()).isEmpty();
   }
 
   /**
@@ -108,31 +103,13 @@ public class RibbitCommandTest extends MudTest
     assertThat(display).isNotNull();
     String log = CommunicationService.getCommunicationService(marvin).getLog(0);
     assertThat(log).isEqualTo("You cannot say &#39;Ribbit&#39; that fast! You will get tongue tied!<br />\r\n");
-    assertThat(logBean.getLog()).isEmpty();
+    assertThat(logService.getLog()).isEmpty();
   }
 
   @BeforeMethod
   public void setUpMethod() throws Exception
   {
-    logBean = new LogServiceStub();
-
-    personService = new PersonService()
-    {
-      @Override
-      public User getActiveUser(String name)
-      {
-        if (name.equalsIgnoreCase("Marvin"))
-        {
-          return marvin;
-        }
-        if (name.equalsIgnoreCase("Karn"))
-        {
-          return karn;
-        }
-        return null;
-      }
-    };
-    setField(PersonService.class, "logService", personService, logBean);
+    logService = new LogServiceStub();
 
     karn = TestingConstants.getKarn();
     final Room room = TestingConstants.getRoom(TestingConstants.getArea());
@@ -140,10 +117,8 @@ public class RibbitCommandTest extends MudTest
     marvin = TestingConstants.getMarvin(room);
     CommunicationService.getCommunicationService(karn).clearLog();
     CommunicationService.getCommunicationService(marvin).clearLog();
-    HashSet<Person> persons = new HashSet<>();
-    persons.add(karn);
-    persons.add(marvin);
-    setField(Room.class, "persons", room, persons);
+    room.addPerson(karn);
+    room.addPerson(marvin);
     File file = new File(Constants.getMudfilepath() + File.separator + "Karn.log");
     PrintWriter writer = new PrintWriter(file);
     writer.close();

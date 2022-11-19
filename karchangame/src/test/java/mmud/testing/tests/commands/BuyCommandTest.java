@@ -18,17 +18,14 @@ package mmud.testing.tests.commands;
 
 import java.io.File;
 import java.io.PrintWriter;
-import java.util.HashSet;
 
 import mmud.Constants;
 import mmud.commands.CommandRunner;
 import mmud.commands.items.BuyCommand;
-import mmud.database.entities.characters.Person;
 import mmud.database.entities.characters.Shopkeeper;
 import mmud.database.entities.characters.User;
 import mmud.database.entities.game.DisplayInterface;
 import mmud.database.entities.game.Room;
-import mmud.database.entities.items.Item;
 import mmud.database.entities.items.ItemDefinition;
 import mmud.database.entities.items.NormalItem;
 import mmud.services.CommunicationService;
@@ -68,10 +65,8 @@ public class BuyCommandTest extends MudTest
     karcas.setName("Karcas");
     karcas.setRoom(room1);
 
-    HashSet<Person> persons = new HashSet<>();
-    persons.add(karn);
-    persons.add(karcas);
-    setField(Room.class, "persons", room1, persons);
+    room1.addPerson(karn);
+    room1.addPerson(karcas);
 
     BuyCommand buyCommand = new BuyCommand("buy( (\\w|-)+){1,4} from (\\w)+");
     buyCommand.setCallback(commandRunner);
@@ -90,9 +85,7 @@ public class BuyCommandTest extends MudTest
     karcas.setName("Karcas");
     karcas.setRoom(room1);
 
-    HashSet<Item> items = new HashSet<>();
-    items.add(ring);
-    setField(Person.class, "items", karcas, items);
+    karcas.addItem(ring);
     BuyCommand buyCommand = new BuyCommand("buy( (\\w|-)+){1,4} from (\\w)+");
     buyCommand.setCallback(commandRunner);
     assertThat(buyCommand.getRegExpr()).isEqualTo("buy( (\\w|-)+){1,4} from (\\w)+");
@@ -110,14 +103,10 @@ public class BuyCommandTest extends MudTest
     karcas.setName("Karcas");
     karcas.setRoom(room1);
 
-    HashSet<Person> persons = new HashSet<>();
-    persons.add(karn);
-    persons.add(karcas);
-    setField(Room.class, "persons", room1, persons);
+    room1.addPerson(karn);
+    room1.addPerson(karcas);
 
-    HashSet<Item> items = new HashSet<>();
-    items.add(ring);
-    setField(Person.class, "items", karcas, items);
+    karcas.addItem(ring);
     BuyCommand buyCommand = new BuyCommand("buy( (\\w|-)+){1,4} from (\\w)+");
     buyCommand.setCallback(commandRunner);
     assertThat(buyCommand.getRegExpr()).isEqualTo("buy( (\\w|-)+){1,4} from (\\w)+");
@@ -131,8 +120,6 @@ public class BuyCommandTest extends MudTest
   @Test
   public void buyToUnknownShopkeeper()
   {
-    HashSet<Item> items = new HashSet<>();
-    items.add(ring);
     BuyCommand buyCommand = new BuyCommand("buy( (\\w|-)+){1,4} from (\\w)+");
     buyCommand.setCallback(commandRunner);
     assertThat(buyCommand.getRegExpr()).isEqualTo("buy( (\\w|-)+){1,4} from (\\w)+");
@@ -150,14 +137,10 @@ public class BuyCommandTest extends MudTest
     karcas.setName("Karcas");
     karcas.setRoom(room1);
 
-    HashSet<Person> persons = new HashSet<>();
-    persons.add(karn);
-    persons.add(karcas);
-    setField(Room.class, "persons", room1, persons);
+    room1.addPerson(karn);
+    room1.addPerson(karcas);
 
-    HashSet<Item> items = new HashSet<>();
-    items.add(ring);
-    setField(Person.class, "items", karcas, items);
+    karcas.addItem(ring);
     BuyCommand buyCommand = new BuyCommand("buy( (\\w|-)+){1,4} from (\\w)+");
     buyCommand.setCallback(commandRunner);
     assertThat(buyCommand.getRegExpr()).isEqualTo("buy( (\\w|-)+){1,4} from (\\w)+");
@@ -176,14 +159,10 @@ public class BuyCommandTest extends MudTest
     karcas.setName("Karcas");
     karcas.setRoom(room1);
 
-    HashSet<Person> persons = new HashSet<>();
-    persons.add(karn);
-    persons.add(karcas);
-    setField(Room.class, "persons", room1, persons);
+    room1.addPerson(karn);
+    room1.addPerson(karcas);
 
-    HashSet<Item> items = new HashSet<>();
-    items.add(ring);
-    setField(Person.class, "items", karcas, items);
+    karcas.addItem(ring);
     BuyCommand buyCommand = new BuyCommand("buy( (\\w|-)+){1,4} from (\\w)+");
     buyCommand.setCallback(commandRunner);
     assertThat(buyCommand.getRegExpr()).isEqualTo("buy( (\\w|-)+){1,4} from (\\w)+");
@@ -202,14 +181,10 @@ public class BuyCommandTest extends MudTest
     karcas.setName("Karcas");
     karcas.setRoom(room1);
 
-    HashSet<Person> persons = new HashSet<>();
-    persons.add(karn);
-    persons.add(karcas);
-    setField(Room.class, "persons", room1, persons);
+    room1.addPerson(karn);
+    room1.addPerson(karcas);
 
-    HashSet<Item> items = new HashSet<>();
-    items.add(ring);
-    setField(Person.class, "items", karcas, items);
+    karcas.addItem(ring);
     BuyCommand buyCommand = new BuyCommand("buy( (\\w|-)+){1,4} from (\\w)+");
     buyCommand.setCallback(commandRunner);
     assertThat(buyCommand.getRegExpr()).isEqualTo("buy( (\\w|-)+){1,4} from (\\w)+");
@@ -229,15 +204,10 @@ public class BuyCommandTest extends MudTest
     karcas.setName("Karcas");
     karcas.setRoom(room1);
 
-    HashSet<Person> persons = new HashSet<>();
-    persons.add(karn);
-    persons.add(karcas);
-    setField(Room.class, "persons", room1, persons);
-    setField(Person.class, "copper", karcas, 1111);
-
-    HashSet<Item> items = new HashSet<>();
-    items.add(ring);
-    setField(Person.class, "items", karcas, items);
+    room1.addPerson(karn);
+    room1.addPerson(karcas);
+    karcas.setCopper(1111);
+    karcas.addItem(ring);
     BuyCommand buyCommand = new BuyCommand("buy( (\\w|-)+){1,4} from (\\w)+");
     buyCommand.setCallback(commandRunner);
     assertThat(buyCommand.getRegExpr()).isEqualTo("buy( (\\w|-)+){1,4} from (\\w)+");
@@ -256,16 +226,11 @@ public class BuyCommandTest extends MudTest
     karcas.setName("Karcas");
     karcas.setRoom(room1);
 
-    HashSet<Person> persons = new HashSet<>();
-    persons.add(karn);
-    persons.add(karcas);
-    setField(Room.class, "persons", room1, persons);
-    setField(Person.class, "copper", karn, 1111);
+    room1.addPerson(karn);
+    room1.addPerson(karcas);
+    karn.setCopper(1111);
+    karcas.addItem(ring);
     ring.getItemDefinition().setBound(true);
-
-    HashSet<Item> items = new HashSet<>();
-    items.add(ring);
-    setField(Person.class, "items", karcas, items);
     BuyCommand buyCommand = new BuyCommand("buy( (\\w|-)+){1,4} from (\\w)+");
     buyCommand.setCallback(commandRunner);
     assertThat(buyCommand.getRegExpr()).isEqualTo("buy( (\\w|-)+){1,4} from (\\w)+");
@@ -284,15 +249,11 @@ public class BuyCommandTest extends MudTest
     karcas.setName("Karcas");
     karcas.setRoom(room1);
 
-    HashSet<Person> persons = new HashSet<>();
-    persons.add(karn);
-    persons.add(karcas);
-    setField(Room.class, "persons", room1, persons);
-    setField(Person.class, "copper", karn, 1111);
+    room1.addPerson(karn);
+    room1.addPerson(karcas);
+    karn.setCopper(1111);
 
-    HashSet<Item> items = new HashSet<>();
-    items.add(ring);
-    setField(Person.class, "items", karcas, items);
+    karcas.addItem(ring);
     BuyCommand buyCommand = new BuyCommand("buy( (\\w|-)+){1,4} from (\\w)+");
     buyCommand.setCallback(commandRunner);
     assertThat(buyCommand.getRegExpr()).isEqualTo("buy( (\\w|-)+){1,4} from (\\w)+");
@@ -307,8 +268,7 @@ public class BuyCommandTest extends MudTest
   @BeforeMethod
   public void setUpMethod() throws Exception
   {
-    itemService = new ItemService();
-    setField(ItemService.class, "logService", itemService, logService);
+    itemService = new ItemService(logService);
 
     itemDef = new ItemDefinition();
     itemDef.setId(1L);

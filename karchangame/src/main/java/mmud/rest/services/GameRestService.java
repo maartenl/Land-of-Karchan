@@ -105,29 +105,34 @@ import static mmud.Constants.DATETIME_FORMAT;
 public class GameRestService
 {
 
-  @Inject
-  private BoardService boardService;
+  private final BoardService boardService;
 
-  @Inject
-  private IdleUsersService idleUsersService;
+  private final IdleUsersService idleUsersService;
 
-  @Inject
-  private MailService mailService;
+  private final MailService mailService;
 
-  @Inject
-  private CommandRunner commandRunner;
+  private final CommandRunner commandRunner;
 
-  @Inject
-  private LogService logService;
+  private final LogService logService;
 
-  @Inject
-  private PlayerAuthenticationService playerAuthenticationService;
+  private final PlayerAuthenticationService playerAuthenticationService;
 
   @PersistenceContext(unitName = "karchangamePU")
   private EntityManager em;
 
   @Context
   private SecurityContext context;
+
+  @Inject
+  public GameRestService(BoardService boardService, IdleUsersService idleUsersService, MailService mailService, CommandRunner commandRunner, LogService logService, PlayerAuthenticationService playerAuthenticationService)
+  {
+    this.boardService = boardService;
+    this.idleUsersService = idleUsersService;
+    this.mailService = mailService;
+    this.commandRunner = commandRunner;
+    this.logService = logService;
+    this.playerAuthenticationService = playerAuthenticationService;
+  }
 
   /**
    * The ip address of the karchan server (vps386.directvps.nl). This address
@@ -142,17 +147,6 @@ public class GameRestService
    */
   public static final String X_FORWARDED_FOR = "X-Forwarded-For";
 
-  /**
-   * Returns the entity manager of JPA. This is defined in
-   * build/web/WEB-INF/classes/META-INF/persistence.xml.
-   *
-   * @return EntityManager
-   */
-  protected EntityManager getEntityManager()
-  {
-    return em;
-  }
-
   private static final Logger LOGGER = Logger.getLogger(GameRestService.class.getName());
 
   /**
@@ -163,7 +157,7 @@ public class GameRestService
    * <img
    * src="doc-files/Gamebean_authenticate.png"></p>
    *
-   * @param name    the name to identify the person
+   * @param name the name to identify the person
    * @throws WebApplicationException NOT_FOUND, if the user is either not found
    *                                 or is not a proper user. BAD_REQUEST if an unexpected exception crops up or
    *                                 provided info is really not proper. UNAUTHORIZED if session passwords do
@@ -230,7 +224,7 @@ public class GameRestService
     {
       throw new MudWebException(name, "Game is offline", Response.Status.NO_CONTENT);
     }
-    User person = getEntityManager().find(User.class, name);
+    User person = em.find(User.class, name);
     if (person == null)
     {
       throw new MudWebException(name,
@@ -275,7 +269,7 @@ public class GameRestService
   public boolean isBanned(String name, String address)
   {
     // check silly names
-    Query query = getEntityManager().createNamedQuery("SillyName.findByName");
+    Query query = em.createNamedQuery("SillyName.findByName");
     query.setParameter("name", name);
     query.setMaxResults(1);
     if (!query.getResultList().isEmpty())
@@ -285,7 +279,7 @@ public class GameRestService
     }
 
     // check unbanned names
-    query = getEntityManager().createNamedQuery("UnbanTable.findByName");
+    query = em.createNamedQuery("UnbanTable.findByName");
     query.setParameter("name", name);
     query.setMaxResults(1);
     if (!query.getResultList().isEmpty())
@@ -304,7 +298,7 @@ public class GameRestService
     {
       // ignore this.
     }
-    query = getEntityManager().createNamedQuery("BanTable.find");
+    query = em.createNamedQuery("BanTable.find");
     query.setParameter("address", address);
     query.setParameter("address2", address2);
     query.setMaxResults(1);
@@ -315,7 +309,7 @@ public class GameRestService
     }
 
     // check name banned
-    query = getEntityManager().createNamedQuery("BannedName.find");
+    query = em.createNamedQuery("BannedName.find");
     query.setParameter("name", name);
     query.setMaxResults(1);
     if (!query.getResultList().isEmpty())
@@ -392,7 +386,7 @@ public class GameRestService
           "User was banned (" + name + ", " + address + ")",
           Response.Status.FORBIDDEN);
       }
-      Person foundPerson = getEntityManager().find(Person.class, name);
+      Person foundPerson = em.find(Person.class, name);
       if (foundPerson != null)
       {
         // already a person
@@ -423,9 +417,9 @@ public class GameRestService
       person.setBirth(LocalDateTime.now());
       person.setOoc(true);
       person.setCreation(LocalDateTime.now());
-      person.setRoom(getEntityManager().find(Room.class, Room.STARTERS_ROOM));
+      person.setRoom(em.find(Room.class, Room.STARTERS_ROOM));
 
-      getEntityManager().persist(person);
+      em.persist(person);
       // TODO automatically add a welcome mail.
       logService.writeLog(person, "character created.");
     } catch (MudWebException e)
@@ -707,7 +701,7 @@ public class GameRestService
           MacroPK pk = new MacroPK();
           pk.setMacroname(parsedCommand[0]);
           pk.setName(person.getName());
-          macro = getEntityManager().find(Macro.class, pk);
+          macro = em.find(Macro.class, pk);
         }
         if (macro == null || macro.getContents() == null || macro.getContents().trim().equals(""))
         {
@@ -777,14 +771,14 @@ public class GameRestService
    */
   private PrivateDisplay gameMain(User person, String command) throws MudException
   {
-    LOGGER.log(Level.FINER, "{0}.gameMain", this.getClass().getName());
+    LOGGER.log(Level.FINER, "gameMain");
     command = command.replace("&#39;", "'");
     logService.writeCommandLog(person, command);
     if (CommandFactory.noUserCommands())
     {
       // get all user commands
       LOGGER.log(Level.FINER, "{0}.gameMain - get all user commands", this.getClass().getName());
-      TypedQuery<UserCommand> query = getEntityManager().createNamedQuery("UserCommand.findActive", UserCommand.class);
+      TypedQuery<UserCommand> query = em.createNamedQuery("UserCommand.findActive", UserCommand.class);
       List<UserCommand> list = query.getResultList();
       for (UserCommand userCommand : list)
       {
@@ -797,7 +791,7 @@ public class GameRestService
     {
       for (UserCommandInfo info : userCommands)
       {
-        UserCommand com = getEntityManager().find(UserCommand.class, info.getCommandId());
+        UserCommand com = em.find(UserCommand.class, info.getCommandId());
         if (com != null)
         {
           userCommands2.add(com);
@@ -815,8 +809,8 @@ public class GameRestService
   /**
    * Retrieves the log of a player.
    *
-   * @param name    the name of the user
-   * @param offset  the offset from whence to read the log
+   * @param name   the name of the user
+   * @param offset the offset from whence to read the log
    * @return returns the log
    * @throws WebApplicationException BAD_REQUEST if an unexpected exception
    *                                 crops up.
@@ -862,7 +856,7 @@ public class GameRestService
   /**
    * Removes the log of a player, i.e. creates a new empty log.
    *
-   * @param name    the name of the user
+   * @param name the name of the user
    * @return Response.ok if everything's okay
    * @throws WebApplicationException BAD_REQUEST if an unexpected exception
    *                                 crops up.
@@ -895,7 +889,7 @@ public class GameRestService
   /**
    * Stops a playing character from playing.
    *
-   * @param name    the name of the user
+   * @param name the name of the user
    * @return An Ok response.
    * @throws WebApplicationException BAD_REQUEST if an unexpected exception
    *                                 crops up.
@@ -982,8 +976,8 @@ public class GameRestService
   }
 
   @VisibleForTesting
-  public void setPlayerAuthenticationService(PlayerAuthenticationService playerAuthenticationService)
+  public void setEntityManager(EntityManager em)
   {
-    this.playerAuthenticationService = playerAuthenticationService;
+    this.em = em;
   }
 }

@@ -18,25 +18,20 @@ package mmud.commands;
 
 import java.io.File;
 import java.io.PrintWriter;
-import java.util.HashSet;
 import java.util.List;
 
 import mmud.Constants;
 import mmud.database.entities.characters.Administrator;
-import mmud.database.entities.characters.Person;
 import mmud.database.entities.characters.User;
 import mmud.database.entities.game.Room;
 import mmud.services.CommunicationService;
-import mmud.services.PersonService;
 import mmud.testing.TestingConstants;
-import mmud.testing.tests.LogServiceStub;
 import mmud.testing.tests.MudTest;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 import static org.assertj.core.api.Assertions.assertThat;
 
 /**
- *
  * @author maartenl
  */
 public class CommandFactoryTest extends MudTest
@@ -45,11 +40,7 @@ public class CommandFactoryTest extends MudTest
   private Administrator karn;
   private User marvin;
 
-  private LogServiceStub logBean;
-
-  private CommandRunner commandRunner = new CommandRunner();
-
-  private PersonService personService;
+  private final CommandRunner commandRunner = new CommandRunner();
 
   public CommandFactoryTest()
   {
@@ -91,35 +82,14 @@ public class CommandFactoryTest extends MudTest
   @BeforeMethod
   public void setUpMethod() throws Exception
   {
-    logBean = new LogServiceStub();
-    personService = new PersonService()
-    {
-      @Override
-      public User getActiveUser(String name)
-      {
-        if (name.equalsIgnoreCase("Marvin"))
-        {
-          return marvin;
-        }
-        if (name.equalsIgnoreCase("Karn"))
-        {
-          return karn;
-        }
-        return null;
-      }
-    };
-    setField(PersonService.class, "logService", personService, logBean);
-
     karn = TestingConstants.getKarn();
     final Room room = TestingConstants.getRoom(TestingConstants.getArea());
     karn.setRoom(room);
     marvin = TestingConstants.getMarvin(room);
     CommunicationService.getCommunicationService(karn).clearLog();
     CommunicationService.getCommunicationService(marvin).clearLog();
-    HashSet<Person> persons = new HashSet<>();
-    persons.add(karn);
-    persons.add(marvin);
-    setField(Room.class, "persons", room, persons);
+    room.addPerson(karn);
+    room.addPerson(marvin);
     File file = new File(Constants.getMudfilepath() + File.separator + "Karn.log");
     PrintWriter writer = new PrintWriter(file);
     writer.close();

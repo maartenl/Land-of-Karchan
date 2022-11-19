@@ -255,14 +255,10 @@ public class PublicRestServiceTest
         return entityManager;
       }
     };
-    publicRestService.setPersonBean(new PersonService()
-    {
-      @Override
-      protected EntityManager getEntityManager()
-      {
-        return entityManager;
-      }
-    });
+    PersonService personService = new PersonService(null);
+    personService.setEntityManager(entityManager);
+    publicRestService.setPersonBean(personService);
+
     // Unit under test is exercised.
     List<PublicPerson> result = publicRestService.who();
     // Verification code (JUnit/TestNG asserts), if any.
@@ -290,14 +286,10 @@ public class PublicRestServiceTest
         return entityManager;
       }
     };
-    publicRestService.setPersonBean(new PersonService()
-    {
-      @Override
-      protected EntityManager getEntityManager()
-      {
-        return entityManager;
-      }
-    });
+    PersonService personService = new PersonService(null);
+    personService.setEntityManager(entityManager);
+    publicRestService.setPersonBean(personService);
+
     IdleUsersService idleUsersService = new IdleUsersService();
     idleUsersService.resetUser("Hotblack");
     publicRestService.setIdleUsersService(idleUsersService);

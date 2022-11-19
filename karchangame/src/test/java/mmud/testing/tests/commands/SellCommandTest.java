@@ -23,7 +23,6 @@ import java.util.HashSet;
 import mmud.Constants;
 import mmud.commands.CommandRunner;
 import mmud.commands.items.SellCommand;
-import mmud.database.entities.characters.Person;
 import mmud.database.entities.characters.Shopkeeper;
 import mmud.database.entities.characters.User;
 import mmud.database.entities.game.DisplayInterface;
@@ -81,14 +80,9 @@ public class SellCommandTest extends MudTest
     karcas.setName("Karcas");
     karcas.setRoom(room1);
 
-    HashSet<Item> items = new HashSet<>();
-    items.add(ring);
-    setField(Person.class, "items", karn, items);
+    karn.addItem(ring);
 
-    HashSet<Person> persons = new HashSet<>();
-    persons.add(karn);
-    persons.add(karcas);
-    setField(Room.class, "persons", room1, persons);
+    room1.addPerson(karn);
 
     SellCommand sellCommand = new SellCommand("sell( (\\w|-)+){1,4} to (\\w)+");
     assertThat(sellCommand.getRegExpr()).isEqualTo("sell( (\\w|-)+){1,4} to (\\w)+");
@@ -102,9 +96,7 @@ public class SellCommandTest extends MudTest
   @Test
   public void sellNotEnoughItems()
   {
-    HashSet<Item> items = new HashSet<>();
-    items.add(ring);
-    setField(Person.class, "items", karn, items);
+    karn.addItem(ring);
     SellCommand sellCommand = new SellCommand("sell( (\\w|-)+){1,4} to (\\w)+");
     assertThat(sellCommand.getRegExpr()).isEqualTo("sell( (\\w|-)+){1,4} to (\\w)+");
     DisplayInterface display = sellCommand.run("sell 3 ring to karcas", karn);
@@ -117,9 +109,7 @@ public class SellCommandTest extends MudTest
   @Test
   public void sellToUnknownShopkeeper()
   {
-    HashSet<Item> items = new HashSet<>();
-    items.add(ring);
-    setField(Person.class, "items", karn, items);
+    karn.addItem(ring);
     SellCommand sellCommand = new SellCommand("sell( (\\w|-)+){1,4} to (\\w)+");
     assertThat(sellCommand.getRegExpr()).isEqualTo("sell( (\\w|-)+){1,4} to (\\w)+");
     DisplayInterface display = sellCommand.run("sell ring to karcas", karn);
@@ -136,14 +126,10 @@ public class SellCommandTest extends MudTest
     karcas.setName("Karcas");
     karcas.setRoom(room1);
 
-    HashSet<Person> persons = new HashSet<>();
-    persons.add(karn);
-    persons.add(karcas);
-    setField(Room.class, "persons", room1, persons);
+    room1.addPerson(karn);
+    room1.addPerson(karcas);
 
-    HashSet<Item> items = new HashSet<>();
-    items.add(ring);
-    setField(Person.class, "items", karn, items);
+    karn.addItem(ring);
     SellCommand sellCommand = new SellCommand("sell( (\\w|-)+){1,4} to (\\w)+");
     assertThat(sellCommand.getRegExpr()).isEqualTo("sell( (\\w|-)+){1,4} to (\\w)+");
     DisplayInterface display = sellCommand.run("sell ring to karcas", karn);
@@ -161,14 +147,10 @@ public class SellCommandTest extends MudTest
     karcas.setName("Karcas");
     karcas.setRoom(room1);
 
-    HashSet<Person> persons = new HashSet<>();
-    persons.add(karn);
-    persons.add(karcas);
-    setField(Room.class, "persons", room1, persons);
+    room1.addPerson(karn);
+    room1.addPerson(karcas);
 
-    HashSet<Item> items = new HashSet<>();
-    items.add(ring);
-    setField(Person.class, "items", karn, items);
+    karn.addItem(ring);
     SellCommand sellCommand = new SellCommand("sell( (\\w|-)+){1,4} to (\\w)+");
     sellCommand.setCallback(commandRunner);
     assertThat(sellCommand.getRegExpr()).isEqualTo("sell( (\\w|-)+){1,4} to (\\w)+");
@@ -187,14 +169,10 @@ public class SellCommandTest extends MudTest
     karcas.setName("Karcas");
     karcas.setRoom(room1);
 
-    HashSet<Person> persons = new HashSet<>();
-    persons.add(karn);
-    persons.add(karcas);
-    setField(Room.class, "persons", room1, persons);
+    room1.addPerson(karn);
+    room1.addPerson(karcas);
 
-    HashSet<Item> items = new HashSet<>();
-    items.add(ring);
-    setField(Person.class, "items", karn, items);
+    karn.addItem(ring);
     SellCommand sellCommand = new SellCommand("sell( (\\w|-)+){1,4} to (\\w)+");
     sellCommand.setCallback(commandRunner);
     assertThat(sellCommand.getRegExpr()).isEqualTo("sell( (\\w|-)+){1,4} to (\\w)+");
@@ -212,15 +190,11 @@ public class SellCommandTest extends MudTest
     Shopkeeper karcas = new Shopkeeper();
     karcas.setName("Karcas");
     karcas.setRoom(room1);
-    HashSet<Person> persons = new HashSet<>();
-    persons.add(karn);
-    persons.add(karcas);
-    setField(Room.class, "persons", room1, persons);
-    setField(Person.class, "copper", karcas, 1111);
-    setField(ItemDefinition.class, "wearable", ring.getItemDefinition(), Wearing.ON_LEFT_FINGER.toInt());
-    HashSet<Item> items = new HashSet<>();
-    items.add(ring);
-    setField(Person.class, "items", karn, items);
+    room1.addPerson(karn);
+    room1.addPerson(karcas);
+    karcas.setCopper(1111);
+    ring.getItemDefinition().setWearable("ON_LEFT_FINGER");
+    karn.addItem(ring);
     karn.wear(ring, Wearing.ON_LEFT_FINGER);
     SellCommand sellCommand = new SellCommand("sell( (\\w|-)+){1,4} to (\\w)+");
     sellCommand.setCallback(commandRunner);
@@ -239,16 +213,13 @@ public class SellCommandTest extends MudTest
     Shopkeeper karcas = new Shopkeeper();
     karcas.setName("Karcas");
     karcas.setRoom(room1);
-    HashSet<Person> persons = new HashSet<>();
-    persons.add(karn);
-    persons.add(karcas);
-    setField(Room.class, "persons", room1, persons);
-    setField(Person.class, "copper", karcas, 1111);
+    room1.addPerson(karn);
+    room1.addPerson(karcas);
+    karcas.setCopper(1111);
 
     HashSet<Item> items = new HashSet<>();
-    setField(ItemDefinition.class, "wieldable", ring.getItemDefinition(), Wielding.WIELD_LEFT.toInt());
-    items.add(ring);
-    setField(Person.class, "items", karn, items);
+    ring.getItemDefinition().setWieldable("WIELD_LEFT");
+    karn.addItem(ring);
     karn.wield(ring, Wielding.WIELD_LEFT);
     SellCommand sellCommand = new SellCommand("sell( (\\w|-)+){1,4} to (\\w)+");
     sellCommand.setCallback(commandRunner);
@@ -269,15 +240,11 @@ public class SellCommandTest extends MudTest
     karcas.setName("Karcas");
     karcas.setRoom(room1);
 
-    HashSet<Person> persons = new HashSet<>();
-    persons.add(karn);
-    persons.add(karcas);
-    setField(Room.class, "persons", room1, persons);
-    setField(Person.class, "copper", karcas, 1111);
+    room1.addPerson(karn);
+    room1.addPerson(karcas);
+    karcas.setCopper(1111);
 
-    HashSet<Item> items = new HashSet<>();
-    items.add(ring);
-    setField(Person.class, "items", karn, items);
+    karn.addItem(ring);
     SellCommand sellCommand = new SellCommand("sell( (\\w|-)+){1,4} to (\\w)+");
     sellCommand.setCallback(commandRunner);
     assertThat(sellCommand.getRegExpr()).isEqualTo("sell( (\\w|-)+){1,4} to (\\w)+");
@@ -296,16 +263,12 @@ public class SellCommandTest extends MudTest
     karcas.setName("Karcas");
     karcas.setRoom(room1);
 
-    HashSet<Person> persons = new HashSet<>();
-    persons.add(karn);
-    persons.add(karcas);
-    ring.getItemDefinition().setBound(true);
-    setField(Room.class, "persons", room1, persons);
-    setField(Person.class, "copper", karcas, 1111);
+    room1.addPerson(karn);
+    room1.addPerson(karcas);
+    karcas.setCopper(1111);
 
-    HashSet<Item> items = new HashSet<>();
-    items.add(ring);
-    setField(Person.class, "items", karn, items);
+    karn.addItem(ring);
+    ring.getItemDefinition().setBound(true);
     SellCommand sellCommand = new SellCommand("sell( (\\w|-)+){1,4} to (\\w)+");
     sellCommand.setCallback(commandRunner);
     assertThat(sellCommand.getRegExpr()).isEqualTo("sell( (\\w|-)+){1,4} to (\\w)+");
@@ -324,15 +287,11 @@ public class SellCommandTest extends MudTest
     karcas.setName("Karcas");
     karcas.setRoom(room1);
 
-    HashSet<Person> persons = new HashSet<>();
-    persons.add(karn);
-    persons.add(karcas);
-    setField(Room.class, "persons", room1, persons);
-    setField(Person.class, "copper", karcas, 1111);
+    room1.addPerson(karn);
+    room1.addPerson(karcas);
+    karcas.setCopper(1111);
 
-    HashSet<Item> items = new HashSet<>();
-    items.add(ring);
-    setField(Person.class, "items", karn, items);
+    karn.addItem(ring);
     SellCommand sellCommand = new SellCommand("sell( (\\w|-)+){1,4} to (\\w)+");
     sellCommand.setCallback(commandRunner);
     assertThat(sellCommand.getRegExpr()).isEqualTo("sell( (\\w|-)+){1,4} to (\\w)+");
@@ -347,8 +306,7 @@ public class SellCommandTest extends MudTest
   @BeforeMethod
   public void setUpMethod() throws Exception
   {
-    itemService = new ItemService();
-    setField(ItemService.class, "logService", itemService, logService);
+    itemService = new ItemService(logService);
 
     itemDef = new ItemDefinition();
     itemDef.setId(1L);

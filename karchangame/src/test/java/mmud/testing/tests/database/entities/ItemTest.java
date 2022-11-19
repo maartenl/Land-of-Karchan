@@ -22,8 +22,11 @@ import mmud.database.entities.items.NormalItem;
 import mmud.database.enums.Wearing;
 import mmud.database.enums.Wielding;
 import mmud.testing.tests.MudTest;
-import org.testng.annotations.*;
-
+import org.testng.annotations.AfterClass;
+import org.testng.annotations.AfterMethod;
+import org.testng.annotations.BeforeClass;
+import org.testng.annotations.BeforeMethod;
+import org.testng.annotations.Test;
 import static org.assertj.core.api.Assertions.assertThat;
 
 /**
@@ -60,60 +63,58 @@ public class ItemTest extends MudTest
     @Test
     public void checkWearable()
     {
-        ItemDefinition itemDefinition = new ItemDefinition();
-        itemDefinition.setId(905L);
-        setField(ItemDefinition.class, "wearable", itemDefinition, 458752);
-        setField(ItemDefinition.class, "wieldable", itemDefinition, 0);
-        Item item = new NormalItem();
-        item.setItemDefinition(itemDefinition);
-        assertThat(item.isWearable(Wearing.ON_HEAD)).isEqualTo(false); // 1
-        assertThat(item.isWearable(Wearing.ON_NECK)).isEqualTo(false); // 2
-        assertThat(item.isWearable(Wearing.ON_TORSO)).isEqualTo(false); // 4
-        assertThat(item.isWearable(Wearing.ON_ARMS)).isEqualTo(false); // 8
-        assertThat(item.isWearable(Wearing.ON_LEFT_WRIST)).isEqualTo(false); // 16
-        assertThat(item.isWearable(Wearing.ON_RIGHT_WRIST)).isEqualTo(false); // 32
-        assertThat(item.isWearable(Wearing.ON_LEFT_FINGER)).isEqualTo(false); // 64
-        assertThat(item.isWearable(Wearing.ON_RIGHT_FINGER)).isEqualTo(false); // 128
-        assertThat(item.isWearable(Wearing.ON_FEET)).isEqualTo(false); // 256
-        assertThat(item.isWearable(Wearing.ON_HANDS)).isEqualTo(false); // 512
-        assertThat(item.isWearable(Wearing.FLOATING_NEARBY)).isEqualTo(false); // 1024
-        assertThat(item.isWearable(Wearing.ON_WAIST)).isEqualTo(false);  // 2048
-        assertThat(item.isWearable(Wearing.ON_LEGS)).isEqualTo(false); // 4096
-        assertThat(item.isWearable(Wearing.ON_EYES)).isEqualTo(false);  // 8192
-        assertThat(item.isWearable(Wearing.ON_EARS)).isEqualTo(false);  // 16384
-        assertThat(item.isWearable(Wearing.ABOUT_BODY)).isEqualTo(false); // 32768
-        assertThat(item.isWieldable(Wielding.WIELD_LEFT)).isEqualTo(false); // 65536
-        assertThat(item.isWieldable(Wielding.WIELD_RIGHT)).isEqualTo(false); // 131072
-        assertThat(item.isWieldable(Wielding.WIELD_BOTH)).isEqualTo(false); // 262144
+      ItemDefinition itemDefinition = new ItemDefinition();
+      itemDefinition.setId(905L);
+      Item item = new NormalItem();
+      item.setItemDefinition(itemDefinition);
+      assertThat(item.isWearable(Wearing.ON_HEAD)).isFalse(); // 1
+      assertThat(item.isWearable(Wearing.ON_NECK)).isFalse(); // 2
+      assertThat(item.isWearable(Wearing.ON_TORSO)).isFalse(); // 4
+      assertThat(item.isWearable(Wearing.ON_ARMS)).isFalse(); // 8
+      assertThat(item.isWearable(Wearing.ON_LEFT_WRIST)).isFalse(); // 16
+      assertThat(item.isWearable(Wearing.ON_RIGHT_WRIST)).isFalse(); // 32
+      assertThat(item.isWearable(Wearing.ON_LEFT_FINGER)).isFalse(); // 64
+      assertThat(item.isWearable(Wearing.ON_RIGHT_FINGER)).isFalse(); // 128
+      assertThat(item.isWearable(Wearing.ON_FEET)).isFalse(); // 256
+      assertThat(item.isWearable(Wearing.ON_HANDS)).isFalse(); // 512
+      assertThat(item.isWearable(Wearing.FLOATING_NEARBY)).isFalse(); // 1024
+      assertThat(item.isWearable(Wearing.ON_WAIST)).isFalse();  // 2048
+      assertThat(item.isWearable(Wearing.ON_LEGS)).isFalse(); // 4096
+      assertThat(item.isWearable(Wearing.ON_EYES)).isFalse();  // 8192
+      assertThat(item.isWearable(Wearing.ON_EARS)).isFalse();  // 16384
+      assertThat(item.isWearable(Wearing.ABOUT_BODY)).isFalse(); // 32768
+      assertThat(item.isWieldable(Wielding.WIELD_LEFT)).isFalse(); // 65536
+      assertThat(item.isWieldable(Wielding.WIELD_RIGHT)).isFalse(); // 131072
+      assertThat(item.isWieldable(Wielding.WIELD_BOTH)).isFalse(); // 262144
     }
 
     @Test
     public void checkWieldable()
     {
-        ItemDefinition itemDefinition = new ItemDefinition();
-        itemDefinition.setId(3234L);
-        setField(ItemDefinition.class, "wearable", itemDefinition, 192);// 64 + 128
-        setField(ItemDefinition.class, "wieldable", itemDefinition, 3);
-        Item item = new NormalItem();
-        item.setItemDefinition(itemDefinition);
-        assertThat(item.isWearable(Wearing.ON_HEAD)).isEqualTo(false); // 1
-        assertThat(item.isWearable(Wearing.ON_NECK)).isEqualTo(false); // 2
-        assertThat(item.isWearable(Wearing.ON_TORSO)).isEqualTo(false); // 4
-        assertThat(item.isWearable(Wearing.ON_ARMS)).isEqualTo(false); // 8
-        assertThat(item.isWearable(Wearing.ON_LEFT_WRIST)).isEqualTo(false); // 16
-        assertThat(item.isWearable(Wearing.ON_RIGHT_WRIST)).isEqualTo(false); // 32
-        assertThat(item.isWearable(Wearing.ON_LEFT_FINGER)).isEqualTo(true); // 64
-        assertThat(item.isWearable(Wearing.ON_RIGHT_FINGER)).isEqualTo(true); // 128
-        assertThat(item.isWearable(Wearing.ON_FEET)).isEqualTo(false); // 256
-        assertThat(item.isWearable(Wearing.ON_HANDS)).isEqualTo(false); // 512
-        assertThat(item.isWearable(Wearing.FLOATING_NEARBY)).isEqualTo(false); // 1024
-        assertThat(item.isWearable(Wearing.ON_WAIST)).isEqualTo(false);  // 2048
-        assertThat(item.isWearable(Wearing.ON_LEGS)).isEqualTo(false); // 4096
-        assertThat(item.isWearable(Wearing.ON_EYES)).isEqualTo(false);  // 8192
-        assertThat(item.isWearable(Wearing.ON_EARS)).isEqualTo(false);  // 16384
-        assertThat(item.isWearable(Wearing.ABOUT_BODY)).isEqualTo(false); // 32768
-        assertThat(item.isWieldable(Wielding.WIELD_LEFT)).isEqualTo(true); // 1
-        assertThat(item.isWieldable(Wielding.WIELD_RIGHT)).isEqualTo(true); // 2
-        assertThat(item.isWieldable(Wielding.WIELD_BOTH)).isEqualTo(false); // 4
+      ItemDefinition itemDefinition = new ItemDefinition();
+      itemDefinition.setId(3234L);
+      itemDefinition.setWearable("ON_LEFT_FINGER,ON_RIGHT_FINGER");
+      itemDefinition.setWieldable("WIELD_LEFT,WIELD_RIGHT");
+      Item item = new NormalItem();
+      item.setItemDefinition(itemDefinition);
+      assertThat(item.isWearable(Wearing.ON_HEAD)).isFalse(); // 1
+      assertThat(item.isWearable(Wearing.ON_NECK)).isFalse(); // 2
+      assertThat(item.isWearable(Wearing.ON_TORSO)).isFalse(); // 4
+      assertThat(item.isWearable(Wearing.ON_ARMS)).isFalse(); // 8
+      assertThat(item.isWearable(Wearing.ON_LEFT_WRIST)).isFalse(); // 16
+      assertThat(item.isWearable(Wearing.ON_RIGHT_WRIST)).isFalse(); // 32
+      assertThat(item.isWearable(Wearing.ON_LEFT_FINGER)).isTrue(); // 64
+      assertThat(item.isWearable(Wearing.ON_RIGHT_FINGER)).isTrue(); // 128
+      assertThat(item.isWearable(Wearing.ON_FEET)).isFalse(); // 256
+      assertThat(item.isWearable(Wearing.ON_HANDS)).isFalse(); // 512
+      assertThat(item.isWearable(Wearing.FLOATING_NEARBY)).isFalse(); // 1024
+      assertThat(item.isWearable(Wearing.ON_WAIST)).isFalse();  // 2048
+      assertThat(item.isWearable(Wearing.ON_LEGS)).isFalse(); // 4096
+      assertThat(item.isWearable(Wearing.ON_EYES)).isFalse();  // 8192
+      assertThat(item.isWearable(Wearing.ON_EARS)).isFalse();  // 16384
+      assertThat(item.isWearable(Wearing.ABOUT_BODY)).isFalse(); // 32768
+      assertThat(item.isWieldable(Wielding.WIELD_LEFT)).isTrue(); // 1
+      assertThat(item.isWieldable(Wielding.WIELD_RIGHT)).isTrue(); // 2
+      assertThat(item.isWieldable(Wielding.WIELD_BOTH)).isFalse(); // 4
     }
 }

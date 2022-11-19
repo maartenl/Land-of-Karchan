@@ -30,10 +30,10 @@ import mmud.database.enums.God;
 public class Shopkeeper extends Bot
 {
 
-    @Override
-    public God getGod()
-    {
-        return God.SHOPKEEPER;
-    }
+  @Override
+  public God getGod()
+  {
+    return God.SHOPKEEPER;
+  }
 
 }

@@ -19,14 +19,12 @@ package mmud.testing.tests.commands;
 import java.io.File;
 import java.io.PrintWriter;
 import java.util.Arrays;
-import java.util.HashSet;
 import java.util.List;
 
 import mmud.Constants;
 import mmud.commands.AdminCommand;
 import mmud.commands.CommandRunner;
 import mmud.database.entities.characters.Administrator;
-import mmud.database.entities.characters.Person;
 import mmud.database.entities.characters.User;
 import mmud.database.entities.game.DisplayInterface;
 import mmud.database.entities.game.Room;
@@ -52,9 +50,9 @@ public class AdminCommandTest extends MudTest
   private Administrator karn;
   private User marvin;
 
-  private LogServiceStub logBean;
+  private LogServiceStub logService;
 
-  private CommandRunner commandRunner = new CommandRunner();
+  private final CommandRunner commandRunner = new CommandRunner();
 
   private PersonService personService;
 
@@ -65,7 +63,7 @@ public class AdminCommandTest extends MudTest
   @BeforeMethod
   public void setup()
   {
-    logBean = new LogServiceStub();
+    logService = new LogServiceStub();
   }
 
   @Test
@@ -87,13 +85,13 @@ public class AdminCommandTest extends MudTest
     AdminCommand adminCommand = new AdminCommand("admin .+");
     adminCommand.setCallback(commandRunner);
     assertThat(adminCommand.getRegExpr()).isEqualTo("admin .+");
-    commandRunner.setServices(null, logBean, null, null, null, null, null);
+    commandRunner.setServices(null, logService, null, null, null, null, null);
     DisplayInterface display = adminCommand.run("admin visible on", karn);
     assertThat(display).isNotNull();
     assertThat(karn.getVisible()).isTrue();
     String log = CommunicationService.getCommunicationService(karn).getLog(0);
     assertThat(log).isEqualTo("Setting visibility to true.<br />\r\n");
-    assertThat(logBean.getLog()).isEqualTo("Karn: turned visible.\n");
+    assertThat(logService.getLog()).isEqualTo("Karn: turned visible.\n");
   }
 
   @Test
@@ -103,13 +101,13 @@ public class AdminCommandTest extends MudTest
     AdminCommand adminCommand = new AdminCommand("admin .+");
     adminCommand.setCallback(commandRunner);
     assertThat(adminCommand.getRegExpr()).isEqualTo("admin .+");
-    commandRunner.setServices(null, logBean, null, null, null, null, null);
+    commandRunner.setServices(null, logService, null, null, null, null, null);
     DisplayInterface display = adminCommand.run("admin visible off", karn);
     assertThat(display).isNotNull();
     assertThat(karn.getVisible()).isFalse();
     String log = CommunicationService.getCommunicationService(karn).getLog(0);
     assertThat(log).isEqualTo("Setting visibility to false.<br />\r\n");
-    assertThat(logBean.getLog()).isEqualTo("Karn: turned invisible.\n");
+    assertThat(logService.getLog()).isEqualTo("Karn: turned invisible.\n");
   }
 
   @Test
@@ -120,14 +118,14 @@ public class AdminCommandTest extends MudTest
     assertThat(adminCommand.getRegExpr()).isEqualTo("admin .+");
     assertThat(marvin.getFrogging()).isZero();
     assertThat(marvin.getJackassing()).isZero();
-    commandRunner.setServices(personService, logBean, null, null, null, null, null);
+    commandRunner.setServices(personService, logService, null, null, null, null, null);
     DisplayInterface display = adminCommand.run("admin frog marvin 5", karn);
     assertThat(display).isNotNull();
     assertThat(marvin.getFrogging()).isEqualTo(5);
     assertThat(marvin.getJackassing()).isZero();
     assertThat(CommunicationService.getCommunicationService(karn).getLog(0)).isEqualTo("Changed Marvin into frog (5).<br />\r\nMarvin is suddenly changed into a frog!<br />\r\n");
     assertThat(CommunicationService.getCommunicationService(marvin).getLog(0)).isEqualTo("You are suddenly changed into a frog!<br />\r\n");
-    assertThat(logBean.getLog()).isEqualTo("Marvin: was changed into a frog by Karn for 5.\n");
+    assertThat(logService.getLog()).isEqualTo("Marvin: was changed into a frog by Karn for 5.\n");
   }
 
   @Test
@@ -138,14 +136,14 @@ public class AdminCommandTest extends MudTest
     assertThat(adminCommand.getRegExpr()).isEqualTo("admin .+");
     assertThat(marvin.getFrogging()).isZero();
     assertThat(marvin.getJackassing()).isZero();
-    commandRunner.setServices(personService, logBean, null, null, null, null, null);
+    commandRunner.setServices(personService, logService, null, null, null, null, null);
     DisplayInterface display = adminCommand.run("admin jackass marvin 5", karn);
     assertThat(display).isNotNull();
     assertThat(marvin.getFrogging()).isZero();
     assertThat(marvin.getJackassing()).isEqualTo(5);
     assertThat(CommunicationService.getCommunicationService(karn).getLog(0)).isEqualTo("Changed Marvin into jackass (5).<br />\r\nMarvin is suddenly changed into a jackass!<br />\r\n");
     assertThat(CommunicationService.getCommunicationService(marvin).getLog(0)).isEqualTo("You are suddenly changed into a jackass!<br />\r\n");
-    assertThat(logBean.getLog()).isEqualTo("Marvin: was changed into a jackass by Karn for 5.\n");
+    assertThat(logService.getLog()).isEqualTo("Marvin: was changed into a jackass by Karn for 5.\n");
   }
 
   @Test
@@ -243,7 +241,7 @@ public class AdminCommandTest extends MudTest
     AdminCommand adminCommand = new AdminCommand("admin .+");
     adminCommand.setCallback(commandRunner);
     assertThat(adminCommand.getRegExpr()).isEqualTo("admin .+");
-    commandRunner.setServices(personService, logBean, null, null, null, null, null);
+    commandRunner.setServices(personService, logService, null, null, null, null, null);
     DisplayInterface display = adminCommand.run("admin kick marvin", karn);
 
     // check for deactivation
@@ -255,7 +253,7 @@ public class AdminCommandTest extends MudTest
     assertThat(log).isEqualTo("Karn causes Marvin to cease to exist for 0 minutes.<br />\n");
     log = CommunicationService.getCommunicationService(marvin).getLog(0);
     assertThat(log).isEqualTo("Karn causes Marvin to cease to exist for 0 minutes.<br />\n");
-    assertThat(logBean.getLog()).isEqualTo("Marvin: has been kicked out of the game by Karn for 0 minutes.\n");
+    assertThat(logService.getLog()).isEqualTo("Marvin: has been kicked out of the game by Karn for 0 minutes.\n");
   }
 
   @Test
@@ -265,7 +263,7 @@ public class AdminCommandTest extends MudTest
     AdminCommand adminCommand = new AdminCommand("admin .+");
     adminCommand.setCallback(commandRunner);
     assertThat(adminCommand.getRegExpr()).isEqualTo("admin .+");
-    commandRunner.setServices(personService, logBean, null, null, null, null, null);
+    commandRunner.setServices(personService, logService, null, null, null, null, null);
     DisplayInterface display = adminCommand.run("admin kick marvin 60", karn);
 
     // check for deactivation
@@ -280,7 +278,7 @@ public class AdminCommandTest extends MudTest
     assertThat(log).isEqualTo("Karn causes Marvin to cease to exist for 60 minutes.<br />\n");
     log = CommunicationService.getCommunicationService(marvin).getLog(0);
     assertThat(log).isEqualTo("Karn causes Marvin to cease to exist for 60 minutes.<br />\n");
-    assertThat(logBean.getLog()).isEqualTo("Marvin: has been kicked out of the game by Karn for 60 minutes.\n");
+    assertThat(logService.getLog()).isEqualTo("Marvin: has been kicked out of the game by Karn for 60 minutes.\n");
   }
 
   @Test(expectedExceptions = MudException.class, expectedExceptionsMessageRegExp = "Number for minutes could not be parsed.")
@@ -322,7 +320,7 @@ public class AdminCommandTest extends MudTest
   @BeforeMethod
   public void setUpMethod() throws Exception
   {
-    personService = new PersonService()
+    personService = new PersonService(logService)
     {
       @Override
       public User getActiveUser(String name)
@@ -345,7 +343,6 @@ public class AdminCommandTest extends MudTest
       }
 
     };
-    setField(PersonService.class, "logService", personService, logBean);
 
     karn = TestingConstants.getKarn();
     final Room room = TestingConstants.getRoom(TestingConstants.getArea());
@@ -353,10 +350,8 @@ public class AdminCommandTest extends MudTest
     marvin = TestingConstants.getMarvin(room);
     CommunicationService.getCommunicationService(karn).clearLog();
     CommunicationService.getCommunicationService(marvin).clearLog();
-    HashSet<Person> persons = new HashSet<>();
-    persons.add(karn);
-    persons.add(marvin);
-    setField(Room.class, "persons", room, persons);
+    room.addPerson(karn);
+    room.addPerson(marvin);
     File file = new File(Constants.getMudfilepath() + File.separator + "Karn.log");
     PrintWriter writer = new PrintWriter(file);
     writer.close();

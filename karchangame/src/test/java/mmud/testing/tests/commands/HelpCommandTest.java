@@ -18,13 +18,11 @@ package mmud.testing.tests.commands;
 
 import java.io.File;
 import java.io.PrintWriter;
-import java.util.HashSet;
 
 import mmud.Constants;
 import mmud.commands.CommandRunner;
 import mmud.commands.HelpCommand;
 import mmud.database.entities.characters.Administrator;
-import mmud.database.entities.characters.Person;
 import mmud.database.entities.characters.User;
 import mmud.database.entities.game.DisplayInterface;
 import mmud.database.entities.game.Help;
@@ -169,10 +167,8 @@ public class HelpCommandTest extends MudTest
     marvin = TestingConstants.getMarvin(room);
     CommunicationService.getCommunicationService(karn).clearLog();
     CommunicationService.getCommunicationService(marvin).clearLog();
-    HashSet<Person> persons = new HashSet<>();
-    persons.add(karn);
-    persons.add(marvin);
-    setField(Room.class, "persons", room, persons);
+    room.addPerson(karn);
+    room.addPerson(marvin);
     File file = new File(Constants.getMudfilepath() + File.separator + "Karn.log");
     PrintWriter writer = new PrintWriter(file);
     writer.close();

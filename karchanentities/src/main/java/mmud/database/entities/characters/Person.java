@@ -25,6 +25,7 @@ import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import com.google.common.annotations.VisibleForTesting;
 import jakarta.persistence.Basic;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
@@ -636,15 +637,22 @@ abstract public class Person implements Serializable, AttributeWrangler, Display
   }
 
   /**
-   * @see #getCopper()
    * @return Integer with the amount of coppers
+   * @see #getCopper()
    */
   public Integer getMoney()
   {
     return getCopper();
   }
 
-  protected void setCopper(Integer copper)
+  /**
+   * Do not use this method ... ever!
+   * Used for testing and for inside this class itself.
+   *
+   * @param copper amount of copper of a person
+   */
+  @VisibleForTesting
+  public void setCopper(Integer copper)
   {
     this.copper = copper;
   }

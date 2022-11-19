@@ -19,14 +19,12 @@ package mmud.testing.tests.commands.guild;
 import java.io.File;
 import java.io.PrintWriter;
 import java.util.Comparator;
-import java.util.HashSet;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
 import mmud.Constants;
 import mmud.commands.CommandRunner;
 import mmud.commands.guild.RankAssignCommand;
-import mmud.database.entities.characters.Person;
 import mmud.database.entities.characters.User;
 import mmud.database.entities.game.DisplayInterface;
 import mmud.database.entities.game.Guild;
@@ -237,10 +235,8 @@ public class RankAssignCommandTest extends MudTest
     writer = new PrintWriter(file);
     writer.close();
 
-    HashSet<Person> persons = new HashSet<>();
-    persons.add(karn);
-    persons.add(marvin);
-    setField(Room.class, "persons", room1, persons);
+    room1.addPerson(karn);
+    room1.addPerson(marvin);
 
   }
 

@@ -18,12 +18,10 @@ package mmud.testing.tests.commands.guild;
 
 import java.io.File;
 import java.io.PrintWriter;
-import java.util.HashSet;
 
 import mmud.Constants;
 import mmud.commands.CommandRunner;
 import mmud.commands.guild.CreateGuildCommand;
-import mmud.database.entities.characters.Person;
 import mmud.database.entities.characters.User;
 import mmud.database.entities.game.DisplayInterface;
 import mmud.database.entities.game.Guild;
@@ -37,7 +35,6 @@ import org.testng.annotations.Test;
 import static org.assertj.core.api.Assertions.assertThat;
 
 /**
- *
  * @author maartenl
  */
 public class CreateGuildCommandTest extends MudTest
@@ -116,9 +113,7 @@ public class CreateGuildCommandTest extends MudTest
     PrintWriter writer = new PrintWriter(file);
     writer.close();
 
-    HashSet<Person> persons = new HashSet<>();
-    persons.add(karn);
-    setField(Room.class, "persons", room1, persons);
+    room1.addPerson(karn);
 
   }
 }

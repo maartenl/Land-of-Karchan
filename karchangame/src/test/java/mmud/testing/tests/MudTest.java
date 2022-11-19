@@ -16,42 +16,17 @@
  */
 package mmud.testing.tests;
 
-import java.lang.reflect.Field;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
 import mmud.database.entities.characters.Person;
 import mmud.services.CommunicationService;
 
 /**
  * @author maartenl
  */
-public class MudTest
+abstract public class MudTest
 {
 
-  /**
-   * Sets the field 'fieldname' in object 'object' to the value 'value'. Where 'object' is an object
-   * of class 'targetClass'.
-   *
-   * @param <T>
-   * @param targetClass
-   * @param fieldName
-   * @param object
-   * @param value
-   */
-  public <T> void setField(Class<T> targetClass, String fieldName, Object object, Object value) {
-    try {
-      Field field = targetClass.getDeclaredField(fieldName);
-      field.setAccessible(true);
-      field.set(object, value);
-    }
-    catch (IllegalArgumentException | IllegalAccessException | NoSuchFieldException | SecurityException ex) {
-      Logger.getLogger(MudTest.class.getName()).log(Level.SEVERE, null, ex);
-      throw new RuntimeException(ex);
-    }
-  }
-
-  public String getLog(Person person) {
+  public String getLog(Person person)
+  {
     return CommunicationService.getCommunicationService(person).getLog(0);
   }
 
