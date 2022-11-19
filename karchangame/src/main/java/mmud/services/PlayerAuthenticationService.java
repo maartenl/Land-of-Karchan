@@ -1,13 +1,19 @@
 package mmud.services;
 
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 import com.google.common.annotations.VisibleForTesting;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.ws.rs.WebApplicationException;
 import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.core.SecurityContext;
 import mmud.database.entities.characters.User;
 import mmud.exceptions.MudWebException;
+import mmud.rest.services.GameRestService;
 
 public class PlayerAuthenticationService
 {
@@ -98,6 +104,29 @@ public class PlayerAuthenticationService
       throw new MudWebException(null, "Not logged in.", Response.Status.UNAUTHORIZED);
     }
     return name;
+  }
+
+  public void logoff(HttpServletRequest requestContext)
+  {
+    // nasty work-around for Catalina AuthenticatorBase to be able to
+    // change/create the session cookie
+    requestContext.getSession();
+    try
+    {
+      requestContext.logout();
+    } catch (ServletException ex)
+    {
+      if (ex.getCause() != null)
+      {
+        Logger.getLogger(GameRestService.class.getName()).log(Level.SEVERE, null, ex.getCause());
+      }
+      if (ex.getMessage().equals("Logout failed"))
+      {
+        throw new WebApplicationException(ex, Response.Status.UNAUTHORIZED);
+      }
+      Logger.getLogger(GameRestService.class.getName()).log(Level.SEVERE, null, ex);
+      throw new WebApplicationException(ex, Response.Status.INTERNAL_SERVER_ERROR);
+    }
   }
 
   @VisibleForTesting

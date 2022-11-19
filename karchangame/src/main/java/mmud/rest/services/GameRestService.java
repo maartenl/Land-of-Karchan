@@ -534,25 +534,7 @@ public class GameRestService
   public void logoff(@Context HttpServletRequest requestContext)
   {
     LOGGER.finer("entering logoff");
-    // nasty work-around for Catalina AuthenticatorBase to be able to
-    // change/create the session cookie
-    requestContext.getSession();
-    try
-    {
-      requestContext.logout();
-    } catch (ServletException ex)
-    {
-      if (ex.getCause() != null)
-      {
-        Logger.getLogger(GameRestService.class.getName()).log(Level.SEVERE, null, ex.getCause());
-      }
-      if (ex.getMessage().equals("Logout failed"))
-      {
-        throw new WebApplicationException(ex, Response.Status.UNAUTHORIZED);
-      }
-      Logger.getLogger(GameRestService.class.getName()).log(Level.SEVERE, null, ex);
-      throw new WebApplicationException(ex, Response.Status.INTERNAL_SERVER_ERROR);
-    }
+    playerAuthenticationService.logoff(requestContext);
   }
 
   /**

@@ -98,9 +98,6 @@ public class PrivateRestService
   @Inject
   private PublicService publicService;
 
-  @Inject
-  private GameRestService gameRestService;
-
   @Context
   private SecurityContext context;
 
@@ -648,7 +645,7 @@ public class PrivateRestService
     deleteMailsReceivedQuery.setParameter("person", person);
     LOGGER.log(Level.FINER, "deleting {0} mudmails received", deleteMailsReceivedQuery.executeUpdate());
     em.remove(person);
-    gameRestService.logoff(requestContext);
+    playerAuthenticationService.logoff(requestContext);
     LOGGER.finer("exiting deletePerson");
     return createResponse();
   }
