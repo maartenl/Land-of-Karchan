@@ -36,6 +36,7 @@ import jakarta.ws.rs.Path;
 import jakarta.ws.rs.PathParam;
 import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.core.Context;
+import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.core.SecurityContext;
 import jakarta.ws.rs.core.UriInfo;
@@ -69,7 +70,7 @@ public class WorldattributesRestService
   @POST
   @Consumes(
     {
-      "application/json"
+      MediaType.APPLICATION_JSON
     })
   public String create(String json)
   {
@@ -98,7 +99,7 @@ public class WorldattributesRestService
   @Path("{id}")
   @Consumes(
     {
-      "application/json"
+      MediaType.APPLICATION_JSON
     })
   public void edit(@PathParam("id") String id, String json)
   {
@@ -141,7 +142,7 @@ public class WorldattributesRestService
   @Path("{id}")
   @Produces(
     {
-      "application/json"
+      MediaType.APPLICATION_JSON
     })
   public String find(@PathParam("id") String id)
   {
@@ -157,7 +158,7 @@ public class WorldattributesRestService
   @GET
   @Produces(
     {
-      "application/json"
+      MediaType.APPLICATION_JSON
     })
   public Response findAll(@Context UriInfo info)
   {
@@ -168,7 +169,7 @@ public class WorldattributesRestService
   @Path("{offset}/{pageSize}")
   @Produces(
     {
-      "application/json"
+      MediaType.APPLICATION_JSON
     })
   public String findRange(@Context UriInfo info, @PathParam("offset") Integer offset,
                           @PathParam("pageSize") Integer pageSize)

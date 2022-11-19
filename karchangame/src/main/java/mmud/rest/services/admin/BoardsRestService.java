@@ -37,6 +37,7 @@ import jakarta.ws.rs.Path;
 import jakarta.ws.rs.PathParam;
 import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.core.Context;
+import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.core.SecurityContext;
 import jakarta.ws.rs.core.UriInfo;
@@ -73,7 +74,7 @@ public class BoardsRestService
   @POST
   @Consumes(
     {
-      "application/json"
+      MediaType.APPLICATION_JSON
     })
   public Long create(String json)
   {
@@ -111,7 +112,7 @@ public class BoardsRestService
   @Path("{id}")
   @Consumes(
     {
-      "application/json"
+      MediaType.APPLICATION_JSON
     })
   public void edit(@PathParam("id") Long id, String json)
   {
@@ -165,7 +166,7 @@ public class BoardsRestService
   @Path("{id}")
   @Produces(
     {
-      "application/json"
+      MediaType.APPLICATION_JSON
     })
   public String find(@PathParam("id") Long id)
   {
@@ -183,7 +184,7 @@ public class BoardsRestService
   @Path("{id}/messages")
   @Produces(
     {
-      "application/json"
+      MediaType.APPLICATION_JSON
     })
   public String findRecentMessages(@PathParam("id") Long id)
   {
@@ -204,7 +205,7 @@ public class BoardsRestService
   @Path("{id}/messages/{messageid}")
   @Produces(
     {
-      "application/json"
+      MediaType.APPLICATION_JSON
     })
   public void editMessage(@PathParam("id") Long id, @PathParam("messageid") Long messageid, String json)
   {
@@ -231,7 +232,7 @@ public class BoardsRestService
   @GET
   @Produces(
     {
-      "application/json"
+      MediaType.APPLICATION_JSON
     })
   public Response findAll(@Context UriInfo info)
   {
@@ -242,7 +243,7 @@ public class BoardsRestService
   @Path("{offset}/{pageSize}")
   @Produces(
     {
-      "application/json"
+      MediaType.APPLICATION_JSON
     })
   public String findRange(@Context UriInfo info, @PathParam("offset") Integer offset,
                           @PathParam("pageSize") Integer pageSize)

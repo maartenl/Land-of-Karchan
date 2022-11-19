@@ -38,6 +38,7 @@ import jakarta.ws.rs.Path;
 import jakarta.ws.rs.PathParam;
 import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.core.Context;
+import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.core.SecurityContext;
 import jakarta.ws.rs.core.UriInfo;
@@ -80,7 +81,7 @@ public class RoomsRestService
   @POST
   @Consumes(
     {
-      "application/json"
+      MediaType.APPLICATION_JSON
     })
 
   public Long create(String json)
@@ -157,7 +158,7 @@ public class RoomsRestService
   @Path("{id}")
   @Consumes(
     {
-      "application/json"
+      MediaType.APPLICATION_JSON
     })
 
   public void edit(@PathParam("id") Long id, String json)
@@ -257,7 +258,7 @@ public class RoomsRestService
   @Path("{id}")
   @Produces(
     {
-      "application/json"
+      MediaType.APPLICATION_JSON
     })
   public String find(@PathParam("id") Long id)
   {
@@ -274,7 +275,7 @@ public class RoomsRestService
   @Path("{id}/commands")
   @Produces(
     {
-      "application/json"
+      MediaType.APPLICATION_JSON
     })
 
   public String getCommands(@PathParam("id") Long id)
@@ -288,7 +289,7 @@ public class RoomsRestService
   @GET
   @Produces(
     {
-      "application/json"
+      MediaType.APPLICATION_JSON
     })
 
   public Response findAll(@Context UriInfo info)
@@ -319,7 +320,7 @@ public class RoomsRestService
   @Path("{offset}/{pageSize}")
   @Produces(
     {
-      "application/json"
+      MediaType.APPLICATION_JSON
     })
 
   public String findRange(@Context UriInfo info, @PathParam("offset") Integer offset,

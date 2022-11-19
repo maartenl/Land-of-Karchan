@@ -37,6 +37,7 @@ import jakarta.ws.rs.Path;
 import jakarta.ws.rs.PathParam;
 import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.core.Context;
+import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.core.SecurityContext;
 import mmud.database.entities.game.Admin;
@@ -81,11 +82,11 @@ public class BlogsRestService
   @POST
   @Consumes(
     {
-      "application/json"
+      MediaType.APPLICATION_JSON
     })
   @Produces(
     {
-      "application/json"
+      MediaType.APPLICATION_JSON
     })
   public AdminBlog create(AdminBlog blog)
   {
@@ -110,7 +111,7 @@ public class BlogsRestService
   @Path("{id}")
   @Consumes(
     {
-      "application/json"
+      MediaType.APPLICATION_JSON
     })
   public void edit(@PathParam("id") Long id, AdminBlog blog)
   {
@@ -151,7 +152,7 @@ public class BlogsRestService
   @Path("{id}")
   @Produces(
     {
-      "application/json"
+      MediaType.APPLICATION_JSON
     })
   public AdminBlog find(@PathParam("id") Long id)
   {
@@ -173,7 +174,7 @@ public class BlogsRestService
   @GET
   @Produces(
     {
-      "application/json"
+      MediaType.APPLICATION_JSON
     })
   public List<AdminBlog> findAll()
   {

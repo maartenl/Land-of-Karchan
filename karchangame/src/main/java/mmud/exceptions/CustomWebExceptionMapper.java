@@ -16,6 +16,7 @@
  */
 package mmud.exceptions;
 
+import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.ext.ExceptionMapper;
 import jakarta.ws.rs.ext.Provider;
@@ -32,8 +33,8 @@ public class CustomWebExceptionMapper implements ExceptionMapper<MudWebException
   public Response toResponse(MudWebException arg0)
   {
     return Response.status(arg0.getStatus()).entity(
-            new ErrorDetails(arg0.getName(), arg0.getFriendlyMessage())
-            ).type("application/json").build();
+      new ErrorDetails(arg0.getName(), arg0.getFriendlyMessage())
+    ).type(MediaType.APPLICATION_JSON).build();
     // text/plain
   }
 

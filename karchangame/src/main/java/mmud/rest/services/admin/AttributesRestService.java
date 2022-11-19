@@ -38,6 +38,7 @@ import jakarta.ws.rs.Path;
 import jakarta.ws.rs.PathParam;
 import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.core.Context;
+import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.core.SecurityContext;
 import mmud.database.entities.characters.Person;
@@ -74,7 +75,7 @@ public class AttributesRestService
   @Path("byType/{type}/{objectid}")
   @Consumes(
     {
-      "application/json"
+      MediaType.APPLICATION_JSON
     })
   public void edit(@PathParam("type") String type, @PathParam("objectid") String objectid, String json)
   {
@@ -137,7 +138,7 @@ public class AttributesRestService
   @Path("byId/{type}/{id}")
   @Consumes(
     {
-      "application/json"
+      MediaType.APPLICATION_JSON
     })
   public void remove(@PathParam("type") String type, @PathParam("id") Long id)
   {
@@ -164,7 +165,7 @@ public class AttributesRestService
   @Path("byName/{name}")
   @Consumes(
     {
-      "application/json"
+      MediaType.APPLICATION_JSON
     })
   public void remove(@PathParam("name") String name)
   {
@@ -179,7 +180,7 @@ public class AttributesRestService
   @Path("byType/{type}/{objectid}")
   @Produces(
     {
-      "application/json"
+      MediaType.APPLICATION_JSON
     })
   public String find(@PathParam("type") String type, @PathParam("objectid") String objectid)
   {
@@ -206,7 +207,7 @@ public class AttributesRestService
   @Path("byName/{name}")
   @Produces(
     {
-      "application/json"
+      MediaType.APPLICATION_JSON
     })
   public String find(@PathParam("name") String name)
   {

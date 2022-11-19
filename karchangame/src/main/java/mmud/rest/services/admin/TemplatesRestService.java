@@ -35,6 +35,7 @@ import jakarta.ws.rs.Path;
 import jakarta.ws.rs.PathParam;
 import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.core.Context;
+import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.core.SecurityContext;
 import mmud.database.entities.game.Admin;
@@ -71,7 +72,7 @@ public class TemplatesRestService
   @Path("{id}")
   @Consumes(
     {
-      "application/json"
+      MediaType.APPLICATION_JSON
     })
   public void edit(@PathParam("id") Long id, AdminTemplate template)
   {
@@ -101,7 +102,7 @@ public class TemplatesRestService
   @Path("{id}")
   @Produces(
     {
-      "application/json"
+      MediaType.APPLICATION_JSON
     })
   public AdminTemplate find(@PathParam("id") Long id)
   {
@@ -117,7 +118,7 @@ public class TemplatesRestService
   @GET
   @Produces(
     {
-      "application/json"
+      MediaType.APPLICATION_JSON
     })
   public List<AdminTemplate> findAll()
   {

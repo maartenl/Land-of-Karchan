@@ -33,6 +33,7 @@ import jakarta.ws.rs.Path;
 import jakarta.ws.rs.PathParam;
 import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.core.Context;
+import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.core.SecurityContext;
 import jakarta.ws.rs.core.UriInfo;
@@ -72,7 +73,7 @@ public class BanRestService
   @Path("bannedips")
   @Produces(
     {
-      "application/json"
+      MediaType.APPLICATION_JSON
     })
   public Response findAllBannedIPS(@Context UriInfo info)
   {
@@ -83,7 +84,7 @@ public class BanRestService
   @Path("bannednames")
   @Produces(
     {
-      "application/json"
+      MediaType.APPLICATION_JSON
     })
   public Response findAllBannedNames(@Context UriInfo info)
   {
@@ -94,7 +95,7 @@ public class BanRestService
   @Path("sillynames")
   @Produces(
     {
-      "application/json"
+      MediaType.APPLICATION_JSON
     })
   public Response findAllSillyNames(@Context UriInfo info)
   {
@@ -105,7 +106,7 @@ public class BanRestService
   @Path("unbannednames")
   @Produces(
     {
-      "application/json"
+      MediaType.APPLICATION_JSON
     })
   public Response findAllUnbannedNames(@Context UriInfo info)
   {
@@ -115,7 +116,7 @@ public class BanRestService
   @POST
   @Consumes(
     {
-      "application/json"
+      MediaType.APPLICATION_JSON
     })
   @Path("bannedips")
   public void createBannedIP(String json)
@@ -146,7 +147,7 @@ public class BanRestService
   @POST
   @Consumes(
     {
-      "application/json"
+      MediaType.APPLICATION_JSON
     })
   @Path("bannednames")
   public void createBannedName(String json)
@@ -174,7 +175,7 @@ public class BanRestService
   @POST
   @Consumes(
     {
-      "application/json"
+      MediaType.APPLICATION_JSON
     })
   @Path("sillynames")
   public void createSillyName(String json)
@@ -198,7 +199,7 @@ public class BanRestService
   @POST
   @Consumes(
     {
-      "application/json"
+      MediaType.APPLICATION_JSON
     })
   @Path("unbannednames")
   public void createUnbannedName(String json)
