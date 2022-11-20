@@ -45,8 +45,8 @@ public class ItemRunScriptTest extends RunScriptTest
     public void runAddItemToPerson() throws IllegalAccessException, InstantiationException, InvocationTargetException
     {
         String command = "create signature";
-        RunScript runScript = new RunScript(persons, rooms, items, world);
-        StringBuilder sourceCode = new StringBuilder();
+      RunScript runScript = new RunScript(persons, rooms, items, world, null);
+      StringBuilder sourceCode = new StringBuilder();
         sourceCode.append("function command(person, command) {");
         sourceCode.append("person.sendMessage('%SNAME writes his name in big flowing letters on a piece of paper.');");
         sourceCode.append("var newitem = items.createItem(4);");
@@ -70,9 +70,9 @@ public class ItemRunScriptTest extends RunScriptTest
     @Test
     public void runAddItemToRoom() throws IllegalAccessException, InstantiationException, InvocationTargetException
     {
-        String command = "create signature";
-        RunScript runScript = new RunScript(persons, rooms, items, world);
-        StringBuilder sourceCode = new StringBuilder();
+      String command = "create signature";
+      RunScript runScript = new RunScript(persons, rooms, items, world, null);
+      StringBuilder sourceCode = new StringBuilder();
         sourceCode.append("function command(person, command) {");
         sourceCode.append("person.sendMessage('%SNAME writes his name in big flowing letters on a piece of paper.');");
       sourceCode.append("var newitem = items.createItem(4);");
@@ -96,9 +96,9 @@ public class ItemRunScriptTest extends RunScriptTest
     @Test
     public void runAddItemToBag() throws IllegalAccessException, InstantiationException, InvocationTargetException
     {
-        String command = "create signature";
-        RunScript runScript = new RunScript(persons, rooms, items, world);
-        StringBuilder sourceCode = new StringBuilder();
+      String command = "create signature";
+      RunScript runScript = new RunScript(persons, rooms, items, world, null);
+      StringBuilder sourceCode = new StringBuilder();
         sourceCode.append("function command(person, command) {");
         sourceCode.append("person.sendMessage('%SNAME writes his name in big flowing letters on a piece of paper.');");
         sourceCode.append("var bag = items.createItem(1);");

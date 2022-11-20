@@ -100,19 +100,19 @@ public class EventsService
         return attributeService.getAttribute(name);
       }
     });
-    RunScript runScript = new RunScript(persons, rooms, items, world);
+    RunScript runScript = new RunScript(persons, rooms, items, world, logService);
     Method method = event.getMethod();
     try
     {
       if (event.getRoom() != null)
       {
-        boolean result = runScript.run(event.getRoom(), method.getSrc());
+        runScript.run(event.getRoom(), method.getSrc());
       } else if (event.getPerson() != null)
       {
-        boolean result = runScript.run(event.getPerson(), method.getSrc());
+        runScript.run(event.getPerson(), method.getSrc());
       } else
       {
-        boolean result = runScript.run(method.getSrc());
+        runScript.run(method.getSrc());
       }
     } catch (InvocationTargetException | InstantiationException | IllegalAccessException | ScriptException |
              NoSuchMethodException ex)

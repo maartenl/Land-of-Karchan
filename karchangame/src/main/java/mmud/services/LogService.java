@@ -16,8 +16,6 @@
  */
 package mmud.services;
 
-import java.io.ByteArrayOutputStream;
-import java.io.PrintStream;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -28,6 +26,7 @@ import javax.annotation.Nullable;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import jakarta.persistence.TypedQuery;
+import jakarta.transaction.Transactional;
 import jakarta.validation.ConstraintViolationException;
 import jakarta.ws.rs.core.Response;
 import mmud.database.entities.characters.Person;
@@ -237,16 +236,24 @@ public class LogService
    * @param person    the person to be inscribed in the log table. May be null.
    * @param throwable the exception or error to be written to the log table.
    */
+  @Transactional(Transactional.TxType.REQUIRES_NEW)
   public void writeLogException(Person person, Throwable throwable)
   {
     LOGGER.finer("writeLogException");
+    createLogWithPerson(person, throwable.toString(), org.apache.commons.lang3.exception.ExceptionUtils.getStackTrace(throwable));
+  }
 
-    ByteArrayOutputStream myStream = new ByteArrayOutputStream();
-    try (PrintStream myPrintStream = new PrintStream(myStream))
-    {
-      throwable.printStackTrace(myPrintStream);
-    }
-    createLogWithPerson(person, throwable.toString(), myStream.toString());
+  /**
+   * write a log message of an exception to the database.
+   *
+   * @param person    the person to be inscribed in the log table. May be null.
+   * @param throwable the exception or error to be written to the log table.
+   */
+  @Transactional(Transactional.TxType.REQUIRES_NEW)
+  public void writeLogException(Person person, String message, Throwable throwable)
+  {
+    LOGGER.finer("writeLogException");
+    createLogWithPerson(person, message, throwable.toString() + ":" + org.apache.commons.lang3.exception.ExceptionUtils.getStackTrace(throwable));
   }
 
   /**
@@ -254,15 +261,23 @@ public class LogService
    *
    * @param throwable the exception or error to be written to the log table.
    */
+  @Transactional(Transactional.TxType.REQUIRES_NEW)
+  public void writeLogException(String message, Throwable throwable)
+  {
+    LOGGER.finer("writeLogException");
+    createLogWithString(null, message, throwable.toString() + ":" + org.apache.commons.lang3.exception.ExceptionUtils.getStackTrace(throwable));
+  }
+
+  /**
+   * write a log message of an exception to the database.
+   *
+   * @param throwable the exception or error to be written to the log table.
+   */
+  @Transactional(Transactional.TxType.REQUIRES_NEW)
   public void writeLogException(Throwable throwable)
   {
     LOGGER.finer("writeLogException");
-    ByteArrayOutputStream myStream = new ByteArrayOutputStream();
-    try (PrintStream myPrintStream = new PrintStream(myStream))
-    {
-      throwable.printStackTrace(myPrintStream);
-    }
-    createLogWithString(null, throwable.toString(), myStream.toString());
+    createLogWithString(null, throwable.toString(), org.apache.commons.lang3.exception.ExceptionUtils.getStackTrace(throwable));
   }
 
   /**

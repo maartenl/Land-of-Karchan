@@ -40,31 +40,27 @@ import org.testng.annotations.BeforeClass;
 import org.testng.annotations.BeforeMethod;
 
 /**
- *
  * @author maartenl
  */
-public class RunScriptTest
+abstract public class RunScriptTest
 {
 
-    protected Persons persons;
-    protected Rooms rooms;
-    protected Items items;
-    protected World world;
-    private RoomsInterface roomsInterface;
-    private ItemsInterface itemsInterface;
-    private WorldInterface worldInterface;
+  protected Persons persons;
+  protected Rooms rooms;
+  protected Items items;
+  protected World world;
 
-    public static class RoomStub extends Room
+  public static class RoomStub extends Room
+  {
+
+    private final Set<Person> persons = new HashSet<>();
+
+    public void addPerson(Person person)
     {
+      persons.add(person);
+    }
 
-        private final Set<Person> persons = new HashSet<>();
-
-        public void addPerson(Person person)
-        {
-            persons.add(person);
-        }
-
-        public boolean removePerson(Person person)
+    public boolean removePerson(Person person)
         {
             return persons.remove(person);
         }
@@ -170,69 +166,69 @@ public class RunScriptTest
             {
                 if ("Hotblack".equalsIgnoreCase(name))
                 {
-                    return hotblack;
+                  return hotblack;
                 }
-                if ("Marvin".equalsIgnoreCase(name))
-                {
-                    return marvin;
-                }
-                return null;
+              if ("Marvin".equalsIgnoreCase(name))
+              {
+                return marvin;
+              }
+              return null;
             }
         };
-        roomsInterface = new RoomsInterface()
-        {
+      RoomsInterface roomsInterface = new RoomsInterface()
+      {
 
-            @Override
-            public Room find(Long id)
-            {
-                if (id == null)
-                {
-                    return null;
-                }
-                if (id == 1L)
-                {
-                    return room;
-                }
-                if (id == 2L)
-                {
-                    return room2;
-                }
-                if (id == 3L)
-                {
-                    return room3;
-                }
-                return null;
-            }
-        };
-        itemsInterface = new ItemsInterface()
+        @Override
+        public Room find(Long id)
         {
+          if (id == null)
+          {
+            return null;
+          }
+          if (id == 1L)
+          {
+            return room;
+          }
+          if (id == 2L)
+          {
+            return room2;
+          }
+          if (id == 3L)
+          {
+            return room3;
+          }
+          return null;
+        }
+      };
+      ItemsInterface itemsInterface = new ItemsInterface()
+      {
 
-            @Override
-            public Item createItem(long itemdefnr)
-            {
-                ItemDefinition itemDefinition = new ItemDefinition();
-                itemDefinition.setId(itemdefnr);
-                if (itemdefnr == 1)
-                {
-                    itemDefinition.setContainer(true);
-                }
-                Item item = new NormalItem(itemDefinition);
-                return item;
-            }
-        };
-        worldInterface = new WorldInterface()
+        @Override
+        public Item createItem(long itemdefnr)
         {
+          ItemDefinition itemDefinition = new ItemDefinition();
+          itemDefinition.setId(itemdefnr);
+          if (itemdefnr == 1)
+          {
+            itemDefinition.setContainer(true);
+          }
+          Item item = new NormalItem(itemDefinition);
+          return item;
+        }
+      };
+      WorldInterface worldInterface = new WorldInterface()
+      {
 
-            @Override
-            public String getAttribute(String name)
-            {
-                return null;
-            }
-        };
-        persons = new Persons(personsInterface);
-        rooms = new Rooms(roomsInterface);
-        items = new Items(itemsInterface);
-        world = new World(worldInterface);
+        @Override
+        public String getAttribute(String name)
+        {
+          return null;
+        }
+      };
+      persons = new Persons(personsInterface);
+      rooms = new Rooms(roomsInterface);
+      items = new Items(itemsInterface);
+      world = new World(worldInterface);
     }
 
     @AfterMethod

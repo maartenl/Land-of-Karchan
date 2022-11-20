@@ -119,7 +119,7 @@ public class CommandRunner
       Rooms rooms = new Rooms(id -> roomsService.find(id));
       Items items = new Items(itemdefnr -> itemService.createItem(itemdefnr));
       World world = new World(name -> attributeService.getAttribute(name));
-      RunScript runScript = new RunScript(persons, rooms, items, world);
+      RunScript runScript = new RunScript(persons, rooms, items, world, getLogService());
       for (UserCommand myCom : userCommands)
       {
         ScriptCommand scriptCommand = new ScriptCommand(myCom, runScript);

@@ -75,6 +75,7 @@ public class ScriptCommand extends NormalCommand
         {
             final String logMessage = "Error executing method " + theUserCommand.getId() + " because of command " + command + " by user " + aUser.getName();
             Logger.getLogger(ScriptCommand.class.getName()).log(Level.SEVERE, logMessage, ex);
+          getLogService().writeLogException(aUser, logMessage, ex);
             // TODO: this should be removed, but only after testing is completed.
             // because it is a pain to have to re-activate deactivated functions that bombed.
             // (better yet, set a method to "testing")

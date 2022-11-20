@@ -84,12 +84,11 @@ public class EventsRestService
   private AttributeService attributeService;
   @Inject
   private EventsService eventsService;
-
+  @Inject
+  private LogService logService;
   @Inject
   private IdleUsersService idleUsersService;
 
-  @Inject
-  private LogService logService;
   @PersistenceContext(unitName = "karchangamePU")
   private EntityManager em;
 
@@ -179,7 +178,7 @@ public class EventsRestService
         return attributeService.getAttribute(name);
       }
     });
-    RunScript runScript = new RunScript(persons, rooms, items, world);
+    RunScript runScript = new RunScript(persons, rooms, items, world, logService);
     for (Event event : list)
     {
       // LOGGER.log(Level.INFO, "Event {0} executed.", event.getEventid());
@@ -196,8 +195,9 @@ public class EventsRestService
           // TODO: that's for debugging,...
           // event.setCallable(Boolean.FALSE);
           // log it but keep going with the next event.
-          logService.writeLogException(ex);
-          LOGGER.throwing(EventsRestService.class.getName(), String.format("events(room=%d, method=%s)", event.getRoom().getId(), method.getName()), ex);
+          String logMessage = String.format("events(room=%d, method=%s)", event.getRoom().getId(), method.getName());
+          logService.writeLogException(logMessage, ex);
+          LOGGER.throwing(EventsRestService.class.getName(), logMessage, ex);
         }
       } else if (event.getPerson() != null)
       {
@@ -210,8 +210,9 @@ public class EventsRestService
           // TODO: that's for debugging,...
           // event.setCallable(Boolean.FALSE);
           // log it but keep going with the next event.
-          logService.writeLogException(ex);
-          LOGGER.throwing(EventsRestService.class.getName(), String.format("events(person=%s, method=%s)", event.getPerson().getName(), method.getName()), ex);
+          String logMessage = String.format("events(person=%s, method=%s)", event.getPerson().getName(), method.getName());
+          logService.writeLogException(logMessage, ex);
+          LOGGER.throwing(EventsRestService.class.getName(), logMessage, ex);
         }
       } else
       {
@@ -224,8 +225,9 @@ public class EventsRestService
           // TODO: that's for debugging,...
           // event.setCallable(Boolean.FALSE);
           // log it but keep going with the next event.
-          logService.writeLogException(ex);
-          LOGGER.throwing(EventsRestService.class.getName(), String.format("events(method=%s)", method.getName()), ex);
+          String logMessage = String.format("events(method=%s)", method.getName());
+          logService.writeLogException(logMessage, ex);
+          LOGGER.throwing(EventsRestService.class.getName(), logMessage, ex);
         }
       }
     }

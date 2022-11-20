@@ -41,8 +41,8 @@ public class RoomEventRunScriptTest extends RunScriptTest
     @Test
     public void runRoomEventEmptySource() throws IllegalAccessException, InstantiationException, InvocationTargetException
     {
-        RunScript runScript = new RunScript(persons, rooms, items, world);
-        StringBuilder sourceCode = new StringBuilder();
+        RunScript runScript = new RunScript(persons, rooms, items, world, null);
+      StringBuilder sourceCode = new StringBuilder();
         try
         {
             Object result = runScript.run(room, sourceCode.toString());
@@ -60,8 +60,8 @@ public class RoomEventRunScriptTest extends RunScriptTest
     @Test
     public void runRoomEvent() throws IllegalAccessException, InstantiationException, InvocationTargetException
     {
-        RunScript runScript = new RunScript(persons, rooms, items, world);
-        StringBuilder sourceCode = new StringBuilder();
+      RunScript runScript = new RunScript(persons, rooms, items, world, null);
+      StringBuilder sourceCode = new StringBuilder();
         sourceCode.append("function event(room) {");
         sourceCode.append("return false;");
         sourceCode.append("}");
@@ -78,8 +78,8 @@ public class RoomEventRunScriptTest extends RunScriptTest
     @Test
     public void runRoomEventCommunication() throws IllegalAccessException, InstantiationException, InvocationTargetException
     {
-        RunScript runScript = new RunScript(persons, rooms, items, world);
-        StringBuilder sourceCode = new StringBuilder();
+      RunScript runScript = new RunScript(persons, rooms, items, world, null);
+      StringBuilder sourceCode = new StringBuilder();
         sourceCode.append("function event(room) {");
         sourceCode.append("room.sendMessage('Birds chirp in the trees.');");
         sourceCode.append("room.sendMessage('Hotblack','%SNAME say%VERB: Hello, everyone.');");
@@ -99,8 +99,8 @@ public class RoomEventRunScriptTest extends RunScriptTest
     @Test
     public void runRoomEventAttributes() throws IllegalAccessException, InstantiationException, InvocationTargetException
     {
-        RunScript runScript = new RunScript(persons, rooms, items, world);
-        StringBuilder sourceCode = new StringBuilder();
+      RunScript runScript = new RunScript(persons, rooms, items, world, null);
+      StringBuilder sourceCode = new StringBuilder();
         sourceCode.append("function event(room) {");
         sourceCode.append("room.setAttribute('scripting','true');");
         sourceCode.append("return false;");

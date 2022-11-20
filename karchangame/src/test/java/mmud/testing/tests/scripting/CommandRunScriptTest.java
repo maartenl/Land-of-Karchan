@@ -40,8 +40,8 @@ public class CommandRunScriptTest extends RunScriptTest
     @Test
     public void runCommandEmptySource() throws IllegalAccessException, InstantiationException, InvocationTargetException
     {
-        RunScript runScript = new RunScript(persons, rooms, items, world);
-        StringBuilder sourceCode = new StringBuilder();
+        RunScript runScript = new RunScript(persons, rooms, items, world, null);
+      StringBuilder sourceCode = new StringBuilder();
         try
         {
             Object result = runScript.run(hotblack, "bow", sourceCode.toString());
@@ -59,9 +59,9 @@ public class CommandRunScriptTest extends RunScriptTest
     @Test
     public void runCommand() throws IllegalAccessException, InstantiationException, InvocationTargetException
     {
-        String command = "bow";
-        RunScript runScript = new RunScript(persons, rooms, items, world);
-        StringBuilder sourceCode = new StringBuilder();
+      String command = "bow";
+      RunScript runScript = new RunScript(persons, rooms, items, world, null);
+      StringBuilder sourceCode = new StringBuilder();
         sourceCode.append("function command(person, command) {");
         sourceCode.append("person.sendMessage('%SNAME bows, and almost falls down.');");
         sourceCode.append("return;");

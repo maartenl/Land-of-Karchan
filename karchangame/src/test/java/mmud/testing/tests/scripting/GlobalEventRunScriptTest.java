@@ -40,8 +40,8 @@ public class GlobalEventRunScriptTest extends RunScriptTest
     @Test
     public void runGlobalEventEmptySource() throws IllegalAccessException, InstantiationException, InvocationTargetException
     {
-        RunScript runScript = new RunScript(persons, rooms, items, world);
-        StringBuilder sourceCode = new StringBuilder();
+        RunScript runScript = new RunScript(persons, rooms, items, world, null);
+      StringBuilder sourceCode = new StringBuilder();
         try
         {
             Object result = runScript.run(sourceCode.toString());
@@ -59,8 +59,8 @@ public class GlobalEventRunScriptTest extends RunScriptTest
     @Test
     public void runGlobalEvent() throws IllegalAccessException, InstantiationException, InstantiationException, InvocationTargetException
     {
-        RunScript runScript = new RunScript(persons, rooms, items, world);
-        StringBuilder sourceCode = new StringBuilder();
+      RunScript runScript = new RunScript(persons, rooms, items, world, null);
+      StringBuilder sourceCode = new StringBuilder();
         sourceCode.append("function event() {");
         sourceCode.append("return false;");
         sourceCode.append("}");
@@ -77,8 +77,8 @@ public class GlobalEventRunScriptTest extends RunScriptTest
     @Test
     public void runPersonEvent() throws IllegalAccessException, InstantiationException, InvocationTargetException
     {
-        RunScript runScript = new RunScript(persons, rooms, items, world);
-        StringBuilder sourceCode = new StringBuilder();
+      RunScript runScript = new RunScript(persons, rooms, items, world, null);
+      StringBuilder sourceCode = new StringBuilder();
         sourceCode.append("function event() {\n");
         sourceCode.append("var person = persons.find('hotblack');\n");
         sourceCode.append("return false;\n");
@@ -96,8 +96,8 @@ public class GlobalEventRunScriptTest extends RunScriptTest
     @Test
     public void runRoomEvent() throws IllegalAccessException, InstantiationException, InstantiationException, InvocationTargetException
     {
-        RunScript runScript = new RunScript(persons, rooms, items, world);
-        StringBuilder sourceCode = new StringBuilder();
+      RunScript runScript = new RunScript(persons, rooms, items, world, null);
+      StringBuilder sourceCode = new StringBuilder();
         sourceCode.append("function event() {");
         sourceCode.append("var room = rooms.find(1);");
         sourceCode.append("return false;");

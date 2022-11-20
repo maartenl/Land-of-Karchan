@@ -41,8 +41,8 @@ public class PersonEventRunScriptTest extends RunScriptTest
     @Test
     public void runPersonEventEmptySource() throws IllegalAccessException, InstantiationException, InvocationTargetException
     {
-        RunScript runScript = new RunScript(persons, rooms, items, world);
-        StringBuilder sourceCode = new StringBuilder();
+        RunScript runScript = new RunScript(persons, rooms, items, world, null);
+      StringBuilder sourceCode = new StringBuilder();
         try
         {
             Object result = runScript.run(hotblack, sourceCode.toString());
@@ -60,8 +60,8 @@ public class PersonEventRunScriptTest extends RunScriptTest
     @Test
     public void runPersonEvent() throws IllegalAccessException, InstantiationException, InvocationTargetException
     {
-        RunScript runScript = new RunScript(persons, rooms, items, world);
-        StringBuilder sourceCode = new StringBuilder();
+      RunScript runScript = new RunScript(persons, rooms, items, world, null);
+      StringBuilder sourceCode = new StringBuilder();
         sourceCode.append("function event(person) {");
         sourceCode.append("return false;");
         sourceCode.append("}");
@@ -78,8 +78,8 @@ public class PersonEventRunScriptTest extends RunScriptTest
     @Test
     public void runPersonEventCommunication() throws IllegalAccessException, InstantiationException, InvocationTargetException
     {
-        RunScript runScript = new RunScript(persons, rooms, items, world);
-        StringBuilder sourceCode = new StringBuilder();
+      RunScript runScript = new RunScript(persons, rooms, items, world, null);
+      StringBuilder sourceCode = new StringBuilder();
         sourceCode.append("function event(person) {");
         sourceCode.append("person.personal('My name is ' + person.name + '.');");
         sourceCode.append("person.sendMessage('%SNAME say%VERB: Hello, everyone.');");
@@ -98,8 +98,8 @@ public class PersonEventRunScriptTest extends RunScriptTest
     @Test
     public void runPersonEventAttributes() throws IllegalAccessException, InstantiationException, InvocationTargetException
     {
-        RunScript runScript = new RunScript(persons, rooms, items, world);
-        StringBuilder sourceCode = new StringBuilder();
+      RunScript runScript = new RunScript(persons, rooms, items, world, null);
+      StringBuilder sourceCode = new StringBuilder();
         sourceCode.append("function event(person) {");
         sourceCode.append("person.setAttribute('scripting','true');");
         sourceCode.append("return false;");

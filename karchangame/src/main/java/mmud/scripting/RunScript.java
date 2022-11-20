@@ -31,6 +31,7 @@ import javax.script.ScriptException;
 import mmud.database.entities.game.DisplayInterface;
 import mmud.exceptions.MudException;
 import mmud.scripting.entities.Room;
+import mmud.services.LogService;
 
 /**
  * Can run javascript source code. The methods call specific javascript
@@ -51,7 +52,9 @@ public class RunScript
 
   private final World world;
 
-  public RunScript(Persons persons, Rooms rooms, Items items, World world)
+  private final LogService logService;
+
+  public RunScript(Persons persons, Rooms rooms, Items items, World world, LogService logService)
   {
     if (persons == null)
     {
@@ -69,6 +72,7 @@ public class RunScript
     this.rooms = rooms;
     this.world = world;
     this.items = items;
+    this.logService = logService;
   }
 
   /**
@@ -102,6 +106,7 @@ public class RunScript
             return (String) inv.invokeMethod(result, "getTitle");
           } catch (ScriptException | NoSuchMethodException ex)
           {
+            logService.writeLogException("run(" + person.getName() + ", " + command + "): getTitle", ex);
             throw new MudException(ex);
           }
         }
@@ -114,6 +119,7 @@ public class RunScript
             return (String) inv.invokeMethod(result, "getImage");
           } catch (ScriptException | NoSuchMethodException ex)
           {
+            logService.writeLogException("run(" + person.getName() + ", " + command + "): getImage", ex);
             throw new MudException(ex);
           }
         }
@@ -126,6 +132,7 @@ public class RunScript
             return (String) inv.invokeMethod(result, "getBody");
           } catch (ScriptException | NoSuchMethodException ex)
           {
+            logService.writeLogException("run(" + person.getName() + ", " + command + "): getBody", ex);
             throw new MudException(ex);
           }
         }
