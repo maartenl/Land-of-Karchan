@@ -16,6 +16,7 @@
  */
 package mmud.database.entities.items;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.Collection;
@@ -30,7 +31,6 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.Lob;
 import jakarta.persistence.ManyToOne;
-import jakarta.persistence.NamedQueries;
 import jakarta.persistence.NamedQuery;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
@@ -53,16 +53,14 @@ import mmud.database.enums.Wielding;
  */
 @Entity
 @Table(name = "mm_items")
-@NamedQueries(
-  {
-    @NamedQuery(name = "ItemDefinition.findAll", query = "SELECT i FROM ItemDefinition i"),
-    @NamedQuery(name = "ItemDefinition.findById", query = "SELECT i FROM ItemDefinition i WHERE i.id = :id"),
-    @NamedQuery(name = "ItemDefinition.maxid", query = "SELECT max(i.id) FROM ItemDefinition i"),
-    @NamedQuery(name = "ItemDefinition.countAll", query = "SELECT count(i) FROM ItemDefinition i")
-  })
+@NamedQuery(name = "ItemDefinition.findAll", query = "SELECT i FROM ItemDefinition i")
+@NamedQuery(name = "ItemDefinition.findById", query = "SELECT i FROM ItemDefinition i WHERE i.id = :id")
+@NamedQuery(name = "ItemDefinition.maxid", query = "SELECT max(i.id) FROM ItemDefinition i")
+@NamedQuery(name = "ItemDefinition.countAll", query = "SELECT count(i) FROM ItemDefinition i")
 public class ItemDefinition implements Serializable, Ownage
 {
 
+  @Serial
   private static final long serialVersionUID = 1L;
 
   @Id
@@ -338,7 +336,7 @@ public class ItemDefinition implements Serializable, Ownage
 
   public boolean getLightable()
   {
-    return lightable == null ? false : lightable;
+    return lightable != null && lightable;
   }
 
   public void setLightable(boolean lightable)
@@ -353,7 +351,7 @@ public class ItemDefinition implements Serializable, Ownage
    */
   public Boolean getGetable()
   {
-    if (getId() < 0)
+    if (getId() != null && getId() < 0)
     {
       return false;
     }
@@ -362,7 +360,7 @@ public class ItemDefinition implements Serializable, Ownage
 
   public void setGetable(Boolean getable)
   {
-    if (getId() < 0)
+    if (getId() != null && getId() < 0)
     {
       this.getable = 0;
       return;
@@ -403,7 +401,7 @@ public class ItemDefinition implements Serializable, Ownage
    */
   public Boolean getDropable()
   {
-    if (getId() < 0)
+    if (getId() != null && getId() < 0)
     {
       return false;
     }
@@ -416,7 +414,7 @@ public class ItemDefinition implements Serializable, Ownage
 
   public void setDropable(Boolean dropable)
   {
-    if (getId() < 0)
+    if (getId() != null && getId() < 0)
     {
       this.dropable = 0;
       return;
@@ -694,16 +692,11 @@ public class ItemDefinition implements Serializable, Ownage
   public boolean equals(Object object)
   {
     // TODO: Warning - this method won't work in the case the id fields are not set
-    if (!(object instanceof ItemDefinition))
+    if (!(object instanceof ItemDefinition other))
     {
       return false;
     }
-    ItemDefinition other = (ItemDefinition) object;
-    if ((this.id == null && other.id != null) || (this.id != null && !this.id.equals(other.id)))
-    {
-      return false;
-    }
-    return true;
+    return (this.id != null || other.id == null) && (this.id == null || this.id.equals(other.id));
   }
 
   @Override
@@ -778,14 +771,13 @@ public class ItemDefinition implements Serializable, Ownage
   }
 
   /**
-   * Creates an item with this itemdefinition.
+   * Creates a normal item with this itemdefinition.
    *
-   * @return
+   * @return the created item, based on this itemdefinition.
    */
   public NormalItem createItem()
   {
-    NormalItem item = new NormalItem(this);
-    return item;
+    return new NormalItem(this);
   }
 
   /**
@@ -801,7 +793,7 @@ public class ItemDefinition implements Serializable, Ownage
    * Indicates the type of item. Two values are currently available
    * 0, which is normal, and 1 which is a shop.
    *
-   * @return
+   * @return number indicating the discriminator.
    */
   public Integer getDiscriminator()
   {

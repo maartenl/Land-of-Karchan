@@ -44,6 +44,7 @@ import mmud.database.entities.items.ItemDefinition;
 import mmud.exceptions.MudWebException;
 import mmud.rest.webentities.admin.AdminItem;
 import mmud.services.LogService;
+import org.apache.commons.lang3.StringUtils;
 
 /**
  * @author maartenl
@@ -78,6 +79,7 @@ public class ItemsRestService
     Admin admin = getEntityManager().find(Admin.class, name);
 
     ItemDefinition item = new ItemDefinition();
+    item.setId(adminItem.id);
     item.setName(adminItem.name);
     item.setAdjectives(adminItem.adjectives);
 //    item.setManaincrease(adminItem.manaincrease);
@@ -86,16 +88,16 @@ public class ItemsRestService
 //    item.setMovementincrease(adminItem.movementincrease);
 //    item.setPasdefense(adminItem.pasdefense);
 //    item.setDamageresistance(adminItem.damageresistance);
-    item.setEatable(adminItem.eatable);
-    item.setDrinkable(adminItem.drinkable);
+    item.setEatable(StringUtils.stripToNull(adminItem.eatable));
+    item.setDrinkable(StringUtils.stripToNull(adminItem.drinkable));
     item.setLightable(adminItem.lightable);
     item.setGetable(adminItem.getable);
     item.setDropable(adminItem.dropable);
     item.setVisible(adminItem.visible);
     item.setDescription(adminItem.description);
-    item.setReaddescription(adminItem.readdescr);
-    item.setWieldable(adminItem.wieldable);
-    item.setWearable(adminItem.wearable);
+    item.setReaddescription(StringUtils.stripToNull(adminItem.readdescr));
+    item.setWieldable(StringUtils.stripToNull(adminItem.wieldable));
+    item.setWearable(StringUtils.stripToNull(adminItem.wearable));
     item.setCopper(adminItem.copper);
     item.setWeight(adminItem.weight);
     item.setContainer(adminItem.container);
@@ -111,9 +113,9 @@ public class ItemsRestService
       item.setKey(key);
     }
     item.setContaintype(adminItem.containtype);
-    item.setNotes(adminItem.notes);
-    item.setImage(adminItem.image);
-    item.setTitle(adminItem.title);
+    item.setNotes(StringUtils.stripToNull(adminItem.notes));
+    item.setImage(StringUtils.stripToNull(adminItem.image));
+    item.setTitle(StringUtils.stripToNull(adminItem.title));
     item.setDiscriminator(adminItem.discriminator);
     item.setBound(adminItem.bound);
     item.setCreation(LocalDateTime.now());
@@ -152,28 +154,28 @@ public class ItemsRestService
 //    item.setMovementincrease(adminItem.movementincrease);
 //    item.setPasdefense(adminItem.pasdefense);
 //    item.setDamageresistance(adminItem.damageresistance);
-    item.setEatable(adminItem.eatable);
-    item.setDrinkable(adminItem.drinkable);
+    item.setEatable(StringUtils.stripToNull(adminItem.eatable));
+    item.setDrinkable(StringUtils.stripToNull(adminItem.drinkable));
     item.setLightable(adminItem.lightable);
     item.setGetable(adminItem.getable);
     item.setDropable(adminItem.dropable);
     item.setVisible(adminItem.visible);
     try
     {
-      item.setWearable(adminItem.wearable);
+      item.setWearable(StringUtils.stripToNull(adminItem.wearable));
     } catch (IllegalArgumentException e)
     {
       throw new MudWebException(name, "Wearable " + adminItem.wearable + " not proper.", Response.Status.BAD_REQUEST);
     }
     try
     {
-      item.setWieldable(adminItem.wieldable);
+      item.setWieldable(StringUtils.stripToNull(adminItem.wieldable));
     } catch (IllegalArgumentException e)
     {
       throw new MudWebException(name, "Wieldable " + adminItem.wieldable + " not proper.", Response.Status.BAD_REQUEST);
     }
     item.setDescription(adminItem.description);
-    item.setReaddescription(adminItem.readdescr);
+    item.setReaddescription(StringUtils.stripToNull(adminItem.readdescr));
     item.setCopper(adminItem.copper);
     item.setWeight(adminItem.weight);
     item.setContainer(adminItem.container);
@@ -189,9 +191,9 @@ public class ItemsRestService
       item.setKey(key);
     }
     item.setContaintype(adminItem.containtype);
-    item.setNotes(adminItem.notes);
-    item.setImage(adminItem.image);
-    item.setTitle(adminItem.title);
+    item.setNotes(StringUtils.stripToNull(adminItem.notes));
+    item.setImage(StringUtils.stripToNull(adminItem.image));
+    item.setTitle(StringUtils.stripToNull(adminItem.title));
     if (adminItem.bound != null)
     {
       item.setBound(adminItem.bound);

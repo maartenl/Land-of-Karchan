@@ -209,11 +209,10 @@ export class ItemsComponent extends AdminComponent<Item, number> implements OnIn
 
     // return new `Item` object containing a combination of original blog value(s)
     // and deep copies of changed form model values
-    const id = this.item === undefined || this.item === null ? null : this.item.id;
     const creation = this.item === undefined || this.item === null  ? null : this.item.creation;
     const owner = this.item === undefined || this.item === null ? null : this.item.owner;
     const saveItem: Item = new Item({
-      id,
+      id: formModel.id as number,
       adjectives: formModel.adjectives as string,
       name: formModel.name as string,
       room: formModel.room as number,
@@ -242,7 +241,6 @@ export class ItemsComponent extends AdminComponent<Item, number> implements OnIn
       creation,
       owner: formModel.owner as string
     });
-    console.log(saveItem);
     return saveItem;
   }
 
