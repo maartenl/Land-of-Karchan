@@ -69,9 +69,7 @@ public class ChatCommand extends NormalCommand
     getPersonService().getActivePlayers().stream()
       .filter(x -> x.hasChatLine(chatlinename))
       .forEach(aTarget ->
-      {
-        CommunicationService.getCommunicationService(aUser).writeMessage(aTarget, chatmessage);
-      });
+        CommunicationService.getCommunicationService(aTarget).writeMessage(aUser, chatmessage));
     return aUser.getRoom();
   }
 

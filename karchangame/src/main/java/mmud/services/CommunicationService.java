@@ -31,8 +31,11 @@ public interface CommunicationService
 {
 
   /**
-   * Returns the communication service, based on a person.
-   * @param person the person to base the communication on.
+   * Returns the communication service, based on a person. What this means is, that the person
+   * provided is the one receiving the messages.
+   *
+   * @param person the person to base the communication on. What this means is, that the person
+   *               provided is the one receiving the messages.
    * @return the service
    */
   static PersonCommunicationService getCommunicationService(Person person)
@@ -41,8 +44,11 @@ public interface CommunicationService
   }
 
   /**
-   * Returns the communication service, based on a person.
-   * @param person the person to base the communication on.
+   * Returns the communication service, based on a person. What this means is, that the person
+   * provided is the one receiving the messages.
+   *
+   * @param person the person to base the communication on. What this means is, that the person
+   *               provided is the one receiving the messages.
    * @return the service
    */
   @VisibleForTesting

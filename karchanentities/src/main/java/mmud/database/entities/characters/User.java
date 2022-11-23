@@ -34,7 +34,6 @@ import jakarta.persistence.JoinColumns;
 import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
-import jakarta.persistence.NamedQueries;
 import jakarta.persistence.NamedQuery;
 import jakarta.persistence.OneToMany;
 import jakarta.validation.constraints.Size;
@@ -59,15 +58,12 @@ import org.apache.commons.lang3.StringUtils;
  */
 @Entity
 @DiscriminatorValue("0")
-@NamedQueries(
-  {
-    @NamedQuery(name = "User.findByName", query = "SELECT p FROM User p WHERE lower(p.name) = lower(:name)"),
-    @NamedQuery(name = "User.findActiveByName", query = "SELECT p FROM User p WHERE lower(p.name) = lower(:name) and p.active=1"),
-    @NamedQuery(name = "User.fortunes", query = "SELECT p.name, p.copper FROM Person p WHERE p.god = 0 ORDER by p.copper DESC, p.name ASC"),
-    @NamedQuery(name = "User.who", query = "SELECT p FROM User p WHERE p.god <=1 and p.active=1 "),
-    @NamedQuery(name = "User.status", query = "select p from Person p, Admin a WHERE a.name = p.name AND a.validuntil > CURRENT_DATE"),
-    @NamedQuery(name = "User.everybodymail", query = "select p from User p where p.lastlogin > :olddate")
-  })
+@NamedQuery(name = "User.findByName", query = "SELECT p FROM User p WHERE lower(p.name) = lower(:name)")
+@NamedQuery(name = "User.findActiveByName", query = "SELECT p FROM User p WHERE lower(p.name) = lower(:name) and p.active=1")
+@NamedQuery(name = "User.fortunes", query = "SELECT p.name, p.copper FROM Person p WHERE p.god = 0 ORDER by p.copper DESC, p.name ASC")
+@NamedQuery(name = "User.who", query = "SELECT p FROM User p WHERE p.god <=1 and p.active=1 ")
+@NamedQuery(name = "User.status", query = "select p from Person p, Admin a WHERE a.name = p.name AND a.validuntil > CURRENT_DATE")
+@NamedQuery(name = "User.everybodymail", query = "select p from User p where p.lastlogin > :olddate")
 public class User extends Person
 {
 
@@ -158,7 +154,7 @@ public class User extends Person
   private Set<Macro> macroCollection;
 
   @OneToMany(cascade = CascadeType.ALL, mappedBy = "user", orphanRemoval = true)
-  private Set<Chatlineusers> chatlines;
+  private Set<Chatlineusers> chatlines = new HashSet<>();
 
   /**
    * The list of people that you are ignoring.
@@ -262,11 +258,14 @@ public class User extends Person
 
   /**
    * Verifies if the password is the correct one.
+   *
    * @param newpassword the password to verify
    * @return true if it's the same, false if it is empty or does not match.
    */
-  public boolean verifyPassword(String newpassword) {
-    if (StringUtils.isBlank(newpassword)) {
+  public boolean verifyPassword(String newpassword)
+  {
+    if (StringUtils.isBlank(newpassword))
+    {
       return false;
     }
     return getNewpassword().equals(new HexEncoder(128).encrypt(newpassword, Hash.SHA_512));
@@ -738,7 +737,7 @@ public class User extends Person
       return false;
     }
     boolean result = ignoringSet.remove(aUser);
-    if (result == false)
+    if (!result)
     {
       return false;
     }
@@ -809,7 +808,7 @@ public class User extends Person
         stuff.append("You are a member of <b>").append(getGuild().getTitle()).append("</b>.<br/>");
       }
     }
-    return super.getStatistics() + stuff.toString();
+    return super.getStatistics() + stuff;
   }
 
   @Override
@@ -930,7 +929,7 @@ public class User extends Person
 
   public boolean getOoc()
   {
-    return ooc == null ? false : ooc;
+    return ooc != null && ooc;
   }
 
   public void setOoc(boolean b)
