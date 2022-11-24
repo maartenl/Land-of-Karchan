@@ -40,7 +40,6 @@ import jakarta.persistence.InheritanceType;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.Lob;
 import jakarta.persistence.ManyToOne;
-import jakarta.persistence.NamedQueries;
 import jakarta.persistence.NamedQuery;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
@@ -80,15 +79,12 @@ import mmud.exceptions.MudException;
 @Entity
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 @DiscriminatorColumn(
-        name = "god",
-        discriminatorType = DiscriminatorType.INTEGER)
+  name = "god",
+  discriminatorType = DiscriminatorType.INTEGER)
 @Table(name = "mm_usertable")
-@NamedQueries(
-        {
-          @NamedQuery(name = "Person.findAll", query = "SELECT p FROM Person p"),
-          @NamedQuery(name = "Person.findByName", query = "SELECT p FROM Person p WHERE lower(p.name) = lower(:name)"),
-          @NamedQuery(name = "Person.countAll", query = "SELECT count(p) FROM Person p"),
-        })
+@NamedQuery(name = "Person.findAll", query = "SELECT p FROM Person p")
+@NamedQuery(name = "Person.findByName", query = "SELECT p FROM Person p WHERE lower(p.name) = lower(:name)")
+@NamedQuery(name = "Person.countAll", query = "SELECT count(p) FROM Person p")
 abstract public class Person implements Serializable, AttributeWrangler, DisplayInterface, ItemWrangler, Ownage
 {
 
@@ -401,6 +397,7 @@ abstract public class Person implements Serializable, AttributeWrangler, Display
     this.notes = null;
     this.state = null;
   }
+
   public static final int MAX_VITALS = 11999;
 
   /**
@@ -778,7 +775,7 @@ abstract public class Person implements Serializable, AttributeWrangler, Display
 
   /**
    * @param fightable Indicates if this person can be fought with by other
-   * persons/users/players.
+   *                  persons/users/players.
    * @see #getFightable()
    */
   public void setFightable(Boolean fightable)
@@ -1123,7 +1120,7 @@ abstract public class Person implements Serializable, AttributeWrangler, Display
    * sets the state/condition of the character.
    *
    * @param state String containing the description of the current condition of
-   * the character.
+   *              the character.
    */
   public void setState(String state)
   {
@@ -1236,7 +1233,7 @@ abstract public class Person implements Serializable, AttributeWrangler, Display
     // stuff.replaceAll("%SHISHER", "your");
     StringBuilder stuff = new StringBuilder();
     String whimpy = (getWimpy() == null ? "You are not whimpy at all.<BR>"
-            : "You will flee when you are " + getWimpy().getDescription() + ".<BR>");
+      : "You will flee when you are " + getWimpy().getDescription() + ".<BR>");
     String state = getState() == null ? "" : "Your condition is \"" + getState() + "\"<br/>";
     stuff.append("A ").append(getLongDescription()).append(".<BR>You seem to be ").append(Health.getHealth(getVitals()).getDescription()).append(".<BR>You are ").append(Movement.getMovement(getMovementstats()).getDescription()).append(".<BR>").append(Sobriety.getSobriety(getDrinkstats()).getDescription()).append("<br />").append(Appetite.getAppetite(getEatstats()).getDescription()).append("<br />" + "You are ").append(Alignment.getAlignment(alignment).getDescription()).append(".<BR>" + "You are level ").append(getLevel()).append(" and ").append(1000 - getExperience()).append(" experience points away from levelling.<BR>").append(whimpy);
     stuff.append(state);
@@ -1293,12 +1290,12 @@ abstract public class Person implements Serializable, AttributeWrangler, Display
   {
     if (attributes == null)
     {
-      LOGGER.finer("getCharattribute name=" + name + " collection is null");
+      LOGGER.finer(() -> "getCharattribute name=" + name + " collection is null");
       return null;
     }
     for (Charattribute attr : attributes)
     {
-      LOGGER.finer("getCharattribute name=" + name + " attr=" + attr);
+      LOGGER.finer(() -> "getCharattribute name=" + name + " attr=" + attr);
       if (attr.getName().equals(name))
       {
         return attr;
@@ -1335,23 +1332,23 @@ abstract public class Person implements Serializable, AttributeWrangler, Display
     if (attr == null)
     {
       LOGGER.log(Level.FINER, "verifyAttribute (name={0}, value={1}) not found on user {2}.", new Object[]
-      {
-        name, value, getName()
-      });
+        {
+          name, value, getName()
+        });
       return false;
     }
     if (attr.getValue().equals(value))
     {
       LOGGER.log(Level.FINER, "verifyAttribute (name={0}, value={1}) matches on user {2}!", new Object[]
-      {
-        name, value, getName()
-      });
+        {
+          name, value, getName()
+        });
       return true;
     }
     LOGGER.log(Level.FINER, "verifyAttribute (name={0}, value={1}) with (name={2}, value={3}) no match on user {4}.", new Object[]
-    {
-      name, value, attr.getName(), attr.getValue(), getName()
-    });
+      {
+        name, value, attr.getName(), attr.getValue(), getName()
+      });
     return false;
   }
 
@@ -1379,97 +1376,97 @@ abstract public class Person implements Serializable, AttributeWrangler, Display
     if (getWieldleft() != null)
     {
       builder.append("%SHESHE %SISARE wielding ").append(getWieldleft().getDescription())
-              .append(" in %SHISHER left hand.<br/>\r\n");
+        .append(" in %SHISHER left hand.<br/>\r\n");
     }
     if (getWieldright() != null)
     {
       builder.append("%SHESHE %SISARE wielding ").append(getWieldright().getDescription())
-              .append(" in %SHISHER right hand.<br/>\r\n");
+        .append(" in %SHISHER right hand.<br/>\r\n");
     }
     if (getWieldboth() != null)
     {
       builder.append("%SHESHE %SISARE wielding ").append(getWieldboth().getDescription())
-              .append(" in both hands.<br/>\r\n");
+        .append(" in both hands.<br/>\r\n");
     }
     if (getWearhead() != null)
     {
       builder.append("%SHESHE %SISARE wearing ").append(getWearhead().getDescription())
-              .append(" on %SHISHER head.<br/>\r\n");
+        .append(" on %SHISHER head.<br/>\r\n");
     }
     if (getWearneck() != null)
     {
       builder.append("%SHESHE %SISARE wearing ").append(getWearneck().getDescription())
-              .append(" on %SHISHER neck.<br/>\r\n");
+        .append(" on %SHISHER neck.<br/>\r\n");
     }
     if (getWeartorso() != null)
     {
       builder.append("%SHESHE %SISARE wearing ").append(getWeartorso().getDescription())
-              .append(" on %SHISHER torso.<br/>\r\n");
+        .append(" on %SHISHER torso.<br/>\r\n");
     }
     if (getWeararms() != null)
     {
       builder.append("%SHESHE %SISARE wearing ").append(getWeararms().getDescription())
-              .append(" on %SHISHER arms.<br/>\r\n");
+        .append(" on %SHISHER arms.<br/>\r\n");
     }
     if (getWearleftwrist() != null)
     {
       builder.append("%SHESHE %SISARE wearing ").append(getWearleftwrist().getDescription())
-              .append(" on %SHISHER left wrist.<br/>\r\n");
+        .append(" on %SHISHER left wrist.<br/>\r\n");
     }
     if (getWearrightwrist() != null)
     {
       builder.append("%SHESHE %SISARE wearing ").append(getWearrightwrist().getDescription())
-              .append(" on %SHISHER right wrist.<br/>\r\n");
+        .append(" on %SHISHER right wrist.<br/>\r\n");
     }
     if (getWearleftfinger() != null)
     {
       builder.append("%SHESHE %SISARE wearing ").append(getWearleftfinger().getDescription())
-              .append(" on %SHISHER left finger.<br/>\r\n");
+        .append(" on %SHISHER left finger.<br/>\r\n");
     }
     if (getWearrightfinger() != null)
     {
       builder.append("%SHESHE %SISARE wearing ").append(getWearrightfinger().getDescription())
-              .append(" on %SHISHER right finger.<br/>\r\n");
+        .append(" on %SHISHER right finger.<br/>\r\n");
     }
     if (getWearfeet() != null)
     {
       builder.append("%SHESHE %SISARE wearing ").append(getWearfeet().getDescription())
-              .append(" on %SHISHER feet.<br/>\r\n");
+        .append(" on %SHISHER feet.<br/>\r\n");
     }
     if (getWearhands() != null)
     {
       builder.append("%SHESHE %SISARE wearing ").append(getWearhands().getDescription())
-              .append(" on %SHISHER hands.<br/>\r\n");
+        .append(" on %SHISHER hands.<br/>\r\n");
     }
     if (getWearfloatingnearby() != null)
     {
       builder.append(getWearfloatingnearby().getDescription())
-              .append(" is floating nearby.<br/>\r\n");
+        .append(" is floating nearby.<br/>\r\n");
     }
     if (getWearwaist() != null)
     {
       builder.append("%SHESHE %SISARE wearing ").append(getWearwaist().getDescription())
-              .append(" around %SHISHER waist.<br/>\r\n");
+        .append(" around %SHISHER waist.<br/>\r\n");
     }
     if (getWearlegs() != null)
     {
       builder.append("%SHESHE %SISARE wearing ").append(getWearlegs().getDescription())
-              .append(" on %SHISHER legs.<br/>\r\n");
+        .append(" on %SHISHER legs.<br/>\r\n");
     }
     if (getWeareyes() != null)
     {
       builder.append("%SHESHE %SISARE wearing ").append(getWeareyes().getDescription())
-              .append(" %SHISHER.<br/>\r\n");
+        .append(" %SHISHER.<br/>\r\n");
     }
     if (getWearears() != null)
     {
       builder.append("%SHESHE %SISARE wearing ").append(getWearears().getDescription())
-              .append(" in %SHISHER ears.<br/>\r\n");
+        .append(" in %SHISHER ears.<br/>\r\n");
     }
     if (getWearaboutbody() != null)
     {
       builder.append("%SHESHE %SISARE wearing ").append(getWearaboutbody().getDescription())
-              .append(" about %SHISHER body.<br/>\r\n");
+        .append(" about %SHISHER body.<br/>\r\n");
     }
 
     return builder.toString();
@@ -1498,7 +1495,7 @@ abstract public class Person implements Serializable, AttributeWrangler, Display
    * provided by the user.
    *
    * @param parsed the parsed description of the item as given by the user, for
-   * example {"light-green", "leather", "pants"}.
+   *               example {"light-green", "leather", "pants"}.
    * @return list of found items, empty if not found.
    */
   @Override
@@ -1833,7 +1830,7 @@ abstract public class Person implements Serializable, AttributeWrangler, Display
   {
     if (position == null)
     {
-      throw new RuntimeException("You cannot wear an item on null");
+      throw new MudException("You cannot wear an item on null");
     }
     switch (position)
     {
@@ -1870,14 +1867,14 @@ abstract public class Person implements Serializable, AttributeWrangler, Display
       case ON_WAIST:
         return getWearwaist();
     }
-    throw new RuntimeException("You cannot wear an item on " + position);
+    throw new MudException("You cannot wear an item on " + position);
   }
 
   /**
    * Indicates if an item is being worn,
    *
    * @param item the item to check, if null provided it will never be worn,
-   * obviously.
+   *             obviously.
    * @return true if the item is being worn, false otherwise.
    */
   public boolean isWearing(Item item)
@@ -1887,30 +1884,29 @@ abstract public class Person implements Serializable, AttributeWrangler, Display
       return false;
     }
     return item == getWearaboutbody()
-            || item == getWearfloatingnearby()
-            || item == getWeararms()
-            || item == getWearears()
-            || item == getWeareyes()
-            || item == getWearfeet()
-            || item == getWearhands()
-            || item == getWearhead()
-            || item == getWearleftfinger()
-            || item == getWearleftwrist()
-            || item == getWearlegs()
-            || item == getWearneck()
-            || item == getWearrightfinger()
-            || item == getWearrightwrist()
-            || item == getWeartorso()
-            || item == getWearwaist();
+      || item == getWearfloatingnearby()
+      || item == getWeararms()
+      || item == getWearears()
+      || item == getWeareyes()
+      || item == getWearfeet()
+      || item == getWearhands()
+      || item == getWearhead()
+      || item == getWearleftfinger()
+      || item == getWearleftwrist()
+      || item == getWearlegs()
+      || item == getWearneck()
+      || item == getWearrightfinger()
+      || item == getWearrightwrist()
+      || item == getWeartorso()
+      || item == getWearwaist();
   }
 
   /**
    * Makes you wear an item at a specific position
    *
-   * @param item the item to be worn. In case this is null, it means an item
-   * that used to be worn at this position will be removed.
+   * @param item     the item to be worn. In case this is null, it means an item
+   *                 that used to be worn at this position will be removed.
    * @param position the position on which the item is to be worn
-   *
    */
   public void wear(Item item, Wearing position)
   {
@@ -1989,7 +1985,7 @@ abstract public class Person implements Serializable, AttributeWrangler, Display
   {
     if (position == null)
     {
-      throw new RuntimeException("You cannot wield an item on null");
+      throw new MudException("You cannot wield an item on null");
     }
     switch (position)
     {
@@ -2000,14 +1996,14 @@ abstract public class Person implements Serializable, AttributeWrangler, Display
       case WIELD_LEFT:
         return getWieldleft();
     }
-    throw new RuntimeException("You cannot wield an item on " + position);
+    throw new MudException("You cannot wield an item on " + position);
   }
 
   /**
    * Indicates if an item is being wielded,
    *
    * @param item the item to check, if null provided it will never be wielded,
-   * obviously.
+   *             obviously.
    * @return true if the item is being wielded, false otherwise.
    */
   public boolean isWielding(Item item)
@@ -2017,18 +2013,17 @@ abstract public class Person implements Serializable, AttributeWrangler, Display
       return false;
     }
     return item == getWieldboth()
-            || item == getWieldleft()
-            || item == getWieldright();
+      || item == getWieldleft()
+      || item == getWieldright();
   }
 
   /**
    * Makes you wield an item at a specific position
    *
-   * @param item the item to be wielded. In case this is null, it means an item
-   * that used to be wielded at this position will be removed.
+   * @param item     the item to be wielded. In case this is null, it means an item
+   *                 that used to be wielded at this position will be removed.
    * @param position the position on which the item is to be wielded, lefthand,
-   * righthand or with both hands.
-   *
+   *                 righthand or with both hands.
    */
   public void wield(Item item, Wielding position)
   {
@@ -2120,9 +2115,9 @@ abstract public class Person implements Serializable, AttributeWrangler, Display
    * Transfers money from one person (this one) to another.
    *
    * @param newamount the amount of copper (base currency to move)
-   * @param target the target that is to receive said money
+   * @param target    the target that is to receive said money
    * @throws MoneyException if the money amount is illegal, or the person simply
-   * does not have that much money.
+   *                        does not have that much money.
    */
   public void transferMoney(Integer newamount, Person target) throws MoneyException
   {
@@ -2153,7 +2148,7 @@ abstract public class Person implements Serializable, AttributeWrangler, Display
    *
    * @return
    */
-  abstract public boolean canReceive();
+  public abstract boolean canReceive();
 
   public void give(Item item, Person toperson)
   {

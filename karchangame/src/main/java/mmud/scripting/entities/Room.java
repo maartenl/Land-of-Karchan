@@ -23,6 +23,7 @@ import java.util.logging.Logger;
 
 import mmud.database.entities.characters.Person;
 import mmud.exceptions.PersonNotFoundException;
+import mmud.scripting.Items;
 import mmud.services.CommunicationService;
 
 /**
@@ -250,7 +251,6 @@ public class Room
       LOGGER.exiting(this.getClass().getName(), "getItems " + result.size());
         return result.toArray(new Item[result.size()]);
     }
-//Item addItem(integer)
 
     /**
      * For setting the room on a person (without exposing stuff).
@@ -274,11 +274,21 @@ public class Room
      */
     public Item addItem(Item item)
     {
-        mmud.database.entities.items.Item result = room.addItem(item.getItem());
-        if (result == null)
-        {
-            return null;
-        }
-        return new Item(result);
+      mmud.database.entities.items.Item result = room.addItem(item.getItem());
+      if (result == null)
+      {
+        return null;
+      }
+      return new Item(result);
     }
+
+  /**
+   * Actually destroys an item from this room.
+   *
+   * @param item the new item to destroy.
+   */
+  public void removeItem(Item item)
+  {
+    room.destroyItem(item.getItem());
+  }
 }
