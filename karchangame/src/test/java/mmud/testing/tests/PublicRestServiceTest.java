@@ -260,7 +260,7 @@ public class PublicRestServiceTest
     publicRestService.setPersonBean(personService);
 
     // Unit under test is exercised.
-    List<PublicPerson> result = publicRestService.who();
+    List<PublicPerson> result = publicRestService.who(null);
     // Verification code (JUnit/TestNG asserts), if any.
     assertEquals(result.size(), 0);
   }
@@ -294,7 +294,7 @@ public class PublicRestServiceTest
     idleUsersService.resetUser("Hotblack");
     publicRestService.setIdleUsersService(idleUsersService);
     // Unit under test is exercised.
-    List<PublicPerson> result = publicRestService.who();
+    List<PublicPerson> result = publicRestService.who(null);
     // Verification code (JUnit/TestNG asserts), if any.
     assertNotNull(result, "list expected");
     assertEquals(result.size(), 2);

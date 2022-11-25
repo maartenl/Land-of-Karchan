@@ -1,10 +1,11 @@
 package mmud.services.websocket;
 
 import java.io.IOException;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArraySet;
+import java.util.logging.Logger;
 
 import jakarta.websocket.EncodeException;
 import jakarta.websocket.OnClose;
@@ -25,14 +26,18 @@ import mmud.rest.webentities.Message;
   encoders = MessageEncoder.class)
 public class ChatLogEndPoint
 {
+
+  private static final Logger LOGGER = Logger.getLogger(ChatLogEndPoint.class.getName());
+
   private Session session;
   private static final Set<ChatLogEndPoint> chatEndpoints = new CopyOnWriteArraySet<>();
-  private static Map<String, String> users = new HashMap<>();
-//  private static Map<String, String> tokens = new HashMap<>();
+  private static final Map<String, String> users = new ConcurrentHashMap<>();
+  public static boolean internalpong = true;
 
   @OnOpen
   public void onOpen(Session session) throws IOException, EncodeException
   {
+    LOGGER.finest("onOpen " + session);
     String username = session.getUserPrincipal().getName();
     // Get session and WebSocket connection
     this.session = session;
@@ -51,8 +56,17 @@ public class ChatLogEndPoint
   {
     // Handle new messages
     message.from = users.get(session.getId());
-    if ("ping".equals(message.type)) {
+    if ("ping".equals(message.type))
+    {
       send(message.from, new Message(message.from, null, "pong", "pong"));
+      return;
+    }
+    if ("internalping".equals(message.type))
+    {
+      if (internalpong)
+      {
+        send(message.from, new Message(message.from, null, "internalpong", "internalpong"));
+      }
       return;
     }
     broadcast(message);
@@ -61,6 +75,7 @@ public class ChatLogEndPoint
   @OnClose
   public void onClose(Session session) throws IOException, EncodeException
   {
+    LOGGER.finest("onClose " + session);
     String username = session.getUserPrincipal().getName();
     // WebSocket connection closes
     chatEndpoints.remove(this);
@@ -74,6 +89,7 @@ public class ChatLogEndPoint
   @OnError
   public void onError(Session session, Throwable throwable)
   {
+    LOGGER.throwing("ChatLogEndPoint", "onError", throwable);
     // Do error handling here
   }
 

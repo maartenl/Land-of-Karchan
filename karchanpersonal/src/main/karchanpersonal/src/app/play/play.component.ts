@@ -374,7 +374,6 @@ export class PlayComponent implements OnInit {
       return '';
     }
     const log = this.display.log.log.substr(this.display.log.offset);
-    if (window.console) { console.log('log ui:' + log); }
     return log;
   }
 

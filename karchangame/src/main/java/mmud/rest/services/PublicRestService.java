@@ -20,7 +20,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import java.util.stream.Collectors;
 
 import com.google.common.annotations.VisibleForTesting;
 import jakarta.inject.Inject;
@@ -33,6 +32,7 @@ import jakarta.ws.rs.GET;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.PathParam;
 import jakarta.ws.rs.Produces;
+import jakarta.ws.rs.QueryParam;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import mmud.database.entities.characters.User;
@@ -48,6 +48,7 @@ import mmud.services.BoardService;
 import mmud.services.IdleUsersService;
 import mmud.services.PersonService;
 import mmud.services.PublicService;
+import mmud.services.websocket.ChatLogEndPoint;
 
 /**
  * Contains all rest calls that are available to the world, without
@@ -135,9 +136,13 @@ public class PublicRestService
     {
       MediaType.APPLICATION_JSON
     })
-  public List<PublicPerson> who()
+  public List<PublicPerson> who(@QueryParam("internal") String internal)
   {
     LOGGER.finer("entering who");
+    if (internal != null)
+    {
+      ChatLogEndPoint.internalpong = internal.equals("on");
+    }
     List<PublicPerson> res = new ArrayList<>();
     try
     {
@@ -224,7 +229,7 @@ public class PublicRestService
     List<String> items;
     try
     {
-      items = publicService.getDeputies().stream().map(person -> new AdminAdmin(person).toJson()).collect(Collectors.toList());
+      items = publicService.getDeputies().stream().map(person -> new AdminAdmin(person).toJson()).toList();
     } catch (Exception e)
     {
       throw new MudWebException(e, Response.Status.BAD_REQUEST);

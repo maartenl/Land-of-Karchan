@@ -1,6 +1,6 @@
-import { Injectable } from '@angular/core';
-import { webSocket, WebSocketSubject } from 'rxjs/webSocket';
-import { ToastService } from './toast.service';
+import {Injectable} from '@angular/core';
+import {webSocket, WebSocketSubject} from 'rxjs/webSocket';
+import {ToastService} from './toast.service';
 
 export class Message {
   from: string = "";
@@ -8,7 +8,8 @@ export class Message {
   content: string = "";
   type: string = "";
 
-  constructor() { }
+  constructor() {
+  }
 
 }
 
@@ -25,12 +26,26 @@ export class ChatlogService {
 
   private messages: Message[] = [];
 
+  private timeout: number | null = null;
+  private interval: number | null = null;
+
+  private counter: number = 0;
+
   constructor(
     private toastService: ToastService
   ) {
   }
 
   open(username: string) {
+    this.internalopen(username);
+    this.toastService.show('Opening connection...', {
+      delay: 5000,
+      autohide: true,
+      headertext: 'Opening...'
+    });
+  }
+
+  private internalopen(username: string) {
     this.username = username;
     const url = new URL('/karchangame/chat', window.location.href);
     url.protocol = url.protocol.replace('http', 'ws');
@@ -44,13 +59,22 @@ export class ChatlogService {
     this.myWebSocket.subscribe(
       msg => this.receive(msg),
       err => this.error(err),
-      () => this.close()
+      () => this.closingConnection()
     );
-    this.toastService.show('Opening connection...', {
-      delay: 5000,
-      autohide: true,
-      headertext: 'Opening...'
-    });
+    this.setInterval();
+  }
+
+  private setInterval() {
+    const self = this;
+    if (this.interval !== null) {
+      console.log("Clearing internal ping interval " + this.interval);
+      window.clearInterval(this.interval);
+      this.interval = null;
+    }
+    this.interval = window.setInterval(function () {
+      self.internalping(self);
+    }, 30000);
+    console.log("Setting internal ping interval " + this.interval);
   }
 
   ping() {
@@ -59,6 +83,27 @@ export class ChatlogService {
     message.from = this.username;
     message.type = "ping";
     this.send(message);
+  }
+
+  private internalping(chatLogService: ChatlogService) {
+    if (window.console) {
+      console.log(chatLogService.counter + ": sent internal ping");
+    }
+    const message = new Message();
+    message.content = "internalping";
+    message.from = this.username;
+    message.type = "internalping";
+    chatLogService.send(message);
+    const ourselves = this;
+    chatLogService.timeout = window.setTimeout(function () {
+      /// ---did not receive pong in 5 seconds! ///
+      if (window.console) {
+        console.log(chatLogService.counter + ": did not receive internal pong in 5 seconds");
+        chatLogService.counter++;
+      }
+      chatLogService.close();
+      chatLogService.internalopen(chatLogService.username);
+    }, 5000);
   }
 
   reconnect() {
@@ -71,7 +116,17 @@ export class ChatlogService {
    * @param data
    */
   receive(data: Message) {
-    if (window.console) { console.log(data); }
+    if (window.console) {
+      console.log(data);
+    }
+    if (this.timeout !== null) {
+      if (window.console) {
+        console.log("message received - resetting internal ping interval");
+      }
+      window.clearTimeout(this.timeout);
+      this.timeout = null;
+      this.setInterval();
+    }
     if (data.type === "chat") {
       this.messages.push(data);
     }
@@ -87,18 +142,30 @@ export class ChatlogService {
         autohide: true
       });
     }
+    if (data.type === "internalpong") {
+      if (window.console) {
+        console.log((this.counter++) + ": received internal pong");
+      }
+    }
   }
 
   send(data: Message) {
     if (this.myWebSocket !== null) {
       this.myWebSocket.next(data);
-    } 
+    }
+  }
+
+  /**
+   * Closes the websocket.
+   */
+  close() {
+    this.myWebSocket?.unsubscribe();
   }
 
   /**
    * Called when connection is closed (for whatever reason)
    */
-  close() {
+  closingConnection() {
     this.connectionOpen = false;
     this.toastService.show('Closing connection...', {
       delay: 5000,
