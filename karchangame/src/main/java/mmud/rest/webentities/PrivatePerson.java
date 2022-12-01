@@ -16,10 +16,12 @@
  */
 package mmud.rest.webentities;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import jakarta.xml.bind.annotation.XmlRootElement;
 
 /**
- *
  * @author maartenl
  */
 @XmlRootElement
@@ -32,6 +34,10 @@ public class PrivatePerson
   public String dateofbirth;
   public String cityofbirth;
   public String storyline;
+  /**
+   * Description of the player, readonly.
+   */
+  public String description;
   public String password;
   public String password2;
   public String title;
@@ -50,5 +56,12 @@ public class PrivatePerson
   public String race;
   public String sex;
   public String guild;
+  public Boolean websockets;
   public PrivateRank guildrank;
+
+  public List<PublicFamily> familyvalues = new ArrayList<>();
+
+  public PrivatePerson()
+  {
+  }
 }

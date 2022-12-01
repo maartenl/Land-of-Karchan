@@ -16,13 +16,13 @@
  */
 package mmud.services;
 
-import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.RandomAccessFile;
+import java.nio.ByteBuffer;
+import java.util.Arrays;
 import java.util.function.Consumer;
 
 import jakarta.websocket.EncodeException;
@@ -50,11 +50,10 @@ public class PersonCommunicationService implements CommunicationService
 
   private File theLogfile;
 
-  private StringBuffer theLog;
+  private StringBuilder theLog;
 
   /**
-   *
-   * @param person the person the messages get
+   * @param person          the person the messages get
    * @param messageConsumer pure for testing, optional.
    */
   PersonCommunicationService(Person person, Consumer<String> messageConsumer)
@@ -141,20 +140,23 @@ public class PersonCommunicationService implements CommunicationService
       messageConsumer.accept(person.getName() + ":" + aMessage);
     } else
     {
-      try
-      {
-        ChatLogEndPoint.send(person.getName(), new Message(null, person.getName(), aMessage, "chat"));
-      } catch (IOException | EncodeException e)
-      {
-        throw new MudException("error sending message", e);
-      }
       try (FileWriter myFileWriter = new FileWriter(getLogfile(), true))
       {
         myFileWriter.write(aMessage, 0, aMessage.length());
-
       } catch (IOException e)
       {
         throw new MudException("error writing message", e);
+      }
+      long fileLength = getLogfile().length();
+      if (person.getWebsocketSupport())
+      {
+        try
+        {
+          ChatLogEndPoint.send(person.getName(), new Message(person.getName(), aMessage, fileLength));
+        } catch (IOException | EncodeException e)
+        {
+          throw new MudException("error sending message", e);
+        }
       }
     }
   }
@@ -243,30 +245,30 @@ public class PersonCommunicationService implements CommunicationService
     String message = aMessage;
     if (aSource == person)
     {
-      message = message.replaceAll("%SNAMESELF", "yourself");
-      message = message.replaceAll("%SNAME", "you");
-      message = message.replaceAll("%SHISHER", "your");
-      message = message.replaceAll("%SHIMHER", "you");
-      message = message.replaceAll("%SHESHE", "you");
-      message = message.replaceAll("%SISARE", "are");
-      message = message.replaceAll("%SHASHAVE", "have");
-      message = message.replaceAll("%SYOUPOSS", "your");
-      message = message.replaceAll("%VERB1", "");
-      message = message.replaceAll("%VERB2", "");
+      message = message.replace("%SNAMESELF", "yourself");
+      message = message.replace("%SNAME", "you");
+      message = message.replace("%SHISHER", "your");
+      message = message.replace("%SHIMHER", "you");
+      message = message.replace("%SHESHE", "you");
+      message = message.replace("%SISARE", "are");
+      message = message.replace("%SHASHAVE", "have");
+      message = message.replace("%SYOUPOSS", "your");
+      message = message.replace("%VERB1", "");
+      message = message.replace("%VERB2", "");
     } else
     {
-      message = message.replaceAll("%SNAMESELF", aSource.getName());
-      message = message.replaceAll("%SNAME", aSource.getName());
-      message = message.replaceAll("%SHISHER", (aSource.getSex().posession()));
-      message = message.replaceAll("%SHIMHER", (aSource.getSex().indirect()));
-      message = message.replaceAll("%SHESHE", (aSource.getSex().direct()));
-      message = message.replaceAll("%SISARE", "is");
-      message = message.replaceAll("%SHASHAVE", "has");
-      message = message.replaceAll("%SYOUPOSS", aSource.getName() + "s");
-      message = message.replaceAll("%VERB1", "es");
-      message = message.replaceAll("say%VERB2", "says");
-      message = message.replaceAll("y%VERB2", "ies");
-      message = message.replaceAll("%VERB2", "s");
+      message = message.replace("%SNAMESELF", aSource.getName());
+      message = message.replace("%SNAME", aSource.getName());
+      message = message.replace("%SHISHER", (aSource.getSex().posession()));
+      message = message.replace("%SHIMHER", (aSource.getSex().indirect()));
+      message = message.replace("%SHESHE", (aSource.getSex().direct()));
+      message = message.replace("%SISARE", "is");
+      message = message.replace("%SHASHAVE", "has");
+      message = message.replace("%SYOUPOSS", aSource.getName() + "s");
+      message = message.replace("%VERB1", "es");
+      message = message.replace("say%VERB2", "says");
+      message = message.replace("y%VERB2", "ies");
+      message = message.replace("%VERB2", "s");
     }
     writeMessage(message);
   }
@@ -295,21 +297,32 @@ public class PersonCommunicationService implements CommunicationService
     return theLogfile;
   }
 
-  private void readLog() throws MudException
+  private byte[] joinByteArray(byte[] byte1, byte[] byte2)
+  {
+
+    return ByteBuffer.allocate(byte1.length + byte2.length)
+      .put(byte1)
+      .put(byte2)
+      .array();
+
+  }
+
+  private void readLog(long offset) throws MudException
   {
     File file = getLogfile();
-
-    try (BufferedReader reader = new BufferedReader(
-      new FileReader(file)))
+    try (RandomAccessFile readFromFile = new RandomAccessFile(file, "r"))
     {
-      theLog = new StringBuffer(1000);
+      readFromFile.seek(offset);
 
-      char[] buf = new char[1024];
+      byte[] buf = new byte[1024];
+      byte[] totalbuf = new byte[0];
       int numRead;
-      while ((numRead = reader.read(buf)) != -1)
+      while ((numRead = readFromFile.read(buf)) != -1)
       {
-        theLog.append(buf, 0, numRead);
+        byte[] subbuf = Arrays.copyOf(buf, numRead);
+        totalbuf = joinByteArray(totalbuf, subbuf);
       }
+      theLog = new StringBuilder(new String(totalbuf));
     } catch (FileNotFoundException ex)
     {
       try
@@ -335,7 +348,7 @@ public class PersonCommunicationService implements CommunicationService
 
   /**
    * Returns the log starting from the offset, or an empty string if the offset
-   * is past the length of the log.Can also contain the empty string, if the log
+   * is past the length of the log. Can also contain the empty string, if the log
    * happens to be empty.
    *
    * @param offset the offset from whence to read the log. Offset starts with 0
@@ -344,25 +357,25 @@ public class PersonCommunicationService implements CommunicationService
    * @throws MudException in case of accidents with reading the log, or a
    *                      negative offset.
    */
-  public String getLog(Integer offset) throws MudException
+  public String getLog(Long offset) throws MudException
   {
     if (offset == null)
     {
-      offset = 0;
+      offset = 0L;
+    }
+    if (offset < 0L)
+    {
+      throw new MudException("Attempting to get log with negative offset.");
     }
     if (theLog == null)
     {
-      readLog();
+      readLog(offset);
     }
     if (offset >= theLog.length())
     {
       return EMPTY_LOG;
     }
-    if (offset < 0)
-    {
-      throw new MudException("Attempting to get log with negative offset.");
-    }
-    return theLog.substring(offset);
+    return theLog.substring(offset.intValue());
   }
 
   /**

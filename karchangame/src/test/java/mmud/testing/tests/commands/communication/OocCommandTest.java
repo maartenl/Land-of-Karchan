@@ -48,7 +48,7 @@ public class OocCommandTest extends MudTest
 
   private LogServiceStub logService;
 
-  private CommandRunner commandRunner = new CommandRunner();
+  private final CommandRunner commandRunner = new CommandRunner();
 
   private PersonService personService;
 
@@ -68,9 +68,9 @@ public class OocCommandTest extends MudTest
     assertThat(heehawCommand.getRegExpr()).isEqualTo("ooc .+");
     DisplayInterface display = heehawCommand.run("ooc on", marvin);
     assertThat(display).isNotNull();
-    String log = CommunicationService.getCommunicationService(marvin).getLog(0);
+    String log = CommunicationService.getCommunicationService(marvin).getLog(0L);
     assertThat(log).isEqualTo("Your OOC channel is now turned on.<br />\r\n");
-    assertThat(marvin.getOoc()).isEqualTo(true);
+    assertThat(marvin.getOoc()).isTrue();
   }
 
   /**
@@ -86,9 +86,9 @@ public class OocCommandTest extends MudTest
     assertThat(heehawCommand.getRegExpr()).isEqualTo("ooc .+");
     DisplayInterface display = heehawCommand.run("ooc off", marvin);
     assertThat(display).isNotNull();
-    String log = CommunicationService.getCommunicationService(marvin).getLog(0);
+    String log = CommunicationService.getCommunicationService(marvin).getLog(0L);
     assertThat(log).isEqualTo("Your OOC channel is now turned off.<br />\r\n");
-    assertThat(marvin.getOoc()).isEqualTo(false);
+    assertThat(marvin.getOoc()).isFalse();
   }
 
   /**
@@ -103,7 +103,7 @@ public class OocCommandTest extends MudTest
     assertThat(heehawCommand.getRegExpr()).isEqualTo("ooc .+");
     DisplayInterface display = heehawCommand.run("ooc Hey! This doesn't work!", marvin);
     assertThat(display).isNotNull();
-    String log = CommunicationService.getCommunicationService(marvin).getLog(0);
+    String log = CommunicationService.getCommunicationService(marvin).getLog(0L);
     assertThat(log).isEqualTo("Sorry, you have your OOC channel turned off.<br />\r\n");
     assertThat(marvin.getOoc()).isFalse();
   }
@@ -123,9 +123,9 @@ public class OocCommandTest extends MudTest
     commandRunner.setServices(personService, null, null, null, null, null, null);
     DisplayInterface display = heehawCommand.run("ooc Hey! This works!", marvin);
     assertThat(display).isNotNull();
-    String log = CommunicationService.getCommunicationService(marvin).getLog(0);
+    String log = CommunicationService.getCommunicationService(marvin).getLog(0L);
     assertThat(log).isEqualTo("<span class=\"chat-cyanblue\">[OOC: <b>Marvin</b>] Hey! This works!</span><br />\r\n");
-    log = CommunicationService.getCommunicationService(karn).getLog(0);
+    log = CommunicationService.getCommunicationService(karn).getLog(0L);
     assertThat(log).isEqualTo("<span class=\"chat-cyanblue\">[OOC: <b>Marvin</b>] Hey! This works!</span><br />\r\n");
     assertThat(marvin.getOoc()).isTrue();
   }

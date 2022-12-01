@@ -79,7 +79,7 @@ public class DeputiesCommandTest extends MudTest
         DisplayInterface display = deputiesCommand.run("deputies", karn);
         assertThat(display).isNotNull();
         assertThat(display.getBody()).isEqualTo("You are in a small room.");
-        String log = CommunicationService.getCommunicationService(karn).getLog(0);
+        String log = CommunicationService.getCommunicationService(karn).getLog(0L);
         assertThat(log).isEqualTo("Current deputies are Karn, Midevia.<br />");
     }
 

@@ -21,24 +21,23 @@ import java.util.List;
 import jakarta.xml.bind.annotation.XmlRootElement;
 
 /**
- *
  * @author maartenl
  */
 @XmlRootElement
 public class PrivateDisplay
 {
 
-    public String image;
-    public String title;
-    public String body;
+  public String image;
+  public String title;
+  public String body;
 
   public Boolean west;
-    public Boolean east;
-    public Boolean north;
-    public Boolean south;
-    public Boolean up;
-    public Boolean down;
+  public Boolean east;
+  public Boolean north;
+  public Boolean south;
+  public Boolean up;
+  public Boolean down;
 
-    public List<PrivatePerson> persons;
-    public List<PrivateItem> items;
+  public List<PrivatePerson> persons;
+  public List<PrivateItem> items;
 }

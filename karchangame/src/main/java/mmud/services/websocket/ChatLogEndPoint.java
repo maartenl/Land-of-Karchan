@@ -2,6 +2,7 @@ package mmud.services.websocket;
 
 import java.io.IOException;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArraySet;
@@ -58,14 +59,14 @@ public class ChatLogEndPoint
     message.from = users.get(session.getId());
     if ("ping".equals(message.type))
     {
-      send(message.from, new Message(message.from, null, "pong", "pong"));
+      send(message.from, new Message(message.from, "pong", "pong"));
       return;
     }
     if ("internalping".equals(message.type))
     {
       if (internalpong)
       {
-        send(message.from, new Message(message.from, null, "internalpong", "internalpong"));
+        send(message.from, new Message(message.from, "internalpong", "internalpong"));
       }
       return;
     }
@@ -106,16 +107,19 @@ public class ChatLogEndPoint
 
   public static void send(String user, Message message) throws IOException, EncodeException
   {
-    for (ChatLogEndPoint endpoint : chatEndpoints)
+    Optional<ChatLogEndPoint> endpointOpt = chatEndpoints
+      .stream()
+      .filter(endpoint -> users.get(endpoint.session.getId()).equals(user))
+      .findFirst();
+    if (endpointOpt.isEmpty())
     {
-      String s = users.get(endpoint.session.getId());
-      if (s.equals(user))
-      {
-        synchronized (endpoint)
-        {
-          endpoint.session.getBasicRemote().sendObject(message);
-        }
-      }
+      // LOGGER.severe("Chatlogendpoint not found for user %s".formatted(user));
+      return;
+    }
+    synchronized (endpointOpt.get())
+    {
+      endpointOpt.get().session.getBasicRemote().sendObject(message);
     }
   }
 }
+

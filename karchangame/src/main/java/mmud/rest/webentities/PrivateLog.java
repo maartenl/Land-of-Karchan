@@ -19,13 +19,12 @@ package mmud.rest.webentities;
 import jakarta.xml.bind.annotation.XmlRootElement;
 
 /**
- *
  * @author maartenl
  */
 @XmlRootElement
 public class PrivateLog
 {
-    public int offset;
-    public int size;
-    public String log;
+  public long offset;
+  public int size;
+  public String log;
 }

@@ -37,6 +37,9 @@ public class PublicPerson
   public String sleep;
   public String area;
   public String sex;
+  /**
+   * Description of the player, readonly.
+   */
   public String description;
   public String imageurl;
   public String guild;

@@ -72,7 +72,7 @@ public class RankAssignCommandTest extends MudTest
     DisplayInterface display = rankCommand.run("guildassignrank 0 Marvin", karn);
     assertThat(display).isNotNull();
     assertThat(display.getBody()).isEqualTo("You are in a small room.");
-    String karnLog = CommunicationService.getCommunicationService(karn).getLog(0);
+    String karnLog = CommunicationService.getCommunicationService(karn).getLog(0L);
     assertThat(karnLog).isEqualTo("Rank Minion assigned to guild member Marvin.<br />\r\n");
     // the important bit
     Guildrank rank = marvin.getGuildrank();
@@ -92,7 +92,7 @@ public class RankAssignCommandTest extends MudTest
     DisplayInterface display = rankCommand.run("guildassignrank henk Marvin", karn);
     assertThat(display).isNotNull();
     assertThat(display.getBody()).isEqualTo("You are in a small room.");
-    String karnLog = CommunicationService.getCommunicationService(karn).getLog(0);
+    String karnLog = CommunicationService.getCommunicationService(karn).getLog(0L);
     assertThat(karnLog).isEqualTo("Ranknumber not a number.<br />\r\n");
     // the important bit
     assertThat(marvin.getGuildrank()).isNull();
@@ -108,7 +108,7 @@ public class RankAssignCommandTest extends MudTest
     DisplayInterface display = rankCommand.run("guildassignrank 0 Henk", karn);
     assertThat(display).isNotNull();
     assertThat(display.getBody()).isEqualTo("You are in a small room.");
-    String karnLog = CommunicationService.getCommunicationService(karn).getLog(0);
+    String karnLog = CommunicationService.getCommunicationService(karn).getLog(0L);
     assertThat(karnLog).isEqualTo("Guild member not found.<br />\r\n");
     // the important bit
   }
@@ -123,7 +123,7 @@ public class RankAssignCommandTest extends MudTest
     DisplayInterface display = rankCommand.run("guildassignrank 1 Marvin", karn);
     assertThat(display).isNotNull();
     assertThat(display.getBody()).isEqualTo("You are in a small room.");
-    String karnLog = CommunicationService.getCommunicationService(karn).getLog(0);
+    String karnLog = CommunicationService.getCommunicationService(karn).getLog(0L);
     assertThat(karnLog).isEqualTo("Rank does not exist.<br />\r\n");
     // the important bit
     Guildrank rank = karn.getGuild().getRank(1);
@@ -144,7 +144,7 @@ public class RankAssignCommandTest extends MudTest
     DisplayInterface display = rankCommand.run("guildassignrank none Marvin", karn);
     assertThat(display).isNotNull();
     assertThat(display.getBody()).isEqualTo("You are in a small room.");
-    String karnLog = CommunicationService.getCommunicationService(karn).getLog(0);
+    String karnLog = CommunicationService.getCommunicationService(karn).getLog(0L);
     assertThat(karnLog).isEqualTo("Rank removed from guild member Marvin.<br />\r\n");
     // the important bit
     assertThat(rank).isNotNull();

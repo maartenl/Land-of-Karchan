@@ -76,7 +76,7 @@ public class OwnerCommandTest extends MudTest
         DisplayInterface display = ownerCommand.run("owner", karn);
         assertThat(display).isNotNull();
         assertThat(display.getBody()).isEqualTo("You are in a small room.");
-        String log = CommunicationService.getCommunicationService(karn).getLog(0);
+        String log = CommunicationService.getCommunicationService(karn).getLog(0L);
         assertThat(log).isEqualTo("You are not owned.<br />");
     }
 
@@ -92,7 +92,7 @@ public class OwnerCommandTest extends MudTest
         DisplayInterface display = ownerCommand.run("owner", karn);
         assertThat(display).isNotNull();
         assertThat(display.getBody()).isEqualTo("You are in a small room.");
-        String log = CommunicationService.getCommunicationService(karn).getLog(0);
+      String log = CommunicationService.getCommunicationService(karn).getLog(0L);
         assertThat(log).isEqualTo("Your current owner is Midevia.<br />");
     }
 
@@ -116,7 +116,7 @@ public class OwnerCommandTest extends MudTest
         DisplayInterface display = ownerCommand.run("owner remove", karn);
         assertThat(display).isNotNull();
         assertThat(display.getBody()).isEqualTo("You are in a small room.");
-        String log = CommunicationService.getCommunicationService(karn).getLog(0);
+      String log = CommunicationService.getCommunicationService(karn).getLog(0L);
         assertThat(log).isEqualTo("Owner removed.<br />");
         assertThat(logBean.getLog()).isEqualTo("Karn:has removed owner Midevia\n");
     }
@@ -146,7 +146,7 @@ public class OwnerCommandTest extends MudTest
         DisplayInterface display = ownerCommand.run("owner Karn", karn);
         assertThat(display).isNotNull();
         assertThat(display.getBody()).isEqualTo("You are in a small room.");
-        String log = CommunicationService.getCommunicationService(karn).getLog(0);
+      String log = CommunicationService.getCommunicationService(karn).getLog(0L);
         assertThat(log).isEqualTo("You are now owned by Karn.<br />");
         assertThat(karn.getOwner()).isEqualTo(karnAdmin);
         assertThat(logBean.getLog()).isEqualTo("Karn:has set owner to Karn\n");
@@ -178,7 +178,7 @@ public class OwnerCommandTest extends MudTest
         DisplayInterface display = ownerCommand.run("owner Karn", karn);
         assertThat(display).isNotNull();
         assertThat(display.getBody()).isEqualTo("You are in a small room.");
-        String log = CommunicationService.getCommunicationService(karn).getLog(0);
+      String log = CommunicationService.getCommunicationService(karn).getLog(0L);
         assertThat(log).isEqualTo("You are now owned by Karn.<br />");
         assertThat(karn.getOwner()).isEqualTo(karnAdmin);
         assertThat(logBean.getLog()).isEqualTo("Karn:has set owner to Karn\n");

@@ -1,10 +1,10 @@
-import { Component, OnInit } from '@angular/core';
-import { FormControl, FormGroup, FormBuilder } from '@angular/forms';
+import {Component, OnInit} from '@angular/core';
+import {FormBuilder, FormGroup} from '@angular/forms';
 
-import { Player } from './player.model';
-import { Family } from './family.model';
-import { PlayerService } from '../player.service';
-import { ToastService } from '../toast.service';
+import {Player} from './player.model';
+import {Family} from './family.model';
+import {PlayerService} from '../player.service';
+import {ToastService} from '../toast.service';
 
 @Component({
   selector: 'app-player-settings',
@@ -35,7 +35,8 @@ export class PlayerSettingsComponent implements OnInit {
       dateofbirth: '',
       cityofbirth: '',
       storyline: '',
-    });    
+      websockets: true,
+    });
     this.familyForm = this.formBuilder.group({
       toname: '',
       description: ''
@@ -70,6 +71,7 @@ export class PlayerSettingsComponent implements OnInit {
       dateofbirth: '',
       cityofbirth: '',
       storyline: '',
+      websockets: true,
     });
     this.familyForm = this.formBuilder.group({
       toname: '',
@@ -85,6 +87,7 @@ export class PlayerSettingsComponent implements OnInit {
       dateofbirth: player.dateofbirth,
       cityofbirth: player.cityofbirth,
       storyline: player.storyline,
+      websockets: player.websockets,
     });
   }
 
@@ -118,6 +121,7 @@ export class PlayerSettingsComponent implements OnInit {
       dateofbirth: formModel.dateofbirth as string,
       storyline: formModel.storyline as string,
       familyvalues: this.player.familyvalues as Family[],
+      websockets: formModel.websockets as boolean,
     };
     return savePlayer;
   }

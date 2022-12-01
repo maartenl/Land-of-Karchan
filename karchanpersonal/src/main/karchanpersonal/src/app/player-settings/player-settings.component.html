@@ -15,15 +15,16 @@
         </fieldset>
         <fieldset class="form-group">
           <label for="description">Description</label>
-          <input type="text" class="form-control" id="description" name="description" value="{{player.description}}" readonly>
+          <input type="text" class="form-control" id="description" name="description" value="{{player.description}}"
+                 readonly>
         </fieldset>
         <fieldset class="form-group">
           <label for="guild">Guild</label>
           <input type="text" class="form-control" id="guild" name="guild" value="{{player.guild}}" readonly>
         </fieldset>
         <fieldset class="form-group">
-          <label for="homepage">Homepage - <a
-          href="{{playerForm.get('homepageurl')?.value }}" target="_blank">{{playerForm.get('homepageurl')?.value }}</a></label>
+          <label for="homepage">Homepage - <a href="{{playerForm.get('homepageurl')?.value }}"
+                                              target="_blank">{{playerForm.get('homepageurl')?.value }}</a></label>
           <input type="text" class="form-control" id="homepage" name="homepage" formControlName="homepageurl">
         </fieldset>
         <fieldset class="form-group">
@@ -50,9 +51,26 @@
           <label for="storyline">Storyline</label>
           <textarea class="form-control" id="storyline" rows="13" formControlName="storyline"></textarea>
         </fieldset>
+        <div class="col-xs-12 col-sm-12">
+          <hr/>
+          <h3>Settings</h3>
+        </div>
+        <div class="col-xs-12 col-sm-12">
+          <fieldset class="form-group">
+            <label for="websockets">Websockets</label>
+            <input class="form-control form-check-input" type="checkbox" value="" id="websockets"
+                   formControlName="websockets">
+            <div id="websocketsHelp" class="form-text">For some people websockets do not work properly. The default is
+              websockets enabled.
+            </div>
+          </fieldset>
+        </div>
         <div class="col-xs-12 col-sm-12 text-right">
+          <hr/>
           <button type="submit" [disabled]="playerForm.pristine" class="btn btn-primary">Save</button>
-          <button type="reset" [disabled]="playerForm.pristine" class="btn btn-primary" (click)="cancel()">Cancel</button>
+          <button type="reset" [disabled]="playerForm.pristine" class="btn btn-primary"
+                  (click)="cancel()">Cancel
+          </button>
           <button type="button" class="btn btn-primary" (click)="deleteCharacter()">Delete</button>
         </div>
       </form>
@@ -92,7 +110,8 @@
       <hr/>
       <h3>Family relations</h3>
       <ul class="list-group">
-        <li class="list-group-item justify-content-between" *ngFor="let relation of player.familyvalues" (click)="setFamilyForm(relation)">
+        <li class="list-group-item justify-content-between" *ngFor="let relation of player.familyvalues"
+            (click)="setFamilyForm(relation)">
           {{relation.description}} of {{relation.toname}}
           <button type="button" class="close" aria-label="Close" (click)="delete(relation)">
             <i class="material-icons" aria-hidden="true">delete</i>

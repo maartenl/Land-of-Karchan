@@ -74,7 +74,7 @@ public class AdminCommandTest extends MudTest
     assertThat(adminCommand.getRegExpr()).isEqualTo("admin .+");
     DisplayInterface display = adminCommand.run("admin visible false", marvin);
     assertThat(display).isNotNull();
-    String log = CommunicationService.getCommunicationService(marvin).getLog(0);
+    String log = CommunicationService.getCommunicationService(marvin).getLog(0L);
     assertThat(log).isEqualTo("You are not an administrator.<br />\r\n");
   }
 
@@ -89,7 +89,7 @@ public class AdminCommandTest extends MudTest
     DisplayInterface display = adminCommand.run("admin visible on", karn);
     assertThat(display).isNotNull();
     assertThat(karn.getVisible()).isTrue();
-    String log = CommunicationService.getCommunicationService(karn).getLog(0);
+    String log = CommunicationService.getCommunicationService(karn).getLog(0L);
     assertThat(log).isEqualTo("Setting visibility to true.<br />\r\n");
     assertThat(logService.getLog()).isEqualTo("Karn: turned visible.\n");
   }
@@ -105,7 +105,7 @@ public class AdminCommandTest extends MudTest
     DisplayInterface display = adminCommand.run("admin visible off", karn);
     assertThat(display).isNotNull();
     assertThat(karn.getVisible()).isFalse();
-    String log = CommunicationService.getCommunicationService(karn).getLog(0);
+    String log = CommunicationService.getCommunicationService(karn).getLog(0L);
     assertThat(log).isEqualTo("Setting visibility to false.<br />\r\n");
     assertThat(logService.getLog()).isEqualTo("Karn: turned invisible.\n");
   }
@@ -123,8 +123,8 @@ public class AdminCommandTest extends MudTest
     assertThat(display).isNotNull();
     assertThat(marvin.getFrogging()).isEqualTo(5);
     assertThat(marvin.getJackassing()).isZero();
-    assertThat(CommunicationService.getCommunicationService(karn).getLog(0)).isEqualTo("Changed Marvin into frog (5).<br />\r\nMarvin is suddenly changed into a frog!<br />\r\n");
-    assertThat(CommunicationService.getCommunicationService(marvin).getLog(0)).isEqualTo("You are suddenly changed into a frog!<br />\r\n");
+    assertThat(CommunicationService.getCommunicationService(karn).getLog(0L)).isEqualTo("Changed Marvin into frog (5).<br />\r\nMarvin is suddenly changed into a frog!<br />\r\n");
+    assertThat(CommunicationService.getCommunicationService(marvin).getLog(0L)).isEqualTo("You are suddenly changed into a frog!<br />\r\n");
     assertThat(logService.getLog()).isEqualTo("Marvin: was changed into a frog by Karn for 5.\n");
   }
 
@@ -141,8 +141,8 @@ public class AdminCommandTest extends MudTest
     assertThat(display).isNotNull();
     assertThat(marvin.getFrogging()).isZero();
     assertThat(marvin.getJackassing()).isEqualTo(5);
-    assertThat(CommunicationService.getCommunicationService(karn).getLog(0)).isEqualTo("Changed Marvin into jackass (5).<br />\r\nMarvin is suddenly changed into a jackass!<br />\r\n");
-    assertThat(CommunicationService.getCommunicationService(marvin).getLog(0)).isEqualTo("You are suddenly changed into a jackass!<br />\r\n");
+    assertThat(CommunicationService.getCommunicationService(karn).getLog(0L)).isEqualTo("Changed Marvin into jackass (5).<br />\r\nMarvin is suddenly changed into a jackass!<br />\r\n");
+    assertThat(CommunicationService.getCommunicationService(marvin).getLog(0L)).isEqualTo("You are suddenly changed into a jackass!<br />\r\n");
     assertThat(logService.getLog()).isEqualTo("Marvin: was changed into a jackass by Karn for 5.\n");
   }
 
@@ -249,9 +249,9 @@ public class AdminCommandTest extends MudTest
     assertThat(marvin.getTimeout()).isZero();
 
     assertThat(display).isNotNull();
-    String log = CommunicationService.getCommunicationService(karn).getLog(0);
+    String log = CommunicationService.getCommunicationService(karn).getLog(0L);
     assertThat(log).isEqualTo("Karn causes Marvin to cease to exist for 0 minutes.<br />\n");
-    log = CommunicationService.getCommunicationService(marvin).getLog(0);
+    log = CommunicationService.getCommunicationService(marvin).getLog(0L);
     assertThat(log).isEqualTo("Karn causes Marvin to cease to exist for 0 minutes.<br />\n");
     assertThat(logService.getLog()).isEqualTo("Marvin: has been kicked out of the game by Karn for 0 minutes.\n");
   }
@@ -274,9 +274,9 @@ public class AdminCommandTest extends MudTest
             .isTrue();
 
     assertThat(display).isNotNull();
-    String log = CommunicationService.getCommunicationService(karn).getLog(0);
+    String log = CommunicationService.getCommunicationService(karn).getLog(0L);
     assertThat(log).isEqualTo("Karn causes Marvin to cease to exist for 60 minutes.<br />\n");
-    log = CommunicationService.getCommunicationService(marvin).getLog(0);
+    log = CommunicationService.getCommunicationService(marvin).getLog(0L);
     assertThat(log).isEqualTo("Karn causes Marvin to cease to exist for 60 minutes.<br />\n");
     assertThat(logService.getLog()).isEqualTo("Marvin: has been kicked out of the game by Karn for 60 minutes.\n");
   }

@@ -16,6 +16,7 @@
  */
 package mmud.database.entities.characters;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -85,11 +86,12 @@ import mmud.exceptions.MudException;
 @NamedQuery(name = "Person.findAll", query = "SELECT p FROM Person p")
 @NamedQuery(name = "Person.findByName", query = "SELECT p FROM Person p WHERE lower(p.name) = lower(:name)")
 @NamedQuery(name = "Person.countAll", query = "SELECT count(p) FROM Person p")
-abstract public class Person implements Serializable, AttributeWrangler, DisplayInterface, ItemWrangler, Ownage
+public abstract class Person implements Serializable, AttributeWrangler, DisplayInterface, ItemWrangler, Ownage
 {
 
-  private static final Logger LOGGER = java.util.logging.Logger.getLogger(Person.class.getName());
+  private static final Logger LOGGER = Logger.getLogger(Person.class.getName());
 
+  @Serial
   private static final long serialVersionUID = 1L;
 
   public static final String EMPTY_LOG = "";
@@ -358,6 +360,9 @@ abstract public class Person implements Serializable, AttributeWrangler, Display
   @JoinColumn(name = "wearaboutbody", referencedColumnName = "id")
   @ManyToOne(fetch = FetchType.LAZY)
   private Item wearaboutbody;
+
+  @Column(name = "websockets")
+  private boolean websocketSupport;
 
   public Person()
   {
@@ -770,7 +775,7 @@ abstract public class Person implements Serializable, AttributeWrangler, Display
    */
   public Boolean getFightable()
   {
-    return fightable == null ? false : fightable != 0;
+    return fightable != null && fightable != 0;
   }
 
   /**
@@ -2208,4 +2213,19 @@ abstract public class Person implements Serializable, AttributeWrangler, Display
     // purposefully empty,
   }
 
+  /**
+   * The idea here is that some people are having problems with websockets, meaning we need to
+   * fall back to the standard request-response model.
+   *
+   * @return true in case of websocket support, this is the default.
+   */
+  public boolean getWebsocketSupport()
+  {
+    return websocketSupport;
+  }
+
+  public void setWebsocketSupport(boolean websocketSupport)
+  {
+    this.websocketSupport = websocketSupport;
+  }
 }

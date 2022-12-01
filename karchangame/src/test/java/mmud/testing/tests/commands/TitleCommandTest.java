@@ -60,7 +60,7 @@ public class TitleCommandTest extends MudTest
     assertThat(titleCommand.getRegExpr()).isEqualTo("(title|title ?.+)");
     DisplayInterface display = titleCommand.run("title Ruler of the Land", marvin);
     assertThat(display).isNotNull();
-    String log = CommunicationService.getCommunicationService(marvin).getLog(0);
+    String log = CommunicationService.getCommunicationService(marvin).getLog(0L);
     assertThat(log).isEqualTo("Changed your title to : &#39;Ruler of the Land&#39;.<br />\r\n");
     assertThat(marvin.getTitle()).isEqualTo("Ruler of the Land");
   }
@@ -74,7 +74,7 @@ public class TitleCommandTest extends MudTest
     assertThat(titleCommand.getRegExpr()).isEqualTo("(title|title ?.+)");
     DisplayInterface display = titleCommand.run("title remove", marvin);
     assertThat(display).isNotNull();
-    String log = CommunicationService.getCommunicationService(marvin).getLog(0);
+    String log = CommunicationService.getCommunicationService(marvin).getLog(0L);
     assertThat(log).isEqualTo("You have removed your current title.<br />\r\n");
     assertThat(marvin.getTitle()).isNull();
   }
@@ -88,7 +88,7 @@ public class TitleCommandTest extends MudTest
     assertThat(titleCommand.getRegExpr()).isEqualTo("(title|title ?.+)");
     DisplayInterface display = titleCommand.run("title", marvin);
     assertThat(display).isNotNull();
-    String log = CommunicationService.getCommunicationService(marvin).getLog(0);
+    String log = CommunicationService.getCommunicationService(marvin).getLog(0L);
     assertThat(log).isEqualTo("Your current title is &#39;The Paranoid Android&#39;.<br />\r\n");
     assertThat(marvin.getTitle()).isEqualTo("The Paranoid Android");
   }

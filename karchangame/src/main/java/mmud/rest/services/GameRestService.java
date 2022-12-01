@@ -364,7 +364,7 @@ public class GameRestService
       {
         throw new MudWebException(name, "No data received.", Response.Status.BAD_REQUEST);
       }
-      if (name == null || !pperson.name.equals(name))
+      if (pperson.name == null || !pperson.name.equals(name))
       {
         throw new MudWebException(name, "Wrong data received.", Response.Status.BAD_REQUEST);
       }
@@ -696,7 +696,7 @@ public class GameRestService
           // macro
           if (parsedCommand.length == 2)
           {
-            command = command.replaceAll("%t", parsedCommand[1]);
+            command = command.replace("%t", parsedCommand[1]);
           }
           display = runMultipleCommands(person, command);
         }
@@ -804,27 +804,22 @@ public class GameRestService
     {
       MediaType.TEXT_HTML
     })
-  public String getLog(@PathParam("name") String name, @QueryParam("offset") Integer offset)
+  public String getLog(@PathParam("name") String name, @QueryParam("offset") Long offset)
   {
     LOGGER.finer("entering retrieveLog");
     Person person = authenticateToEnterGame(name);
     if (offset == null)
     {
-      offset = 0;
+      offset = 0L;
     }
     try
     {
-      Integer offset1 = offset;
-      if (offset1 == null)
-      {
-        offset1 = 0;
-      }
-      String log = CommunicationService.getCommunicationService(person).getLog(offset1);
+      String log = CommunicationService.getCommunicationService(person).getLog(offset);
       PrivateLog plog = new PrivateLog();
-      plog.offset = offset1;
+      plog.offset = offset;
       plog.log = log;
       plog.size = plog.log.length();
-      return log.substring(offset);
+      return log.substring(offset.intValue());
     } catch (WebApplicationException e)
     {
       //ignore

@@ -70,7 +70,7 @@ public class HelpCommandTest extends MudTest
     assertThat(display.getImage()).isNull();
     assertThat(display.getMainTitle()).isEqualTo("Drop");
     assertThat(display.getBody()).isEqualTo(" <dl><dt><b>NAME</b></dt><dd><b>Drop</b> - formatted output</dd><p/><dt><b>SYNOPSIS</b></dt><dd><b>drop</b> &lt;item&gt;</dd><p/><dt><b>DESCRIPTION</b></dt><dd><b>Drop</b> makes your character <b>drop</b> an item out of your inventory and onto the ground. Once it is lying on the ground, it can be picked up again by anyone coming by. An added effect is that you have to carry around less stuff. </dd><p/><dt><b>EXAMPLES</b></dt><dd>\"drop leather jerkin\"<p/>You: <tt>You drop a black, leather jerkin.</tt><br/>Anybody: <tt>Hotblack drops a black, leather jerkin.</tt><p/></dd><dt><b>SEE ALSO</b></dt><dd>get, remove, wield, unwield<p/></dd></dl>");
-    String log = CommunicationService.getCommunicationService(marvin).getLog(0);
+    String log = CommunicationService.getCommunicationService(marvin).getLog(0L);
     assertThat(log).isEmpty();
   }
 
@@ -89,7 +89,7 @@ public class HelpCommandTest extends MudTest
     assertThat(display.getImage()).isNull();
     assertThat(display.getMainTitle()).isEqualTo("Sorry");
     assertThat(display.getBody()).isEqualTo(" <dl><dt><b>NAME</b></dt><dd><b>Sorry</b> - formatted output</dd><p/><dt><b>SYNOPSIS</b></dt><dd>Error messages.</dd><p/><dt><b>DESCRIPTION</b></dt><dd><H1><b>Sorry</b></H1><li><b>Sorry</b>, I don't recognise that command.<li>I am afraid I do not understand.Readouts for mistyped, absent, or broken commands.  If this is a command you are certain should work, or one that worked previously, please make use of the bugs screen to inform Admin.</dd><p/><dt><b>EXAMPLES</b></dt><dd></dd><dt><b>SEE ALSO</b></dt><dd>null<p/></dd></dl>");
-    String log = CommunicationService.getCommunicationService(marvin).getLog(0);
+    String log = CommunicationService.getCommunicationService(marvin).getLog(0L);
     assertThat(log).isEmpty();
   }
 
@@ -108,7 +108,7 @@ public class HelpCommandTest extends MudTest
     assertThat(display.getImage()).isNull();
     assertThat(display.getMainTitle()).isEqualTo("General help");
     assertThat(display.getBody()).isEqualTo(" <dl><dt><b>NAME</b></dt><dd><b>General help</b> - formatted output</dd><p/><dt><b>SYNOPSIS</b></dt><dd></dd><p/><dt><b>DESCRIPTION</b></dt><dd>This is <b>general help</b>.</dd><p/><dt><b>EXAMPLES</b></dt><dd></dd><dt><b>SEE ALSO</b></dt><dd>null<p/></dd></dl>");
-    String log = CommunicationService.getCommunicationService(marvin).getLog(0);
+    String log = CommunicationService.getCommunicationService(marvin).getLog(0L);
     assertThat(log).isEmpty();
   }
 

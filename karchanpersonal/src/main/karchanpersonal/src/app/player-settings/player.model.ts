@@ -1,4 +1,4 @@
-import { Family } from "./family.model";
+import {Family} from "./family.model";
 
 export class Player {
   name: string;
@@ -11,6 +11,7 @@ export class Player {
   dateofbirth: string;
   cityofbirth: string;
   storyline: string;
+  websockets: boolean;
 
   familyvalues: Family[];
 
@@ -26,6 +27,7 @@ export class Player {
     this.cityofbirth = '';
     this.storyline = '';
     this.familyvalues = new Array<Family>(0);
+    this.websockets = true;
   }
 
 }

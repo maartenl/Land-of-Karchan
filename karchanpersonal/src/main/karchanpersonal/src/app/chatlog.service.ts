@@ -3,6 +3,7 @@ import {webSocket, WebSocketSubject} from 'rxjs/webSocket';
 import {ToastService} from './toast.service';
 
 export class Message {
+  fileLength: number | null = null;
   from: string = "";
   to: string = "";
   content: string = "";

@@ -69,10 +69,10 @@ import mmud.exceptions.MudWebException;
 import mmud.rest.webentities.PrivateMail;
 import mmud.rest.webentities.PrivatePassword;
 import mmud.rest.webentities.PrivatePerson;
-import mmud.rest.webentities.PublicPerson;
 import mmud.services.LogService;
 import mmud.services.MailService;
 import mmud.services.PlayerAuthenticationService;
+import mmud.services.PrivateService;
 import mmud.services.PublicService;
 import org.apache.commons.lang3.StringUtils;
 
@@ -98,6 +98,9 @@ public class PrivateRestService
   @Inject
   private PublicService publicService;
 
+  @Inject
+  private PrivateService privateService;
+
   @Context
   private SecurityContext context;
 
@@ -115,6 +118,11 @@ public class PrivateRestService
 
   @Inject
   private PlayerAuthenticationService playerAuthenticationService;
+
+  public PrivateService getPrivateService()
+  {
+    return privateService;
+  }
 
   public static class PrivateHasMail
   {
@@ -193,7 +201,7 @@ public class PrivateRestService
       throw e;
     } catch (Exception e)
     {
-      throw new MudWebException(name, e, Response.Status.BAD_REQUEST);
+      throw new MudWebException(name, e, Status.BAD_REQUEST);
     }
     return res;
   }
@@ -246,7 +254,7 @@ public class PrivateRestService
       throw e;
     } catch (Exception e)
     {
-      throw new MudWebException(name, e, Response.Status.BAD_REQUEST);
+      throw new MudWebException(name, e, Status.BAD_REQUEST);
     }
     return res;
   }
@@ -281,7 +289,7 @@ public class PrivateRestService
     var toperson = getEntityManager().find(Person.class, name);
     if (toperson == null)
     {
-      throw new MudWebException(name, name + " was not found.", "User was not found (" + name + ")", Response.Status.NOT_FOUND);
+      throw new MudWebException(name, name + " was not found.", "User was not found (" + name + ")", Status.NOT_FOUND);
     }
     return toperson;
   }
@@ -291,12 +299,12 @@ public class PrivateRestService
     User toperson = getEntityManager().find(User.class, name);
     if (toperson == null)
     {
-      throw new MudWebException(name, name + " was not found.", "User was not found (" + name + ")", Response.Status.NOT_FOUND);
+      throw new MudWebException(name, name + " was not found.", "User was not found (" + name + ")", Status.NOT_FOUND);
     }
     if (!toperson.isUser())
     {
       LOGGER.log(Level.INFO, "user not proper user, {0}", name);
-      throw new MudWebException(name, name + " was not a proper user.", "User was not a proper user (" + name + ")", Response.Status.BAD_REQUEST);
+      throw new MudWebException(name, name + " was not a proper user.", "User was not a proper user (" + name + ")", Status.BAD_REQUEST);
     }
     return toperson;
   }
@@ -362,7 +370,7 @@ public class PrivateRestService
     {
       if (guild == null)
       {
-        throw new MudWebException(fromname, "You are not a member of a guild.", Response.Status.NOT_FOUND);
+        throw new MudWebException(fromname, "You are not a member of a guild.", Status.NOT_FOUND);
       }
       return guild.getMembers().stream();
     }
@@ -372,7 +380,7 @@ public class PrivateRestService
       guild = getEntityManager().find(Guild.class, guildname);
       if (guild == null)
       {
-        throw new MudWebException(fromname, "Guild " + guildname + " not found.", Response.Status.NOT_FOUND);
+        throw new MudWebException(fromname, "Guild " + guildname + " not found.", Status.NOT_FOUND);
       }
       return guild.getMembers().stream();
     }
@@ -423,11 +431,11 @@ public class PrivateRestService
 
     if (mail == null)
     {
-      throw new MudWebException(toname, "Mail " + id + " not found.", Response.Status.NOT_FOUND);
+      throw new MudWebException(toname, "Mail " + id + " not found.", Status.NOT_FOUND);
     }
     if (Boolean.TRUE.equals(mail.getDeleted()))
     {
-      throw new MudWebException(toname, "Mail with id " + id + " was deleted.", Response.Status.NOT_FOUND);
+      throw new MudWebException(toname, "Mail with id " + id + " was deleted.", Status.NOT_FOUND);
     }
     if (!mail.getToname().getName().equals(toname))
     {
@@ -436,7 +444,7 @@ public class PrivateRestService
           id, toname
         });
 
-      throw new MudWebException(toname, "Mail with id " + id + " was not for " + toname + ".", Response.Status.UNAUTHORIZED);
+      throw new MudWebException(toname, "Mail with id " + id + " was not for " + toname + ".", Status.UNAUTHORIZED);
     }
     return mail;
   }
@@ -445,8 +453,8 @@ public class PrivateRestService
    * Returns a single mail based by id. Can only retrieve mail destined for
    * the user requesting the mail.
    *
-   * @param name            the name of the user
-   * @param id              the id of the mail to get
+   * @param name the name of the user
+   * @param id   the id of the mail to get
    * @return A specific mail.
    * @throws WebApplicationException UNAUTHORIZED, if the authorisation
    *                                 failed. BAD_REQUEST if an unexpected exception crops up.
@@ -474,7 +482,7 @@ public class PrivateRestService
       throw e;
     } catch (Exception e)
     {
-      throw new MudWebException(name, e, Response.Status.BAD_REQUEST);
+      throw new MudWebException(name, e, Status.BAD_REQUEST);
     }
   }
 
@@ -573,11 +581,11 @@ public class PrivateRestService
       throw e;
     } catch (ConstraintViolationException e)
     {
-      throw new MudWebException(name, ExceptionUtils.createMessage(e), e, Response.Status.BAD_REQUEST);
+      throw new MudWebException(name, ExceptionUtils.createMessage(e), e, Status.BAD_REQUEST);
     } catch (Exception e)
     {
       LOGGER.throwing("PrivateRestService", "createMailItem", e);
-      throw new MudWebException(e, Response.Status.BAD_REQUEST);
+      throw new MudWebException(e, Status.BAD_REQUEST);
     }
     LOGGER.finer("exiting createMailItem");
     return createResponse();
@@ -591,8 +599,8 @@ public class PrivateRestService
   /**
    * Deletes a single mail based by id.
    *
-   * @param name            the name of the user
-   * @param id              the id of the mail to delete
+   * @param name the name of the user
+   * @param id   the id of the mail to delete
    * @return Response.ok() if all is well.
    * @throws WebApplicationException UNAUTHORIZED, if the authorisation
    *                                 failed. BAD_REQUEST if an unexpected exception crops up.
@@ -618,9 +626,9 @@ public class PrivateRestService
   /**
    * Deletes an entire character.
    *
-   * @param requestContext  the context to log the player off who just deleted
-   *                        his entire character.
-   * @param name            the name of the user
+   * @param requestContext the context to log the player off who just deleted
+   *                       his entire character.
+   * @param name           the name of the user
    * @return Response.ok() if all is well.
    * @throws WebApplicationException UNAUTHORIZED, if the authorisation failed.
    *                                 BAD_REQUEST if an unexpected exception crops up.
@@ -653,8 +661,8 @@ public class PrivateRestService
   /**
    * Adds or updates your current character info.
    *
-   * @param name            the name of the user
-   * @param cinfo           the object containing the new stuff to update.
+   * @param name  the name of the user
+   * @param cinfo the object containing the new stuff to update.
    * @return Response.ok if everything is okay.
    * @throws WebApplicationException UNAUTHORIZED, if the authorisation
    *                                 failed. BAD_REQUEST if an unexpected exception crops up.
@@ -686,6 +694,10 @@ public class PrivateRestService
       }
       characterInfo.setImageurl(cinfo.imageurl);
       person.setTitle(cinfo.title);
+      if (cinfo.websockets != null)
+      {
+        person.setWebsocketSupport(cinfo.websockets);
+      }
       characterInfo.setHomepageurl(cinfo.homepageurl);
       characterInfo.setDateofbirth(cinfo.dateofbirth);
       characterInfo.setCityofbirth(cinfo.cityofbirth);
@@ -709,8 +721,8 @@ public class PrivateRestService
   /**
    * Resets your current password
    *
-   * @param name            the name of the user
-   * @param json            the object containing the new stuff to update.
+   * @param name the name of the user
+   * @param json the object containing the new stuff to update.
    * @return Response.ok if everything is okay.
    * @throws WebApplicationException UNAUTHORIZED, if the authorisation
    *                                 failed. BAD_REQUEST if an unexpected exception crops up.
@@ -745,14 +757,14 @@ public class PrivateRestService
       throw new MudWebException(name,
         PASSWORDS_DO_NOT_MATCH,
         PASSWORDS_DO_NOT_MATCH,
-        Response.Status.BAD_REQUEST);
+        Status.BAD_REQUEST);
     }
     if (!person.verifyPassword(privatePassword.oldpassword))
     {
       throw new MudWebException(name,
         PASSWORDS_DO_NOT_MATCH,
         PASSWORDS_DO_NOT_MATCH,
-        Response.Status.BAD_REQUEST);
+        Status.BAD_REQUEST);
     }
     try
     {
@@ -772,7 +784,7 @@ public class PrivateRestService
   /**
    * Deletes a character, permanently. Use with extreme caution.
    *
-   * @param name            the name of the user
+   * @param name the name of the user
    * @return Response.ok
    * @throws WebApplicationException BAD_REQUEST if an unexpected exception
    *                                 crops up.
@@ -797,7 +809,7 @@ public class PrivateRestService
       throw e;
     } catch (Exception e)
     {
-      throw new MudWebException(name, e, Response.Status.BAD_REQUEST);
+      throw new MudWebException(name, e, Status.BAD_REQUEST);
     }
     return createResponse();
   }
@@ -805,7 +817,7 @@ public class PrivateRestService
   /**
    * Gets your current character info.
    *
-   * @param name            the name of the user
+   * @param name the name of the user
    * @return Response.ok if everything is okay.
    * @throws WebApplicationException UNAUTHORIZED, if the authorisation
    *                                 failed. BAD_REQUEST if an unexpected exception crops up.
@@ -816,19 +828,19 @@ public class PrivateRestService
     {
       MediaType.APPLICATION_JSON
     })
-  public PublicPerson getCharacterSheet(@PathParam("name") String name)
+  public PrivatePerson getCharacterSheet(@PathParam("name") String name)
   {
-    User person = authenticate(name);
-    return getPublicService().charactersheet(name);
+    authenticate(name);
+    return getPrivateService().charactersheet(name);
   }
 
   /**
    * Add or updates some family values from your family tree.
    *
-   * @param name            the name of the user
-   * @param toname          the name of the user you are related to
-   * @param description     the description of the family relation, for example
-   *                        "mother".
+   * @param name        the name of the user
+   * @param toname      the name of the user you are related to
+   * @param description the description of the family relation, for example
+   *                    "mother".
    * @return Response.ok if everything's okay.
    * @throws WebApplicationException UNAUTHORIZED, if the authorisation
    *                                 failed. BAD_REQUEST if an unexpected exception crops up.
@@ -852,36 +864,30 @@ public class PrivateRestService
     }
     User person = authenticate(name);
     var toperson = getPerson(toname);
-    try
+    var familyValue = getEntityManager().find(FamilyValue.class, description);
+    if (familyValue == null)
     {
-      var familyValue = getEntityManager().find(FamilyValue.class, description);
-      if (familyValue == null)
-      {
-        throw new MudWebException(name, "Family value was not found.",
-          "Family value " + description + " was not found.",
-          Status.BAD_REQUEST);
-      }
-      var pk = new FamilyPK();
-      pk.setName(person.getName());
-      pk.setToname(toperson.getName());
-      var family = getEntityManager().find(Family.class, pk);
-
-      boolean isNew = family == null;
-      if (family == null)
-      {
-        family = new Family();
-        family.setFamilyPK(pk);
-      }
-      family.setDescription(familyValue);
-      if (isNew)
-      {
-        getEntityManager().persist(family);
-      }
-    } catch (MudWebException e)
-    {
-      //ignore
-      throw e;
+      throw new MudWebException(name, "Family value was not found.",
+        "Family value " + description + " was not found.",
+        Status.BAD_REQUEST);
     }
+    var pk = new FamilyPK();
+    pk.setName(person.getName());
+    pk.setToname(toperson.getName());
+    var family = getEntityManager().find(Family.class, pk);
+
+    boolean isNew = family == null;
+    if (family == null)
+    {
+      family = new Family();
+      family.setFamilyPK(pk);
+    }
+    family.setDescription(familyValue);
+    if (isNew)
+    {
+      getEntityManager().persist(family);
+    }
+
     LOGGER.finer("exiting updateFamilyvalues");
     return createResponse();
   }
@@ -889,8 +895,8 @@ public class PrivateRestService
   /**
    * Deletes some family values from your family tree.
    *
-   * @param name            the name of the user
-   * @param toname          the name of the user you are related to
+   * @param name   the name of the user
+   * @param toname the name of the user you are related to
    * @return Response.ok if everything is okay.
    * @throws WebApplicationException UNAUTHORIZED, if the authorisation
    *                                 failed. BAD_REQUEST if an unexpected exception crops up.
