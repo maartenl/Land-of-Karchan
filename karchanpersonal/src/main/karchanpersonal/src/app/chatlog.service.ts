@@ -39,11 +39,24 @@ export class ChatlogService {
   ) {
   }
 
+  public isEnabled(): boolean {
+    if (window.console) {
+      console.log("chatlog enabled=" + this.enabled);
+    }
+    return this.enabled;
+  }
+
   public enable() {
+    if (window.console) {
+      console.log("chatlog enabled.");
+    }
     this.enabled = true;
   }
 
   public disable() {
+    if (window.console) {
+      console.log("chatlog disabled.");
+    }
     this.enabled = false;
   }
 
@@ -60,6 +73,9 @@ export class ChatlogService {
   }
 
   private internalopen(username: string) {
+    if (!this.enabled) {
+      return;
+    }
     this.username = username;
     const url = new URL('/karchangame/chat', window.location.href);
     url.protocol = url.protocol.replace('http', 'ws');
@@ -79,6 +95,9 @@ export class ChatlogService {
   }
 
   private setInterval() {
+    if (!this.enabled) {
+      return;
+    }
     const self = this;
     if (this.interval !== null) {
       if (window.console) {
@@ -107,6 +126,9 @@ export class ChatlogService {
   }
 
   private internalping(chatLogService: ChatlogService) {
+    if (!this.enabled) {
+      return;
+    }
     if (window.console) {
       console.log(chatLogService.counter + ": sent internal ping");
     }

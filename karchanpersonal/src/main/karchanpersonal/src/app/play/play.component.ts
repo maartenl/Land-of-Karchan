@@ -173,7 +173,7 @@ export class PlayComponent implements OnInit {
           this.display.log.size = 0;
           this.display.log.offset = 0;
           this.gameService.setIsGaming(false);
-          if (this.player?.websockets) {
+          if (this.chatlogService.isEnabled()) {
             this.chatlogService.clearMessages();
             this.chatlogService.close();
           }
@@ -250,7 +250,7 @@ export class PlayComponent implements OnInit {
       log = true;
     }
     const offset = this.display.log.offset;
-    this.gameService.processCommand(command, offset, !this.player?.websockets)
+    this.gameService.processCommand(command, offset, !this.chatlogService.isEnabled())
       .subscribe(
         (result: Display) => { // on success
           this.writeStuff(result);
@@ -360,7 +360,7 @@ export class PlayComponent implements OnInit {
     if (window.console) {
       console.log('clearLog');
     }
-    if (this.player?.websockets) {
+    if (this.chatlogService.isEnabled()) {
       const messages = this.chatlogService.getMessages();
       this.chatlogService.clearMessages();
       messages.forEach(message => this.display.log.log = this.display.log.log + message.content);

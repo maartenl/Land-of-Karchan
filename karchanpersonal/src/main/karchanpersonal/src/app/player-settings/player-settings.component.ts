@@ -5,6 +5,7 @@ import {Player} from './player.model';
 import {Family} from './family.model';
 import {PlayerService} from '../player.service';
 import {ToastService} from '../toast.service';
+import {ChatlogService} from '../chatlog.service';
 
 @Component({
   selector: 'app-player-settings',
@@ -25,6 +26,7 @@ export class PlayerSettingsComponent implements OnInit {
 
   constructor(
     private playerService: PlayerService,
+    private chatlogService: ChatlogService,
     private formBuilder: FormBuilder,
     private toastService: ToastService) {
     this.player = new Player(); // dummy player
@@ -100,8 +102,26 @@ export class PlayerSettingsComponent implements OnInit {
 
   save() {
     const newPlayer = this.prepareSavePlayer();
-    // TODO: add in the subscribe that the player is updated
-    this.playerService.updatePlayer(newPlayer).subscribe();
+    this.chatlogService.close();
+    if (newPlayer.websockets) {
+      this.chatlogService.enable();
+    } else {
+      this.chatlogService.disable();
+    }
+    this.playerService.updatePlayer(newPlayer).subscribe(
+      (result: any) => { // on success
+        this.toastService.show('Settings successfully updated.', {
+          delay: 3000,
+          autohide: true,
+          headertext: 'Updated...'
+        });
+      },
+      (err: any) => { // error
+        // console.log('error', err);
+      },
+      () => { // on completion
+      }
+    );
   }
 
   prepareSavePlayer(): Player {
