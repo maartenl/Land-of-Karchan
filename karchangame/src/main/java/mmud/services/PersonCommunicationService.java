@@ -32,8 +32,8 @@ import mmud.database.OutputFormatter;
 import mmud.database.entities.characters.Person;
 import mmud.exceptions.MudException;
 import mmud.rest.webentities.Message;
+import mmud.rest.webentities.PrivateLog;
 import mmud.services.websocket.ChatLogEndPoint;
-import static mmud.database.entities.characters.Person.EMPTY_LOG;
 
 /**
  * @author maartenl
@@ -310,6 +310,10 @@ public class PersonCommunicationService implements CommunicationService
   private void readLog(long offset) throws MudException
   {
     File file = getLogfile();
+    if (file.length() < offset)
+    {
+      offset = file.length();
+    }
     try (RandomAccessFile readFromFile = new RandomAccessFile(file, "r"))
     {
       readFromFile.seek(offset);
@@ -346,6 +350,11 @@ public class PersonCommunicationService implements CommunicationService
     }
   }
 
+  public long getLogSize()
+  {
+    return getLogfile().length();
+  }
+
   /**
    * Returns the log starting from the offset, or an empty string if the offset
    * is past the length of the log. Can also contain the empty string, if the log
@@ -357,7 +366,7 @@ public class PersonCommunicationService implements CommunicationService
    * @throws MudException in case of accidents with reading the log, or a
    *                      negative offset.
    */
-  public String getLog(Long offset) throws MudException
+  public PrivateLog getLog(Long offset) throws MudException
   {
     if (offset == null)
     {
@@ -367,15 +376,21 @@ public class PersonCommunicationService implements CommunicationService
     {
       throw new MudException("Attempting to get log with negative offset.");
     }
+    long logSize = getLogSize();
+    if (offset > logSize)
+    {
+      offset = logSize;
+    }
     if (theLog == null)
     {
       readLog(offset);
     }
-    if (offset >= theLog.length())
-    {
-      return EMPTY_LOG;
-    }
-    return theLog.substring(offset.intValue());
+    PrivateLog plog = new PrivateLog();
+    plog.offset = offset;
+    plog.log = theLog.toString();
+    plog.size = plog.log.length();
+    plog.totalsize = logSize;
+    return plog;
   }
 
   /**

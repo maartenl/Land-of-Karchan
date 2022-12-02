@@ -64,7 +64,7 @@ public class CreateGuildCommandTest extends MudTest
     DisplayInterface display = rankCommand.run("createguild deputies The Royal Club Of Deputies", karn);
     assertThat(display).isNotNull();
     assertThat(display.getBody()).isEqualTo("You are in a small room.");
-    String karnLog = CommunicationService.getCommunicationService(karn).getLog(0L);
+    String karnLog = CommunicationService.getCommunicationService(karn).getLog(0L).log;
     assertThat(karnLog).isEqualTo("Guild deputies created.<br />\r\n");
     // the important bit
     assertThat(karn.getGuild()).isNotNull();
@@ -88,7 +88,7 @@ public class CreateGuildCommandTest extends MudTest
     DisplayInterface display = rankCommand.run("createguild deputies The Royal Club Of Deputies", karn);
     assertThat(display).isNotNull();
     assertThat(display.getBody()).isEqualTo("You are in a small room.");
-    String karnLog = CommunicationService.getCommunicationService(karn).getLog(0L);
+    String karnLog = CommunicationService.getCommunicationService(karn).getLog(0L).log;
 
     assertThat(karnLog).isEqualTo("You are a member of a guild, and can therefore not start a new guild.<br />\n");
     // the important bit

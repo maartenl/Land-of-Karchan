@@ -69,7 +69,7 @@ public class SellCommandTest extends MudTest
     DisplayInterface display = sellCommand.run("sell brush to karcas", karn);
     assertThat(display).isNotNull();
     assertThat(display.getBody()).isEqualTo("You are in a small room.");
-    String log = CommunicationService.getCommunicationService(karn).getLog(0L);
+    String log = CommunicationService.getCommunicationService(karn).getLog(0L).log;
     assertThat(log).isEqualTo("You don&#39;t have that.<br />\n");
   }
 
@@ -89,7 +89,7 @@ public class SellCommandTest extends MudTest
     DisplayInterface display = sellCommand.run("sell -2 ring to karcas", karn);
     assertThat(display).isNotNull();
     assertThat(display.getBody()).isEqualTo("You are in a small room.");
-    String log = CommunicationService.getCommunicationService(karn).getLog(0L);
+    String log = CommunicationService.getCommunicationService(karn).getLog(0L).log;
     assertThat(log).isEqualTo("That is an illegal amount.<br />\n");
   }
 
@@ -102,7 +102,7 @@ public class SellCommandTest extends MudTest
     DisplayInterface display = sellCommand.run("sell 3 ring to karcas", karn);
     assertThat(display).isNotNull();
     assertThat(display.getBody()).isEqualTo("You are in a small room.");
-    String log = CommunicationService.getCommunicationService(karn).getLog(0L);
+    String log = CommunicationService.getCommunicationService(karn).getLog(0L).log;
     assertThat(log).isEqualTo("You do not have that many items in your inventory.<br />\r\n");
   }
 
@@ -115,7 +115,7 @@ public class SellCommandTest extends MudTest
     DisplayInterface display = sellCommand.run("sell ring to karcas", karn);
     assertThat(display).isNotNull();
     assertThat(display.getBody()).isEqualTo("You are in a small room.");
-    String log = CommunicationService.getCommunicationService(karn).getLog(0L);
+    String log = CommunicationService.getCommunicationService(karn).getLog(0L).log;
     assertThat(log).isEqualTo("Unable to locate shopkeeper.<br />\r\n");
   }
 
@@ -135,7 +135,7 @@ public class SellCommandTest extends MudTest
     DisplayInterface display = sellCommand.run("sell ring to karcas", karn);
     assertThat(display).isNotNull();
     assertThat(display.getBody()).isEqualTo("You are in a small room.");
-    String log = CommunicationService.getCommunicationService(karn).getLog(0L);
+    String log = CommunicationService.getCommunicationService(karn).getLog(0L).log;
     assertThat(log).isEqualTo("That&#39;s not a shopkeeper!<br />\r\n");
   }
 
@@ -158,7 +158,7 @@ public class SellCommandTest extends MudTest
     DisplayInterface display = sellCommand.run("sell ring to karcas", karn);
     assertThat(display).isNotNull();
     assertThat(display.getBody()).isEqualTo("You are in a small room.");
-    String log = CommunicationService.getCommunicationService(karn).getLog(0L);
+    String log = CommunicationService.getCommunicationService(karn).getLog(0L).log;
     assertThat(log).isEqualTo("Karcas says [to you] : That item is not worth anything.<br />\r\nYou did not sell anything.<br />\r\n");
   }
 
@@ -180,7 +180,7 @@ public class SellCommandTest extends MudTest
     DisplayInterface display = sellCommand.run("sell ring to karcas", karn);
     assertThat(display).isNotNull();
     assertThat(display.getBody()).isEqualTo("You are in a small room.");
-    String log = CommunicationService.getCommunicationService(karn).getLog(0L);
+    String log = CommunicationService.getCommunicationService(karn).getLog(0L).log;
     assertThat(log).isEqualTo("Karcas mutters something about not having enough money.<br />\r\nYou did not sell anything.<br />\r\n");
   }
 
@@ -203,7 +203,7 @@ public class SellCommandTest extends MudTest
     DisplayInterface display = sellCommand.run("sell ring to karcas", karn);
     assertThat(display).isNotNull();
     assertThat(display.getBody()).isEqualTo("You are in a small room.");
-    String log = CommunicationService.getCommunicationService(karn).getLog(0L);
+    String log = CommunicationService.getCommunicationService(karn).getLog(0L).log;
     assertThat(log).isEqualTo("You are wearing or wielding this item.<br />\r\nYou did not sell anything.<br />\r\n");
   }
 
@@ -228,7 +228,7 @@ public class SellCommandTest extends MudTest
     DisplayInterface display = sellCommand.run("sell ring to karcas", karn);
     assertThat(display).isNotNull();
     assertThat(display.getBody()).isEqualTo("You are in a small room.");
-    String log = CommunicationService.getCommunicationService(karn).getLog(0L);
+    String log = CommunicationService.getCommunicationService(karn).getLog(0L).log;
     assertThat(log).isEqualTo("You are wearing or wielding this item.<br />\r\nYou did not sell anything.<br />\r\n");
   }
 
@@ -252,7 +252,7 @@ public class SellCommandTest extends MudTest
     DisplayInterface display = sellCommand.run("sell ring to karcas", karn);
     assertThat(display).isNotNull();
     assertThat(display.getBody()).isEqualTo("You are in a small room.");
-    String log = CommunicationService.getCommunicationService(karn).getLog(0L);
+    String log = CommunicationService.getCommunicationService(karn).getLog(0L).log;
     assertThat(log).isEqualTo("You cannot sell that item.<br />\r\nYou did not sell anything.<br />\r\n");
   }
 
@@ -276,7 +276,7 @@ public class SellCommandTest extends MudTest
     DisplayInterface display = sellCommand.run("sell ring to karcas", karn);
     assertThat(display).isNotNull();
     assertThat(display.getBody()).isEqualTo("You are in a small room.");
-    String log = CommunicationService.getCommunicationService(karn).getLog(0L);
+    String log = CommunicationService.getCommunicationService(karn).getLog(0L).log;
     assertThat(log).isEqualTo("You cannot sell that item.<br />\r\nYou did not sell anything.<br />\r\n");
   }
 
@@ -299,7 +299,7 @@ public class SellCommandTest extends MudTest
     DisplayInterface display = sellCommand.run("sell ring to karcas", karn);
     assertThat(display).isNotNull();
     assertThat(display.getBody()).isEqualTo("You are in a small room.");
-    String log = CommunicationService.getCommunicationService(karn).getLog(0L);
+    String log = CommunicationService.getCommunicationService(karn).getLog(0L).log;
     assertThat(log).isEqualTo("You sold a nice, golden, friendship ring to Karcas for 4 copper coins.<br />\r\n");
   }
 

@@ -27,7 +27,7 @@ abstract public class MudTest
 
   public String getLog(Person person)
   {
-    return CommunicationService.getCommunicationService(person).getLog(0L);
+    return CommunicationService.getCommunicationService(person).getLog(0L).log;
   }
 
 }

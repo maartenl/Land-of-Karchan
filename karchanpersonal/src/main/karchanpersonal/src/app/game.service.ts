@@ -1,13 +1,13 @@
 import {Observable} from 'rxjs';
 import {Injectable} from '@angular/core';
-import {HttpClient, HttpErrorResponse, HttpHeaders} from '@angular/common/http';
+import {HttpClient, HttpErrorResponse} from '@angular/common/http';
 import {CookieService} from 'ngx-cookie-service';
 
 import {environment} from '../environments/environment';
 
 import {ErrorsService} from './errors.service';
 import {PlayerService} from './player.service';
-import {Display} from './play/display.model';
+import {Display, Log} from './play/display.model';
 
 @Injectable({
   providedIn: 'root'
@@ -80,21 +80,21 @@ export class GameService {
     return this.http.get(url);
   }
 
-  public processCommand(command: string): Observable<Display> {
+  public processCommand(command: string, offset: number | null | undefined, log: boolean): Observable<Display> {
     if (!environment.production) {
       return this.http.get<Display>(this.getGameUrl() + 'play.json');
     }
-    const url: string = this.getGameUrl() + 'play';
+    const params = log ? ("?offset=" + offset + "&log=true") : "";
+    const url: string = this.getGameUrl() + 'play' + params;
     return this.http.post<Display>(url, command);
   }
 
-  public getLog(): Observable<string> {
-    var headers = new HttpHeaders({ 'Content-Type': 'text/plain', 'No-Auth': 'False' });
+  public getLog(): Observable<Log> {
     if (!environment.production) {
-      return this.http.get<string>(this.getGameUrl() + 'log.html', { headers: headers, responseType: 'text' as 'json'  });
+      return this.http.get<Log>(this.getGameUrl() + 'log.html');
     }
     const url: string = this.getGameUrl() + 'log';
-    return this.http.get<string>(url, { headers: headers, responseType: 'text' as 'json'  });
+    return this.http.get<Log>(url);
   }
 
   /**

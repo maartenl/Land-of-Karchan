@@ -72,7 +72,7 @@ public class WhoCommandTest extends MudTest
     commandRunner.setServices(personService, null, null, null, null, null, null);
     DisplayInterface display = whoCommand.run("who", marvin);
     assertThat(display).isNotNull();
-    assertThat(CommunicationService.getCommunicationService(marvin).getLog(0L)).isEmpty();
+    assertThat(CommunicationService.getCommunicationService(marvin).getLog(0L).log).isEmpty();
     assertThat(display.getMainTitle()).isEqualTo("Who");
     assertThat(display.getImage()).isNull();
     assertThat(display.getBody()).contains("There are 2 players.")
@@ -91,7 +91,7 @@ public class WhoCommandTest extends MudTest
     commandRunner.setServices(personService, null, null, null, null, null, null);
     DisplayInterface display = whoCommand.run("who", marvin);
     assertThat(display).isNotNull();
-    assertThat(CommunicationService.getCommunicationService(marvin).getLog(0L)).isEmpty();
+    assertThat(CommunicationService.getCommunicationService(marvin).getLog(0L).log).isEmpty();
     assertThat(display.getMainTitle()).isEqualTo("Who");
     assertThat(display.getImage()).isNull();
     assertThat(display.getBody()).contains("There are 2 players.")
@@ -109,7 +109,7 @@ public class WhoCommandTest extends MudTest
     commandRunner.setServices(personService, null, null, null, null, null, null);
     DisplayInterface display = whoCommand.run("who", marvin);
     assertThat(display).isNotNull();
-    assertThat(CommunicationService.getCommunicationService(marvin).getLog(0L)).isEmpty();
+    assertThat(CommunicationService.getCommunicationService(marvin).getLog(0L).log).isEmpty();
     assertThat(display.getMainTitle()).isEqualTo("Who");
     assertThat(display.getImage()).isNull();
     assertThat(display.getBody()).contains("There are 1 players.")
@@ -127,7 +127,7 @@ public class WhoCommandTest extends MudTest
     commandRunner.setServices(personService, null, null, null, null, null, null);
     DisplayInterface display = whoCommand.run("who", marvin);
     assertThat(display).isNotNull();
-    assertThat(CommunicationService.getCommunicationService(marvin).getLog(0L)).isEmpty();
+    assertThat(CommunicationService.getCommunicationService(marvin).getLog(0L).log).isEmpty();
     assertThat(display.getMainTitle()).isEqualTo("Who");
     assertThat(display.getImage()).isNull();
     assertThat(display.getBody()).contains("There are 2 players.")
@@ -145,7 +145,7 @@ public class WhoCommandTest extends MudTest
     commandRunner.setServices(personService, null, null, null, null, null, null);
     DisplayInterface display = whoCommand.run("who", marvin);
     assertThat(display).isNotNull();
-    assertThat(CommunicationService.getCommunicationService(marvin).getLog(0L)).isEmpty();
+    assertThat(CommunicationService.getCommunicationService(marvin).getLog(0L).log).isEmpty();
     assertThat(display.getMainTitle()).isEqualTo("Who");
     assertThat(display.getImage()).isNull();
     assertThat(display.getBody()).contains("There are 2 players.")

@@ -650,6 +650,9 @@ public class GameRestService
    *
    * @param name    the name of the player. Should match the authorized user.
    * @param command the command issued
+   * @param offset  the offset used for the log
+   * @param log     indicates with true or false, whether or not we are interested
+   *                in the log.
    * @return NO_CONTENT if the game is offline for maintenance.
    * @throws WebApplicationException BAD_REQUEST if an unexpected exception
    *                                 crops up or something could not be validated.
@@ -660,13 +663,22 @@ public class GameRestService
     {
       MediaType.APPLICATION_JSON
     })
-  public PrivateDisplay playGame(@PathParam(value = "name") String name, String command) throws MudException
+  public PrivateDisplay playGame(@PathParam(value = "name") String name, String command, @QueryParam(value = "offset") Long offset, @QueryParam(value = "log") Boolean log) throws MudException
   {
     LOGGER.entering(this.getClass().getName(), "playGame");
+    if (log == null)
+    {
+      log = false;
+    }
     command = InputSanitizer.security(command);
     PrivateDisplay display = null;
     User person = authenticate(name);
     idleUsersService.resetUser(person.getName());
+    PersonCommunicationService communicationService = CommunicationService.getCommunicationService(person);
+    if (log && offset > communicationService.getLogSize())
+    {
+      offset = communicationService.getLogSize();
+    }
     try
     {
       if (command.contains(" ; ") && (!command.toLowerCase().startsWith("macro ")))
@@ -725,6 +737,17 @@ public class GameRestService
         : e.getMessage();
       //ignore
       throw new MudWebException(name, message, e, Response.Status.BAD_REQUEST);
+    }
+    // add log to the return value
+    if (log)
+    {
+      try
+      {
+        display.log = communicationService.getLog(offset);
+      } catch (MudException ex)
+      {
+        LOGGER.throwing("play: throws ", ex.getMessage(), ex);
+      }
     }
     return display;
   }
@@ -802,7 +825,7 @@ public class GameRestService
   @Path("{name}/log")
   @Produces(
     {
-      MediaType.TEXT_HTML
+      MediaType.APPLICATION_JSON
     })
   public String getLog(@PathParam("name") String name, @QueryParam("offset") Long offset)
   {
@@ -814,12 +837,9 @@ public class GameRestService
     }
     try
     {
-      String log = CommunicationService.getCommunicationService(person).getLog(offset);
-      PrivateLog plog = new PrivateLog();
-      plog.offset = offset;
-      plog.log = log;
-      plog.size = plog.log.length();
-      return log.substring(offset.intValue());
+      PersonCommunicationService communicationService = CommunicationService.getCommunicationService(person);
+      PrivateLog plog = communicationService.getLog(offset);
+      return plog.toJson();
     } catch (WebApplicationException e)
     {
       //ignore

@@ -154,7 +154,7 @@ public class GameRestServiceTest extends MudTest
     when(typedQuery.getResultList()).thenReturn(Collections.emptyList());
 
     // Unit under test is exercised.
-    PrivateDisplay result = gameRestService.playGame("Marvin", "l");
+    PrivateDisplay result = gameRestService.playGame("Marvin", "l", null, null);
     assertThat(result.body).isEqualTo("You are standing on a small bridge.");
     assertThat(result.image).isNull();
     assertThat(result.title).isEqualTo("The bridge");
@@ -201,7 +201,7 @@ public class GameRestServiceTest extends MudTest
     when(typedQuery.getResultList()).thenReturn(Collections.emptyList());
 
     // Unit under test is exercised.
-    PrivateDisplay result = gameRestService.playGame("Marvin", "l");
+    PrivateDisplay result = gameRestService.playGame("Marvin", "l", null, null);
     assertThat(result.body).isEqualTo("You are standing on a small bridge.");
     assertThat(result.image).isNull();
     assertThat(result.title).isEqualTo("The bridge");
@@ -250,7 +250,7 @@ public class GameRestServiceTest extends MudTest
     when(typedQuery.getResultList()).thenReturn(Collections.emptyList());
 
     // Unit under test is exercised.
-    PrivateDisplay result = gameRestService.playGame("Marvin", "l");
+    PrivateDisplay result = gameRestService.playGame("Marvin", "l", null, null);
     assertThat(result.body).isEqualTo("You are standing on a small bridge.");
     assertThat(result.image).isNull();
     assertThat(result.title).isEqualTo("The bridge");
@@ -300,7 +300,7 @@ public class GameRestServiceTest extends MudTest
     when(typedQuery.getResultList()).thenReturn(Collections.emptyList());
 
     // Unit under test is exercised.
-    PrivateDisplay result = gameRestService.playGame("Marvin", "l");
+    PrivateDisplay result = gameRestService.playGame("Marvin", "l", null, null);
     assertThat(result.body).isEqualTo("You are standing on a small bridge.");
     assertThat(result.image).isNull();
     assertThat(result.title).isEqualTo("The bridge");

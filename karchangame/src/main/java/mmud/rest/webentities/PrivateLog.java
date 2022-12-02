@@ -16,15 +16,25 @@
  */
 package mmud.rest.webentities;
 
-import jakarta.xml.bind.annotation.XmlRootElement;
+import mmud.JsonUtils;
 
 /**
  * @author maartenl
  */
-@XmlRootElement
 public class PrivateLog
 {
   public long offset;
-  public int size;
+  public long size;
   public String log;
+  public long totalsize;
+
+  public String toJson()
+  {
+    return JsonUtils.toJson(this);
+  }
+
+  public static PrivateLog fromJson(String json)
+  {
+    return JsonUtils.fromJson(json, PrivateLog.class);
+  }
 }

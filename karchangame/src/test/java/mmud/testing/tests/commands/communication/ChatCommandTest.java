@@ -75,7 +75,7 @@ public class ChatCommandTest extends MudTest
     assertThat(chatCommand.getRegExpr()).isEqualTo("chat (\\w)+ .+");
     DisplayInterface display = chatCommand.run("chat help Help me!", marvin);
     assertThat(display).isNotNull();
-    String log = CommunicationService.getCommunicationService(marvin).getLog(0L);
+    String log = CommunicationService.getCommunicationService(marvin).getLog(0L).log;
     assertThat(log).isEqualTo("Unknown chatline.<br />\r\n");
   }
 
@@ -96,7 +96,7 @@ public class ChatCommandTest extends MudTest
     assertThat(chatCommand.getRegExpr()).isEqualTo("chat (\\w)+ .+");
     display = chatCommand.run("chat help Help me!", marvin);
     assertThat(display).isNotNull();
-    String log = CommunicationService.getCommunicationService(marvin).getLog(0L);
+    String log = CommunicationService.getCommunicationService(marvin).getLog(0L).log;
     assertThat(log).startsWith("""
       Chatline created.<br />\r
       <span class="chat-blue">[help]<b>Marvin</b>: Help me!</span><br />\r
@@ -123,7 +123,7 @@ public class ChatCommandTest extends MudTest
     chatlines.put("help", chatline);
     display = createChatCommand.run("createchat help none blue", marvin);
 
-    String log = CommunicationService.getCommunicationService(marvin).getLog(0L);
+    String log = CommunicationService.getCommunicationService(marvin).getLog(0L).log;
     assertThat(log).startsWith("""
       Chatline created.<br />\r
       Chatline already exists.<br />\r
@@ -152,7 +152,7 @@ public class ChatCommandTest extends MudTest
     assertThat(leaveChatCommand.getRegExpr()).isEqualTo("leavechat (\\w)+");
     display = leaveChatCommand.run("leavechat help", marvin);
     assertThat(display).isNotNull();
-    String log = CommunicationService.getCommunicationService(marvin).getLog(0L);
+    String log = CommunicationService.getCommunicationService(marvin).getLog(0L).log;
     assertThat(log).startsWith("""
       Chatline created.<br />\r
       <span class="chat-blue">[help]<b>Marvin</b>: Help me!</span><br />\r
@@ -172,7 +172,7 @@ public class ChatCommandTest extends MudTest
     assertThat(leaveChatCommand.getRegExpr()).isEqualTo("leavechat (\\w)+");
     DisplayInterface display = leaveChatCommand.run("leavechat help", marvin);
 
-    String log = CommunicationService.getCommunicationService(marvin).getLog(0L);
+    String log = CommunicationService.getCommunicationService(marvin).getLog(0L).log;
     assertThat(log).startsWith("Chatline not found.<br />");
   }
 
@@ -187,7 +187,7 @@ public class ChatCommandTest extends MudTest
     assertThat(joinChatCommand.getRegExpr()).isEqualTo("joinchat (\\w)+");
     DisplayInterface display = joinChatCommand.run("joinchat help", marvin);
     assertThat(display).isNotNull();
-    String log = CommunicationService.getCommunicationService(marvin).getLog(0L);
+    String log = CommunicationService.getCommunicationService(marvin).getLog(0L).log;
     assertThat(log).isEqualTo("Chatline not found.<br />\r\n");
   }
 
@@ -213,7 +213,7 @@ public class ChatCommandTest extends MudTest
     assertThat(joinChatCommand.getRegExpr()).isEqualTo("joinchat (\\w)+");
     display = joinChatCommand.run("joinchat help", karn);
     assertThat(display).isNotNull();
-    String log = CommunicationService.getCommunicationService(karn).getLog(0L);
+    String log = CommunicationService.getCommunicationService(karn).getLog(0L).log;
     assertThat(log).isEqualTo("You joined a chatline.<br />\r\n");
 
     ChatCommand chatCommand = new ChatCommand("chat (\\w)+ .+");
@@ -221,12 +221,12 @@ public class ChatCommandTest extends MudTest
     assertThat(chatCommand.getRegExpr()).isEqualTo("chat (\\w)+ .+");
     display = chatCommand.run("chat help Help me!", karn);
     assertThat(display).isNotNull();
-    log = CommunicationService.getCommunicationService(marvin).getLog(0L);
+    log = CommunicationService.getCommunicationService(marvin).getLog(0L).log;
     assertThat(log).startsWith("""
       Chatline created.<br />\r
       <span class="chat-blue">[help]<b>Karn</b>: Help me!</span><br />\r
       """);
-    log = CommunicationService.getCommunicationService(karn).getLog(0L);
+    log = CommunicationService.getCommunicationService(karn).getLog(0L).log;
     assertThat(log).startsWith("""
       You joined a chatline.<br />\r
       <span class="chat-blue">[help]<b>Karn</b>: Help me!</span><br />\r
@@ -256,7 +256,7 @@ public class ChatCommandTest extends MudTest
     assertThat(joinChatCommand.getRegExpr()).isEqualTo("joinchat (\\w)+");
     display = joinChatCommand.run("joinchat help", karn);
     assertThat(display).isNotNull();
-    String log = CommunicationService.getCommunicationService(karn).getLog(0L);
+    String log = CommunicationService.getCommunicationService(karn).getLog(0L).log;
     assertThat(log).isEqualTo("Chatline not allowed.<br />\r\n");
   }
 

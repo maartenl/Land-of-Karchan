@@ -67,7 +67,7 @@ public class HeehawCommandTest extends MudTest
     assertThat(heehawCommand.getRegExpr()).isEqualTo("heehaw");
     DisplayInterface display = heehawCommand.run("heehaw", marvin);
     assertThat(display).isNull();
-    String log = CommunicationService.getCommunicationService(marvin).getLog(0L);
+    String log = CommunicationService.getCommunicationService(marvin).getLog(0L).log;
     assertThat(log).isEmpty();
   }
 
@@ -85,7 +85,7 @@ public class HeehawCommandTest extends MudTest
     assertThat(heehawCommand.getRegExpr()).isEqualTo("heehaw");
     DisplayInterface display = heehawCommand.run("heehaw", marvin);
     assertThat(display).isNotNull();
-    String log = CommunicationService.getCommunicationService(marvin).getLog(0L);
+    String log = CommunicationService.getCommunicationService(marvin).getLog(0L).log;
     assertThat(log).isEqualTo("A jackass called Marvin says &#34;Heeehaw!&#34;.<br />\nYou feel the need to say &#39;Heehaw&#39; just 4 times.<br />\r\n");
     assertThat(marvin.getJackassing()).isEqualTo(4);
     assertThat(logService.getLog()).isEmpty();
@@ -105,7 +105,7 @@ public class HeehawCommandTest extends MudTest
     assertThat(heehawCommand.getRegExpr()).isEqualTo("heehaw");
     DisplayInterface display = heehawCommand.run("heehaw", marvin);
     assertThat(display).isNotNull();
-    String log = CommunicationService.getCommunicationService(marvin).getLog(0L);
+    String log = CommunicationService.getCommunicationService(marvin).getLog(0L).log;
     assertThat(log).isEqualTo("You cannot say &#39;Heehaw&#39; that fast! You will get tongue tied!<br />\r\n");
     assertThat(marvin.getJackassing()).isEqualTo(5);
     assertThat(logService.getLog()).isEmpty();

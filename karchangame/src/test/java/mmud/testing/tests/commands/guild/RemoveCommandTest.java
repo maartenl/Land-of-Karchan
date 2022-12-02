@@ -72,9 +72,9 @@ public class RemoveCommandTest extends MudTest
     DisplayInterface display = removeCommand.run("guildremove hotblack", karn);
     assertThat(display).isNotNull();
     assertThat(display.getBody()).isEqualTo("You are in a small room.");
-    String karnLog = CommunicationService.getCommunicationService(karn).getLog(0L);
+    String karnLog = CommunicationService.getCommunicationService(karn).getLog(0L).log;
     assertThat(karnLog).isEqualTo("Cannot find that person.<br />\r\n");
-    String hotblackLog = CommunicationService.getCommunicationService(hotblack).getLog(0L);
+    String hotblackLog = CommunicationService.getCommunicationService(hotblack).getLog(0L).log;
     assertThat(hotblackLog).isEmpty();
     // the important bit
     assertThat(karn.getGuild()).isEqualTo(deputy);
@@ -95,7 +95,7 @@ public class RemoveCommandTest extends MudTest
     DisplayInterface display = removeCommand.run("guildremove karcas", karn);
     assertThat(display).isNotNull();
     assertThat(display.getBody()).isEqualTo("You are in a small room.");
-    String karnLog = CommunicationService.getCommunicationService(karn).getLog(0L);
+    String karnLog = CommunicationService.getCommunicationService(karn).getLog(0L).log;
     assertThat(karnLog).isEqualTo("Cannot find that person.<br />\r\n");
     // the important bit
     assertThat(karn.getGuild()).isEqualTo(deputy);
@@ -114,7 +114,7 @@ public class RemoveCommandTest extends MudTest
     DisplayInterface display = removeCommand.run("guildremove karn", karn);
     assertThat(display).isNotNull();
     assertThat(display.getBody()).isEqualTo("You are in a small room.");
-    String karnLog = CommunicationService.getCommunicationService(karn).getLog(0L);
+    String karnLog = CommunicationService.getCommunicationService(karn).getLog(0L).log;
     assertThat(karnLog).isEqualTo("A guildmaster cannot remove him/herself from the guild.<br />\r\n");
     // the important bit
     assertThat(karn.getGuild()).isEqualTo(deputy);
@@ -133,9 +133,9 @@ public class RemoveCommandTest extends MudTest
     DisplayInterface display = removeCommand.run("guildremove marvin", karn);
     assertThat(display).isNotNull();
     assertThat(display.getBody()).isEqualTo("You are in a small room.");
-    String karnLog = CommunicationService.getCommunicationService(karn).getLog(0L);
+    String karnLog = CommunicationService.getCommunicationService(karn).getLog(0L).log;
     assertThat(karnLog).isEqualTo("You have removed Marvin from your guild.<br />\r\n<b>Marvin</b> has been removed from the guild.<br />\r\n");
-    String marvinLog = CommunicationService.getCommunicationService(marvin).getLog(0L);
+    String marvinLog = CommunicationService.getCommunicationService(marvin).getLog(0L).log;
     assertThat(marvinLog).isEqualTo("<b>Marvin</b> has been removed from the guild.<br />\r\n");
     // the important bit
     assertThat(karn.getGuild()).isEqualTo(deputy);

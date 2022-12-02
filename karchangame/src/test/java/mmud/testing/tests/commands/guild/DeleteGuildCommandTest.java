@@ -76,7 +76,7 @@ public class DeleteGuildCommandTest extends MudTest
     DisplayInterface display = deleteguildCommand.run("deleteguild", karn);
     assertThat(display).isNotNull();
     assertThat(display.getBody()).isEqualTo("You are in a small room.");
-    String karnLog = CommunicationService.getCommunicationService(karn).getLog(0L);
+    String karnLog = CommunicationService.getCommunicationService(karn).getLog(0L).log;
     assertThat(karnLog).isEqualTo("You are not a member of a guild.<br />\n");
     // the important bit
     assertThat(karn.getGuild()).isNull();
@@ -109,7 +109,7 @@ public class DeleteGuildCommandTest extends MudTest
     DisplayInterface display = deleteguildCommand.run("deleteguild", karn);
     assertThat(display).isNotNull();
     assertThat(display.getBody()).isEqualTo("You are in a small room.");
-    String karnLog = CommunicationService.getCommunicationService(karn).getLog(0L);
+    String karnLog = CommunicationService.getCommunicationService(karn).getLog(0L).log;
 
     assertThat(karnLog).isEqualTo("Guild oldguild deleted.<br />\r\n");
     // the important bit

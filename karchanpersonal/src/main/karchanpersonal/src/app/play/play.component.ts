@@ -5,6 +5,7 @@ import {ChangeEvent} from '@ckeditor/ckeditor5-angular/ckeditor.component';
 import {FormBuilder, FormGroup} from '@angular/forms';
 
 import {PlayerService} from '../player.service';
+import {Player} from '../player-settings/player.model';
 import {GameService} from '../game.service';
 import {Display, Item, Log, Person, WhoPerson} from './display.model';
 import {LanguageUtils} from '../language.utils';
@@ -27,16 +28,16 @@ export class PlayComponent implements OnInit {
 
   Karchan = class {
     name: string = "";
-    logOffset: number = 0;
     sleep: boolean = false;
     bigEntry: boolean = false;
     editor: string = "";
-    log: string = "";
   };
 
   display: Display = new Display();
 
   karchan = new this.Karchan();
+
+  player: Player | null = null;
 
   commandForm: FormGroup;
 
@@ -66,12 +67,28 @@ export class PlayComponent implements OnInit {
       this.playInit();
       return;
     }
-    this.gameService.enterGame()
+    this.playerService.getPlayer()
       .subscribe(
         (result: any) => { // on success
-          this.gameService.setIsGaming(true);
-          this.playInit();
-          this.chatlogService.open(this.karchan.name);
+          this.player = result;
+          if (this.player?.websockets) {
+            this.chatlogService.enable();
+          } else {
+            this.chatlogService.disable();
+          }
+          this.gameService.enterGame()
+            .subscribe(
+              (result: any) => { // on success
+                this.gameService.setIsGaming(true);
+                this.playInit();
+                this.chatlogService.open(this.karchan.name);
+              },
+              (err: any) => { // error
+                // console.log('error', err);
+              },
+              () => { // on completion
+              }
+            );
         },
         (err: any) => { // error
           // console.log('error', err);
@@ -120,7 +137,6 @@ export class PlayComponent implements OnInit {
     }
     const name = this.retrieveName();
     this.karchan.name = name;
-    this.karchan.logOffset = 0;
     this.karchan.sleep = false;
     if (window.console) {
       console.log('playInit name=' + name);
@@ -157,8 +173,10 @@ export class PlayComponent implements OnInit {
           this.display.log.size = 0;
           this.display.log.offset = 0;
           this.gameService.setIsGaming(false);
-          this.chatlogService.clearMessages();
-          this.chatlogService.close();
+          if (this.player?.websockets) {
+            this.chatlogService.clearMessages();
+            this.chatlogService.close();
+          }
           this.router.navigate(['/']);
         },
         (err: any) => { // error
@@ -228,12 +246,13 @@ export class PlayComponent implements OnInit {
    */
   public processCall(command: string, log: boolean) {
     if (command === 'clear') {
-      this.karchan.logOffset = 0;
+      this.display.log.offset = 9999999999999;
       log = true;
     }
-    this.gameService.processCommand(command)
+    const offset = this.display.log.offset;
+    this.gameService.processCommand(command, offset, !this.player?.websockets)
       .subscribe(
-        (result: any) => { // on success
+        (result: Display) => { // on success
           this.writeStuff(result);
           this.createForms();
         },
@@ -338,12 +357,20 @@ export class PlayComponent implements OnInit {
   }
 
   public clearLog(): boolean {
-    if (window.console) { console.log('clearLog'); }
-    const messages = this.chatlogService.getMessages();
-    this.chatlogService.clearMessages();
-    messages.forEach(message => this.display.log.log = this.display.log.log + message.content);
-    this.display.log.offset = this.display.log.log.length;
-    this.display.log.size = this.display.log.log.length;
+    if (window.console) {
+      console.log('clearLog');
+    }
+    if (this.player?.websockets) {
+      const messages = this.chatlogService.getMessages();
+      this.chatlogService.clearMessages();
+      messages.forEach(message => this.display.log.log = this.display.log.log + message.content);
+      this.display.log.offset = this.display.log.log.length;
+      this.display.log.size = this.display.log.log.length;
+    } else {
+      this.display.log.offset = 100000000;
+      this.display.log.size = 0;
+      this.display.log.log = '';
+    }
     return false;
   }
 
@@ -351,11 +378,8 @@ export class PlayComponent implements OnInit {
     if (window.console) { console.log('resetLog'); }
     this.gameService.getLog()
       .subscribe(
-        (result: string) => { // on success
-          this.display.log = new Log();
-          this.display.log.log = result;
-          this.display.log.size = result.length;
-          this.display.log.offset = 0;
+        (result: Log) => { // on success
+          this.display.log = new Log(result);
           this.chatlogService.clearMessages();
           console.log('log rest:' + result);
         },
@@ -373,7 +397,7 @@ export class PlayComponent implements OnInit {
       if (window.console) { console.log('empty log'); }
       return '';
     }
-    const log = this.display.log.log.substr(this.display.log.offset);
+    const log = this.display.log.log;
     return log;
   }
 

@@ -93,13 +93,13 @@
                      title="Reset your log">Reset</a>
                 </p>
               </div>
-              <div class="col">
+              <div class="col" *ngIf="player?.websockets">
                 <p class="d-grid gap-2 card-text">
                   <a class="btn btn-outline-primary" href="#" (click)="ping();"
                      title="Ping">Ping</a>
                 </p>
               </div>
-              <div class="col">
+              <div class="col" *ngIf="player?.websockets">
                 <p class="d-grid gap-2 card-text">
                   <a class="btn btn-block btn-outline-primary" href="#" (click)="reconnect();"
                      title="Reconnect">Reconnect</a>

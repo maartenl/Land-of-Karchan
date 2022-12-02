@@ -74,7 +74,7 @@ public class BuyCommandTest extends MudTest
     DisplayInterface display = buyCommand.run("buy brush from karcas", karn);
     assertThat(display).isNotNull();
     assertThat(display.getBody()).isEqualTo("You are in a small room.");
-    String log = CommunicationService.getCommunicationService(karn).getLog(0L);
+    String log = CommunicationService.getCommunicationService(karn).getLog(0L).log;
     assertThat(log).isEqualTo("The shopkeeper doesn&#39;t have that.<br />\n");
   }
 
@@ -92,7 +92,7 @@ public class BuyCommandTest extends MudTest
     DisplayInterface display = buyCommand.run("buy -2 ring from karcas", karn);
     assertThat(display).isNotNull();
     assertThat(display.getBody()).isEqualTo("You are in a small room.");
-    String log = CommunicationService.getCommunicationService(karn).getLog(0L);
+    String log = CommunicationService.getCommunicationService(karn).getLog(0L).log;
     assertThat(log).isEqualTo("That is an illegal amount.<br />\n");
   }
 
@@ -113,7 +113,7 @@ public class BuyCommandTest extends MudTest
     DisplayInterface display = buyCommand.run("buy 3 ring from karcas", karn);
     assertThat(display).isNotNull();
     assertThat(display.getBody()).isEqualTo("You are in a small room.");
-    String log = CommunicationService.getCommunicationService(karn).getLog(0L);
+    String log = CommunicationService.getCommunicationService(karn).getLog(0L).log;
     assertThat(log).isEqualTo("The shopkeeper doesn&#39;t have that many items in stock.<br />\r\n");
   }
 
@@ -126,7 +126,7 @@ public class BuyCommandTest extends MudTest
     DisplayInterface display = buyCommand.run("buy ring from karcas", karn);
     assertThat(display).isNotNull();
     assertThat(display.getBody()).isEqualTo("You are in a small room.");
-    String log = CommunicationService.getCommunicationService(karn).getLog(0L);
+    String log = CommunicationService.getCommunicationService(karn).getLog(0L).log;
     assertThat(log).isEqualTo("Unable to locate shopkeeper.<br />\r\n");
   }
 
@@ -147,7 +147,7 @@ public class BuyCommandTest extends MudTest
     DisplayInterface display = buyCommand.run("buy ring from karcas", karn);
     assertThat(display).isNotNull();
     assertThat(display.getBody()).isEqualTo("You are in a small room.");
-    String log = CommunicationService.getCommunicationService(karn).getLog(0L);
+    String log = CommunicationService.getCommunicationService(karn).getLog(0L).log;
     assertThat(log).isEqualTo("That&#39;s not a shopkeeper!<br />\r\n");
   }
 
@@ -170,7 +170,7 @@ public class BuyCommandTest extends MudTest
     DisplayInterface display = buyCommand.run("buy ring from karcas", karn);
     assertThat(display).isNotNull();
     assertThat(display.getBody()).isEqualTo("You are in a small room.");
-    String log = CommunicationService.getCommunicationService(karn).getLog(0L);
+    String log = CommunicationService.getCommunicationService(karn).getLog(0L).log;
     assertThat(log).isEqualTo("Karcas says [to you] : That item is not worth anything.<br />\r\nYou did not buy anything.<br />\r\n");
   }
 
@@ -192,7 +192,7 @@ public class BuyCommandTest extends MudTest
     DisplayInterface display = buyCommand.run("buy ring from karcas", karn);
     assertThat(display).isNotNull();
     assertThat(display.getBody()).isEqualTo("You are in a small room.");
-    String log = CommunicationService.getCommunicationService(karn).getLog(0L);
+    String log = CommunicationService.getCommunicationService(karn).getLog(0L).log;
     assertThat(log).isEqualTo("You do not have enough money.<br />\r\nYou did not buy anything.<br />\r\n");
   }
 
@@ -215,7 +215,7 @@ public class BuyCommandTest extends MudTest
     DisplayInterface display = buyCommand.run("buy ring from karcas", karn);
     assertThat(display).isNotNull();
     assertThat(display.getBody()).isEqualTo("You are in a small room.");
-    String log = CommunicationService.getCommunicationService(karn).getLog(0L);
+    String log = CommunicationService.getCommunicationService(karn).getLog(0L).log;
     assertThat(log).isEqualTo("You cannot buy that item.<br />\r\nYou did not buy anything.<br />\r\n");
   }
 
@@ -238,7 +238,7 @@ public class BuyCommandTest extends MudTest
     DisplayInterface display = buyCommand.run("buy ring from karcas", karn);
     assertThat(display).isNotNull();
     assertThat(display.getBody()).isEqualTo("You are in a small room.");
-    String log = CommunicationService.getCommunicationService(karn).getLog(0L);
+    String log = CommunicationService.getCommunicationService(karn).getLog(0L).log;
     assertThat(log).isEqualTo("You cannot buy that item.<br />\r\nYou did not buy anything.<br />\r\n");
   }
 
@@ -261,7 +261,7 @@ public class BuyCommandTest extends MudTest
     DisplayInterface display = buyCommand.run("buy ring from karcas", karn);
     assertThat(display).isNotNull();
     assertThat(display.getBody()).isEqualTo("You are in a small room.");
-    String log = CommunicationService.getCommunicationService(karn).getLog(0L);
+    String log = CommunicationService.getCommunicationService(karn).getLog(0L).log;
     assertThat(log).isEqualTo("You buy a nice, golden, friendship ring from Karcas for 5 copper coins.<br />\r\n");
   }
 

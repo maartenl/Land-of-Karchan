@@ -32,12 +32,25 @@ export class ChatlogService {
 
   private counter: number = 0;
 
+  private enabled: boolean = true;
+
   constructor(
     private toastService: ToastService
   ) {
   }
 
+  public enable() {
+    this.enabled = true;
+  }
+
+  public disable() {
+    this.enabled = false;
+  }
+
   open(username: string) {
+    if (!this.enabled) {
+      return;
+    }
     this.internalopen(username);
     this.toastService.show('Opening connection...', {
       delay: 5000,
@@ -68,17 +81,24 @@ export class ChatlogService {
   private setInterval() {
     const self = this;
     if (this.interval !== null) {
-      console.log("Clearing internal ping interval " + this.interval);
+      if (window.console) {
+        console.log("Clearing internal ping interval " + this.interval);
+      }
       window.clearInterval(this.interval);
       this.interval = null;
     }
     this.interval = window.setInterval(function () {
       self.internalping(self);
     }, 30000);
-    console.log("Setting internal ping interval " + this.interval);
+    if (window.console) {
+      console.log("Setting internal ping interval " + this.interval);
+    }
   }
 
   ping() {
+    if (!this.enabled) {
+      return;
+    }
     const message = new Message();
     message.content = "ping";
     message.from = this.username;
@@ -108,6 +128,9 @@ export class ChatlogService {
   }
 
   reconnect() {
+    if (!this.enabled) {
+      return;
+    }
     this.open(this.username);
   }
 
@@ -151,6 +174,9 @@ export class ChatlogService {
   }
 
   send(data: Message) {
+    if (!this.enabled) {
+      return;
+    }
     if (this.myWebSocket !== null) {
       this.myWebSocket.next(data);
     }
@@ -160,6 +186,9 @@ export class ChatlogService {
    * Closes the websocket.
    */
   close() {
+    if (!this.enabled) {
+      return;
+    }
     this.myWebSocket?.unsubscribe();
   }
 
@@ -167,6 +196,9 @@ export class ChatlogService {
    * Called when connection is closed (for whatever reason)
    */
   closingConnection() {
+    if (!this.enabled) {
+      return;
+    }
     this.connectionOpen = false;
     this.toastService.show('Closing connection...', {
       delay: 5000,
@@ -179,7 +211,12 @@ export class ChatlogService {
    * Called if WebSocket API signals some kind of error
    */
   error(error: any) {
-    if (window.console) { console.log(error); }
+    if (!this.enabled) {
+      return;
+    }
+    if (window.console) {
+      console.log(error);
+    }
     this.toastService.show('An error occurred using a websocket...', {
       delay: 0,
       autohide: false,
