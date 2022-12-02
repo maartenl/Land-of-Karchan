@@ -624,13 +624,6 @@ public class GameRestService
       }
       // write log "entered game."
       logService.writeLog(person, "entered game.");
-    } catch (WebApplicationException e)
-    {
-      //ignore
-      throw e;
-    } catch (MudException e)
-    {
-      throw new MudWebException(name, e, Response.Status.BAD_REQUEST);
     } catch (PersistenceException e)
     {
       ExceptionUtils.createMessage(e).ifPresent(message ->
@@ -835,19 +828,9 @@ public class GameRestService
     {
       offset = 0L;
     }
-    try
-    {
-      PersonCommunicationService communicationService = CommunicationService.getCommunicationService(person);
-      PrivateLog plog = communicationService.getLog(offset);
-      return plog.toJson();
-    } catch (WebApplicationException e)
-    {
-      //ignore
-      throw e;
-    } catch (MudException e)
-    {
-      throw new MudWebException(name, e, Response.Status.BAD_REQUEST);
-    }
+    PersonCommunicationService communicationService = CommunicationService.getCommunicationService(person);
+    PrivateLog plog = communicationService.getLog(offset);
+    return plog.toJson();
   }
 
   /**
@@ -868,18 +851,7 @@ public class GameRestService
   {
     LOGGER.finer("entering deleteLog");
     Person person = authenticate(name);
-
-    try
-    {
-      CommunicationService.getCommunicationService(person).clearLog();
-    } catch (WebApplicationException e)
-    {
-      //ignore
-      throw e;
-    } catch (MudException e)
-    {
-      throw new MudWebException(name, e, Response.Status.BAD_REQUEST);
-    }
+    CommunicationService.getCommunicationService(person).clearLog();
     return Response.ok().build();
   }
 
@@ -902,21 +874,11 @@ public class GameRestService
     LOGGER.finer("entering quit");
 
     User person = authenticate(name);
-    try
-    {
-      String message = "You have left the game. (" + LocalDateTime.now().format(DATETIME_FORMAT) + ")<br>";
-      CommunicationService.getCommunicationService(person).writeMessage(person, message);
-      person.deactivate();
-      idleUsersService.removeUser(person.getName());
-      logService.writeLog(person, "left the game.");
-    } catch (WebApplicationException e)
-    {
-      //ignore
-      throw e;
-    } catch (MudException e)
-    {
-      throw new MudWebException(name, e, Response.Status.BAD_REQUEST);
-    }
+    String message = "You have left the game. (" + LocalDateTime.now().format(DATETIME_FORMAT) + ")<br>";
+    CommunicationService.getCommunicationService(person).writeMessage(person, message);
+    person.deactivate();
+    idleUsersService.removeUser(person.getName());
+    logService.writeLog(person, "left the game.");
     return Response.ok().build();
   }
 

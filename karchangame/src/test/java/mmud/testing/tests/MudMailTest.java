@@ -72,7 +72,7 @@ public class MudMailTest
   private User hotblack;
   private User marvin;
 
-  private PlayerAuthenticationService playerAuthenticationService = new PlayerAuthenticationService()
+  private final PlayerAuthenticationService playerAuthenticationService = new PlayerAuthenticationService()
   {
     @Override
     public String getPlayerName(SecurityContext context) throws IllegalStateException
@@ -487,7 +487,7 @@ public class MudMailTest
     // Unit under test is exercised.
     assertThatThrownBy(() -> privateRestService.getMailInfo("Marvin", 1L))
       .isInstanceOf(MudWebException.class)
-      .hasMessage("mmud.exceptions.MudWebException: Mail 1 not found.");
+      .hasMessage("Mail 1 not found.");
   }
 
   @Test
@@ -524,7 +524,7 @@ public class MudMailTest
     // Unit under test is exercised.
     assertThatThrownBy(() -> privateRestService.getMailInfo("Marvin", 1L))
       .isInstanceOf(MudWebException.class)
-      .hasMessage("mmud.exceptions.MudWebException: Mail with id 1 was not for Marvin.");
+      .hasMessage("Mail with id 1 was not for Marvin.");
   }
 
   @Test
@@ -561,7 +561,7 @@ public class MudMailTest
     // Unit under test is exercised.
     assertThatThrownBy(() -> privateRestService.getMailInfo("Marvin", 1L))
       .isInstanceOf(MudWebException.class)
-      .hasMessage("mmud.exceptions.MudWebException: Mail with id 1 was deleted.");
+      .hasMessage("Mail with id 1 was deleted.");
   }
 
   @Test

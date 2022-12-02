@@ -19,10 +19,12 @@ package mmud.exceptions;
 import jakarta.ws.rs.core.Response;
 
 /**
+ * This exception is automatically mapped to a nice WebApplicationException, using a {@link CustomWebExceptionMapper}.
+ * A "normal" exception, is the {@link MudException}.
  *
  * @author maartenl
  */
-public class MudWebException extends MudException
+public class MudWebException extends RuntimeException
 {
 
   private final String name;

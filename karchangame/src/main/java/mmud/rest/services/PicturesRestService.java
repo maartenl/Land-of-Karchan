@@ -50,6 +50,7 @@ import mmud.JsonUtils;
 import mmud.database.RegularExpressions;
 import mmud.database.entities.characters.User;
 import mmud.database.entities.web.Image;
+import mmud.exceptions.MudException;
 import mmud.exceptions.MudWebException;
 import mmud.rest.webentities.PrivateImage;
 import mmud.services.LogService;
@@ -139,7 +140,7 @@ public class PicturesRestService
         .getResultList();
       return "[" + String.join(",", items) + "]";
 
-    } catch (WebApplicationException e)
+    } catch (MudWebException | MudException e)
     {
       //ignore
       throw e;
@@ -190,7 +191,7 @@ public class PicturesRestService
 
       return new PrivateImage(image).toJson();
 
-    } catch (WebApplicationException e)
+    } catch (MudWebException | MudException e)
     {
       //ignore
       throw e;
@@ -255,7 +256,7 @@ public class PicturesRestService
     image.setUrl(newImage.url);
     image.setOwner(user);
     byte[] decodedString = Base64.getDecoder().decode(newImage.content.getBytes(StandardCharsets.UTF_8));
-    if (decodedString == null)
+    if (decodedString == null || decodedString.length == 0)
     {
       throw new MudWebException(name, "No content.", Response.Status.BAD_REQUEST);
     }
@@ -269,10 +270,6 @@ public class PicturesRestService
     } catch (IOException ex)
     {
       throw new MudWebException(name, "Error occurred during parsing of image.", Response.Status.BAD_REQUEST);
-    }
-    if (decodedString == null)
-    {
-      throw new MudWebException(name, "No content.", Response.Status.NO_CONTENT);
     }
     image.setContent(decodedString);
     image.setCreateDate(LocalDateTime.now());

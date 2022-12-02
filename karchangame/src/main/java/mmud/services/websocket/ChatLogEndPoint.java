@@ -38,8 +38,8 @@ public class ChatLogEndPoint
   @OnOpen
   public void onOpen(Session session) throws IOException, EncodeException
   {
-    LOGGER.finest("onOpen " + session);
     String username = session.getUserPrincipal().getName();
+    LOGGER.finest(() -> "onOpen " + session.getId() + "," + username);
     // Get session and WebSocket connection
     this.session = session;
     chatEndpoints.add(this);
@@ -76,8 +76,8 @@ public class ChatLogEndPoint
   @OnClose
   public void onClose(Session session) throws IOException, EncodeException
   {
-    LOGGER.finest("onClose " + session);
     String username = session.getUserPrincipal().getName();
+    LOGGER.finest(() -> "onClose " + session.getId() + "," + username);
     // WebSocket connection closes
     chatEndpoints.remove(this);
     users.remove(session.getId());

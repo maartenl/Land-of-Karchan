@@ -195,7 +195,7 @@ public class PrivateRestService
       getEntityManager().createNamedQuery("Mail.nonewmail")
         .setParameter("name", person)
         .executeUpdate();
-    } catch (WebApplicationException e)
+    } catch (MudWebException | MudException e)
     {
       //ignore
       throw e;
@@ -248,7 +248,7 @@ public class PrivateRestService
       {
         res.add(new PrivateMail(mail));
       }
-    } catch (WebApplicationException e)
+    } catch (MudWebException | MudException e)
     {
       //ignore
       throw e;
@@ -348,7 +348,7 @@ public class PrivateRestService
     try
     {
       createNewMail(newMail.subject, newMail.body, person, newMail.toname, users);
-    } catch (WebApplicationException e)
+    } catch (MudWebException | MudException e)
     {
       //ignore
       throw e;
@@ -476,7 +476,7 @@ public class PrivateRestService
       mail.setHaveread(Boolean.TRUE);
       LOGGER.finer("exiting getMail");
       return new PrivateMail(mail);
-    } catch (WebApplicationException e)
+    } catch (MudWebException | MudException e)
     {
       //ignore
       throw e;
@@ -575,10 +575,6 @@ public class PrivateRestService
       person.addItem(item);
       logService.writeLog(person, "item " + definition.getAdjectives() + " " + definition.getName() + " from mail " + id + " created.");
 
-    } catch (WebApplicationException e)
-    {
-      //ignore
-      throw e;
     } catch (ConstraintViolationException e)
     {
       throw new MudWebException(name, ExceptionUtils.createMessage(e), e, Status.BAD_REQUEST);
@@ -682,39 +678,31 @@ public class PrivateRestService
       throw new MudWebException(name, "User trying to update somebody elses charactersheet?",
         person.getName() + " trying to update charactersheet of " + cinfo.name, Status.UNAUTHORIZED);
     }
-    try
+
+    var characterInfo = getEntityManager().find(CharacterInfo.class, person.getName());
+    var isNew = false;
+    if (characterInfo == null)
     {
-      var characterInfo = getEntityManager().find(CharacterInfo.class, person.getName());
-      var isNew = false;
-      if (characterInfo == null)
-      {
-        isNew = true;
-        characterInfo = new CharacterInfo();
-        characterInfo.setName(person.getName());
-      }
-      characterInfo.setImageurl(cinfo.imageurl);
-      person.setTitle(cinfo.title);
-      if (cinfo.websockets != null)
-      {
-        person.setWebsocketSupport(cinfo.websockets);
-      }
-      characterInfo.setHomepageurl(cinfo.homepageurl);
-      characterInfo.setDateofbirth(cinfo.dateofbirth);
-      characterInfo.setCityofbirth(cinfo.cityofbirth);
-      characterInfo.setStoryline(cinfo.storyline);
-      if (isNew)
-      {
-        getEntityManager().persist(characterInfo);
-      }
-      logService.writeLog(person, "settings changed.");
-    } catch (WebApplicationException e)
-    {
-      //ignore
-      throw e;
-    } catch (MudException e)
-    {
-      throw new MudWebException(name, e, Status.BAD_REQUEST);
+      isNew = true;
+      characterInfo = new CharacterInfo();
+      characterInfo.setName(person.getName());
     }
+    characterInfo.setImageurl(cinfo.imageurl);
+    person.setTitle(cinfo.title);
+    if (cinfo.websockets != null)
+    {
+      person.setWebsocketSupport(cinfo.websockets);
+    }
+    characterInfo.setHomepageurl(cinfo.homepageurl);
+    characterInfo.setDateofbirth(cinfo.dateofbirth);
+    characterInfo.setCityofbirth(cinfo.cityofbirth);
+    characterInfo.setStoryline(cinfo.storyline);
+    if (isNew)
+    {
+      getEntityManager().persist(characterInfo);
+    }
+    logService.writeLog(person, "settings changed.");
+
     return createResponse();
   }
 
@@ -766,18 +754,8 @@ public class PrivateRestService
         PASSWORDS_DO_NOT_MATCH,
         Status.BAD_REQUEST);
     }
-    try
-    {
-      logService.writeLog(person, "password changed.");
-      person.setNewpassword(privatePassword.password);
-    } catch (WebApplicationException e)
-    {
-      //ignore
-      throw e;
-    } catch (MudException e)
-    {
-      throw new MudWebException(name, e, Status.BAD_REQUEST);
-    }
+    logService.writeLog(person, "password changed.");
+    person.setNewpassword(privatePassword.password);
     return createResponse();
   }
 
@@ -803,7 +781,7 @@ public class PrivateRestService
     {
       logService.writeLog(person, "character deleted.");
       getEntityManager().remove(person);
-    } catch (WebApplicationException e)
+    } catch (MudWebException | MudException e)
     {
       //ignore
       throw e;

@@ -18,6 +18,8 @@ package mmud.exceptions;
 
 /**
  * The main exception of the mud.
+ * This exception is automatically mapped to a nice WebApplicationException, using a CustomExceptionMapper (in karchangame artifact).
+ *
  * @author maartenl
  */
 public class MudException extends RuntimeException
