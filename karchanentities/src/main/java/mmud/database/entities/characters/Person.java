@@ -25,6 +25,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.annotation.Nullable;
 
 import com.google.common.annotations.VisibleForTesting;
 import jakarta.persistence.Basic;
@@ -107,6 +108,10 @@ public abstract class Person implements Serializable, AttributeWrangler, Display
   @Size(max = 254)
   @Column(name = "title")
   private String title;
+
+  @Size(max = 120)
+  @Column(name = "familyname")
+  private String familyname;
 
   @Basic(optional = false)
   @NotNull
@@ -425,6 +430,26 @@ public abstract class Person implements Serializable, AttributeWrangler, Display
   public void setName(String name) throws MudException
   {
     this.name = name;
+  }
+
+  /**
+   * Also known as a "surname" or last name.
+   *
+   * @return the family name, can be NULL.
+   */
+  public @Nullable String getFamilyname()
+  {
+    return familyname;
+  }
+
+  /**
+   * Sets the family name, see {@link #getFamilyname()}.
+   *
+   * @param familyname the new familyname or NULL.
+   */
+  public void setFamilyname(@Nullable String familyname)
+  {
+    this.familyname = familyname;
   }
 
   /**

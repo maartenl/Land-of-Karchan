@@ -34,7 +34,6 @@ import jakarta.persistence.PersistenceContext;
 import jakarta.persistence.TypedQuery;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.transaction.Transactional;
-import jakarta.validation.ConstraintViolationException;
 import jakarta.ws.rs.Consumes;
 import jakarta.ws.rs.DELETE;
 import jakarta.ws.rs.GET;
@@ -63,7 +62,6 @@ import mmud.database.entities.web.CharacterInfo;
 import mmud.database.entities.web.Family;
 import mmud.database.entities.web.FamilyPK;
 import mmud.database.entities.web.FamilyValue;
-import mmud.exceptions.ExceptionUtils;
 import mmud.exceptions.MudException;
 import mmud.exceptions.MudWebException;
 import mmud.rest.webentities.PrivateMail;
@@ -527,32 +525,30 @@ public class PrivateRestService
     LOGGER.finer("entering createMailItem");
     Person person = authenticate(name);
 
-    try
+    // get the specific mail with id {id}
+    MailReceiver mail = getMail(person.getName(), id);
+
+    LOGGER.finer("createMailItem: retrieve template item definition");
+
+    if (itemDefinitionId >= Mail.ITEMS.size() || itemDefinitionId < 0)
     {
-      // get the specific mail with id {id}
-      MailReceiver mail = getMail(person.getName(), id);
+      LOGGER.finer("createMailItem: wrong item def");
+      throw new MudWebException(name, "Could not create item from mail.", Status.NOT_FOUND);
+    }
 
-      LOGGER.finer("createMailItem: retrieve template item definition");
+    ItemDefinition definition = getEntityManager().find(ItemDefinition.class, Mail.ITEMS.get(itemDefinitionId));
+    if (definition == null)
+    {
+      LOGGER.finer("createMailItem: could not find itemdefinition from itemdefinitionnr " + Mail.ITEMS.get(itemDefinitionId));
+      throw new MudWebException(name, "Could not create item from mail.", Status.NOT_FOUND);
+    }
+    // create itemDefinitionId instance
+    LOGGER.finer(() -> "createMailItem: create instance object " + definition.getId() + " " + name);
 
-      if (itemDefinitionId >= Mail.ITEMS.size() || itemDefinitionId < 0)
-      {
-        LOGGER.finer("createMailItem: wrong item def");
-        throw new MudWebException(name, "Could not create item from mail.", Status.NOT_FOUND);
-      }
-
-      ItemDefinition definition = getEntityManager().find(ItemDefinition.class, Mail.ITEMS.get(itemDefinitionId));
-      if (definition == null)
-      {
-        LOGGER.finer("createMailItem: could not find itemdefinition from itemdefinitionnr " + Mail.ITEMS.get(itemDefinitionId));
-        throw new MudWebException(name, "Could not create item from mail.", Status.NOT_FOUND);
-      }
-      // create itemDefinitionId instance
-      LOGGER.finer("createMailItem: create instance object " + definition.getId() + " " + name);
-
-      var item = new NormalItem(definition);
-      item.setOwner(getEntityManager().find(Admin.class, Admin.DEFAULT_OWNER));
-      getEntityManager().persist(item);
-      var description = definition.getReaddescription()
+    var item = new NormalItem(definition);
+    item.setOwner(getEntityManager().find(Admin.class, Admin.DEFAULT_OWNER));
+    getEntityManager().persist(item);
+    var description = definition.getReaddescription()
 //        <div class="card">
 //                <div class="card-text">
 //                    <h4 class="card-title">{{ mail?.subject }}</h4>
@@ -563,26 +559,18 @@ public class PrivateRestService
 //                <div class="card-text" [innerHTML]="mail?.body">
 //                </div>
 //            </div>
-        .replace("letterhead", "<div class=\"card\">\n" +
-          "  <div class=\"card-body\">\n" +
-          "<h4 class=\"card-title\">" + mail.getMail().getSubject() + "</h4></div>")
-        .replace("letterbody",
-          "                <p class=\"card-text\">\n" + mail.getMail().getBody() +
-            "                </p>")
-        .replace("letterfooter", "<h6 class=\"card-subtitle mb-2 text-muted\">From " + mail.getMail().getName().getName() + "</h6>\n" +
-          "</div></div>");
-      item.setAttribute("readable", description);
-      person.addItem(item);
-      logService.writeLog(person, "item " + definition.getAdjectives() + " " + definition.getName() + " from mail " + id + " created.");
+      .replace("letterhead", "<div class=\"card\">\n" +
+        "  <div class=\"card-body\">\n" +
+        "<h4 class=\"card-title\">" + mail.getMail().getSubject() + "</h4></div>")
+      .replace("letterbody",
+        "                <p class=\"card-text\">\n" + mail.getMail().getBody() +
+          "                </p>")
+      .replace("letterfooter", "<h6 class=\"card-subtitle mb-2 text-muted\">From " + mail.getMail().getName().getName() + "</h6>\n" +
+        "</div></div>");
+    item.setAttribute("readable", description);
+    person.addItem(item);
+    logService.writeLog(person, "item " + definition.getAdjectives() + " " + definition.getName() + " from mail " + id + " created.");
 
-    } catch (ConstraintViolationException e)
-    {
-      throw new MudWebException(name, ExceptionUtils.createMessage(e), e, Status.BAD_REQUEST);
-    } catch (Exception e)
-    {
-      LOGGER.throwing("PrivateRestService", "createMailItem", e);
-      throw new MudWebException(e, Status.BAD_REQUEST);
-    }
     LOGGER.finer("exiting createMailItem");
     return createResponse();
   }
@@ -688,7 +676,8 @@ public class PrivateRestService
       characterInfo.setName(person.getName());
     }
     characterInfo.setImageurl(cinfo.imageurl);
-    person.setTitle(cinfo.title);
+    person.setTitle(StringUtils.trimToNull(cinfo.title));
+    person.setFamilyname(StringUtils.trimToNull(cinfo.familyname));
     if (cinfo.websockets != null)
     {
       person.setWebsocketSupport(cinfo.websockets);

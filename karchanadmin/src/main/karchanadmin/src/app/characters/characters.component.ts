@@ -44,6 +44,7 @@ export class CharactersComponent extends AdminComponent<MudCharacter, string> im
       name: null,
       image: null,
       title: null,
+      familyname: null,
       room: null,
       god: null,
       race: null,
@@ -139,6 +140,7 @@ export class CharactersComponent extends AdminComponent<MudCharacter, string> im
     const object = item === undefined ? {
       name: null,
       image: null,
+      familyname: null,
       title: null,
       room: null,
       god: null,
@@ -185,6 +187,7 @@ export class CharactersComponent extends AdminComponent<MudCharacter, string> im
     const saveCharacter: MudCharacter = new MudCharacter({
       name: formModel.name as string,
       image: formModel.image as string,
+      familyname: formModel.familyname as string,
       title: formModel.title as string,
       god: formModel.god as string,
       room: formModel.room as number,
@@ -343,6 +346,7 @@ export class CharactersComponent extends AdminComponent<MudCharacter, string> im
     this.form.reset({
       name: character.name,
       image: character.image,
+      familyname: character.familyname,
       title: character.title,
       room: character.room,
       god: character.god,

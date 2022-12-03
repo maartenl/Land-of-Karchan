@@ -1,30 +1,26 @@
 <div class="container-fluid">
-    <div class="row row-content">
-        <div class="col-xs-12">
-            <form>
-                <fieldset class="form-group">
-                    <input type="text" class="form-control" id="ownerSearch" name="ownerSearch" placeholder="Owner"
-                        #searchowner (keyup.enter)="updateOwnerSearch(searchowner.value)"
-                        (blur)="updateOwnerSearch(searchowner.value)">
-                </fieldset>
-              <fieldset class="form-group">
-                <input type="text" class="form-control" id="nameSearch" name="nameSearch" placeholder="Name"
-                       #searchname (keyup.enter)="updateNameSearch(searchname.value)"
-                       (blur)="updateNameSearch(searchname.value)">
-              </fieldset>
-              <fieldset class="form-group">
-                <input type="text" class="form-control" id="ipSearch" name="ipSearch" placeholder="Address"
-                       #searchip (keyup.enter)="updateIpSearch(searchip.value)"
-                       (blur)="updateIpSearch(searchip.value)">
-              </fieldset>
-              <fieldset class="form-group">
-                <input type="text" class="form-control" id="roomSearch" name="roomSearch" placeholder="Roomnr"
-                       #searchroom (keyup.enter)="updateRoomSearch(searchroom.value)"
-                       (blur)="updateRoomSearch(searchroom.value)">
-              </fieldset>
-            </form>
-        </div>
+  <div class="row row-content">
+    <div class="col-xs-12">
+      <form>
+        <fieldset class="form-group">
+          <input type="text" class="form-control" id="ownerSearch" name="ownerSearch" placeholder="Owner" #searchowner
+                 (keyup.enter)="updateOwnerSearch(searchowner.value)" (blur)="updateOwnerSearch(searchowner.value)">
+        </fieldset>
+        <fieldset class="form-group">
+          <input type="text" class="form-control" id="nameSearch" name="nameSearch" placeholder="Name" #searchname
+                 (keyup.enter)="updateNameSearch(searchname.value)" (blur)="updateNameSearch(searchname.value)">
+        </fieldset>
+        <fieldset class="form-group">
+          <input type="text" class="form-control" id="ipSearch" name="ipSearch" placeholder="Address" #searchip
+                 (keyup.enter)="updateIpSearch(searchip.value)" (blur)="updateIpSearch(searchip.value)">
+        </fieldset>
+        <fieldset class="form-group">
+          <input type="text" class="form-control" id="roomSearch" name="roomSearch" placeholder="Roomnr" #searchroom
+                 (keyup.enter)="updateRoomSearch(searchroom.value)" (blur)="updateRoomSearch(searchroom.value)">
+        </fieldset>
+      </form>
     </div>
+  </div>
 </div>
 <div class="container-fluid">
   <div class="row row-content">
@@ -41,64 +37,67 @@
           <input type="text" class="form-control" id="image" name="image" formControlName="image">
         </fieldset>
         <fieldset class="form-group">
+          <label for="familyname">Family name</label>
+          <input type="text" class="form-control" id="familyname" name="familyname" formControlName="familyname">
+        </fieldset>
+        <fieldset class="form-group">
           <div class="card" *ngIf="item !== undefined && item !== null && item.title !== undefined">
             <div class="card-text" [innerHTML]="item.title">
             </div>
           </div>
           <label for="title">Title</label>
           <input type="text" class="form-control" id="title" name="title" formControlName="title">
-                </fieldset>
-                <fieldset class="form-group">
-                    <label for="room">Room</label>
-                    <input type="number" class="form-control" id="room" name="room" formControlName="room">
-                </fieldset>
-                <fieldset *ngIf="item !== undefined && item !== null && item.name !== undefined" class="form-group">
-                    <label for="god">God</label>
-                    <input readonly type="text" class="form-control" id="god" name="god" formControlName="god">
-                </fieldset>
-                <fieldset *ngIf="item === undefined || item === null || item.name === undefined" class="form-group">
-                    <label for="god">God</label>
-                    <select class="form-control" id="god" name="god" formControlName="god">
-                        <option>GOD</option>
-                        <option>BOT</option>
-                        <option>MOB</option>
-                        <option>SHOPKEEPER</option>
-                        <option>DEFAULT_USER</option>
-                    </select>
-                </fieldset>
-                <fieldset class="form-group">
-                    <label for="race">Race</label>
-                    <input type="text" class="form-control" id="race" name="race" formControlName="race">
-                </fieldset>
-                <fieldset class="form-group">
-                    <label for="sex">Sex</label>
-                    <input type="text" class="form-control" id="sex" name="sex" formControlName="sex">
-                </fieldset>
-                <fieldset class="form-group">
-                    <label for="age">Age</label>
-                    <input type="text" class="form-control" id="age" name="age" formControlName="age">
-                </fieldset>
-                <fieldset class="form-group">
-                    <label for="height">Height</label>
-                    <input type="text" class="form-control" id="height" name="height" formControlName="height">
-                </fieldset>
-                <fieldset class="form-group">
-                    <label for="width">Width</label>
-                    <input type="text" class="form-control" id="width" name="width" formControlName="width">
-                </fieldset>
-                <fieldset class="form-group">
-                    <label for="complexion">Complexion</label>
-                    <input type="text" class="form-control" id="complexion" name="complexion"
-                        formControlName="complexion">
-                </fieldset>
-                <fieldset class="form-group">
-                    <label for="eyes">Eyes</label>
-                    <input type="text" class="form-control" id="eyes" name="eyes" formControlName="eyes">
-                </fieldset>
-                <fieldset class="form-group">
-                    <label for="face">Face</label>
-                  <input type="text" class="form-control" id="face" name="face" formControlName="face">
-                </fieldset>
+        </fieldset>
+        <fieldset class="form-group">
+          <label for="room">Room</label>
+          <input type="number" class="form-control" id="room" name="room" formControlName="room">
+        </fieldset>
+        <fieldset *ngIf="item !== undefined && item !== null && item.name !== undefined" class="form-group">
+          <label for="god">God</label>
+          <input readonly type="text" class="form-control" id="godreadonly" name="god" formControlName="god">
+        </fieldset>
+        <fieldset *ngIf="item === undefined || item === null || item.name === undefined" class="form-group">
+          <label for="god">God</label>
+          <select class="form-control" id="god" name="god" formControlName="god">
+            <option>GOD</option>
+            <option>BOT</option>
+            <option>MOB</option>
+            <option>SHOPKEEPER</option>
+            <option>DEFAULT_USER</option>
+          </select>
+        </fieldset>
+        <fieldset class="form-group">
+          <label for="race">Race</label>
+          <input type="text" class="form-control" id="race" name="race" formControlName="race">
+        </fieldset>
+        <fieldset class="form-group">
+          <label for="sex">Sex</label>
+          <input type="text" class="form-control" id="sex" name="sex" formControlName="sex">
+        </fieldset>
+        <fieldset class="form-group">
+          <label for="age">Age</label>
+          <input type="text" class="form-control" id="age" name="age" formControlName="age">
+        </fieldset>
+        <fieldset class="form-group">
+          <label for="height">Height</label>
+          <input type="text" class="form-control" id="height" name="height" formControlName="height">
+        </fieldset>
+        <fieldset class="form-group">
+          <label for="width">Width</label>
+          <input type="text" class="form-control" id="width" name="width" formControlName="width">
+        </fieldset>
+        <fieldset class="form-group">
+          <label for="complexion">Complexion</label>
+          <input type="text" class="form-control" id="complexion" name="complexion" formControlName="complexion">
+        </fieldset>
+        <fieldset class="form-group">
+          <label for="eyes">Eyes</label>
+          <input type="text" class="form-control" id="eyes" name="eyes" formControlName="eyes">
+        </fieldset>
+        <fieldset class="form-group">
+          <label for="face">Face</label>
+          <input type="text" class="form-control" id="face" name="face" formControlName="face">
+        </fieldset>
         <fieldset class="form-group">
           <label for="hair">Hair</label>
           <input type="text" class="form-control" id="hair" name="hair" formControlName="hair">
@@ -121,18 +120,15 @@
         </fieldset>
         <fieldset class="form-group">
           <label for="lastlogin">Last time logged in</label>
-          <input readonly type="text" class="form-control" id="lastlogin" name="lastlogin"
-                 formControlName="lastlogin">
+          <input readonly type="text" class="form-control" id="lastlogin" name="lastlogin" formControlName="lastlogin">
         </fieldset>
         <fieldset class="form-group">
           <label for="copper">Copper</label>
-          <input readonly type="number" class="form-control" id="copper" name="copper"
-                 formControlName="copper">
+          <input readonly type="number" class="form-control" id="copper" name="copper" formControlName="copper">
         </fieldset>
         <fieldset class="form-group">
           <label for="address">Address</label>
-          <input type="text" readonly class="form-control" id="address" name="address"
-                 formControlName="address">
+          <input type="text" readonly class="form-control" id="address" name="address" formControlName="address">
         </fieldset>
         <fieldset class="form-group">
           <label for="realname">Real name</label>
@@ -151,11 +147,11 @@
           <input type="text" class="form-control" id="owner" name="owner" formControlName="owner">
         </fieldset>
         <div class="col-xs-12 col-sm-12 text-right">
-          <button type="submit" [disabled]="form.pristine && (item === undefined || item === null)" class="mx-1 btn btn-primary"
-                  (click)="updateItem()">Update
+          <button type="submit" [disabled]="form.pristine && (item === undefined || item === null)"
+                  class="mx-1 btn btn-primary" (click)="updateItem()">Update
           </button>
-          <button type="submit" [disabled]="form.pristine || (item !== undefined && item !== null)" class="mx-1 btn btn-primary"
-                  (click)="createItem()">Create
+          <button type="submit" [disabled]="form.pristine || (item !== undefined && item !== null)"
+                  class="mx-1 btn btn-primary" (click)="createItem()">Create
           </button>
           <button type="button" class="mx-1 btn btn-secondary" (click)="deleteItem()">Delete</button>
           <button type="reset" class="mx-1 btn btn-secondary" (click)="cancel()">Cancel</button>
@@ -176,7 +172,8 @@
         <tr *ngFor="let attribute of attributes" (click)="setAttribute(attribute)">
           <td *ngIf="attribute">{{ attribute.id }}</td>
           <td *ngIf="attribute">
-            <a [routerLink]="['/attributes/', attribute.name]">{{ attribute.name }}</a></td>
+            <a [routerLink]="['/attributes/', attribute.name]">{{ attribute.name }}</a>
+          </td>
           <td *ngIf="attribute">{{ attribute.value }}</td>
           <td *ngIf="attribute">{{ attribute.valueType }}</td>
           <td *ngIf="attribute">
@@ -195,7 +192,7 @@
         </fieldset>
         <fieldset class="form-group">
           <label for="name">Name</label>
-          <input type="text" class="form-control" id="name" name="name" formControlName="name">
+          <input type="text" class="form-control" id="attrname" name="name" formControlName="name">
         </fieldset>
         <fieldset class="form-group">
           <label for="value">Value</label>
@@ -216,35 +213,35 @@
         </div>
       </form>
     </div>
-        <div class="col-xs-12 col-xl-6">
-            <button type="button" class="mx-1 btn btn-secondary" (click)="refresh()">Refresh</button>
-            <cdk-virtual-scroll-viewport style="height: 400px;" [itemSize]="33">
-                <table class="table table-sm table-hover">
-                    <thead>
-                        <tr>
-                            <th scope="col">Name</th>
-                            <th scope="col">Room</th>
-                            <th scope="col">Race</th>
-                            <th scope="col">Sex</th>
-                            <th scope="col">Address</th>
-                            <th scope="col">Owner</th>
-                            <th scope="col">Creation</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr *cdkVirtualFor="let character of items; templateCacheSize: 0"
-                            [ngClass]="isActive(character)" (click)="setItemById(character.name)">
-                            <td *ngIf="character">{{ character.name }}</td>
-                            <td *ngIf="character">{{ character.room }}</td>
-                            <td *ngIf="character">{{ character.race }}</td>
-                            <td *ngIf="character">{{ character.sex }}</td>
-                            <td *ngIf="character">{{ character.address }}</td>
-                            <td *ngIf="character">{{ character.owner }}</td>
-                            <td *ngIf="character">{{ character.creation }}</td>
-                        </tr>
-                    </tbody>
-                </table>
-            </cdk-virtual-scroll-viewport>
-        </div>
+    <div class="col-xs-12 col-xl-6">
+      <button type="button" class="mx-1 btn btn-secondary" (click)="refresh()">Refresh</button>
+      <cdk-virtual-scroll-viewport style="height: 400px;" [itemSize]="33">
+        <table class="table table-sm table-hover">
+          <thead>
+          <tr>
+            <th scope="col">Name</th>
+            <th scope="col">Room</th>
+            <th scope="col">Race</th>
+            <th scope="col">Sex</th>
+            <th scope="col">Address</th>
+            <th scope="col">Owner</th>
+            <th scope="col">Creation</th>
+          </tr>
+          </thead>
+          <tbody>
+          <tr *cdkVirtualFor="let character of items; templateCacheSize: 0" [ngClass]="isActive(character)"
+              (click)="setItemById(character.name)">
+            <td *ngIf="character">{{ character.name }}</td>
+            <td *ngIf="character">{{ character.room }}</td>
+            <td *ngIf="character">{{ character.race }}</td>
+            <td *ngIf="character">{{ character.sex }}</td>
+            <td *ngIf="character">{{ character.address }}</td>
+            <td *ngIf="character">{{ character.owner }}</td>
+            <td *ngIf="character">{{ character.creation }}</td>
+          </tr>
+          </tbody>
+        </table>
+      </cdk-virtual-scroll-viewport>
     </div>
+  </div>
 </div>

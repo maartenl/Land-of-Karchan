@@ -80,6 +80,7 @@ import mmud.services.LogService;
 import mmud.services.MailService;
 import mmud.services.PersonCommunicationService;
 import mmud.services.PlayerAuthenticationService;
+import org.apache.commons.lang3.StringUtils;
 import static mmud.Constants.DATETIME_FORMAT;
 
 /**
@@ -397,11 +398,11 @@ public class GameRestService
       }
       // everything's cool! Let's do this!
       person.setActive(false);
-      person.setTitle(pperson.title);
+      person.setTitle(StringUtils.trimToNull(pperson.title));
+      person.setFamilyname(StringUtils.trimToNull(pperson.familyname));
       person.setRealname(pperson.realname);
       person.setEmail(pperson.email);
       person.setAddress(address);
-
       person.setSex(Sex.createFromString(pperson.sex));
       person.setRace(pperson.race);
       person.setAge(pperson.age);
@@ -926,6 +927,7 @@ public class GameRestService
         PrivatePerson pp = new PrivatePerson();
         pp.race = person.getRace();
         pp.name = person.getName();
+        pp.familyname = person.getFamilyname();
         persons.add(pp);
       }
     }

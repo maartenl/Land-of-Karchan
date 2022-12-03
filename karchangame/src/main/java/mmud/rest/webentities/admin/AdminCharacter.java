@@ -134,6 +134,7 @@ public class AdminCharacter
   public Integer rrribbits;
   public Integer heehaws;
   public boolean ooc;
+  public String familyname;
 
   public AdminCharacter()
   {
@@ -168,6 +169,7 @@ public class AdminCharacter
     this.rrribbits = item.getPunishment();
     this.heehaws = item.getPunishment();
     this.lastlogin = item.getLastlogin();
+    this.familyname = item.getFamilyname();
     this.ooc = item.getOoc();
   }
 
@@ -243,6 +245,7 @@ public class AdminCharacter
 //    this.   guildlevel;
 //    this.   timeout;
     this.visible = item.getVisible();
+    this.familyname = item.getFamilyname();
 
     this.creation = item.getCreation();
     this.owner = item.getOwner() == null ? null : item.getOwner().getName();

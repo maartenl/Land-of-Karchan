@@ -10,6 +10,12 @@
           <input type="text" class="form-control" id="name" name="name" value="{{player.name}}" readonly>
         </fieldset>
         <fieldset class="form-group">
+          <label for="familyname">Family name</label>
+          <input type="text" class="form-control" id="familyname" name="familyname" formControlName="familyname">
+          <div id="familynameHelp" class="form-text">Also called a surname or last name.
+          </div>
+        </fieldset>
+        <fieldset class="form-group">
           <label for="title">Title</label>
           <input type="text" class="form-control" id="title" name="title" formControlName="title">
         </fieldset>
@@ -127,7 +133,7 @@
         </fieldset>
         <fieldset class="form-group">
           <label for="description">Relation description</label>
-          <select class="form-control" id="description" name="description" formControlName="description">
+          <select class="form-control" id="relationdescription" name="description" formControlName="description">
             <option *ngFor="let description of getAllPossibleFamilyValues()">{{ description }}</option>
           </select>
         </fieldset>

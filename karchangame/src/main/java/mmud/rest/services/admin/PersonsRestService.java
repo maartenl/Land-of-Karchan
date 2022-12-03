@@ -38,7 +38,6 @@ import jakarta.ws.rs.core.Context;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.core.SecurityContext;
-import jakarta.ws.rs.core.UriInfo;
 import mmud.database.entities.characters.Bot;
 import mmud.database.entities.characters.Mob;
 import mmud.database.entities.characters.Person;
@@ -52,6 +51,7 @@ import mmud.exceptions.MudException;
 import mmud.exceptions.MudWebException;
 import mmud.rest.webentities.admin.AdminCharacter;
 import mmud.services.LogService;
+import org.apache.commons.lang3.StringUtils;
 
 /**
  * @author maartenl
@@ -118,7 +118,8 @@ public class PersonsRestService
     }
     character.setName(adminCharacter.name);
 //    character.setImage(adminCharacter.image);
-    character.setTitle(adminCharacter.title);
+    character.setTitle(StringUtils.trimToNull(adminCharacter.title));
+    character.setFamilyname(StringUtils.trimToNull(adminCharacter.familyname));
     character.setRace(adminCharacter.race);
     try
     {
@@ -180,7 +181,8 @@ public class PersonsRestService
       throw new MudWebException(name, "User " + id + " not found.", Response.Status.NOT_FOUND);
     }
     Admin admin = (new OwnerHelper(getEntityManager())).authorize(name, character);
-    character.setTitle(adminCharacter.title);
+    character.setTitle(StringUtils.trimToNull(adminCharacter.title));
+    character.setFamilyname(StringUtils.trimToNull(adminCharacter.familyname));
 //    character.setImage(adminCharacter.image);
     character.setRace(adminCharacter.race);
     character.setSex(Sex.createFromString(adminCharacter.sex));
@@ -266,7 +268,7 @@ public class PersonsRestService
     {
       MediaType.APPLICATION_JSON
     })
-  public Response findAll(@Context UriInfo info)
+  public Response findAll()
   {
     return Response.ok(StreamerHelper.getStream(getEntityManager(), AdminCharacter.GET_QUERY)).build();
   }
@@ -278,7 +280,7 @@ public class PersonsRestService
       MediaType.APPLICATION_JSON
     })
 
-  public String findRange(@Context UriInfo info, @PathParam("offset") Integer offset,
+  public String findRange(@PathParam("offset") Integer offset,
                           @PathParam("pageSize") Integer pageSize
   )
   {
@@ -293,7 +295,7 @@ public class PersonsRestService
   @GET
   @Path("count")
   @Produces("text/plain")
-  public String count(@Context UriInfo info)
+  public String count()
   {
     return String.valueOf(getEntityManager().createNamedQuery("Person.countAll").getSingleResult());
   }

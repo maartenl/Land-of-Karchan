@@ -16,6 +16,8 @@
  */
 package mmud.exceptions;
 
+import java.util.logging.Logger;
+
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.ext.ExceptionMapper;
@@ -28,10 +30,12 @@ import jakarta.ws.rs.ext.Provider;
 @Provider
 public class CustomWebExceptionMapper implements ExceptionMapper<MudWebException>
 {
+  private static final Logger LOGGER = Logger.getLogger(CustomWebExceptionMapper.class.getName());
 
   @Override
   public Response toResponse(MudWebException arg0)
   {
+    LOGGER.throwing("CustomWebExceptionMapper", "toResponse", arg0);
     return Response.status(arg0.getStatus()).entity(
       new ErrorDetails(arg0.getName(), arg0.getFriendlyMessage())
     ).type(MediaType.APPLICATION_JSON).build();

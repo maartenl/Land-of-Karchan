@@ -1,32 +1,33 @@
-import { AdminObject } from '../admin/admin-object.model';
+import {AdminObject} from '../admin/admin-object.model';
 
 export enum Sex { Male = 'male', Female = 'female', Other = 'other' }
 
 export class MudCharacter implements AdminObject<string> {
-    name: string | null = null;
-    address: string | null = null;
-    image: string | null = null;
-    title: string | null = null;
-    realname: string | null = null;
-    email: string | null = null;
-    race: string | null = null;
-    sex: Sex | null = null;
-    age: string | null = null;
-    height: string | null = null;
-    width: string | null = null;
-    complexion: string | null = null;
-    eyes: string | null = null;
-    face: string | null = null;
-    hair: string | null = null;
-    beard: string | null = null;
-    arm: string | null = null;
-    leg: string | null = null;
-    copper: number | null = null;
-    room: number | null = null;
-    lok: string | null = null;
-    whimpy: number | null = null;
-    experience: number | null = null;
-    fightingwho: string | null = null;
+  name: string | null = null;
+  address: string | null = null;
+  image: string | null = null;
+  familyname: string | null = null;
+  title: string | null = null;
+  realname: string | null = null;
+  email: string | null = null;
+  race: string | null = null;
+  sex: Sex | null = null;
+  age: string | null = null;
+  height: string | null = null;
+  width: string | null = null;
+  complexion: string | null = null;
+  eyes: string | null = null;
+  face: string | null = null;
+  hair: string | null = null;
+  beard: string | null = null;
+  arm: string | null = null;
+  leg: string | null = null;
+  copper: number | null = null;
+  room: number | null = null;
+  lok: string | null = null;
+  whimpy: number | null = null;
+  experience: number | null = null;
+  fightingwho: string | null = null;
     sleep: number | null = null;
     punishment: number | null = null;
     fightable: number | null = null;
@@ -107,34 +108,35 @@ export class MudCharacter implements AdminObject<string> {
     newpassword: string | null = null;
 
     constructor(object?: any) {
-        if (object === undefined) {
-            return;
-        }
-        this.name = object.name;
-        this.address = object.address;
-        this.image = object.image;
-        this.title = object.title;
-        this.realname = object.realname;
-        this.email = object.email;
-        this.race = object.race;
-        this.sex = object.sex;
-        this.age = object.age;
-        this.height = object.height;
-        this.width = object.width;
-        this.complexion = object.complexion;
-        this.eyes = object.eyes;
-        this.face = object.face;
-        this.hair = object.hair;
-        this.beard = object.beard;
-        this.arm = object.arm;
-        this.leg = object.leg;
-        this.copper = object.copper;
-        this.room = object.room;
-        this.lok = object.lok;
-        this.whimpy = object.whimpy;
-        this.experience = object.experience;
-        this.fightingwho = object.fightingwho;
-        this.sleep = object.sleep;
+      if (object === undefined) {
+        return;
+      }
+      this.name = object.name;
+      this.address = object.address;
+      this.image = object.image;
+      this.title = object.title;
+      this.familyname = object.familyname;
+      this.realname = object.realname;
+      this.email = object.email;
+      this.race = object.race;
+      this.sex = object.sex;
+      this.age = object.age;
+      this.height = object.height;
+      this.width = object.width;
+      this.complexion = object.complexion;
+      this.eyes = object.eyes;
+      this.face = object.face;
+      this.hair = object.hair;
+      this.beard = object.beard;
+      this.arm = object.arm;
+      this.leg = object.leg;
+      this.copper = object.copper;
+      this.room = object.room;
+      this.lok = object.lok;
+      this.whimpy = object.whimpy;
+      this.experience = object.experience;
+      this.fightingwho = object.fightingwho;
+      this.sleep = object.sleep;
         this.punishment = object.punishment;
         this.fightable = object.fightable;
         this.vitals = object.vitals;

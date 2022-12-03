@@ -1,6 +1,7 @@
 
 export class Person {
   name: string = '';
+  familyname: string = '';
   race: string = '';
 }
 
@@ -75,6 +76,7 @@ export class Display {
  */
 export class WhoPerson {
   name: string = '';
+  familyname: string = '';
   title: string = '';
   area: string = '';
   sleep: string = '';
@@ -89,6 +91,7 @@ export class WhoPerson {
     }
     this.name = object.name;
     this.title = object.title;
+    this.familyname = object.familyname;
     this.area = object.area;
     this.sleep = object.sleep;
     this.idleTime = object.idleTime;

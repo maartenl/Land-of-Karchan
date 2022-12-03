@@ -28,6 +28,7 @@ public class RestUtilities
   {
     PublicPerson res = new PublicPerson();
     res.name = person.getName();
+    res.familyname = person.getFamilyname();
     res.title = person.getTitle();
     res.sex = person.getSex().toString();
     res.description = person.getDescription();
@@ -58,6 +59,7 @@ public class RestUtilities
   {
     PrivatePerson res = new PrivatePerson();
     res.name = person.getName();
+    res.familyname = person.getFamilyname();
     res.title = person.getTitle();
     res.sex = person.getSex().toString();
     res.description = person.getDescription();

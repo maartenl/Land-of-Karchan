@@ -41,6 +41,7 @@ public class PrivatePerson
   public String password;
   public String password2;
   public String title;
+  public String familyname;
   public String realname;
   public String email;
   public String age;

@@ -16,23 +16,34 @@
  */
 package mmud.exceptions;
 
+import java.util.logging.Logger;
+
+import jakarta.validation.ConstraintViolationException;
+import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.ext.ExceptionMapper;
 import jakarta.ws.rs.ext.Provider;
 
 /**
- *
  * @author maartenl
  */
 @Provider
-public class CustomExceptionMapper implements ExceptionMapper<MudException>
+public class CustomExceptionMapper implements ExceptionMapper<Exception>
 {
+  private static final Logger LOGGER = Logger.getLogger(CustomExceptionMapper.class.getName());
 
   @Override
-  public Response toResponse(MudException arg0)
+  public Response toResponse(Exception arg0)
   {
+    LOGGER.throwing("CustomExceptionMapper", "toResponse", arg0);
+    String message = arg0.getMessage();
+    if (arg0 instanceof ConstraintViolationException constraintViolationException)
+    {
+      message = ExceptionUtils.createMessage(constraintViolationException);
+    }
     return Response.status(500).entity(
-            arg0.getMessage()).type("text/plain").build();
+      new ErrorDetails(null, message)
+    ).type(MediaType.APPLICATION_JSON).build();
   }
 
 }

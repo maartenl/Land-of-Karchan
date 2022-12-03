@@ -3,6 +3,7 @@ import {Family} from "./family.model";
 export class Player {
   name: string;
   title: string;
+  familyname: string;
   sex: string;
   description: string;
   imageurl: string;
@@ -18,6 +19,7 @@ export class Player {
   constructor() {
     this.name = '';
     this.title = '';
+    this.familyname = '';
     this.sex = '';
     this.description = '';
     this.imageurl = '';

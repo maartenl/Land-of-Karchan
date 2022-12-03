@@ -30,7 +30,7 @@
             <p *ngIf="display.persons">
                             <span *ngFor="let person of display.persons">
                                 {{ getVowel(person) }} {{ person.race }} called <a href="#"
-                                                                                   (click)="lookAtPerson(person);">{{ person.name }}</a> is here.<br/>
+                                                                                   (click)="lookAtPerson(person);">{{ person.name }} {{ person.familyname }}</a> is here.<br/>
                             </span>
             </p>
             <p *ngIf="display.items">

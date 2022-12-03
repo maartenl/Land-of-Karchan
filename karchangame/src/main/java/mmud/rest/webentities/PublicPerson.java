@@ -34,6 +34,7 @@ public class PublicPerson
   public String name;
   public String url;
   public String title;
+  public String familyname;
   public String sleep;
   public String area;
   public String sex;
@@ -77,6 +78,7 @@ public class PublicPerson
     }
     this.name = publicName;
     this.title = person.getTitle();
+    this.familyname = person.getFamilyname();
     this.sleep = person.getSleep() ? "sleeping" : "";
     this.area = person.getRoom().getArea().getShortdescription();
     if (person.getLastlogin() != null)

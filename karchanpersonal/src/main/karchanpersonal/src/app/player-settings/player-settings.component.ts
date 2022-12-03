@@ -32,6 +32,7 @@ export class PlayerSettingsComponent implements OnInit {
     this.player = new Player(); // dummy player
     this.playerForm = this.formBuilder.group({
       title: '',
+      familyname: '',
       homepageurl: '',
       imageurl: '',
       dateofbirth: '',
@@ -68,6 +69,7 @@ export class PlayerSettingsComponent implements OnInit {
   createForms() {
     this.playerForm = this.formBuilder.group({
       title: '',
+      familyname: '',
       homepageurl: '',
       imageurl: '',
       dateofbirth: '',
@@ -84,6 +86,7 @@ export class PlayerSettingsComponent implements OnInit {
   resetForm(player: Player) {
     this.playerForm.reset({
       title: player.title,
+      familyname: player.familyname,
       homepageurl: player.homepageurl,
       imageurl: player.imageurl,
       dateofbirth: player.dateofbirth,
@@ -132,6 +135,7 @@ export class PlayerSettingsComponent implements OnInit {
     const savePlayer: Player = {
       name: this.player.name,
       title: formModel.title as string,
+      familyname: formModel.familyname as string,
       sex: this.player.sex as string,
       description: this.player.description as string,
       guild: this.player.guild as string,

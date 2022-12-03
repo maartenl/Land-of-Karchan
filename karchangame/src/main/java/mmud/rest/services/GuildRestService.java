@@ -34,7 +34,6 @@ import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import jakarta.persistence.TypedQuery;
 import jakarta.transaction.Transactional;
-import jakarta.validation.ConstraintViolationException;
 import jakarta.ws.rs.Consumes;
 import jakarta.ws.rs.DELETE;
 import jakarta.ws.rs.GET;
@@ -53,7 +52,6 @@ import mmud.database.entities.characters.User;
 import mmud.database.entities.game.Guild;
 import mmud.database.entities.game.Guildrank;
 import mmud.database.entities.game.GuildrankPK;
-import mmud.exceptions.ExceptionUtils;
 import mmud.exceptions.MudException;
 import mmud.exceptions.MudWebException;
 import mmud.rest.webentities.PrivateGuild;
@@ -259,14 +257,8 @@ public class GuildRestService
     guild.setDaysguilddeath(10);
     guild.setMaxguilddeath(10);
     guild.setMinguildmembers(20);
-    try
-    {
-      getEntityManager().persist(guild);
-    } catch (ConstraintViolationException ex)
-    {
-      LOGGER.warning(ExceptionUtils.createMessage(ex));
-      throw ex;
-    }
+    getEntityManager().persist(guild);
+
     person.setGuild(guild);
     return Response.ok().build();
   }
@@ -657,13 +649,8 @@ public class GuildRestService
     pk.setGuildlevel(rank.guildlevel);
     pk.setGuildname(guild.getName());
     newRank.setGuildrankPK(pk);
-    try
-    {
       getEntityManager().persist(newRank);
-    } catch (ConstraintViolationException ex)
-    {
-      throw new MudWebException(name, ExceptionUtils.createMessage(ex), ex, Response.Status.BAD_REQUEST);
-    }
+
     return Response.ok().build();
   }
 

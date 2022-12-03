@@ -27,14 +27,10 @@ import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import jakarta.persistence.TypedQuery;
 import jakarta.transaction.Transactional;
-import jakarta.validation.ConstraintViolationException;
-import jakarta.ws.rs.core.Response;
 import mmud.database.entities.characters.Person;
 import mmud.database.entities.game.Admin;
 import mmud.database.entities.game.Commandlog;
 import mmud.database.entities.game.Log;
-import mmud.exceptions.ExceptionUtils;
-import mmud.exceptions.MudWebException;
 
 /**
  * @author maartenl
@@ -296,12 +292,6 @@ public class LogService
     commandlog.setName(person == null ? null : person.getName());
     commandlog.setStamp(LocalDateTime.now());
     commandlog.setCommand(command);
-    try
-    {
-      getEntityManager().persist(commandlog);
-    } catch (ConstraintViolationException e)
-    {
-      throw new MudWebException(null, ExceptionUtils.createMessage(e), e, Response.Status.BAD_REQUEST);
-    }
+    getEntityManager().persist(commandlog);
   }
 }
