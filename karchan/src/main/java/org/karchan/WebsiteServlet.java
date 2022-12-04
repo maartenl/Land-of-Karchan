@@ -53,7 +53,7 @@ import org.karchan.security.Roles;
     Roles.PLAYER, Roles.DEPUTY, Roles.GUILDMEMBER, Roles.GUILDMASTER, Roles.GOD
   }
 )
-@WebServlet({"*.html"})
+@WebServlet(urlPatterns = {"*.html", "/scripts/*"})
 public class WebsiteServlet extends HttpServlet
 {
 
@@ -112,19 +112,43 @@ public class WebsiteServlet extends HttpServlet
       response.setHeader("Location", redirectHttps.get());
       return;
     }
+    PrintWriter out = response.getWriter();
 
     // Set response content type
     if (url.endsWith(".js"))
     {
+      // just dump the javascript, don't do any freemarker data stuff.
       response.setContentType("application/javascript;charset=UTF-8");
-    } else
-    {
-      response.setContentType("text/html;charset=UTF-8");
+      Template main;
+      String templateName = url;
+      try
+      {
+        main = freemarker.getConfiguration().getTemplate(templateName);
+      } catch (TemplateNotFoundException notFound)
+      {
+        LOGGER.log(Level.SEVERE, "Template {0} not found.", templateName);
+        response.sendError(HttpServletResponse.SC_NOT_FOUND);
+        return;
+      }
+
+      try
+      {
+        /* Merge data-model with template */
+        Map<String, Object> root = new HashMap<>();
+        main.process(root, out);
+      } catch (TemplateException ex)
+      {
+        LOGGER.log(Level.SEVERE, ex, () -> "Error processing template " + templateName);
+        throw new ServletException(ex);
+      }
+      return;
     }
+
+    response.setContentType("text/html;charset=UTF-8");
+
 
     Cookies cookies = new Cookies(request, response);
 
-    PrintWriter out = response.getWriter();
 
     // Actual logic goes here.
 
