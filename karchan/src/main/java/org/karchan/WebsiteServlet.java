@@ -182,6 +182,11 @@ public class WebsiteServlet extends HttpServlet
         LOGGER.log(Level.FINEST, "Url {0} starts with /wiki/.", url);
         foundMenu = Optional.of(menuFactory.createWikiMenu(url, securityContext.isCallerInRole(Roles.DEPUTY)));
       }
+      if (url.startsWith("/chronicles/person"))
+      {
+        LOGGER.log(Level.FINEST, "Url {0} starts with /chronicles/person.", url);
+        foundMenu = Optional.of(menuFactory.createPersonMenu());
+      }
     }
     List<Menu> breadcrumbs = new ArrayList<>();
     foundMenu.ifPresent(menu ->

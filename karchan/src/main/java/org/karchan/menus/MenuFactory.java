@@ -16,8 +16,8 @@
  */
 package org.karchan.menus;
 
-import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
+import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -30,7 +30,10 @@ import com.google.common.annotations.VisibleForTesting;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import jakarta.persistence.TypedQuery;
+import mmud.database.entities.characters.User;
 import mmud.database.entities.web.Blog;
+import mmud.database.entities.web.CharacterInfo;
+import mmud.database.entities.web.Family;
 import mmud.database.entities.web.Wikipage;
 import org.karchan.wiki.WikiRenderer;
 
@@ -40,7 +43,7 @@ import org.karchan.wiki.WikiRenderer;
 public class MenuFactory
 {
 
-  private final static Logger LOGGER = Logger.getLogger(MenuFactory.class.getName());
+  private static final Logger LOGGER = Logger.getLogger(MenuFactory.class.getName());
 
   /**
    * Contains a mapping between the url (for example "blogs/index.html") and the
@@ -124,7 +127,7 @@ public class MenuFactory
       @Override
       public void setDatamodel(EntityManager entityManager, Map<String, Object> root, Map<String, String[]> parameters)
       {
-        Integer page = 1;
+        int page = 1;
         TypedQuery<Long> numberOfBlogsQuery = entityManager.createNamedQuery("Blog.count", Long.class);
         Long numberOfPages = numberOfBlogsQuery.getSingleResult() / PAGE_SIZE + 1;
 
@@ -136,7 +139,7 @@ public class MenuFactory
           {
             try
             {
-              page = Integer.valueOf(get[0]);
+              page = Integer.parseInt(get[0]);
               if (page > 0)
               {
                 blogsQuery.setFirstResult((page - 1) * PAGE_SIZE);
@@ -214,7 +217,7 @@ public class MenuFactory
         {
           root.put("blog", blogs.get(0));
           setName(blogs.get(0).getTitle());
-          MenuFactory.findMenu("/blogs/index.html").ifPresent(menu -> this.setParent(menu));
+          MenuFactory.findMenu("/blogs/index.html").ifPresent(this::setParent);
         }
         if (blogs.size() > 1)
         {
@@ -240,14 +243,7 @@ public class MenuFactory
       {
         LOGGER.finest("setDatamodel called for WikiSpecific menu");
         String searchWiki;
-        try
-        {
-          searchWiki = URLDecoder.decode(url.substring("/wiki/".length()).replace(".html", ""), "UTF-8");
-        } catch (UnsupportedEncodingException ex)
-        {
-          Logger.getLogger(MenuFactory.class.getName()).log(Level.SEVERE, null, ex);
-          throw new RuntimeException(ex);
-        }
+        searchWiki = URLDecoder.decode(url.substring("/wiki/".length()).replace(".html", ""), StandardCharsets.UTF_8);
 
         String namedQuery = isDeputy
           ? "Wikipage.findByTitleAuthorized"
@@ -270,6 +266,44 @@ public class MenuFactory
               wikipages.size(), searchWiki, isDeputy
             });
         }
+      }
+    };
+  }
+
+  /**
+   * Creates the datamodel for the character sheet in the freemarker root.
+   *
+   * @return the appropriate menu
+   */
+  public Menu createPersonMenu()
+  {
+    return new Menu("Person", "chronicles/person.html")
+    {
+      @Override
+      public void setDatamodel(EntityManager entityManager1, Map<String, Object> root, Map<String, String[]> parameters)
+      {
+        LOGGER.finest("setDatamodel called for Person menu");
+        parameters.forEach((key, value) -> LOGGER.finest(key + ":" + Arrays.toString(value)));
+        Optional<String> name = Arrays.stream(parameters.get("name")).findFirst();
+        if (name.isEmpty())
+        {
+          return;
+        }
+
+        User person = entityManager1.find(User.class, name.get());
+        if (person == null)
+        {
+          return;
+        }
+
+        TypedQuery<Family> query = entityManager1.createNamedQuery("Family.findByName", Family.class);
+        query.setParameter("name", person.getName());
+        List<Family> family = query.getResultList();
+        CharacterInfo characterInfo = entityManager1.find(CharacterInfo.class, person.getName());
+
+        root.put("person", person);
+        root.put("family", family);
+        root.put("characterInfo", characterInfo);
       }
     };
   }
@@ -319,7 +353,7 @@ public class MenuFactory
   public static Optional<Menu> findMenu(String url)
   {
     Optional<Menu> result = Optional.ofNullable(MENUS.get(url));
-    if (!result.isPresent())
+    if (result.isEmpty())
     {
       LOGGER.log(Level.FINEST, "Menu with url {0} not found.", url);
       LOGGER.log(Level.FINEST, "Available menus are {0}.", MENUS.keySet());
