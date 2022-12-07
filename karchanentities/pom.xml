@@ -6,17 +6,22 @@
   <parent>
     <artifactId>karchanparent</artifactId>
     <groupId>mmud</groupId>
-    <version>1.0.7</version>
+    <version>1.0.8.-SNAPSHOT</version>
   </parent>
 
   <artifactId>karchanentities</artifactId>
-  <version>1.0.7</version>
+  <version>1.0.8.-SNAPSHOT</version>
   <packaging>jar</packaging>
 
   <name>karchanentities</name>
   <url>https://www.karchan.org</url>
 
   <dependencies>
+    <!-- <dependency>
+      <groupId>javax.xml.bind</groupId>
+      <artifactId>jaxb-api</artifactId>
+      <version>2.3.0</version>
+    </dependency> -->
     <dependency>
       <groupId>com.google.guava</groupId>
       <artifactId>guava</artifactId>
