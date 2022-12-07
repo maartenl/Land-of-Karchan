@@ -779,7 +779,7 @@ public class MudMailTest
     // Unit under test is exercised.
     assertThatThrownBy(() -> privateRestService.createMailItem("Marvin", 1L, -1))
       .isInstanceOf(MudWebException.class)
-      .hasMessage("mmud.exceptions.MudWebException: Could not create item from mail.");
+      .hasMessage("Could not create item from mail.");
     // Verification code (JUnit/TestNG asserts), if any.
   }
 
@@ -823,7 +823,7 @@ public class MudMailTest
     // Unit under test is exercised.
     assertThatThrownBy(() -> privateRestService.createMailItem("Marvin", 1L, 8))
       .isInstanceOf(MudWebException.class)
-      .hasMessage("mmud.exceptions.MudWebException: Could not create item from mail.");
+      .hasMessage("Could not create item from mail.");
     // Verification code (JUnit/TestNG asserts), if any.
   }
 
