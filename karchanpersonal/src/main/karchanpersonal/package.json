@@ -23,6 +23,7 @@
     "@ckeditor/ckeditor5-build-classic": "^35.2.1",
     "@ng-bootstrap/ng-bootstrap": "^15.0.1",
     "@popperjs/core": "^2.10.2",
+    "@types/node": "^20.3.2",
     "bootstrap": "^5.2.0",
     "bootswatch": "^5.2.1",
     "material-icons": "^1.12.0",
