@@ -16,155 +16,136 @@
  */
 package mmud.database.entities.game;
 
-import java.io.Serializable;
-
-import jakarta.persistence.Basic;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.Lob;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.NamedQueries;
-import jakarta.persistence.NamedQuery;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import mmud.database.entities.characters.Person;
 
+import java.io.Serial;
+import java.io.Serializable;
+import java.util.Objects;
+
 /**
- *
  * @author maartenl
  */
 @Entity
 @Table(name = "mm_charattributes")
-@NamedQueries(
-  {
-    @NamedQuery(name = "Charattribute.findAll", query = "SELECT c FROM Charattribute c"),
-    @NamedQuery(name = "Charattribute.deleteByName", query = "DELETE FROM Charattribute c WHERE c.name = :name"),
-    @NamedQuery(name = "Charattribute.findByName", query = "SELECT c FROM Charattribute c WHERE c.name = :name"),
-    @NamedQuery(name = "Charattribute.findByNameAndPerson", query = "SELECT c FROM Charattribute c WHERE c.name = :name and c.person.name = :person"),
-    @NamedQuery(name = "Charattribute.findByPerson", query = "SELECT c FROM Charattribute c WHERE c.person.name = :person"),
-    @NamedQuery(name = "Charattribute.findByValueType", query = "SELECT c FROM Charattribute c WHERE c.valueType = :valueType")
-  })
+@NamedQuery(name = "Charattribute.findAll", query = "SELECT c FROM Charattribute c")
+@NamedQuery(name = "Charattribute.deleteByName", query = "DELETE FROM Charattribute c WHERE c.name = :name")
+@NamedQuery(name = "Charattribute.findByName", query = "SELECT c FROM Charattribute c WHERE c.name = :name")
+@NamedQuery(name = "Charattribute.findByNameAndPerson", query = "SELECT c FROM Charattribute c WHERE c.name = :name and c.person.name = :person")
+@NamedQuery(name = "Charattribute.findByPerson", query = "SELECT c FROM Charattribute c WHERE c.person.name = :person")
+@NamedQuery(name = "Charattribute.findByValueType", query = "SELECT c FROM Charattribute c WHERE c.valueType = :valueType")
 public class Charattribute implements Serializable, Attribute
 {
 
-  private static final long serialVersionUID = 1L;
+    @Serial
+    private static final long serialVersionUID = 1L;
 
-  @Id
-  @GeneratedValue(strategy = GenerationType.IDENTITY)
-  @Basic(optional = false)
-  @Column(name = "attrid")
-  private Long attributeId;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Basic(optional = false)
+    @Column(name = "attrid")
+    private Long attributeId;
 
-  @Basic(optional = false)
-  @NotNull
-  @Size(min = 1, max = 32)
-  @Column(name = "name")
-  private String name;
+    @Basic(optional = false)
+    @NotNull
+    @Size(min = 1, max = 32)
+    @Column(name = "name")
+    private String name;
 
-  @Lob
-  @Size(max = 65535)
-  @Column(name = "value")
-  private String value;
+    @Lob
+    @Size(max = 65535)
+    @Column(name = "value")
+    private String value;
 
-  @Basic(optional = false)
-  @NotNull
-  @Size(min = 1, max = 20)
-  @Column(name = "value_type")
-  private String valueType;
+    @Basic(optional = false)
+    @NotNull
+    @Size(min = 1, max = 20)
+    @Column(name = "value_type")
+    private String valueType;
 
-  @JoinColumn(name = "charname", referencedColumnName = "name", nullable = false)
-  @ManyToOne(optional = false)
-  private Person person;
+    @JoinColumn(name = "charname", referencedColumnName = "name", nullable = false)
+    @ManyToOne(optional = false)
+    private Person person;
 
-  public Charattribute()
-  {
-  }
-
-  public Charattribute(String name, Person person)
-  {
-    this.name = name;
-    this.person = person;
-  }
-
-  @Override
-  public Long getAttributeId()
-  {
-    return attributeId;
-  }
-
-  @Override
-  public String getName()
-  {
-    return name;
-  }
-
-  @Override
-  public String getValue()
-  {
-    return value;
-  }
-
-  @Override
-  public void setValue(String value)
-  {
-    this.value = value;
-  }
-
-  @Override
-  public String getValueType()
-  {
-    return valueType;
-  }
-
-  @Override
-  public void setValueType(String valueType)
-  {
-    this.valueType = valueType;
-  }
-
-  public Person getPerson()
-  {
-    return person;
-  }
-
-  public void setPerson(Person person)
-  {
-    this.person = person;
-  }
-
-  @Override
-  public int hashCode()
-  {
-    int hash = 0;
-    hash += (attributeId != null ? attributeId.hashCode() : 0);
-    return hash;
-  }
-
-  @Override
-  public boolean equals(Object object)
-  {
-    // Warning - this method won't work in the case the id fields are not set
-    if (!(object instanceof Charattribute))
+    public Charattribute()
     {
-      return false;
     }
-    Charattribute other = (Charattribute) object;
-    if ((this.attributeId == null && other.attributeId != null) || (this.attributeId != null && !this.attributeId.equals(other.attributeId)))
-    {
-      return false;
-    }
-    return true;
-  }
 
-  @Override
-  public String toString()
-  {
-    return "mmud.database.entities.game.Charattribute[ attributeId=" + attributeId + " ]";
-  }
+    public Charattribute(String name, Person person)
+    {
+        this.name = name;
+        this.person = person;
+    }
+
+    @Override
+    public Long getAttributeId()
+    {
+        return attributeId;
+    }
+
+    @Override
+    public String getName()
+    {
+        return name;
+    }
+
+    @Override
+    public String getValue()
+    {
+        return value;
+    }
+
+    @Override
+    public void setValue(String value)
+    {
+        this.value = value;
+    }
+
+    @Override
+    public String getValueType()
+    {
+        return valueType;
+    }
+
+    @Override
+    public void setValueType(String valueType)
+    {
+        this.valueType = valueType;
+    }
+
+    public Person getPerson()
+    {
+        return person;
+    }
+
+    public void setPerson(Person person)
+    {
+        this.person = person;
+    }
+
+    @Override
+    public int hashCode()
+    {
+        int hash = 0;
+        hash += (attributeId != null ? attributeId.hashCode() : 0);
+        return hash;
+    }
+
+    @Override
+    public boolean equals(Object o)
+    {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Charattribute that = (Charattribute) o;
+        return Objects.equals(getAttributeId(), that.getAttributeId()) && Objects.equals(getName(), that.getName()) && Objects.equals(getPerson(), that.getPerson());
+    }
+
+    @Override
+    public String toString()
+    {
+        return "mmud.database.entities.game.Charattribute[ attributeId=" + attributeId + " ]";
+    }
 
 }

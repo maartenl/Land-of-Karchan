@@ -17,6 +17,7 @@
 package mmud.database.entities.items;
 
 import java.io.Serializable;
+import java.util.Objects;
 
 import jakarta.persistence.Basic;
 import jakarta.persistence.Column;
@@ -136,19 +137,12 @@ public class Itemattribute implements Serializable, Attribute
   }
 
   @Override
-  public boolean equals(Object object)
+  public boolean equals(Object o)
   {
-    // TODO: Warning - this method won't work in the case the id fields are not set
-    if (!(object instanceof Itemattribute))
-    {
-      return false;
-    }
-    Itemattribute other = (Itemattribute) object;
-    if ((this.attributeId == null && other.attributeId != null) || (this.attributeId != null && !this.attributeId.equals(other.attributeId)))
-    {
-      return false;
-    }
-    return true;
+    if (this == o) return true;
+    if (o == null || getClass() != o.getClass()) return false;
+    Itemattribute that = (Itemattribute) o;
+    return Objects.equals(getAttributeId(), that.getAttributeId()) && Objects.equals(getName(), that.getName()) && Objects.equals(getItem(), that.getItem());
   }
 
   @Override
