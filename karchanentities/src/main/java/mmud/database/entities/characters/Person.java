@@ -2184,6 +2184,7 @@ public abstract class Person implements Serializable, AttributeWrangler, Display
     @Override
     public Item addItem(Item item)
     {
+        LOGGER.log(Level.FINE, "addItem {0}", item.getItemDefinition().getId());
         if (item.getBelongsTo() != null || item.getRoom() != null || item.getContainer() != null)
         {
             throw new MudException("Item already assigned.");

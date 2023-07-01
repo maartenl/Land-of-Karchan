@@ -18,6 +18,8 @@ package mmud.scripting.entities;
 
 import java.util.List;
 import java.util.Objects;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import mmud.database.entities.characters.User;
 import mmud.database.enums.Wearing;
@@ -35,6 +37,7 @@ import mmud.services.CommunicationService;
  */
 public class Person
 {
+  private static final Logger LOGGER = Logger.getLogger(Person.class.getName());
 
   private static final long serialVersionUID = 438270592527335642L;
   private final String name;
@@ -249,9 +252,11 @@ public class Person
    */
   public Item addItem(Item item)
   {
+    LOGGER.log(Level.FINE, "addItem {0}", item.getItemdef());
     mmud.database.entities.items.Item result = person.addItem(item.getItem());
     if (result == null)
     {
+      LOGGER.fine("addItem not created");
       return null;
     }
     return new Item(result);

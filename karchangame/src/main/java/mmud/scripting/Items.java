@@ -20,6 +20,9 @@ import mmud.database.entities.characters.Person;
 import mmud.database.entities.game.Room;
 import mmud.database.entities.items.Item;
 
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 /**
  * Can create and remove items. For retrieval of items, let me refer you
  * back to the containers, {@link Person}, {@link Item} and {@link Room}.
@@ -28,6 +31,7 @@ import mmud.database.entities.items.Item;
  */
 public class Items
 {
+    private static final Logger LOGGER = Logger.getLogger(Items.class.getName());
 
     private final ItemsInterface proxy;
 
@@ -44,9 +48,11 @@ public class Items
      */
     public mmud.scripting.entities.Item createItem(int itemdefnr)
     {
+        LOGGER.log(Level.FINE, "createItem {0}", itemdefnr);
         final Item created = proxy.createItem(itemdefnr);
         if (created == null)
         {
+            LOGGER.fine("createItem not created");
             return null;
         }
         return new mmud.scripting.entities.Item(created);
