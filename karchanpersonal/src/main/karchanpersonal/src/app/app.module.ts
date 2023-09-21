@@ -5,7 +5,7 @@ import {
   ReactiveFormsModule
 } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
-import { CKEditorModule } from '@ckeditor/ckeditor5-angular';
+import { AngularEditorModule } from '@kolkov/angular-editor';
 
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 
@@ -58,7 +58,7 @@ import { LogonmessageComponent } from './play/logonmessage/logonmessage.componen
     FormsModule,
     ReactiveFormsModule,
     HttpClientModule,
-    CKEditorModule,
+    AngularEditorModule,
     NgbModule
   ],
   providers: [

@@ -1,6 +1,5 @@
 <app-logonmessage></app-logonmessage>
 <div class="container-fluid">
-  <script src="https://cdn.ckeditor.com/ckeditor5/11.2.0/classic/ckeditor.js"></script>
   <div class="row">
     <div class="col-12">
       <div class="card">
@@ -58,11 +57,10 @@
                 </fieldset>
               </div>
             </div>
-            <div class="row">
+            <div class="row" *ngIf="karchan.bigEntry">
               <div class="col">
                 <fieldset class="form-group">
-                  <ckeditor [(ngModel)]="model.editorData" [editor]="Editor" *ngIf="karchan.bigEntry">
-                  </ckeditor>
+                  <angular-editor formControlName="htmlContent" [config]="config"></angular-editor>
                 </fieldset>
               </div>
             </div>

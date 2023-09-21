@@ -1,6 +1,6 @@
 import {Component, OnInit, ViewChild} from '@angular/core';
+import { AngularEditorConfig } from '@kolkov/angular-editor';
 import {Router} from '@angular/router';
-import * as ClassicEditor from '@ckeditor/ckeditor5-build-classic';
 import {FormBuilder, FormGroup} from '@angular/forms';
 
 import {PlayerService} from '../player.service';
@@ -21,11 +21,19 @@ import {ChatlogService, Message} from '../chatlog.service';
   styleUrls: ['./play.component.css']
 })
 export class PlayComponent implements OnInit {
-  public Editor = ClassicEditor;
 
-  public model = {
-    editorData: ''
-};
+  config: AngularEditorConfig = {
+    editable: true,
+    spellcheck: true,
+    height: '15rem',
+    minHeight: '5rem',
+    enableToolbar: true,
+    showToolbar: true,
+    placeholder: 'Enter text here...',
+    translate: 'no',
+    defaultParagraphSeparator: 'p',
+    toolbarPosition: 'top',
+  };
 
   @ViewChild(LogonmessageComponent) logonmessageComponent: LogonmessageComponent | null = null;
 
@@ -51,13 +59,15 @@ export class PlayComponent implements OnInit {
     private router: Router,
     private formBuilder: FormBuilder) {
     this.commandForm = this.formBuilder.group({
-      command: ''
+      command: '',
+      htmlContent: '',
     });
   }
 
   createForms() {
     this.commandForm = this.formBuilder.group({
-      command: ''
+      command: '',
+      htmlContent: '',
     });
   }
 
@@ -194,27 +204,28 @@ export class PlayComponent implements OnInit {
   public play(): boolean {
     const formModel = this.commandForm === null ? null : this.commandForm.value;
     const command = formModel === null ? undefined : formModel.command as string;
+    const htmlContent = formModel === null ? undefined : formModel.htmlContent as string;
     if (window.console) {
       console.log('play: big talk "' + this.karchan.bigEntry + '"');
       console.log('play: command is "' + command + '"');
-      console.log('play: editor text is "' + this.model.editorData + '"');
+      console.log('play: editor text is "' + htmlContent + '"');
     }
     if (this.karchan.bigEntry) {
       let totalcommand;
       if (command === undefined || command.trim() === '') {
         // there is no command, hopefully only big talk editor contents
-        if (this.model.editorData === undefined) {
+        if (htmlContent === undefined) {
           totalcommand = '';
         } else {
-          if (this.model.editorData.startsWith('<p>')) {
-            totalcommand = this.model.editorData.substr(3);
+          if (htmlContent.startsWith('<p>')) {
+            totalcommand = htmlContent.substr(3);
           } else {
-            totalcommand = this.model.editorData
+            totalcommand = htmlContent
           }
         }
       } else {
         // a command was entered, perhaps with a big talk component
-        totalcommand = this.model.editorData === undefined || this.model.editorData === '' ? command : command + ' ' + this.model.editorData;
+        totalcommand = htmlContent === undefined || htmlContent === '' ? command : command + ' ' + htmlContent;
       }
       if (window.console) {
         console.log('play: bigtalk "' + totalcommand + '"');

@@ -431,12 +431,6 @@ export class PlayerService {
   // wikipages
 
   public getWikipagePreview(contents: string): Observable<string> {
-    if (!environment.production) {
-      return new Observable(observer => {
-        observer.next('<p>This is a <i>preview</i></p>');
-        observer.complete();
-      });
-    }
     const headers = new HttpHeaders()
       .append('Content-Type', 'text/html; charset=utf-8')
       .append('Accept', 'text/html');
