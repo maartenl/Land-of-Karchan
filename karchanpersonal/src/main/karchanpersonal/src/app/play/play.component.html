@@ -61,7 +61,7 @@
             <div class="row">
               <div class="col">
                 <fieldset class="form-group">
-                  <ckeditor [editor]="Editor" *ngIf="karchan.bigEntry" (change)="onChange($event)">
+                  <ckeditor [(ngModel)]="model.editorData" [editor]="Editor" *ngIf="karchan.bigEntry">
                   </ckeditor>
                 </fieldset>
               </div>
