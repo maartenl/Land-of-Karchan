@@ -133,6 +133,8 @@ export class PlayComponent implements OnInit {
               });
               display.body += '</ul>\r\n';
             }
+            // do not empty the log, use the same log.
+            display.log = this.display.log;
             this.writeStuff(display);
           }
         },
