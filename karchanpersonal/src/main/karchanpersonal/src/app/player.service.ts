@@ -187,7 +187,7 @@ export class PlayerService {
   public resetPassword(name: string, oldpassword: string, password: string, password2: string): Observable<any> {
     const passwordReset: PasswordReset = new PasswordReset({
       name: name,
-      oldpassword: password,
+      oldpassword: oldpassword,
       password: password,
       password2: password2,
     })
