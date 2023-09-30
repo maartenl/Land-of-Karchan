@@ -18,10 +18,7 @@ package mmud.database.entities.characters;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 import java.util.logging.Logger;
 
 import jakarta.persistence.CascadeType;
@@ -576,18 +573,6 @@ public class User extends Person
     };
   }
 
-  public void createChatline(Chatline chatline)
-  {
-    if (hasChatLine(chatline.getChatname()))
-    {
-      return;
-    }
-    Chatlineusers user = new Chatlineusers();
-    user.setUser(this);
-    user.setChatline(chatline);
-    chatlines.add(user);
-  }
-
   public boolean joinChatline(Chatline chatline)
   {
     if (hasChatLine(chatline.getChatname()))
@@ -629,7 +614,7 @@ public class User extends Person
     {
       String attributename = first.get().getChatline().getAttributename();
       return attributename == null ||
-        attributename.trim().equals("") ||
+              attributename.trim().isEmpty() ||
         (getAttribute(attributename) != null &&
           "true".equalsIgnoreCase(getAttribute(attributename).getValue()));
     }
@@ -646,7 +631,7 @@ public class User extends Person
     {
       String attributename = first.get().getAttributename();
       if (attributename == null ||
-        attributename.trim().equals("") ||
+              attributename.trim().isEmpty() ||
         (getAttribute(attributename) != null &&
           "true".equalsIgnoreCase(getAttribute(attributename).getValue())))
       {

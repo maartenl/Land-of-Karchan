@@ -30,6 +30,11 @@ import mmud.services.CommunicationService;
  * "joinchat deputies".
  *
  * @author maartenl
+ * @see CreateChatCommand
+ * @see DeleteChatCommand
+ * @see JoinChatCommand
+ * @see LeaveChatCommand
+ * @see EditChatCommand
  */
 public class JoinChatCommand extends NormalCommand
 {
@@ -49,7 +54,7 @@ public class JoinChatCommand extends NormalCommand
       return null;
     }
     String chatlinename = strings[1];
-    Optional<Chatline> chatline = getPersonService().getChatline(chatlinename);
+    Optional<Chatline> chatline = getChatService().getChatline(chatlinename);
     if (chatline.isEmpty())
     {
       CommunicationService.getCommunicationService(aUser).writeMessage("Chatline not found.<BR>\r\n");

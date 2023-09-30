@@ -1,16 +1,15 @@
 package mmud.database.entities.game;
 
 import java.time.LocalDateTime;
+import java.util.Collections;
+import java.util.HashSet;
 import java.util.Objects;
+import java.util.Set;
 
-import jakarta.persistence.Basic;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.NamedQuery;
-import jakarta.persistence.Table;
+import jakarta.annotation.Nullable;
+import jakarta.persistence.*;
+import mmud.database.entities.characters.User;
+
 
 /**
  * A chatline, a chatroom that can be defined by players.
@@ -42,6 +41,13 @@ public class Chatline
   @Basic
   @Column(name = "lastchattime")
   private LocalDateTime lastchattime;
+
+  @JoinColumn(name = "owner", referencedColumnName = "name")
+  @ManyToOne
+  private User owner;
+
+  @OneToMany(cascade = CascadeType.ALL, mappedBy = "chatline", orphanRemoval = true)
+  private Set<Chatlineusers> users = new HashSet<>();
 
   public long getId()
   {
@@ -88,19 +94,34 @@ public class Chatline
     return lastchattime;
   }
 
+  public @Nullable User getOwner()
+  {
+    return owner;
+  }
+
+  public void setOwner(@Nullable User owner)
+  {
+    this.owner = owner;
+  }
+
+  public Set<Chatlineusers> getUsers()
+  {
+    return Collections.unmodifiableSet(users);
+  }
+
   @Override
   public boolean equals(Object o)
   {
     if (this == o) return true;
     if (o == null || getClass() != o.getClass()) return false;
     Chatline chatline = (Chatline) o;
-    return id == chatline.id && Objects.equals(chatname, chatline.chatname) && Objects.equals(attributename, chatline.attributename) && Objects.equals(colour, chatline.colour);
+    return Objects.equals(chatname, chatline.chatname);
   }
 
   @Override
   public int hashCode()
   {
-    return Objects.hash(id, chatname, attributename, colour);
+    return Objects.hash(chatname);
   }
 
   /**

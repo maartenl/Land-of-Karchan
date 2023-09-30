@@ -27,6 +27,11 @@ import mmud.services.CommunicationService;
  * "leavechat deputies".
  *
  * @author maartenl
+ * @see CreateChatCommand
+ * @see DeleteChatCommand
+ * @see JoinChatCommand
+ * @see LeaveChatCommand
+ * @see EditChatCommand
  */
 public class LeaveChatCommand extends NormalCommand
 {

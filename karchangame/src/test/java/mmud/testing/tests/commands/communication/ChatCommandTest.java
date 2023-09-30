@@ -16,32 +16,33 @@
  */
 package mmud.testing.tests.commands.communication;
 
-import java.io.File;
-import java.io.PrintWriter;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-
+import jakarta.annotation.Nonnull;
 import mmud.Constants;
+import mmud.commands.CommandFactory;
 import mmud.commands.CommandRunner;
-import mmud.commands.communication.ChatCommand;
-import mmud.commands.communication.CreateChatCommand;
-import mmud.commands.communication.JoinChatCommand;
-import mmud.commands.communication.LeaveChatCommand;
+import mmud.commands.NormalCommand;
+import mmud.commands.communication.*;
 import mmud.database.entities.characters.Administrator;
 import mmud.database.entities.characters.User;
 import mmud.database.entities.game.Chatline;
 import mmud.database.entities.game.DisplayInterface;
 import mmud.database.entities.game.Room;
+import mmud.exceptions.ChatlineAlreadyExistsException;
+import mmud.exceptions.ChatlineNotFoundException;
+import mmud.services.ChatService;
 import mmud.services.CommunicationService;
 import mmud.services.PersonService;
 import mmud.testing.TestingConstants;
 import mmud.testing.tests.LogServiceStub;
 import mmud.testing.tests.MudTest;
+import org.assertj.core.api.AutoCloseableSoftAssertions;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
+
+import java.io.File;
+import java.io.PrintWriter;
+import java.util.*;
+
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
 /**
@@ -59,6 +60,8 @@ public class ChatCommandTest extends MudTest
   private CommandRunner commandRunner = new CommandRunner();
 
   private PersonService personService;
+
+  private ChatService chatService;
 
   public ChatCommandTest()
   {
@@ -85,7 +88,7 @@ public class ChatCommandTest extends MudTest
   @Test
   public void testChatline()
   {
-    commandRunner.setServices(personService, null, null, null, null, null, null);
+    commandRunner.setServices(personService, null, null, null, null, null, null, chatService);
     CreateChatCommand createChatCommand = new CreateChatCommand("createchat (\\w)+ (\\w)+ (\\w)+");
     createChatCommand.setCallback(commandRunner);
     assertThat(createChatCommand.getRegExpr()).isEqualTo("createchat (\\w)+ (\\w)+ (\\w)+");
@@ -98,9 +101,79 @@ public class ChatCommandTest extends MudTest
     assertThat(display).isNotNull();
     String log = CommunicationService.getCommunicationService(marvin).getLog(0L).log;
     assertThat(log).startsWith("""
-      Chatline created.<br />\r
-      <span class="chat-blue">[help]<b>Marvin</b>: Help me!</span><br />\r
-      """);
+        Chatline created.<br />\r
+        <span class="chat-blue">[help]<b>Marvin</b>: Help me!</span><br />\r
+        """);
+  }
+
+
+  /**
+   * Edit a chatline and tries successfully to chat to it.
+   */
+  @Test
+  public void testEditChatline()
+  {
+    commandRunner.setServices(personService, null, null, null, null, null, null, chatService);
+    List<NormalCommand> commands = CommandFactory.getCommand("createchat help none blue");
+    NormalCommand createChatCommand = commands.get(0);
+    createChatCommand.setCallback(commandRunner);
+    assertThat(createChatCommand.getRegExpr()).isEqualTo("createchat (\\w)+ (\\w)+ (\\w)+");
+    DisplayInterface display = createChatCommand.run("createchat help none blue", marvin);
+
+    EditChatCommand editChatCommand = new EditChatCommand("editchat (\\w)+ (\\w)+ (\\w)+");
+    editChatCommand.setCallback(commandRunner);
+    assertThat(editChatCommand.getRegExpr()).isEqualTo("editchat (\\w)+ (\\w)+ (\\w)+");
+    editChatCommand.run("editchat help none red", marvin);
+    Chatline help = chatlines.get("help");
+    assertThat(help).isNotNull();
+    try (AutoCloseableSoftAssertions softly = new AutoCloseableSoftAssertions())
+    {
+      softly.assertThat(help.getChatname()).isEqualTo("help");
+      softly.assertThat(help.getAttributename()).isNull();
+      softly.assertThat(help.getColour()).isEqualTo("red");
+      softly.assertThat(help.getOwner()).isNotNull();
+      softly.assertThat(help.getOwner() != null ? help.getOwner().getName() : null).isEqualTo("Marvin");
+      softly.assertThat(help.getId()).isZero();
+    }
+
+    ChatCommand chatCommand = new ChatCommand("chat (\\w)+ .+");
+    chatCommand.setCallback(commandRunner);
+    assertThat(chatCommand.getRegExpr()).isEqualTo("chat (\\w)+ .+");
+    display = chatCommand.run("chat help Help me!", marvin);
+    assertThat(display).isNotNull();
+    String log = CommunicationService.getCommunicationService(marvin).getLog(0L).log;
+    assertThat(log).startsWith("""
+        Chatline created.<br />\r
+        Chatline edited.<br />\r
+        <span class="chat-red">[help]<b>Marvin</b>: Help me!</span><br />\r
+        """);
+  }
+
+  /**
+   * Removes a chatline.
+   */
+  @Test
+  public void testRemoveChatline()
+  {
+    commandRunner.setServices(personService, null, null, null, null, null, null, chatService);
+    CreateChatCommand createChatCommand = new CreateChatCommand("createchat (\\w)+ (\\w)+ (\\w)+");
+    createChatCommand.setCallback(commandRunner);
+    assertThat(createChatCommand.getRegExpr()).isEqualTo("createchat (\\w)+ (\\w)+ (\\w)+");
+    DisplayInterface display = createChatCommand.run("createchat help none blue", marvin);
+
+    assertThat(chatlines.get("help")).isNotNull();
+
+    DeleteChatCommand deleteChatCommand = new DeleteChatCommand("deletechat (\\w)+");
+    deleteChatCommand.setCallback(commandRunner);
+    assertThat(deleteChatCommand.getRegExpr()).isEqualTo("deletechat (\\w)+");
+    display = deleteChatCommand.run("deletechat help", marvin);
+    assertThat(display).isNotNull();
+    String log = CommunicationService.getCommunicationService(marvin).getLog(0L).log;
+    assertThat(log).startsWith("""
+        Chatline created.<br />\r
+        You removed the chatline.<br />\r
+        """);
+    assertThat(chatlines.get("help")).isNull();
   }
 
   /**
@@ -109,7 +182,7 @@ public class ChatCommandTest extends MudTest
   @Test
   public void testCreateChatlineTwice()
   {
-    commandRunner.setServices(personService, null, null, null, null, null, null);
+    commandRunner.setServices(personService, null, null, null, null, null, null, chatService);
     CreateChatCommand createChatCommand = new CreateChatCommand("createchat (\\w)+ (\\w)+ (\\w)+");
     createChatCommand.setCallback(commandRunner);
     assertThat(createChatCommand.getRegExpr()).isEqualTo("createchat (\\w)+ (\\w)+ (\\w)+");
@@ -125,9 +198,9 @@ public class ChatCommandTest extends MudTest
 
     String log = CommunicationService.getCommunicationService(marvin).getLog(0L).log;
     assertThat(log).startsWith("""
-      Chatline created.<br />\r
-      Chatline already exists.<br />\r
-      """);
+        Chatline created.<br />\r
+        Chatline already exists.<br />\r
+        """);
   }
 
   /**
@@ -136,7 +209,7 @@ public class ChatCommandTest extends MudTest
   @Test
   public void testLeaveChatline()
   {
-    commandRunner.setServices(personService, null, null, null, null, null, null);
+    commandRunner.setServices(personService, null, null, null, null, null, null, chatService);
     CreateChatCommand createChatCommand = new CreateChatCommand("createchat (\\w)+ (\\w)+ (\\w)+");
     createChatCommand.setCallback(commandRunner);
     assertThat(createChatCommand.getRegExpr()).isEqualTo("createchat (\\w)+ (\\w)+ (\\w)+");
@@ -154,10 +227,10 @@ public class ChatCommandTest extends MudTest
     assertThat(display).isNotNull();
     String log = CommunicationService.getCommunicationService(marvin).getLog(0L).log;
     assertThat(log).startsWith("""
-      Chatline created.<br />\r
-      <span class="chat-blue">[help]<b>Marvin</b>: Help me!</span><br />\r
-      You left chatline.<br />\r
-      """);
+        Chatline created.<br />\r
+        <span class="chat-blue">[help]<b>Marvin</b>: Help me!</span><br />\r
+        You left chatline.<br />\r
+        """);
   }
 
   /**
@@ -166,7 +239,7 @@ public class ChatCommandTest extends MudTest
   @Test
   public void testLeaveUnjoinedChatline()
   {
-    commandRunner.setServices(personService, null, null, null, null, null, null);
+    commandRunner.setServices(personService, null, null, null, null, null, null, chatService);
     LeaveChatCommand leaveChatCommand = new LeaveChatCommand("leavechat (\\w)+");
     leaveChatCommand.setCallback(commandRunner);
     assertThat(leaveChatCommand.getRegExpr()).isEqualTo("leavechat (\\w)+");
@@ -197,7 +270,7 @@ public class ChatCommandTest extends MudTest
   @Test
   public void testJoinChatline()
   {
-    commandRunner.setServices(personService, null, null, null, null, null, null);
+    commandRunner.setServices(personService, null, null, null, null, null, null, chatService);
     CreateChatCommand createChatCommand = new CreateChatCommand("createchat (\\w)+ (\\w)+ (\\w)+");
     createChatCommand.setCallback(commandRunner);
     assertThat(createChatCommand.getRegExpr()).isEqualTo("createchat (\\w)+ (\\w)+ (\\w)+");
@@ -223,14 +296,14 @@ public class ChatCommandTest extends MudTest
     assertThat(display).isNotNull();
     log = CommunicationService.getCommunicationService(marvin).getLog(0L).log;
     assertThat(log).startsWith("""
-      Chatline created.<br />\r
-      <span class="chat-blue">[help]<b>Karn</b>: Help me!</span><br />\r
-      """);
+        Chatline created.<br />\r
+        <span class="chat-blue">[help]<b>Karn</b>: Help me!</span><br />\r
+        """);
     log = CommunicationService.getCommunicationService(karn).getLog(0L).log;
     assertThat(log).startsWith("""
-      You joined a chatline.<br />\r
-      <span class="chat-blue">[help]<b>Karn</b>: Help me!</span><br />\r
-      """);
+        You joined a chatline.<br />\r
+        <span class="chat-blue">[help]<b>Karn</b>: Help me!</span><br />\r
+        """);
   }
 
 
@@ -240,7 +313,7 @@ public class ChatCommandTest extends MudTest
   @Test
   public void testJoinChatlineNotAllowed()
   {
-    commandRunner.setServices(personService, null, null, null, null, null, null);
+    commandRunner.setServices(personService, null, null, null, null, null, null, chatService);
     CreateChatCommand createChatCommand = new CreateChatCommand("createchat (\\w)+ (\\w)+ (\\w)+");
     createChatCommand.setCallback(commandRunner);
     assertThat(createChatCommand.getRegExpr()).isEqualTo("createchat (\\w)+ (\\w)+ (\\w)+");
@@ -265,6 +338,37 @@ public class ChatCommandTest extends MudTest
   {
     chatlines = new HashMap<>();
     logService = new LogServiceStub();
+    chatService = new ChatService(logService)
+    {
+      @Override
+      public Chatline createChatline(String chatlinename, String attribute, String colour, User aUser)
+      {
+        if (chatlines.containsKey(chatlinename))
+        {
+          throw new ChatlineAlreadyExistsException(chatlinename);
+        }
+        Chatline chatline = new Chatline();
+        chatline.setChatname(chatlinename);
+        chatline.setAttributename(attribute);
+        chatline.setColour(colour);
+        chatline.setOwner(aUser);
+        chatlines.put(chatlinename, chatline);
+        return chatline;
+      }
+
+      @Override
+      public Optional<Chatline> getChatline(@Nonnull String chatlinename)
+      {
+        return Optional.ofNullable(chatlines.get(chatlinename));
+      }
+
+      @Override
+      public void deleteChatLine(User aUser, @Nonnull String chatlinename)
+      {
+        chatlines.remove(chatlinename,
+            getChatline(chatlinename).orElseThrow(() -> new ChatlineNotFoundException(chatlinename)));
+      }
+    };
     personService = new PersonService(logService)
     {
 
@@ -288,11 +392,6 @@ public class ChatCommandTest extends MudTest
         return Arrays.asList(karn, marvin);
       }
 
-      @Override
-      public Optional<Chatline> getChatline(String name)
-      {
-        return Optional.ofNullable(chatlines.get(name));
-      }
     };
 
     karn = TestingConstants.getKarn();

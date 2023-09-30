@@ -32,16 +32,7 @@ import mmud.scripting.Persons;
 import mmud.scripting.Rooms;
 import mmud.scripting.RunScript;
 import mmud.scripting.World;
-import mmud.services.AdminService;
-import mmud.services.AttributeService;
-import mmud.services.CommunicationService;
-import mmud.services.EventsService;
-import mmud.services.GuildService;
-import mmud.services.HelpService;
-import mmud.services.ItemService;
-import mmud.services.LogService;
-import mmud.services.PersonService;
-import mmud.services.RoomsService;
+import mmud.services.*;
 
 /**
  * Will run the command provided.
@@ -80,6 +71,9 @@ public class CommandRunner
 
   @Inject
   private AdminService adminService;
+
+  @Inject
+  private ChatService chatService;
 
   /**
    * Runs a specific command. If this person appears to be asleep, the only
@@ -223,8 +217,16 @@ public class CommandRunner
     return adminService;
   }
 
+  /**
+   * @return an injected chatline service, for dealing with chatlines.
+   */
+  public ChatService getChatService()
+  {
+    return chatService;
+  }
+
   @VisibleForTesting
-  public void setServices(PersonService personService, LogService logService, GuildService guildService, ItemService itemService, EventsService eventsService, AdminService adminService, HelpService helpService)
+  public void setServices(PersonService personService, LogService logService, GuildService guildService, ItemService itemService, EventsService eventsService, AdminService adminService, HelpService helpService, ChatService chatService)
   {
     this.personService = personService;
     this.logService = logService;
@@ -233,6 +235,7 @@ public class CommandRunner
     this.eventsService = eventsService;
     this.adminService = adminService;
     this.helpService = helpService;
+    this.chatService = chatService;
   }
 
 }

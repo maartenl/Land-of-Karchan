@@ -25,19 +25,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.logging.Logger;
 
 import mmud.Utils;
-import mmud.commands.communication.AskCommand;
-import mmud.commands.communication.ChatCommand;
-import mmud.commands.communication.CreateChatCommand;
-import mmud.commands.communication.CryCommand;
-import mmud.commands.communication.JoinChatCommand;
-import mmud.commands.communication.LeaveChatCommand;
-import mmud.commands.communication.OocCommand;
-import mmud.commands.communication.SayCommand;
-import mmud.commands.communication.ScreamCommand;
-import mmud.commands.communication.ShoutCommand;
-import mmud.commands.communication.SingCommand;
-import mmud.commands.communication.TellCommand;
-import mmud.commands.communication.WhisperCommand;
+import mmud.commands.communication.*;
 import mmud.commands.guild.AcceptCommand;
 import mmud.commands.guild.ApplyCommand;
 import mmud.commands.guild.ChangeMasterCommand;
@@ -139,6 +127,8 @@ public class CommandFactory
     theCommandStructure.put("joinchat", () -> new JoinChatCommand("joinchat (\\w)+"));
     theCommandStructure.put("chat", () -> new ChatCommand("chat (\\w)+ .+"));
     theCommandStructure.put("createchat", () -> new CreateChatCommand("createchat (\\w)+ (\\w)+ (\\w)+"));
+    theCommandStructure.put("editchat", () -> new EditChatCommand("editchat (\\w)+ (\\w)+ (\\w)+( (\\w)+)?"));
+    theCommandStructure.put("deletechat", () -> new DeleteChatCommand("deletechat (\\w)+"));
     theCommandStructure.put("leavechat", () -> new LeaveChatCommand("leavechat (\\w)+"));
 
     theCommandStructure.put("cry", () -> new CryCommand("cry (to (\\w)+ )?.+"));
@@ -297,7 +287,7 @@ public class CommandFactory
    * <P>
    * All commands are newly created.
    */
-  static List<NormalCommand> getCommand(String aCommand)
+  public static List<NormalCommand> getCommand(String aCommand)
   {
     List<NormalCommand> result = new ArrayList<>(5);
     String[] strings = aCommand.split(" ");

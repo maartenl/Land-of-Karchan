@@ -105,7 +105,7 @@ public class DeleteGuildCommandTest extends MudTest
     DeleteGuildCommand deleteguildCommand = new DeleteGuildCommand("deleteguild");
     deleteguildCommand.setCallback(commandRunner);
     assertThat(deleteguildCommand.getRegExpr()).isEqualTo("deleteguild");
-    commandRunner.setServices(null, logService, guildService, null, null, null, null);
+    commandRunner.setServices(null, logService, guildService, null, null, null, null, null);
     DisplayInterface display = deleteguildCommand.run("deleteguild", karn);
     assertThat(display).isNotNull();
     assertThat(display.getBody()).isEqualTo("You are in a small room.");

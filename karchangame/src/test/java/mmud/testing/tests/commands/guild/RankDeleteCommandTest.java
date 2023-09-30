@@ -71,7 +71,7 @@ public class RankDeleteCommandTest extends MudTest
     RankDeleteCommand rankCommand = new RankDeleteCommand("guilddelrank (\\d){1,3} (\\w)+");
     rankCommand.setCallback(commandRunner);
     assertThat(rankCommand.getRegExpr()).isEqualTo("guilddelrank (\\d){1,3} (\\w)+");
-    commandRunner.setServices(null, logService, null, null, null, null, null);
+    commandRunner.setServices(null, logService, null, null, null, null, null, null);
     DisplayInterface display = rankCommand.run("guilddelrank 100", karn);
     assertThat(display).isNotNull();
     assertThat(display.getBody()).isEqualTo("You are in a small room.");
@@ -93,7 +93,7 @@ public class RankDeleteCommandTest extends MudTest
     RankDeleteCommand rankCommand = new RankDeleteCommand("guilddelrank (\\d){1,3} (\\w)+");
     rankCommand.setCallback(commandRunner);
     assertThat(rankCommand.getRegExpr()).isEqualTo("guilddelrank (\\d){1,3} (\\w)+");
-    commandRunner.setServices(null, logService, null, null, null, null, null);
+    commandRunner.setServices(null, logService, null, null, null, null, null, null);
     DisplayInterface display = rankCommand.run("guilddelrank 50", karn);
     assertThat(display).isNotNull();
     assertThat(display.getBody()).isEqualTo("You are in a small room.");

@@ -120,7 +120,7 @@ public class OocCommandTest extends MudTest
     OocCommand heehawCommand = new OocCommand("ooc .+");
     heehawCommand.setCallback(commandRunner);
     assertThat(heehawCommand.getRegExpr()).isEqualTo("ooc .+");
-    commandRunner.setServices(personService, null, null, null, null, null, null);
+    commandRunner.setServices(personService, null, null, null, null, null, null, null);
     DisplayInterface display = heehawCommand.run("ooc Hey! This works!", marvin);
     assertThat(display).isNotNull();
     String log = CommunicationService.getCommunicationService(marvin).getLog(0L).log;

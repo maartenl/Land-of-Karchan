@@ -153,19 +153,6 @@ public class PersonService implements PersonsInterface
     return query.getResultList();
   }
 
-  public Optional<Chatline> getChatline(String name)
-  {
-    TypedQuery<Chatline> namedQuery = em.createNamedQuery("Chatline.findByName", Chatline.class);
-    namedQuery.setParameter("name", name);
-    List<Chatline> chatlines = namedQuery.getResultList();
-    return chatlines.stream().findFirst();
-  }
-
-  public List<Chatline> getChatlines()
-  {
-    return em.createNamedQuery("Chatline.all", Chatline.class).getResultList();
-  }
-
   /**
    * Sends a message from an administrator to all players currently playing the game,
    * irrespective of room they are in.

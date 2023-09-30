@@ -85,7 +85,7 @@ public class AdminCommandTest extends MudTest
     AdminCommand adminCommand = new AdminCommand("admin .+");
     adminCommand.setCallback(commandRunner);
     assertThat(adminCommand.getRegExpr()).isEqualTo("admin .+");
-    commandRunner.setServices(null, logService, null, null, null, null, null);
+    commandRunner.setServices(null, logService, null, null, null, null, null, null);
     DisplayInterface display = adminCommand.run("admin visible on", karn);
     assertThat(display).isNotNull();
     assertThat(karn.getVisible()).isTrue();
@@ -101,7 +101,7 @@ public class AdminCommandTest extends MudTest
     AdminCommand adminCommand = new AdminCommand("admin .+");
     adminCommand.setCallback(commandRunner);
     assertThat(adminCommand.getRegExpr()).isEqualTo("admin .+");
-    commandRunner.setServices(null, logService, null, null, null, null, null);
+    commandRunner.setServices(null, logService, null, null, null, null, null, null);
     DisplayInterface display = adminCommand.run("admin visible off", karn);
     assertThat(display).isNotNull();
     assertThat(karn.getVisible()).isFalse();
@@ -118,7 +118,7 @@ public class AdminCommandTest extends MudTest
     assertThat(adminCommand.getRegExpr()).isEqualTo("admin .+");
     assertThat(marvin.getFrogging()).isZero();
     assertThat(marvin.getJackassing()).isZero();
-    commandRunner.setServices(personService, logService, null, null, null, null, null);
+    commandRunner.setServices(personService, logService, null, null, null, null, null, null);
     DisplayInterface display = adminCommand.run("admin frog marvin 5", karn);
     assertThat(display).isNotNull();
     assertThat(marvin.getFrogging()).isEqualTo(5);
@@ -136,7 +136,7 @@ public class AdminCommandTest extends MudTest
     assertThat(adminCommand.getRegExpr()).isEqualTo("admin .+");
     assertThat(marvin.getFrogging()).isZero();
     assertThat(marvin.getJackassing()).isZero();
-    commandRunner.setServices(personService, logService, null, null, null, null, null);
+    commandRunner.setServices(personService, logService, null, null, null, null, null, null);
     DisplayInterface display = adminCommand.run("admin jackass marvin 5", karn);
     assertThat(display).isNotNull();
     assertThat(marvin.getFrogging()).isZero();
@@ -154,7 +154,7 @@ public class AdminCommandTest extends MudTest
     assertThat(adminCommand.getRegExpr()).isEqualTo("admin .+");
     assertThat(marvin.getFrogging()).isZero();
     assertThat(marvin.getJackassing()).isZero();
-    commandRunner.setServices(personService, null, null, null, null, null, null);
+    commandRunner.setServices(personService, null, null, null, null, null, null, null);
     try
     {
       DisplayInterface display = adminCommand.run("admin frog slartibartfast 5", karn);
@@ -172,7 +172,7 @@ public class AdminCommandTest extends MudTest
     assertThat(adminCommand.getRegExpr()).isEqualTo("admin .+");
     assertThat(marvin.getFrogging()).isZero();
     assertThat(marvin.getJackassing()).isZero();
-    commandRunner.setServices(personService, null, null, null, null, null, null);
+    commandRunner.setServices(personService, null, null, null, null, null, null, null);
     try
     {
       DisplayInterface display = adminCommand.run("admin jackass slartibartfast 5", karn);
@@ -192,7 +192,7 @@ public class AdminCommandTest extends MudTest
     assertThat(adminCommand.getRegExpr()).isEqualTo("admin .+");
     assertThat(marvin.getFrogging()).isZero();
     assertThat(marvin.getJackassing()).isZero();
-    commandRunner.setServices(personService, null, null, null, null, null, null);
+    commandRunner.setServices(personService, null, null, null, null, null, null, null);
     try
     {
       DisplayInterface display = adminCommand.run("admin frog marvin jimminy", karn);
@@ -210,7 +210,7 @@ public class AdminCommandTest extends MudTest
     assertThat(adminCommand.getRegExpr()).isEqualTo("admin .+");
     assertThat(marvin.getFrogging()).isZero();
     assertThat(marvin.getJackassing()).isZero();
-    commandRunner.setServices(personService, null, null, null, null, null, null);
+    commandRunner.setServices(personService, null, null, null, null, null, null, null);
     try
     {
       DisplayInterface display = adminCommand.run("admin jackass marvin jimminy", karn);
@@ -229,7 +229,7 @@ public class AdminCommandTest extends MudTest
     AdminCommand adminCommand = new AdminCommand("admin .+");
     adminCommand.setCallback(commandRunner);
     assertThat(adminCommand.getRegExpr()).isEqualTo("admin .+");
-    commandRunner.setServices(personService, null, null, null, null, null, null);
+    commandRunner.setServices(personService, null, null, null, null, null, null, null);
     DisplayInterface display = adminCommand.run("admin kick", karn);
 
   }
@@ -241,7 +241,7 @@ public class AdminCommandTest extends MudTest
     AdminCommand adminCommand = new AdminCommand("admin .+");
     adminCommand.setCallback(commandRunner);
     assertThat(adminCommand.getRegExpr()).isEqualTo("admin .+");
-    commandRunner.setServices(personService, logService, null, null, null, null, null);
+    commandRunner.setServices(personService, logService, null, null, null, null, null, null);
     DisplayInterface display = adminCommand.run("admin kick marvin", karn);
 
     // check for deactivation
@@ -263,7 +263,7 @@ public class AdminCommandTest extends MudTest
     AdminCommand adminCommand = new AdminCommand("admin .+");
     adminCommand.setCallback(commandRunner);
     assertThat(adminCommand.getRegExpr()).isEqualTo("admin .+");
-    commandRunner.setServices(personService, logService, null, null, null, null, null);
+    commandRunner.setServices(personService, logService, null, null, null, null, null, null);
     DisplayInterface display = adminCommand.run("admin kick marvin 60", karn);
 
     // check for deactivation
@@ -288,7 +288,7 @@ public class AdminCommandTest extends MudTest
     AdminCommand adminCommand = new AdminCommand("admin .+");
     adminCommand.setCallback(commandRunner);
     assertThat(adminCommand.getRegExpr()).isEqualTo("admin .+");
-    commandRunner.setServices(personService, null, null, null, null, null, null);
+    commandRunner.setServices(personService, null, null, null, null, null, null, null);
     DisplayInterface display = adminCommand.run("admin kick marvin -5", karn);
 
   }
@@ -300,7 +300,7 @@ public class AdminCommandTest extends MudTest
     AdminCommand adminCommand = new AdminCommand("admin .+");
     adminCommand.setCallback(commandRunner);
     assertThat(adminCommand.getRegExpr()).isEqualTo("admin .+");
-    commandRunner.setServices(personService, null, null, null, null, null, null);
+    commandRunner.setServices(personService, null, null, null, null, null, null, null);
     DisplayInterface display = adminCommand.run("admin kick marvin boogey", karn);
 
   }
@@ -312,7 +312,7 @@ public class AdminCommandTest extends MudTest
     AdminCommand adminCommand = new AdminCommand("admin .+");
     adminCommand.setCallback(commandRunner);
     assertThat(adminCommand.getRegExpr()).isEqualTo("admin .+");
-    commandRunner.setServices(personService, null, null, null, null, null, null);
+    commandRunner.setServices(personService, null, null, null, null, null, null, null);
     DisplayInterface display = adminCommand.run("admin kick janedoe 60", karn);
 
   }

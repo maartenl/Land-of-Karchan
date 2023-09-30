@@ -68,7 +68,7 @@ public class RankAssignCommandTest extends MudTest
     RankAssignCommand rankCommand = new RankAssignCommand("guildassignrank (\\d){1,3} (\\w)+");
     rankCommand.setCallback(commandRunner);
     assertThat(rankCommand.getRegExpr()).isEqualTo("guildassignrank (\\d){1,3} (\\w)+");
-    commandRunner.setServices(null, logService, null, null, null, null, null);
+    commandRunner.setServices(null, logService, null, null, null, null, null, null);
     DisplayInterface display = rankCommand.run("guildassignrank 0 Marvin", karn);
     assertThat(display).isNotNull();
     assertThat(display.getBody()).isEqualTo("You are in a small room.");
@@ -88,7 +88,7 @@ public class RankAssignCommandTest extends MudTest
     RankAssignCommand rankCommand = new RankAssignCommand("guildassignrank (\\d){1,3} (\\w)+");
     rankCommand.setCallback(commandRunner);
     assertThat(rankCommand.getRegExpr()).isEqualTo("guildassignrank (\\d){1,3} (\\w)+");
-    commandRunner.setServices(null, logService, null, null, null, null, null);
+    commandRunner.setServices(null, logService, null, null, null, null, null, null);
     DisplayInterface display = rankCommand.run("guildassignrank henk Marvin", karn);
     assertThat(display).isNotNull();
     assertThat(display.getBody()).isEqualTo("You are in a small room.");
@@ -104,7 +104,7 @@ public class RankAssignCommandTest extends MudTest
     RankAssignCommand rankCommand = new RankAssignCommand("guildassignrank (\\d){1,3} (\\w)+");
     rankCommand.setCallback(commandRunner);
     assertThat(rankCommand.getRegExpr()).isEqualTo("guildassignrank (\\d){1,3} (\\w)+");
-    commandRunner.setServices(null, logService, null, null, null, null, null);
+    commandRunner.setServices(null, logService, null, null, null, null, null, null);
     DisplayInterface display = rankCommand.run("guildassignrank 0 Henk", karn);
     assertThat(display).isNotNull();
     assertThat(display.getBody()).isEqualTo("You are in a small room.");
@@ -119,7 +119,7 @@ public class RankAssignCommandTest extends MudTest
     RankAssignCommand rankCommand = new RankAssignCommand("guildassignrank (\\d){1,3} (\\w)+");
     rankCommand.setCallback(commandRunner);
     assertThat(rankCommand.getRegExpr()).isEqualTo("guildassignrank (\\d){1,3} (\\w)+");
-    commandRunner.setServices(null, logService, null, null, null, null, null);
+    commandRunner.setServices(null, logService, null, null, null, null, null, null);
     DisplayInterface display = rankCommand.run("guildassignrank 1 Marvin", karn);
     assertThat(display).isNotNull();
     assertThat(display.getBody()).isEqualTo("You are in a small room.");
@@ -140,7 +140,7 @@ public class RankAssignCommandTest extends MudTest
     RankAssignCommand rankCommand = new RankAssignCommand("guildassignrank (\\d){1,3} (\\w)+");
     rankCommand.setCallback(commandRunner);
     assertThat(rankCommand.getRegExpr()).isEqualTo("guildassignrank (\\d){1,3} (\\w)+");
-    commandRunner.setServices(null, logService, null, null, null, null, null);
+    commandRunner.setServices(null, logService, null, null, null, null, null, null);
     DisplayInterface display = rankCommand.run("guildassignrank none Marvin", karn);
     assertThat(display).isNotNull();
     assertThat(display.getBody()).isEqualTo("You are in a small room.");
