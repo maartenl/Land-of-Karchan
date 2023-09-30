@@ -220,6 +220,7 @@ public class PersonsRestService
         user.setNewpassword(adminCharacter.newpassword);
       }
     }
+    character.setActive(adminCharacter.active);
     character.setOwner(OwnerHelper.getNewOwner(adminCharacter.owner, admin, getEntityManager()));
     ValidationUtils.checkValidation(name, character);
     logService.writeDeputyLog(admin, "Character '" + character.getName() + "' updated.");

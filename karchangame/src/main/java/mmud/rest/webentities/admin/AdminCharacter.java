@@ -65,7 +65,7 @@ public class AdminCharacter
   public Integer mentally;
   public Integer drinkstats;
   public Integer eatstats;
-  public String active;
+  public boolean active;
   public LocalDateTime lastlogin;
   public LocalDateTime birth;
   public String god;
@@ -202,7 +202,7 @@ public class AdminCharacter
     this.mentally = item.getMentally();
     this.drinkstats = item.getDrinkstats();
     this.eatstats = item.getEatstats();
-//    this.   active=item.getA;
+    this.active = item.isActive();
     this.birth = item.getBirth();
     this.god = item.getGod().toString();
     this.strength = item.getStrength();

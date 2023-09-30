@@ -67,7 +67,8 @@ export class CharactersComponent extends AdminComponent<MudCharacter, string> im
       realname: null,
       email: null,
       newpassword: null,
-      owner: null
+      active: true,
+      owner: null,
     };
     this.form = this.formBuilder.group(object);
     const attribute = {
@@ -164,7 +165,8 @@ export class CharactersComponent extends AdminComponent<MudCharacter, string> im
       realname: null,
       email: null,
       newpassword: null,
-      owner: null
+      active: true,
+      owner: null,
     } : item;
     if (this.form === undefined) {
       this.form = this.formBuilder.group(object);
@@ -183,7 +185,6 @@ export class CharactersComponent extends AdminComponent<MudCharacter, string> im
 
   getForm(): MudCharacter {
     const formModel = this.form.value;
-
     const saveCharacter: MudCharacter = new MudCharacter({
       name: formModel.name as string,
       image: formModel.image as string,
@@ -209,6 +210,7 @@ export class CharactersComponent extends AdminComponent<MudCharacter, string> im
       realname: formModel.realname as string,
       email: formModel.email as string,
       newpassword: formModel.newpassword as string,
+      active: formModel.active as boolean,
       owner: formModel.owner as string
     });
     return saveCharacter;
@@ -370,6 +372,7 @@ export class CharactersComponent extends AdminComponent<MudCharacter, string> im
       realname: character.realname,
       email: character.email,
       newpassword: null,
+      active: character.active,
       owner: character.owner
     });
   }

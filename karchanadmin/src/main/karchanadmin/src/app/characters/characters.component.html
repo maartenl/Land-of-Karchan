@@ -52,6 +52,13 @@
           <label for="room">Room</label>
           <input type="number" class="form-control" id="room" name="room" formControlName="room">
         </fieldset>
+        <fieldset class="form-group">
+          <label for="active">Active</label>
+          <input class="form-control form-check-input" type="checkbox" value="" id="active"
+                  formControlName="active">
+          <div id="activeHelp" class="form-text">Indicates wether or not the player is actively playing.
+          </div>
+        </fieldset>
         <fieldset *ngIf="item !== undefined && item !== null && item.name !== undefined" class="form-group">
           <label for="god">God</label>
           <input readonly type="text" class="form-control" id="godreadonly" name="god" formControlName="god">
