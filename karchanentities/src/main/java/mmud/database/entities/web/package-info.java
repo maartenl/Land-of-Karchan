@@ -22,7 +22,6 @@
  * effect gameplay. These tables are easily
  * recognized because they do not start with the prefix "mm_".</p>
  * <p>
- * <img src="doc-files/package-info_webentities.png"/></p>
  * <TABLE>
  *
  * <TR valign=top><TD>Tablename</TD><TD>Description</TD></TR>
@@ -38,7 +37,8 @@
  * <TR valign=top><TD></TD><TD></TD></TR>
  * </TABLE>
  *
- * @startuml doc-files/package-info_webentities.png
+ * @plantuml
+ * <!--
  * family "description" *-- "id" familyvalues
  * mm_usertable "name" *-- "name" characterinfo
  * mm_usertable "name" *-- "name" family
@@ -60,6 +60,6 @@
  * -id
  * -description
  * }
- * @enduml
+ * -->
  */
 package mmud.database.entities.web;

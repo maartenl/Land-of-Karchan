@@ -85,11 +85,10 @@ import static mmud.Constants.DATETIME_FORMAT;
 
 /**
  * Takes care of all the game-related functions.
- * <img
- * src="doc-files/Gamebean.png">
  *
  * @author maartenl
- * @startuml doc-files/Gamebean.png
+ * @plantuml
+ * <!--
  * (*) --> "Create character"
  * --> "Login"
  * --> "Play"
@@ -97,7 +96,7 @@ import static mmud.Constants.DATETIME_FORMAT;
  * --> "Play"
  * --> "Quit"
  * -->(*)
- * @enduml
+ * -->
  */
 @DeclareRoles("player")
 @RolesAllowed("player")
@@ -155,21 +154,19 @@ public class GameRestService
    * This method should be called to verify that the target of a certain action
    * is indeed a proper authenticated user.</p>
    * <p>
-   * <img
-   * src="doc-files/Gamebean_authenticate.png"></p>
-   *
    * @param name the name to identify the person
    * @throws WebApplicationException NOT_FOUND, if the user is either not found
    *                                 or is not a proper user. BAD_REQUEST if an unexpected exception crops up or
    *                                 provided info is really not proper. UNAUTHORIZED if session passwords do
    *                                 not match.
-   * @startuml doc-files/Gamebean_authenticate.png
+   * @plantuml
+   * <!--
    * (*) --> "find character"
    * --> "character found"
    * --> "character == user"
    * --> "session password is good"
    * -->(*)
-   * @enduml
+   * -->
    */
   private User authenticate(String name)
   {
@@ -203,21 +200,19 @@ public class GameRestService
    * This method should be called to verify that the target of a certain action
    * is a user with the appropriate password.</p>
    * <p>
-   * <img
-   * src="doc-files/Gamebean_authenticateWithPassword.png"></p>
-   *
    * @param name the name to identify the person
    * @return the authenticated User
    * @throws WebApplicationException BAD_REQUEST if an unexpected exception
    *                                 crops up or provided info is really not proper. UNAUTHORIZED if session
    *                                 passwords do not match or user not found.
-   * @startuml doc-files/Gamebean_authenticateWithPassword.png
+   * @plantuml
+   * <!--
    * (*) --> "find character"
    * --> "character found"
    * --> "character == user"
    * --> "password is good"
    * -->(*)
-   * @enduml
+   * -->
    */
   protected User getPlayer(String name)
   {
@@ -253,19 +248,17 @@ public class GameRestService
    * <p>
    * Checks to see if a person is banned from playing.</p>
    * <p>
-   * <img
-   * src="doc-files/Gamebean_isBanned.png"></p>
-   *
    * @param name    the name of the person
    * @param address the ip address the person is playing from
    * @return true if banned, false otherwise.
-   * @startuml doc-files/Gamebean_isBanned.png
+   * @plantuml
+   * <!--
    * (*) --> "check silly names"
    * --> "check unbanned"
    * --> "check address banned"
    * --> "check name banned"
    * -->(*)
-   * @enduml
+   * -->
    */
   public boolean isBanned(String name, String address)
   {
@@ -326,17 +319,14 @@ public class GameRestService
    * <p>
    * Creates a new character, suitable for playing.</p>
    * <p>
-   * <img
-   * src="doc-files/Gamebean_create.png"></p> @param requestContext for headers,
-   * like remote address.
-   *
    * @param requestContext for determining the remote address.
    * @param name           the name of the user
    * @param pperson        the data of the new character
    * @return NO_CONTENT if the game is offline for maintenance.
    * @throws WebApplicationException BAD_REQUEST if an unexpected exception
    *                                 crops up or something could not be validated.
-   * @startuml doc-files/Gamebean_create.png
+   * @plantuml
+   * <!--
    * (*) --> "check for offline"
    * --> "check presence of data"
    * --> "check name == pperson.name"
@@ -345,7 +335,7 @@ public class GameRestService
    * --> "check already person"
    * --> "create person"
    * -->(*)
-   * @enduml
+   * -->
    */
   @PermitAll
   @POST

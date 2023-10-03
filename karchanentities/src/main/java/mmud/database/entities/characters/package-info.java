@@ -18,9 +18,9 @@
  * <p>
  * Provides the JPA Database Entities for Characters.</p>
  * <p>
- * <img src="doc-files/package-info_characterentities.png"/></p>
  *
- * @startuml doc-files/package-info_characterentities.png
+ * @plantuml
+ * <!--
  * Person <|-- User
  * User <|-- Administrator
  * Person <|-- Bot
@@ -38,6 +38,6 @@
  * }
  * class Mob {
  * }
- * @enduml
+ * -->
  */
 package mmud.database.entities.characters;

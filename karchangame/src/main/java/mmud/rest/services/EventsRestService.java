@@ -60,12 +60,12 @@ import mmud.services.RoomsService;
 
 /**
  * Takes care of all the events.
- * <img
- * src="doc-files/Eventsbean.png">
- *
  * @author maartenl
- * @startuml doc-files/Eventsbean.png class EventsBean { +events() }
- * @enduml
+ * @plantuml
+ * <!--
+ * class EventsBean
+ * EventsBean : +events()
+ * -->
  */
 @Transactional
 @Path("/crontab/events")

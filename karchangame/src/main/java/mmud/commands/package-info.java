@@ -18,8 +18,8 @@
  * <p>
  * Provides the different commands possible for players.</p>
  * <p>
- * <img src="doc-files/package-info_commands.png"/></p>
- * @startuml doc-files/package-info_commands.png
+ * @plantuml
+ * <!--
  * interface Command
  * abstract class GuildCommand
  * abstract class GuildMasterCommand
@@ -37,6 +37,6 @@
  * NormalCommand <|-- MeCommand
  * NormalCommand <|-- GuildCommand
  * GuildCommand <|-- GuildMasterCommand
- * @enduml
+ * -->
  */
 package mmud.commands;

@@ -487,9 +487,7 @@ public class PrivateRestService
   /**
    * Creates an itemDefinitionId instance (and, if required, an
    * itemDefinitionId definition) representing an in-game version of a single
-   * mail based by id. <img
-   * src="doc-files/PrivateBean_createMailItem.png">
-   *
+   * mail based by id.
    * @param name             the name of the user
    * @param id               the id of the mail to get
    * @param itemDefinitionId the kind of itemDefinitionId that is to be made.
@@ -498,7 +496,8 @@ public class PrivateRestService
    * @return Response.ok if everything is fine.
    * @throws WebApplicationException UNAUTHORIZED, if the authorisation
    *                                 failed. BAD_REQUEST if an unexpected exception crops up.
-   * @startuml doc-files/PrivateBean_createMailItem.png
+   * @plantuml
+   * <!--
    * (*) --> "check params"
    * --> "getMail"
    * if "has Item Definition" then
@@ -511,7 +510,7 @@ public class PrivateRestService
    * endif
    * --> "create inventory object"
    * -->(*)
-   * @enduml
+   * -->
    * @see Mail#ITEMS
    */
   @GET

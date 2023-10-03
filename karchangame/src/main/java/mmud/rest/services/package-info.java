@@ -18,28 +18,23 @@
  * <p>
  * Provides the Enterprise Java Beans used for the REST services.</p>
  * <p>
- * <img src="doc-files/package-info_restservices.png"/></p>
- * @startuml doc-files/package-info_restservices.png
+ * @plantuml
+ * <!--
  * title Sequence diagram of the current software setup
  * participant Firefox as Firefox << Internet Browser >>
- * participant Apache as Apache << Webserver >>
- * participant Drupal as Drupal << CMS >>
- * participant Glassfish as Glassfish << Application Server >>
- * participant MySQL as MySQL << Database >>
- * Firefox -> Apache: Web Request
- * Apache -> Drupal : Php
- * Drupal -> MySQL : Database calls
- * MySQL -> Drupal : Database response
- * Drupal -> Apache : html, css and js
- * Apache -> Firefox : HTTP response
+ * participant "Payara Microprofile" as Payara << Application Server >>
+ * participant MariaDB as MariaDB << Database >>
+ * Firefox -> Payara: Web Request
+ * Payara -> MariaDB : Database calls
+ * MariaDB -> Payara : Database response
+ * Payara -> Firefox : html, css and js
+ * Payara -> Firefox : HTTP response
  * Firefox -> Firefox : Run Javascript
- * Firefox -> Apache : HTTP Rest call
- * Apache -> Glassfish : Proxy
- * Glassfish -> MySQL : Database calls
- * MySQL -> Glassfish : Database response
- * Glassfish -> Apache : HTTP with JSON response
- * Apache -> Firefox : ReverseProxy
+ * Firefox -> Payara : HTTP Rest call
+ * Payara -> MariaDB : Database calls
+ * MariaDB -> Payara : Database response
+ * Payara -> Firefox : HTTP with JSON response
  * Firefox -> Firefox : Run Javascript, create display
- * @enduml
+ * -->
  */
 package mmud.rest.services;

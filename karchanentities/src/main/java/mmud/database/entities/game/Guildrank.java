@@ -31,11 +31,11 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 
 /**
- * <img src="doc-files/Guildrank.png"/>
  * @author maartenl
  *
  *
- * @startuml doc-files/Guildrank.png
+ * @plantuml
+ * <!--
  *
  * class User {
  * -name
@@ -53,7 +53,7 @@ import jakarta.validation.constraints.Size;
  * Guild "1" *-- "many" Guildrank : contains
  * Guild "1" *-- "many" User : memberOf
  * User "many" *-- "1" Guildrank : hasRank
- * @enduml
+ * -->
  */
 @Entity
 @Table(name = "mm_guildranks")

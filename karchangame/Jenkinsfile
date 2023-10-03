@@ -46,7 +46,7 @@ pipeline {
             steps {
                 echo "Started generating javadoc"
                 dir('karchangame') {
-                    sh 'mvn javadoc:javadoc com.github.jeluard:plantuml-maven-plugin:generate'
+                    sh 'mvn javadoc:javadoc'
                     sh 'cp -r target/site/apidocs/* ../karchandocs/src/main/webapp/'
                 }
                 dir('karchandocs') {
