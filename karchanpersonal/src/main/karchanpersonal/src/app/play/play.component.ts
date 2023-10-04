@@ -6,11 +6,12 @@ import {FormBuilder, FormGroup} from '@angular/forms';
 import {PlayerService} from '../player.service';
 import {Player} from '../player-settings/player.model';
 import {GameService} from '../game.service';
-import {Display, Item, Log, Person, WhoPerson} from './display.model';
+import {Display, Item, Person, WhoPerson} from './display.model';
 import {LanguageUtils} from '../language.utils';
 import {StringUtils} from '../string.utils';
 import {LogonmessageComponent} from './logonmessage/logonmessage.component';
 import {ChatlogService, Message} from '../chatlog.service';
+import { Log } from './log.model';
 
 /**
  * Actually plays teh game, instead of administration of your player character/settings/mail.
@@ -75,9 +76,15 @@ export class PlayComponent implements OnInit {
     this.playGame();
   }
 
+  /**
+   * Retrieves the player from the server.
+   * Start playing the game for reals.
+   * Also checks if player is already playing (if so, initializes the play session already in progress.)
+   */
   public playGame(): void {
     if (this.gameService.getIsGaming()) {
       this.playInit();
+      this.lookAround();
       return;
     }
     this.playerService.getPlayer()
@@ -91,10 +98,12 @@ export class PlayComponent implements OnInit {
           }
           this.gameService.enterGame()
             .subscribe(
-              (result: any) => { // on success
+              (result: Log) => { // on success
+                this.chatlogService.setLog(new Log(result));
                 this.gameService.setIsGaming(true);
                 this.playInit();
                 this.chatlogService.open(this.karchan.name);
+                this.lookAround();
               },
               (err: any) => { // error
                 // console.log('error', err);
@@ -133,8 +142,6 @@ export class PlayComponent implements OnInit {
               });
               display.body += '</ul>\r\n';
             }
-            // do not empty the log, use the same log.
-            display.log = this.display.log;
             this.writeStuff(display);
           }
         },
@@ -146,6 +153,10 @@ export class PlayComponent implements OnInit {
       );
   }
 
+  /**
+   * Initializes the "karchan" object with information about the current player.
+   * Also shows logon message, if required.
+   */
   public playInit(): void {
     if (window.console) {
       console.log('playInit');
@@ -156,14 +167,20 @@ export class PlayComponent implements OnInit {
     if (window.console) {
       console.log('playInit name=' + name);
     }
+    if (this.gameService.getShowLogonmessage()) {
+      this.showLogonmessage();
+    }
+  }
+
+  /**
+   * Executes a simple look around command (usefull for right after entering the game).
+   */
+  public lookAround(): void {
     const command = 'l';
     if (window.console) {
       console.log('playInit command=' + command);
     }
     this.processCall(command, true);
-    if (this.gameService.getShowLogonmessage()) {
-      this.showLogonmessage();
-    }
   }
 
   public showLogonmessage(): boolean {
@@ -183,10 +200,6 @@ export class PlayComponent implements OnInit {
     this.gameService.quitGame()
       .subscribe(
         (result: any) => { // on success
-          this.display.log = new Log();
-          this.display.log.log = "";
-          this.display.log.size = 0;
-          this.display.log.offset = 0;
           this.gameService.setIsGaming(false);
           if (this.chatlogService.isEnabled()) {
             this.chatlogService.clearMessages();
@@ -262,15 +275,18 @@ export class PlayComponent implements OnInit {
    * @param log if the logging should be refreshed.
    */
   public processCall(command: string, log: boolean) {
+    if (window.console) { console.log("processCall command=" + command + " log=" + log); }
     if (command === 'clear') {
-      this.display.log.offset = 9999999999999;
-      log = true;
+      this.chatlogService.clear();
     }
-    const offset = this.display.log.offset;
-    this.gameService.processCommand(command, offset, !this.chatlogService.isEnabled())
+    this.gameService.processCommand(command, this.chatlogService.getOffset(), !this.chatlogService.isEnabled())
       .subscribe(
         (result: Display) => { // on success
+          if (window.console) { console.log(result); }
           this.writeStuff(result);
+          if (result.log !== undefined && result.log !== null) {
+            this.chatlogService.setLog(result.log);
+          }
           this.createForms();
         },
         (err: any) => { // error
@@ -377,17 +393,8 @@ export class PlayComponent implements OnInit {
     if (window.console) {
       console.log('clearLog');
     }
-    if (this.chatlogService.isEnabled()) {
-      const messages = this.chatlogService.getMessages();
-      this.chatlogService.clearMessages();
-      messages.forEach(message => this.display.log.log = this.display.log.log + message.content);
-      this.display.log.offset = this.display.log.log.length;
-      this.display.log.size = this.display.log.log.length;
-    } else {
-      this.display.log.offset = 100000000;
-      this.display.log.size = 0;
-      this.display.log.log = '';
-    }
+    this.chatlogService.clearMessages();
+    this.chatlogService.clear();
     return false;
   }
 
@@ -396,8 +403,8 @@ export class PlayComponent implements OnInit {
     this.gameService.getLog()
       .subscribe(
         (result: Log) => { // on success
-          this.display.log = new Log(result);
-          this.chatlogService.clearMessages();
+          this.chatlogService.clear();
+          this.chatlogService.setLog(new Log(result));
           console.log('log rest:' + result);
         },
         (err: any) => { // error
@@ -409,13 +416,13 @@ export class PlayComponent implements OnInit {
     return false;
   }
 
+  /**
+   * Get the log as a string. Suitable for display.
+   * @returns a simple string containing the log received from the server (not via websockets). If not available, an empty string.
+   */
   public getLog(): string {
-    if (this.display.log === undefined) {
-      if (window.console) { console.log('empty log'); }
-      return '';
-    }
-    const log = this.display.log.log;
-    return log;
+    const log = this.chatlogService.getLog();
+    return log === null || log === undefined ? '' : log.log;
   }
 
   public getRoomDescription(body: string): string {

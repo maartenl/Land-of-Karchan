@@ -7,7 +7,8 @@ import {environment} from '../environments/environment';
 
 import {ErrorsService} from './errors.service';
 import {PlayerService} from './player.service';
-import {Display, Log} from './play/display.model';
+import {Display} from './play/display.model';
+import { Log } from './play/log.model';
 
 @Injectable({
   providedIn: 'root'
@@ -74,6 +75,13 @@ export class GameService {
     return this.http.get(url);
   }
 
+  /**
+   * Run a command on the server.
+   * @param command the command to execute
+   * @param offset the offset in the log
+   * @param log wether or not a log in the answer from the server is required, if false then no log is sent.
+   * @returns a Display
+   */
   public processCommand(command: string, offset: number | null | undefined, log: boolean): Observable<Display> {
     const params = log ? ("?offset=" + offset + "&log=true") : "";
     const url: string = this.getGameUrl() + 'play' + params;

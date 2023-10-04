@@ -1,3 +1,4 @@
+import {Log} from './log.model';
 
 export class Person {
   name: string = '';
@@ -11,33 +12,17 @@ export class Item {
   name: string = '';
 }
 
-export class Log {
-  log: string;
-  offset: number;
-  size: number;
-  totalsize: number;
-
-  constructor(object?: any) {
-    if (object === undefined) {
-      this.offset = 9999999999999;
-      this.totalsize = 9999999999999;
-      this.log = '';
-      this.size = 0;
-      return;
-    }
-    this.offset = object.offset;
-    this.log = object.log;
-    this.size = object.size;
-    this.totalsize = object.totalsize;
-  }
-
-}
-
 export class Display {
   body: string = '';
   image: string = '';
   items: Array<Item> = new Array<Item>(0);
-  log: Log;
+
+  /**
+   * This log is the log received from the server.
+   * This should only be used when receiving content from a REST call.
+   * Use it to set the log in the chatlog.service.
+   */
+  log: Log | null = null;
   persons: Array<Person> = new Array<Person>(0);
   north: boolean = false;
   south: boolean = false;
@@ -48,7 +33,6 @@ export class Display {
   title: string = '';
 
   constructor() {
-    this.log = new Log();
   }
 
   set(display: Display) {
@@ -64,9 +48,7 @@ export class Display {
     this.east = display.east;
     this.west = display.west;
     this.title = display.title;
-    if (display.log !== null && display.log !== undefined) {
-      this.log = display.log;
-    }
+    this.log = display.log;
   }
 
 }

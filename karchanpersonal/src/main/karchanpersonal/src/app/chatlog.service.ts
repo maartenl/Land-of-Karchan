@@ -1,6 +1,7 @@
 import {Injectable} from '@angular/core';
 import {webSocket, WebSocketSubject} from 'rxjs/webSocket';
 import {ToastService} from './toast.service';
+import { Log } from './play/log.model';
 
 export class Message {
   fileLength: number | null = null;
@@ -29,6 +30,8 @@ export class ChatlogService {
 
   private timeout: number | null = null;
   private interval: number | null = null;
+
+  private log: Log = new Log();
 
   private counter: number = 0;
 
@@ -258,4 +261,25 @@ export class ChatlogService {
   clearMessages() {
     this.messages = [];
   }
+
+  clear() {
+    this.log = new Log();
+  }
+
+  setLog(log: Log) {
+    if (window.console) {
+      console.log('setLog');
+      console.log(log);
+    }
+    this.log = log;
+  }
+
+  getOffset() {
+    return this.log.offset;
+  }
+
+  getLog(): Log {
+    return this.log;
+  }
+
 }

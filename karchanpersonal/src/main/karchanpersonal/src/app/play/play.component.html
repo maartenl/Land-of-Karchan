@@ -39,7 +39,7 @@
                             </span>
             </p>
           </div>
-          <div id="karchan_log" *ngIf="display.log !== undefined" [innerHTML]="getLog()"></div>
+          <div id="karchan_log" [innerHTML]="getLog()"></div>
           <div *ngFor="let message of getMessages()" [innerHTML]="message.content">
           </div>
           <p>&nbsp;</p>

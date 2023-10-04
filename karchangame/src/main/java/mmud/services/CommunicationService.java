@@ -45,10 +45,11 @@ public interface CommunicationService
 
   /**
    * Returns the communication service, based on a person. What this means is, that the person
-   * provided is the one receiving the messages.
+   * provided is the one receiving the messages. This is only used for testing!
    *
    * @param person the person to base the communication on. What this means is, that the person
    *               provided is the one receiving the messages.
+   * @param consumer the consumer to call for registering logon messages, so they can be verified in tests.
    * @return the service
    */
   @VisibleForTesting

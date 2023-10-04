@@ -16,37 +16,17 @@
  */
 package mmud.rest.services;
 
-import java.net.InetAddress;
-import java.net.UnknownHostException;
-import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
 import com.google.common.annotations.VisibleForTesting;
 import jakarta.annotation.security.DeclareRoles;
 import jakarta.annotation.security.PermitAll;
 import jakarta.annotation.security.RolesAllowed;
 import jakarta.inject.Inject;
-import jakarta.persistence.EntityManager;
-import jakarta.persistence.PersistenceContext;
-import jakarta.persistence.PersistenceException;
-import jakarta.persistence.Query;
-import jakarta.persistence.TypedQuery;
+import jakarta.persistence.*;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.transaction.Transactional;
 import jakarta.validation.ConstraintViolationException;
-import jakarta.ws.rs.DELETE;
-import jakarta.ws.rs.GET;
-import jakarta.ws.rs.POST;
-import jakarta.ws.rs.PUT;
-import jakarta.ws.rs.Path;
-import jakarta.ws.rs.PathParam;
-import jakarta.ws.rs.Produces;
-import jakarta.ws.rs.QueryParam;
-import jakarta.ws.rs.WebApplicationException;
+import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.Context;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
@@ -59,13 +39,7 @@ import mmud.commands.CommandRunner;
 import mmud.database.InputSanitizer;
 import mmud.database.entities.characters.Person;
 import mmud.database.entities.characters.User;
-import mmud.database.entities.game.Board;
-import mmud.database.entities.game.BoardMessage;
-import mmud.database.entities.game.DisplayInterface;
-import mmud.database.entities.game.Macro;
-import mmud.database.entities.game.MacroPK;
-import mmud.database.entities.game.Room;
-import mmud.database.entities.game.UserCommand;
+import mmud.database.entities.game.*;
 import mmud.database.enums.Sex;
 import mmud.exceptions.ExceptionUtils;
 import mmud.exceptions.MudException;
@@ -73,22 +47,24 @@ import mmud.exceptions.MudWebException;
 import mmud.rest.webentities.PrivateDisplay;
 import mmud.rest.webentities.PrivateLog;
 import mmud.rest.webentities.PrivatePerson;
-import mmud.services.BoardService;
-import mmud.services.CommunicationService;
-import mmud.services.IdleUsersService;
-import mmud.services.LogService;
-import mmud.services.MailService;
-import mmud.services.PersonCommunicationService;
-import mmud.services.PlayerAuthenticationService;
+import mmud.services.*;
 import org.apache.commons.lang3.StringUtils;
+
+import java.net.InetAddress;
+import java.net.UnknownHostException;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 import static mmud.Constants.DATETIME_FORMAT;
 
 /**
  * Takes care of all the game-related functions.
  *
  * @author maartenl
- * @plantuml
- * <!--
+ * @plantuml <!--
  * (*) --> "Create character"
  * --> "Login"
  * --> "Play"
@@ -124,7 +100,9 @@ public class GameRestService
   private SecurityContext context;
 
   @Inject
-  public GameRestService(BoardService boardService, IdleUsersService idleUsersService, MailService mailService, CommandRunner commandRunner, LogService logService, PlayerAuthenticationService playerAuthenticationService)
+  public GameRestService(BoardService boardService, IdleUsersService idleUsersService, MailService mailService,
+                         CommandRunner commandRunner, LogService logService,
+                         PlayerAuthenticationService playerAuthenticationService)
   {
     this.boardService = boardService;
     this.idleUsersService = idleUsersService;
@@ -154,13 +132,13 @@ public class GameRestService
    * This method should be called to verify that the target of a certain action
    * is indeed a proper authenticated user.</p>
    * <p>
+   *
    * @param name the name to identify the person
    * @throws WebApplicationException NOT_FOUND, if the user is either not found
    *                                 or is not a proper user. BAD_REQUEST if an unexpected exception crops up or
    *                                 provided info is really not proper. UNAUTHORIZED if session passwords do
    *                                 not match.
-   * @plantuml
-   * <!--
+   * @plantuml <!--
    * (*) --> "find character"
    * --> "character found"
    * --> "character == user"
@@ -180,7 +158,8 @@ public class GameRestService
   }
 
   /**
-   * Will also work if the person is not playing the game, yet. When playing the game, use {@link #authenticate(String)}.
+   * Will also work if the person is not playing the game, yet. When playing the game, use
+   * {@link #authenticate(String)}.
    *
    * @param name the name of the player
    * @return the user
@@ -200,13 +179,13 @@ public class GameRestService
    * This method should be called to verify that the target of a certain action
    * is a user with the appropriate password.</p>
    * <p>
+   *
    * @param name the name to identify the person
    * @return the authenticated User
    * @throws WebApplicationException BAD_REQUEST if an unexpected exception
    *                                 crops up or provided info is really not proper. UNAUTHORIZED if session
    *                                 passwords do not match or user not found.
-   * @plantuml
-   * <!--
+   * @plantuml <!--
    * (*) --> "find character"
    * --> "character found"
    * --> "character == user"
@@ -224,22 +203,22 @@ public class GameRestService
     if (person == null)
     {
       throw new MudWebException(name,
-        name + " was not found.",
-        "User was not found (" + name + ")",
-        Response.Status.NOT_FOUND);
+          name + " was not found.",
+          "User was not found (" + name + ")",
+          Response.Status.NOT_FOUND);
     }
     if (!person.isUser())
     {
       throw new MudWebException(name,
-        name + " is not a user.",
-        "User was not a user (" + name + ")",
-        Response.Status.BAD_REQUEST);
+          name + " is not a user.",
+          "User was not a user (" + name + ")",
+          Response.Status.BAD_REQUEST);
     }
     if (person.getTimeout() > 0)
     {
       throw new MudWebException(name, name + " has been kicked out of the game and "
-        + "is not allowed to logon for " + person.getTimeout() + " minutes.",
-        Response.Status.FORBIDDEN);
+          + "is not allowed to logon for " + person.getTimeout() + " minutes.",
+          Response.Status.FORBIDDEN);
     }
     return person;
   }
@@ -248,11 +227,11 @@ public class GameRestService
    * <p>
    * Checks to see if a person is banned from playing.</p>
    * <p>
+   *
    * @param name    the name of the person
    * @param address the ip address the person is playing from
    * @return true if banned, false otherwise.
-   * @plantuml
-   * <!--
+   * @plantuml <!--
    * (*) --> "check silly names"
    * --> "check unbanned"
    * --> "check address banned"
@@ -319,14 +298,14 @@ public class GameRestService
    * <p>
    * Creates a new character, suitable for playing.</p>
    * <p>
+   *
    * @param requestContext for determining the remote address.
    * @param name           the name of the user
    * @param pperson        the data of the new character
    * @return NO_CONTENT if the game is offline for maintenance.
    * @throws WebApplicationException BAD_REQUEST if an unexpected exception
    *                                 crops up or something could not be validated.
-   * @plantuml
-   * <!--
+   * @plantuml <!--
    * (*) --> "check for offline"
    * --> "check presence of data"
    * --> "check name == pperson.name"
@@ -340,7 +319,8 @@ public class GameRestService
   @PermitAll
   @POST
   @Path("{name}")
-  public Response create(@Context HttpServletRequest requestContext, @PathParam("name") String name, PrivatePerson pperson)
+  public Response create(@Context HttpServletRequest requestContext, @PathParam("name") String name,
+                         PrivatePerson pperson)
   {
     LOGGER.log(Level.FINER, "entering create {0}", name);
     String address = requestContext.getRemoteAddr();
@@ -362,9 +342,9 @@ public class GameRestService
       if (pperson.password == null || !pperson.password.equals(pperson.password2))
       {
         throw new MudWebException(name,
-          "Passwords do not match.",
-          "Passwords do not match.",
-          Response.Status.BAD_REQUEST);
+            "Passwords do not match.",
+            "Passwords do not match.",
+            Response.Status.BAD_REQUEST);
       }
       User person = new User();
       person.setName(name);
@@ -373,18 +353,18 @@ public class GameRestService
       {
         // is banned
         throw new MudWebException(name,
-          name + " was banned.",
-          "User was banned (" + name + ", " + address + ")",
-          Response.Status.FORBIDDEN);
+            name + " was banned.",
+            "User was banned (" + name + ", " + address + ")",
+            Response.Status.FORBIDDEN);
       }
       Person foundPerson = em.find(Person.class, name);
       if (foundPerson != null)
       {
         // already a person
         throw new MudWebException(name,
-          name + " already exists.",
-          "User already exists (" + name + ", " + address + ")",
-          Response.Status.BAD_REQUEST);
+            name + " already exists.",
+            "User already exists (" + name + ", " + address + ")",
+            Response.Status.BAD_REQUEST);
       }
       // everything's cool! Let's do this!
       person.setActive(false);
@@ -449,7 +429,8 @@ public class GameRestService
   @PermitAll
   @PUT
   @Path("{name}/logon")
-  public void logon(@Context HttpServletRequest requestContext, @PathParam("name") String name, @QueryParam("password") String password)
+  public void logon(@Context HttpServletRequest requestContext, @PathParam("name") String name, @QueryParam("password"
+  ) String password)
   {
     LOGGER.log(Level.FINER, "entering logon {0}", name);
 
@@ -460,17 +441,17 @@ public class GameRestService
       if (VPS386.equals(address))
       {
         throw new MudWebException(name,
-          "User has server address.",
-          "User has server address (" + name + ", " + address + ")",
-          Response.Status.BAD_REQUEST);
+            "User has server address.",
+            "User has server address (" + name + ", " + address + ")",
+            Response.Status.BAD_REQUEST);
       }
     }
     if ((address == null) || ("".equals(address.trim())))
     {
       throw new MudWebException(name,
-        "User has no address.",
-        "User has no address (" + name + ", " + address + ")",
-        Response.Status.BAD_REQUEST);
+          "User has no address.",
+          "User has no address (" + name + ", " + address + ")",
+          Response.Status.BAD_REQUEST);
     }
     if (Utils.isOffline())
     {
@@ -479,8 +460,8 @@ public class GameRestService
     if (isBanned(name, address))
     {
       throw new MudWebException(name, "User was banned",
-        "User was banned (" + name + ", " + address + ")",
-        Response.Status.FORBIDDEN);
+          "User was banned (" + name + ", " + address + ")",
+          Response.Status.FORBIDDEN);
     }
     User person = getPlayer(name);
 
@@ -541,9 +522,9 @@ public class GameRestService
   @GET
   @Path("{name}/logonmessage")
   @Produces(
-    {
-      MediaType.TEXT_HTML
-    })
+      {
+          MediaType.TEXT_HTML
+      })
   public String getLogonMessage(@PathParam("name") String name)
   {
     LOGGER.finer("entering getLogonMessage");
@@ -582,6 +563,7 @@ public class GameRestService
    * @param requestContext used for retrieving the ip address/hostname of the
    *                       player for determining ban-rules and the like.
    * @param name           the name of the character/player
+   * @return A simple log, containing a message that you logged on.
    * @throws WebApplicationException <ul><li>BAD_REQUEST if an unexpected
    *                                 exception crops up.</li>
    *                                 <li>NO_CONTENT if the game is offline</li>
@@ -591,28 +573,34 @@ public class GameRestService
   @POST
   @Path("{name}/enter")
   @Produces(
-    {
-      MediaType.APPLICATION_JSON
-    })
-  public void enterGame(@Context HttpServletRequest requestContext, @PathParam("name") String name)
+      {
+          MediaType.APPLICATION_JSON
+      })
+  public String enterGame(@Context HttpServletRequest requestContext, @PathParam("name") String name)
   {
     LOGGER.finer("entering enterGame");
     User person = authenticateToEnterGame(name);
+    PrivateLog log = null;
     try
     {
       person.activate();
       idleUsersService.resetUser(person.getName());
       final PersonCommunicationService communicationService = CommunicationService.getCommunicationService(person);
+      log = communicationService.getLog(Long.MAX_VALUE);
       String message = "You have entered the game. (" + LocalDateTime.now().format(DATETIME_FORMAT) + ")<br>";
       communicationService.writeMessage(message);
+      log.log = log.log + message;
       // check mail
+      String hasNewMail;
       if (mailService.hasNewMail(person))
       {
-        communicationService.writeMessage("You have new Mudmail!<br>");
+        hasNewMail = "You have new Mudmail!<br>";
       } else
       {
-        communicationService.writeMessage("You have no new Mudmail...<br>");
+        hasNewMail = "You have no new Mudmail...<br>";
       }
+      communicationService.writeMessage(hasNewMail);
+      log.log = log.log + hasNewMail;
       // write log "entered game."
       logService.writeLog(person, "entered game.");
     } catch (PersistenceException e)
@@ -626,6 +614,7 @@ public class GameRestService
     {
       throw new MudWebException(name, ExceptionUtils.createMessage(e), e, Response.Status.BAD_REQUEST);
     }
+    return log.toJson();
   }
 
 
@@ -644,10 +633,11 @@ public class GameRestService
   @POST
   @Path("{name}/play")
   @Produces(
-    {
-      MediaType.APPLICATION_JSON
-    })
-  public PrivateDisplay playGame(@PathParam(value = "name") String name, String command, @QueryParam(value = "offset") Long offset, @QueryParam(value = "log") Boolean log) throws MudException
+      {
+          MediaType.APPLICATION_JSON
+      })
+  public PrivateDisplay playGame(@PathParam(value = "name") String name, String command,
+                                 @QueryParam(value = "offset") Long offset, @QueryParam(value = "log") Boolean log) throws MudException
   {
     LOGGER.entering(this.getClass().getName(), "playGame");
     if (log == null)
@@ -700,9 +690,9 @@ public class GameRestService
     } catch (WebApplicationException e)
     {
       LOGGER.log(Level.INFO, "caught and rethrowing WebApplicationException {0}  {1}", new Object[]
-        {
-          e.getClass().getName(), e.getMessage()
-        });
+          {
+              e.getClass().getName(), e.getMessage()
+          });
       //ignore
       throw e;
     } catch (Throwable e)
@@ -717,8 +707,8 @@ public class GameRestService
         f = f.getCause();
       }
       String message = (e.getMessage() == null || e.getMessage().trim().equals(""))
-        ? "An error occurred. Please notify Karn or one of the deps."
-        : e.getMessage();
+          ? "An error occurred. Please notify Karn or one of the deps."
+          : e.getMessage();
       //ignore
       throw new MudWebException(name, message, e, Response.Status.BAD_REQUEST);
     }
@@ -737,7 +727,7 @@ public class GameRestService
   }
 
   private PrivateDisplay runMultipleCommands(User person, String command)
-    throws MudException
+      throws MudException
   {
     PrivateDisplay result = null;
     // multiple commands
@@ -771,7 +761,9 @@ public class GameRestService
       List<UserCommand> list = query.getResultList();
       for (UserCommand userCommand : list)
       {
-        CommandFactory.addUserCommand(userCommand.getId(), userCommand.getCommand(), userCommand.getMethodName().getName(), (userCommand.getRoom() == null ? null : userCommand.getRoom().getId()));
+        CommandFactory.addUserCommand(userCommand.getId(), userCommand.getCommand(),
+            userCommand.getMethodName().getName(), (userCommand.getRoom() == null ? null :
+                userCommand.getRoom().getId()));
       }
     }
     List<UserCommandInfo> userCommands = CommandFactory.getUserCommands(person, command);
@@ -808,9 +800,9 @@ public class GameRestService
   @GET
   @Path("{name}/log")
   @Produces(
-    {
-      MediaType.APPLICATION_JSON
-    })
+      {
+          MediaType.APPLICATION_JSON
+      })
   public String getLog(@PathParam("name") String name, @QueryParam("offset") Long offset)
   {
     LOGGER.finer("entering retrieveLog");
@@ -835,9 +827,9 @@ public class GameRestService
   @DELETE
   @Path("{name}/log")
   @Produces(
-    {
-      MediaType.APPLICATION_JSON
-    })
+      {
+          MediaType.APPLICATION_JSON
+      })
   public Response deleteLog(@PathParam("name") String name)
   {
     LOGGER.finer("entering deleteLog");
@@ -857,9 +849,9 @@ public class GameRestService
   @GET
   @Path("{name}/quit")
   @Produces(
-    {
-      MediaType.APPLICATION_JSON
-    })
+      {
+          MediaType.APPLICATION_JSON
+      })
   public Response quitGame(@PathParam("name") String name)
   {
     LOGGER.finer("entering quit");
