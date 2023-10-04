@@ -39,9 +39,19 @@
                             </span>
             </p>
           </div>
+          <hr/>
+          <div class="row">
+            <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+              <a class="btn btn-primary btn-sm " href="#" (click)="clearLog();"
+                 title="Clears your log">Clear</a>
+              <a class="btn btn-primary btn-sm " href="#" (click)="resetLog();"
+                 title="Reset your log">Reset</a>
+            </div>
+          </div>
           <div id="karchan_log" [innerHTML]="getLog()"></div>
           <div *ngFor="let message of getMessages()" [innerHTML]="message.content">
           </div>
+          <hr/>
           <p>&nbsp;</p>
           <form [formGroup]="commandForm" (ngSubmit)="play()" novalidate>
             <div class="row">
@@ -77,18 +87,6 @@
                 <p class="d-grid gap-2 card-text">
                   <a class="btn btn-outline-primary" href="#" (click)="toggleEntry();"
                      title="Provide a big entry form">Big talk</a>
-                </p>
-              </div>
-              <div class="col">
-                <p class="d-grid gap-2 card-text">
-                  <a class="btn btn-outline-primary" href="#" (click)="clearLog();"
-                     title="Clears your log">Clear</a>
-                </p>
-              </div>
-              <div class="col">
-                <p class="d-grid gap-2 card-text">
-                  <a class="btn btn-outline-primary" href="#" (click)="resetLog();"
-                     title="Reset your log">Reset</a>
                 </p>
               </div>
               <div class="col" *ngIf="player?.websockets">
