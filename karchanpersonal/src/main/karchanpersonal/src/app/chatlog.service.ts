@@ -2,6 +2,7 @@ import {Injectable} from '@angular/core';
 import {webSocket, WebSocketSubject} from 'rxjs/webSocket';
 import {ToastService} from './toast.service';
 import { Log } from './play/log.model';
+import {Logger} from "./consolelog.service";
 
 export class Message {
   fileLength: number | null = null;
@@ -43,23 +44,17 @@ export class ChatlogService {
   }
 
   public isEnabled(): boolean {
-    if (window.console) {
-      console.log("chatlog enabled=" + this.enabled);
-    }
+    Logger.log("chatlog enabled=" + this.enabled);
     return this.enabled;
   }
 
   public enable() {
-    if (window.console) {
-      console.log("chatlog enabled.");
-    }
+    Logger.log("chatlog enabled.");
     this.enabled = true;
   }
 
   public disable() {
-    if (window.console) {
-      console.log("chatlog disabled.");
-    }
+    Logger.log("chatlog disabled.");
     this.enabled = false;
   }
 
@@ -83,9 +78,7 @@ export class ChatlogService {
     const url = new URL('/karchangame/chat', window.location.href);
     url.protocol = url.protocol.replace('http', 'ws');
     url.protocol = url.protocol.replace('https', 'wss');
-    if (window.console) {
-      console.log("Opening websocket to " + url.href);
-    }
+    Logger.log("Opening websocket to " + url.href);
     url.href // => ws://www.example.com:9999/path/to/websocket
     this.myWebSocket = webSocket(url.href);
     this.connectionOpen = true;
@@ -103,18 +96,14 @@ export class ChatlogService {
     }
     const self = this;
     if (this.interval !== null) {
-      if (window.console) {
-        console.log("Clearing internal ping interval " + this.interval);
-      }
+      Logger.log("Clearing internal ping interval " + this.interval);
       window.clearInterval(this.interval);
       this.interval = null;
     }
     this.interval = window.setInterval(function () {
       self.internalping(self);
     }, 30000);
-    if (window.console) {
-      console.log("Setting internal ping interval " + this.interval);
-    }
+    Logger.log("Setting internal ping interval " + this.interval);
   }
 
   ping() {
@@ -132,9 +121,7 @@ export class ChatlogService {
     if (!this.enabled) {
       return;
     }
-    if (window.console) {
-      console.log(chatLogService.counter + ": sent internal ping");
-    }
+    Logger.log(chatLogService.counter + ": sent internal ping");
     const message = new Message();
     message.content = "internalping";
     message.from = this.username;
@@ -144,7 +131,7 @@ export class ChatlogService {
     chatLogService.timeout = window.setTimeout(function () {
       /// ---did not receive pong in 5 seconds! ///
       if (window.console) {
-        console.log(chatLogService.counter + ": did not receive internal pong in 5 seconds");
+        Logger.log(chatLogService.counter + ": did not receive internal pong in 5 seconds");
         chatLogService.counter++;
       }
       chatLogService.close();
@@ -165,13 +152,9 @@ export class ChatlogService {
    * @param data
    */
   receive(data: Message) {
-    if (window.console) {
-      console.log(data);
-    }
+    Logger.logObject(data);
     if (this.timeout !== null) {
-      if (window.console) {
-        console.log("message received - resetting internal ping interval");
-      }
+      Logger.log("message received - resetting internal ping interval");
       window.clearTimeout(this.timeout);
       this.timeout = null;
       this.setInterval();
@@ -192,9 +175,7 @@ export class ChatlogService {
       });
     }
     if (data.type === "internalpong") {
-      if (window.console) {
-        console.log((this.counter++) + ": received internal pong");
-      }
+      Logger.log((this.counter++) + ": received internal pong");
     }
   }
 
@@ -239,9 +220,7 @@ export class ChatlogService {
     if (!this.enabled) {
       return;
     }
-    if (window.console) {
-      console.log(error);
-    }
+    Logger.log(error);
     this.toastService.show('An error occurred using a websocket...', {
       delay: 0,
       autohide: false,
@@ -267,10 +246,8 @@ export class ChatlogService {
   }
 
   setLog(log: Log) {
-    if (window.console) {
-      console.log('setLog');
-      console.log(log);
-    }
+    Logger.log('setLog');
+    Logger.logObject(log);
     this.log = log;
   }
 

@@ -6,6 +6,7 @@ import {Family} from './family.model';
 import {PlayerService} from '../player.service';
 import {ToastService} from '../toast.service';
 import {ChatlogService} from '../chatlog.service';
+import {Logger, LogLevel} from "../consolelog.service";
 
 @Component({
   selector: 'app-player-settings',
@@ -39,6 +40,7 @@ export class PlayerSettingsComponent implements OnInit {
       cityofbirth: '',
       storyline: '',
       websockets: true,
+      debuglog: LogLevel.NONE,
     });
     this.familyForm = this.formBuilder.group({
       toname: '',
@@ -76,6 +78,7 @@ export class PlayerSettingsComponent implements OnInit {
       cityofbirth: '',
       storyline: '',
       websockets: true,
+      debuglog: LogLevel.NONE,
     });
     this.familyForm = this.formBuilder.group({
       toname: '',
@@ -130,6 +133,9 @@ export class PlayerSettingsComponent implements OnInit {
   prepareSavePlayer(): Player {
     const formModel = this.playerForm.value;
 
+    const logLevel = formModel.debuglog as LogLevel;
+    Logger.log("Log level set to " + logLevel);
+    Logger.setLogLevel(logLevel);
     // return new `Player` object containing a combination of original hero value(s)
     // and deep copies of changed form model values
     const savePlayer: Player = {

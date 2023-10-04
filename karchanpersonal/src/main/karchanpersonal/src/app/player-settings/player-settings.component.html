@@ -72,6 +72,21 @@
           </fieldset>
         </div>
         <div class="col-xs-12 col-sm-12 text-right">
+          <fieldset class="form-group">
+            <label for="debuglog">Debug logging</label>
+            <select class="form-control" id="debuglog" name="debuglog" formControlName="debuglog">
+              <option selected>NONE</option>
+              <option>SEVERE</option>
+              <option>INFO</option>
+              <option>WARNING</option>
+              <option>DEBUG</option>
+            </select>
+            <div id="debuglogHelp" class="form-text">Default is NONE, no logging. Best to leave it at that, unless you
+              want to examine log messages in the browser JavaScript console.
+            </div>
+          </fieldset>
+        </div>
+        <div class="col-xs-12 col-sm-12 text-right">
           <hr/>
           <button type="submit" [disabled]="playerForm.pristine" class="btn btn-primary">Save</button>
           <button type="reset" [disabled]="playerForm.pristine" class="btn btn-primary"

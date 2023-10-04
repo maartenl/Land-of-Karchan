@@ -12,6 +12,7 @@ import {StringUtils} from '../string.utils';
 import {LogonmessageComponent} from './logonmessage/logonmessage.component';
 import {ChatlogService, Message} from '../chatlog.service';
 import { Log } from './log.model';
+import {Logger} from "../consolelog.service";
 
 /**
  * Actually plays teh game, instead of administration of your player character/settings/mail.
@@ -158,15 +159,11 @@ export class PlayComponent implements OnInit {
    * Also shows logon message, if required.
    */
   public playInit(): void {
-    if (window.console) {
-      console.log('playInit');
-    }
+    Logger.log('playInit');
     const name = this.retrieveName();
     this.karchan.name = name;
     this.karchan.sleep = false;
-    if (window.console) {
-      console.log('playInit name=' + name);
-    }
+    Logger.log('playInit name=' + name);
     if (this.gameService.getShowLogonmessage()) {
       this.showLogonmessage();
     }
@@ -177,9 +174,7 @@ export class PlayComponent implements OnInit {
    */
   public lookAround(): void {
     const command = 'l';
-    if (window.console) {
-      console.log('playInit command=' + command);
-    }
+    Logger.log('playInit command=' + command);
     this.processCall(command, true);
   }
 
@@ -196,7 +191,7 @@ export class PlayComponent implements OnInit {
   }
 
   public quit(): boolean {
-    if (window.console) { console.log('quit'); }
+    Logger.log('quit');
     this.gameService.quitGame()
       .subscribe(
         (result: any) => { // on success
@@ -220,11 +215,9 @@ export class PlayComponent implements OnInit {
     const formModel = this.commandForm === null ? null : this.commandForm.value;
     const command = formModel === null ? undefined : formModel.command as string;
     const htmlContent = formModel === null ? undefined : formModel.htmlContent as string;
-    if (window.console) {
-      console.log('play: big talk "' + this.karchan.bigEntry + '"');
-      console.log('play: command is "' + command + '"');
-      console.log('play: editor text is "' + htmlContent + '"');
-    }
+    Logger.log('play: big talk "' + this.karchan.bigEntry + '"');
+    Logger.log('play: command is "' + command + '"');
+    Logger.log('play: editor text is "' + htmlContent + '"');
     if (this.karchan.bigEntry) {
       let totalcommand;
       if (command === undefined || command.trim() === '') {
@@ -242,9 +235,7 @@ export class PlayComponent implements OnInit {
         // a command was entered, perhaps with a big talk component
         totalcommand = htmlContent === undefined || htmlContent === '' ? command : command + ' ' + htmlContent;
       }
-      if (window.console) {
-        console.log('play: bigtalk "' + totalcommand + '"');
-      }
+      Logger.log('play: bigtalk "' + totalcommand + '"');
       if (totalcommand === 'who') {
         this.who();
         this.createForms();
@@ -253,7 +244,7 @@ export class PlayComponent implements OnInit {
       this.processCall(totalcommand, true);
       return false;
     }
-    if (window.console) { console.log('play: normaltalk "' + command + '"'); }
+    Logger.log('play: normaltalk "' + command + '"');
     if (command !== undefined && command !== null) {
       if (command === 'who') {
         this.who();
@@ -275,14 +266,14 @@ export class PlayComponent implements OnInit {
    * @param log if the logging should be refreshed.
    */
   public processCall(command: string, log: boolean) {
-    if (window.console) { console.log("processCall command=" + command + " log=" + log); }
+    Logger.log("processCall command=" + command + " log=" + log);
     if (command === 'clear') {
       this.chatlogService.clear();
     }
     this.gameService.processCommand(command, this.chatlogService.getOffset(), !this.chatlogService.isEnabled())
       .subscribe(
         (result: Display) => { // on success
-          if (window.console) { console.log(result); }
+          Logger.logObject(result);
           this.writeStuff(result);
           if (result.log !== undefined && result.log !== null) {
             this.chatlogService.setLog(result.log);
@@ -306,37 +297,37 @@ export class PlayComponent implements OnInit {
   }
 
   public goWest(): boolean {
-    if (window.console) { console.log('west'); }
+    Logger.log('west');
     this.processCall('go west', false);
     return false;
   }
 
   public goEast(): boolean {
-    if (window.console) { console.log('east'); }
+    Logger.log('east');
     this.processCall('go east', false);
     return false;
   }
 
   public goNorth(): boolean {
-    if (window.console) { console.log('north'); }
+    Logger.log('north');
     this.processCall('go north', false);
     return false;
   }
 
   public goSouth(): boolean {
-    if (window.console) { console.log('South'); }
+    Logger.log('South');
     this.processCall('go south', false);
     return false;
   }
 
   public goUp(): boolean {
-    if (window.console) { console.log('up'); }
+    Logger.log('up');
     this.processCall('go up', false);
     return false;
   }
 
   public goDown(): boolean {
-    if (window.console) { console.log('down'); }
+    Logger.log('down');
     this.processCall('go down', false);
     return false;
   }
@@ -351,18 +342,15 @@ export class PlayComponent implements OnInit {
   }
 
   public lookAtPerson(person: Person): boolean {
-    if (window.console) { console.log('lookAtPerson ' + person); }
+    Logger.log('lookAtPerson ' + person);
     this.processCall('look at ' + person.name, true);
     return false;
   }
 
   public lookAtItem(item: Item): boolean {
-    if (window.console) {
-      console.log('lookAtItem ');
-    }
-    if (window.console) {
-      console.log(item);
-    }
+    Logger.log('lookAtItem ');
+    Logger.logObject(item);
+
     const adjectives = item.adjectives.replace(/,/g, ' ').split(" ").reduce((x, y) => x.trim() + ' ' + y.trim())
     const description = adjectives + ' ' + item.name;
     this.processCall('look at ' + description, true);
@@ -370,7 +358,7 @@ export class PlayComponent implements OnInit {
   }
 
   public toggleSleep(): boolean {
-    if (window.console) { console.log('toggleSleep'); }
+    Logger.log('toggleSleep');
     if (this.karchan.sleep) {
       // AWAKEN!!!
       this.karchan.sleep = false;
@@ -384,22 +372,21 @@ export class PlayComponent implements OnInit {
   }
 
   public toggleEntry(): boolean {
-    if (window.console) { console.log('toggleEntry'); }
+    Logger.log('toggleEntry');
     this.karchan.bigEntry = !this.karchan.bigEntry;
     return false;
   }
 
   public clearLog(): boolean {
-    if (window.console) {
-      console.log('clearLog');
-    }
+    Logger.log('clearLog');
+
     this.chatlogService.clearMessages();
     this.chatlogService.clear();
     return false;
   }
 
   public resetLog(): boolean {
-    if (window.console) { console.log('resetLog'); }
+    Logger.log('resetLog');
     this.gameService.getLog()
       .subscribe(
         (result: Log) => { // on success
