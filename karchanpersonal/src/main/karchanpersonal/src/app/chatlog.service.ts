@@ -2,7 +2,7 @@ import {Injectable} from '@angular/core';
 import {webSocket, WebSocketSubject} from 'rxjs/webSocket';
 import {ToastService} from './toast.service';
 import {Log} from './play/log.model';
-import {Logger} from "./consolelog.service";
+import {Logger, LogLevel} from "./consolelog.service";
 
 export class Message {
   fileLength: number | null = null;
@@ -52,6 +52,7 @@ class WebsocketChatlogService implements ChatlogServiceInterface {
   }
 
   open(username: string) {
+    Logger.log("open websocket", LogLevel.INFO);
     this.internalopen(username);
     this.toastService.show('Opening connection...', {
       delay: 5000,
@@ -85,10 +86,12 @@ class WebsocketChatlogService implements ChatlogServiceInterface {
       window.clearInterval(this.interval);
       this.interval = null;
     }
-    this.interval = window.setInterval(function () {
-      self.internalping(self);
-    }, 30000);
-    Logger.log("Setting internal ping interval " + this.interval);
+    if (this.connectionOpen) {
+      this.interval = window.setInterval(function () {
+        self.internalping(self);
+      }, 30000);
+      Logger.log("Setting internal ping interval " + this.interval);
+    }
   }
 
   ping() {
@@ -100,6 +103,9 @@ class WebsocketChatlogService implements ChatlogServiceInterface {
   }
 
   private internalping(chatLogService: WebsocketChatlogService) {
+    if (!this.connectionOpen) {
+      return;
+    }
     Logger.log(chatLogService.counter + ": sent internal ping");
     const message = new Message();
     message.content = "internalping";
@@ -164,6 +170,16 @@ class WebsocketChatlogService implements ChatlogServiceInterface {
    * Closes the websocket.
    */
   close() {
+    Logger.log("close websocket", LogLevel.INFO);
+    if (this.timeout !== null) {
+      window.clearTimeout(this.timeout);
+      this.timeout = null;
+    }
+    if (this.interval !== null) {
+      Logger.log("Clearing internal ping interval " + this.interval);
+      window.clearInterval(this.interval);
+      this.interval = null;
+    }
     this.myWebSocket?.unsubscribe();
   }
 
@@ -171,6 +187,7 @@ class WebsocketChatlogService implements ChatlogServiceInterface {
    * Called when connection is closed (for whatever reason)
    */
   closingConnection() {
+    Logger.log("closingConnection websocket", LogLevel.INFO);
     this.connectionOpen = false;
     this.toastService.show('Closing connection...', {
       delay: 5000,
@@ -245,18 +262,19 @@ export class ChatlogService {
   }
 
   public isWebsocketsEnabled(): boolean {
-    Logger.log("chatlogService: websockets enabled=" + this.enabled);
+    Logger.log("chatlogService: websockets enabled=" + this.enabled, LogLevel.DEBUG);
     return this.enabled;
   }
 
   public enableWebsockets() {
-    Logger.log("chatlogService: websockets enabled.");
+    Logger.log("chatlogService: websockets enabled.", LogLevel.INFO);
     this.enabled = true;
     this.chatlogService = new WebsocketChatlogService(this.toastService);
   }
 
   public disableWebsockets() {
-    Logger.log("chatlogService: websockets disabled.");
+    Logger.log("chatlogService: websockets disabled.", LogLevel.INFO);
+    this.chatlogService.close();
     this.enabled = false;
     this.chatlogService = new NoWebsocketChatlogService();
   }

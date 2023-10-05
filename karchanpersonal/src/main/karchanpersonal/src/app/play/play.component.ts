@@ -12,7 +12,7 @@ import {StringUtils} from '../string.utils';
 import {LogonmessageComponent} from './logonmessage/logonmessage.component';
 import {ChatlogService} from '../chatlog.service';
 import {Log} from './log.model';
-import {Logger} from "../consolelog.service";
+import {Logger, LogLevel} from "../consolelog.service";
 
 /**
  * Actually plays teh game, instead of administration of your player character/settings/mail.
@@ -88,6 +88,7 @@ export class PlayComponent implements OnInit {
       this.lookAround();
       return;
     }
+    Logger.log("Game starting ...", LogLevel.INFO);
     this.playerService.getPlayer()
       .subscribe({
           next: (result: any) => { // on success
@@ -105,6 +106,7 @@ export class PlayComponent implements OnInit {
                     this.playInit();
                     this.chatlogService.open(this.karchan.name);
                     this.lookAround();
+                    Logger.log("Game started...", LogLevel.INFO);
                   },
                   error: (err: any) => {
                     Logger.logError('error', err);
@@ -194,7 +196,7 @@ export class PlayComponent implements OnInit {
   }
 
   public quit(): boolean {
-    Logger.log('quit');
+    Logger.log('quit', LogLevel.INFO);
     this.gameService.quitGame()
       .subscribe({
           next: (result: any) => { // on success

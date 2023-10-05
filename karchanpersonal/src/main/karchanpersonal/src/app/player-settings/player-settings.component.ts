@@ -40,7 +40,7 @@ export class PlayerSettingsComponent implements OnInit {
       cityofbirth: '',
       storyline: '',
       websockets: true,
-      debuglog: LogLevel.NONE,
+      debuglog: Logger.getLogLevel() as LogLevel,
     });
     this.familyForm = this.formBuilder.group({
       toname: '',
@@ -78,7 +78,7 @@ export class PlayerSettingsComponent implements OnInit {
       cityofbirth: '',
       storyline: '',
       websockets: true,
-      debuglog: LogLevel.NONE,
+      debuglog: Logger.getLogLevel() as LogLevel,
     });
     this.familyForm = this.formBuilder.group({
       toname: '',
@@ -96,6 +96,7 @@ export class PlayerSettingsComponent implements OnInit {
       cityofbirth: player.cityofbirth,
       storyline: player.storyline,
       websockets: player.websockets,
+      debuglog: Logger.getLogLevel() as LogLevel,
     });
   }
 
@@ -108,7 +109,6 @@ export class PlayerSettingsComponent implements OnInit {
 
   save() {
     const newPlayer = this.prepareSavePlayer();
-    this.chatlogService.close();
     if (newPlayer.websockets) {
       this.chatlogService.enableWebsockets();
     } else {
@@ -133,8 +133,7 @@ export class PlayerSettingsComponent implements OnInit {
   prepareSavePlayer(): Player {
     const formModel = this.playerForm.value;
 
-    const logLevel = formModel.debuglog as LogLevel;
-    Logger.log("Log level set to " + logLevel);
+    const logLevel: LogLevel = formModel.debuglog as LogLevel;
     Logger.setLogLevel(logLevel);
     // return new `Player` object containing a combination of original hero value(s)
     // and deep copies of changed form model values

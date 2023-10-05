@@ -1,66 +1,108 @@
 export enum LogLevel {
-    NONE = 0,
-    SEVERE = 1,
-    INFO = 2,
-    WARNING = 4,
-    /**
-     * Useful to display Object contents in console log.
-     */
-    DEBUG = 8,
+  NONE = 'NONE',
+  SEVERE = 'SEVERE',
+  INFO = 'INFO',
+  WARNING = 'WARNING',
+  /**
+   * Useful to display Object contents in console log.
+   */
+  DEBUG = 'DEBUG',
 }
 
 /**
  * Wrapper around the whole "if (window.console) console.log(stuff)".
  */
 export class Logger {
-    private static logLevel: LogLevel = LogLevel.NONE;
+  private static logLevel: LogLevel = LogLevel.NONE;
 
-    private constructor() {
+  public static setLogLevel(logLevel: LogLevel) {
+    if (logLevel === null) {
+      if (window.console) {
+        console.log("Loglevel provided is empty!");
+      }
+      return;
     }
+    if (logLevel === undefined) {
+      if (window.console) {
+        console.log("Loglevel provided is undefined!");
+      }
+      return;
+    }
+    if (window.console) {
+      console.log("Setting loglevel to " + logLevel);
+    }
+    this.logLevel = logLevel;
+  }
 
-    public static setLogLevel(logLevel: LogLevel) {
-        this.log("Setting loglevel to " + logLevel, LogLevel.SEVERE);
-        if (logLevel === null) {
-            this.logError("Loglevel provided is empty!", logLevel);
-            return;
-        }
-        if (logLevel === undefined) {
-            this.logError("Loglevel provided is undefined!", logLevel);
-            return;
-        }
-        this.logLevel = logLevel;
+  public static getLogLevel(): LogLevel {
+    if (window.console) {
+      console.log("Getting loglevel " + this.logLevel);
     }
+    return this.logLevel;
+  }
 
-    public static log(message: string, logLevel: LogLevel = LogLevel.DEBUG) {
-        if (!this.isLogEnabled(logLevel)) {
-            return;
-        }
-        console.log(logLevel + " " + message);
+  public static log(message: string, logLevel: LogLevel = LogLevel.DEBUG) {
+    if (!this.isLogEnabled(logLevel)) {
+      return;
     }
+    console.log(Logger.getLogLevelDescription(logLevel) + ": " + message);
+  }
 
-    public static logObject(object: Object, logLevel: LogLevel = LogLevel.DEBUG) {
-        if (!this.isLogEnabled(logLevel)) {
-            return;
-        }
-        console.log(object);
+  private static getLogLevelDescription(logLevel: LogLevel = LogLevel.DEBUG): string {
+    var description: string = "DEBUG";
+    switch (logLevel) {
+      case LogLevel.SEVERE: {
+        description = "SEVERE";
+        break;
+      }
+      case LogLevel.NONE: {
+        description = "NONE";
+        break;
+      }
+      case LogLevel.DEBUG: {
+        description = "DEBUG";
+        break;
+      }
+      case LogLevel.INFO: {
+        description = "INFO";
+        break;
+      }
+      case LogLevel.WARNING: {
+        description = "WARNING";
+        break;
+      }
     }
+    return description;
+  }
 
-    private static isLogEnabled(logLevel: LogLevel = LogLevel.DEBUG) {
-        var isEnabled: boolean = true;
-        if (this.logLevel == LogLevel.NONE) {
-            isEnabled = false;
-        }
-        if (logLevel.valueOf() <= this.logLevel.valueOf()) {
-            isEnabled = false;
-        }
-        if (!window.console) {
-            isEnabled = false;
-        }
-        return isEnabled;
+  public static logObject(object: Object, logLevel: LogLevel = LogLevel.DEBUG) {
+    if (!this.isLogEnabled(logLevel)) {
+      return;
     }
+    console.log(object);
+  }
 
-    static logError(errormessage: string, err: Object) {
-        this.log(errormessage, LogLevel.SEVERE);
-        this.logObject(err, LogLevel.SEVERE);
+  private static isLogEnabled(logLevel: LogLevel = LogLevel.DEBUG) {
+    if (this.logLevel === LogLevel.NONE) {
+      return false;
     }
+    if (!window.console) {
+      return false;
+    }
+    if (this.logLevel === LogLevel.SEVERE) {
+      return logLevel === LogLevel.SEVERE;
+    }
+    if (this.logLevel === LogLevel.INFO) {
+      return logLevel === LogLevel.SEVERE || logLevel === LogLevel.INFO;
+    }
+    if (this.logLevel === LogLevel.WARNING) {
+      return logLevel === LogLevel.SEVERE || logLevel === LogLevel.INFO || logLevel === LogLevel.WARNING;
+    }
+    return true;
+  }
+
+  static logError(errormessage: string, err: Object) {
+    this.log(errormessage, LogLevel.SEVERE);
+    this.logObject(err, LogLevel.SEVERE);
+  }
 }
