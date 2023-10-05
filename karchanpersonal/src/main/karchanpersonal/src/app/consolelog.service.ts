@@ -20,6 +20,14 @@ export class Logger {
 
     public static setLogLevel(logLevel: LogLevel) {
         this.log("Setting loglevel to " + logLevel, LogLevel.SEVERE);
+        if (logLevel === null) {
+            this.logError("Loglevel provided is empty!", logLevel);
+            return;
+        }
+        if (logLevel === undefined) {
+            this.logError("Loglevel provided is undefined!", logLevel);
+            return;
+        }
         this.logLevel = logLevel;
     }
 
@@ -37,7 +45,7 @@ export class Logger {
         console.log(object);
     }
 
-    private static isLogEnabled(logLevel: LogLevel) {
+    private static isLogEnabled(logLevel: LogLevel = LogLevel.DEBUG) {
         var isEnabled: boolean = true;
         if (this.logLevel == LogLevel.NONE) {
             isEnabled = false;
