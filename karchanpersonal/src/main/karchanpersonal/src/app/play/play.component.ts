@@ -93,9 +93,9 @@ export class PlayComponent implements OnInit {
         (result: any) => { // on success
           this.player = result;
           if (this.player?.websockets) {
-            this.chatlogService.enable();
+            this.chatlogService.enableWebsockets();
           } else {
-            this.chatlogService.disable();
+            this.chatlogService.disableWebsockets();
           }
           this.gameService.enterGame()
             .subscribe(
@@ -196,8 +196,8 @@ export class PlayComponent implements OnInit {
       .subscribe(
         (result: any) => { // on success
           this.gameService.setIsGaming(false);
-          if (this.chatlogService.isEnabled()) {
-            this.chatlogService.clearMessages();
+          if (this.chatlogService.isWebsocketsEnabled()) {
+            this.chatlogService.clear();
             this.chatlogService.close();
           }
           this.router.navigate(['/']);
@@ -270,7 +270,7 @@ export class PlayComponent implements OnInit {
     if (command === 'clear') {
       this.chatlogService.clear();
     }
-    this.gameService.processCommand(command, this.chatlogService.getOffset(), !this.chatlogService.isEnabled())
+    this.gameService.processCommand(command, this.chatlogService.getOffset(), !this.chatlogService.isWebsocketsEnabled())
       .subscribe(
         (result: Display) => { // on success
           Logger.logObject(result);

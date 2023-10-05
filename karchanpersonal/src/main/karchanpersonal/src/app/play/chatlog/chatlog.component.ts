@@ -19,7 +19,6 @@ export class ChatlogComponent {
 
   public clearLog(): boolean {
     Logger.log('clearLog');
-    this.chatlogService.clearMessages();
     this.chatlogService.clear();
     return false;
   }
@@ -27,16 +26,17 @@ export class ChatlogComponent {
   public resetLog(): boolean {
     Logger.log('resetLog');
     this.gameService.getLog()
-      .subscribe(
-        (result: Log) => { // on success
-          this.chatlogService.clear();
-          this.chatlogService.setLog(new Log(result));
-          console.log('log rest:' + result);
-        },
-        (err: any) => { // error
-          // console.log('error', err);
-        },
-        () => { // on completion
+      .subscribe({
+          next: (result: Log) => { // on success
+            this.chatlogService.clear();
+            this.chatlogService.setLog(new Log(result));
+            Logger.log('log rest:' + result);
+          },
+          error: (err: any) => { // error
+            Logger.logError('error in resetLog', err);
+          },
+          complete: () => { // on completion
+          }
         }
       );
     return false;

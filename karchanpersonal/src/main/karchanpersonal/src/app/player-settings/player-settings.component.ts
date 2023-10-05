@@ -110,9 +110,9 @@ export class PlayerSettingsComponent implements OnInit {
     const newPlayer = this.prepareSavePlayer();
     this.chatlogService.close();
     if (newPlayer.websockets) {
-      this.chatlogService.enable();
+      this.chatlogService.enableWebsockets();
     } else {
-      this.chatlogService.disable();
+      this.chatlogService.disableWebsockets();
     }
     this.playerService.updatePlayer(newPlayer).subscribe(
       (result: any) => { // on success

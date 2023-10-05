@@ -1,7 +1,7 @@
 import {Injectable} from '@angular/core';
 import {webSocket, WebSocketSubject} from 'rxjs/webSocket';
 import {ToastService} from './toast.service';
-import { Log } from './play/log.model';
+import {Log} from './play/log.model';
 import {Logger} from "./consolelog.service";
 
 export class Message {
@@ -16,52 +16,42 @@ export class Message {
 
 }
 
-@Injectable({
-  providedIn: 'root'
-})
-export class ChatlogService {
+interface ChatlogServiceInterface {
 
-  private connectionOpen: boolean = false;
+  getMessages(): Message[];
 
-  private myWebSocket: WebSocketSubject<Message> | null = null;
+  clearMessages(): void;
+
+  ping(): void;
+
+  open(username: string): void;
+
+  reconnect(): void;
+
+  close(): void;
+
+}
+
+class WebsocketChatlogService implements ChatlogServiceInterface {
 
   private username: string = "";
+  private interval: number | null = null;
+  private connectionOpen: boolean = false;
 
   private messages: Message[] = [];
 
-  private timeout: number | null = null;
-  private interval: number | null = null;
+  private myWebSocket: WebSocketSubject<Message> | null = null;
 
-  private log: Log = new Log();
+  private timeout: number | null = null;
 
   private counter: number = 0;
-
-  private enabled: boolean = true;
 
   constructor(
     private toastService: ToastService
   ) {
   }
 
-  public isEnabled(): boolean {
-    Logger.log("chatlog enabled=" + this.enabled);
-    return this.enabled;
-  }
-
-  public enable() {
-    Logger.log("chatlog enabled.");
-    this.enabled = true;
-  }
-
-  public disable() {
-    Logger.log("chatlog disabled.");
-    this.enabled = false;
-  }
-
   open(username: string) {
-    if (!this.enabled) {
-      return;
-    }
     this.internalopen(username);
     this.toastService.show('Opening connection...', {
       delay: 5000,
@@ -71,9 +61,6 @@ export class ChatlogService {
   }
 
   private internalopen(username: string) {
-    if (!this.enabled) {
-      return;
-    }
     this.username = username;
     const url = new URL('/karchangame/chat', window.location.href);
     url.protocol = url.protocol.replace('http', 'ws');
@@ -82,18 +69,16 @@ export class ChatlogService {
     url.href // => ws://www.example.com:9999/path/to/websocket
     this.myWebSocket = webSocket(url.href);
     this.connectionOpen = true;
-    this.myWebSocket.subscribe(
-      msg => this.receive(msg),
-      err => this.error(err),
-      () => this.closingConnection()
-    );
+    const self = this;
+    this.myWebSocket.subscribe({
+      next: (msg) => self.receive(msg),
+      error: (err) => self.error(err),
+      complete: () => self.closingConnection()
+    });
     this.setInterval();
   }
 
   private setInterval() {
-    if (!this.enabled) {
-      return;
-    }
     const self = this;
     if (this.interval !== null) {
       Logger.log("Clearing internal ping interval " + this.interval);
@@ -107,9 +92,6 @@ export class ChatlogService {
   }
 
   ping() {
-    if (!this.enabled) {
-      return;
-    }
     const message = new Message();
     message.content = "ping";
     message.from = this.username;
@@ -117,17 +99,13 @@ export class ChatlogService {
     this.send(message);
   }
 
-  private internalping(chatLogService: ChatlogService) {
-    if (!this.enabled) {
-      return;
-    }
+  private internalping(chatLogService: WebsocketChatlogService) {
     Logger.log(chatLogService.counter + ": sent internal ping");
     const message = new Message();
     message.content = "internalping";
     message.from = this.username;
     message.type = "internalping";
     chatLogService.send(message);
-    const ourselves = this;
     chatLogService.timeout = window.setTimeout(function () {
       /// ---did not receive pong in 5 seconds! ///
       if (window.console) {
@@ -140,9 +118,6 @@ export class ChatlogService {
   }
 
   reconnect() {
-    if (!this.enabled) {
-      return;
-    }
     this.open(this.username);
   }
 
@@ -180,9 +155,6 @@ export class ChatlogService {
   }
 
   send(data: Message) {
-    if (!this.enabled) {
-      return;
-    }
     if (this.myWebSocket !== null) {
       this.myWebSocket.next(data);
     }
@@ -192,9 +164,6 @@ export class ChatlogService {
    * Closes the websocket.
    */
   close() {
-    if (!this.enabled) {
-      return;
-    }
     this.myWebSocket?.unsubscribe();
   }
 
@@ -202,9 +171,6 @@ export class ChatlogService {
    * Called when connection is closed (for whatever reason)
    */
   closingConnection() {
-    if (!this.enabled) {
-      return;
-    }
     this.connectionOpen = false;
     this.toastService.show('Closing connection...', {
       delay: 5000,
@@ -217,10 +183,7 @@ export class ChatlogService {
    * Called if WebSocket API signals some kind of error
    */
   error(error: any) {
-    if (!this.enabled) {
-      return;
-    }
-    Logger.log(error);
+    Logger.logError("error in websocket com", error);
     this.toastService.show('An error occurred using a websocket...', {
       delay: 0,
       autohide: false,
@@ -237,21 +200,87 @@ export class ChatlogService {
     return this.messages;
   }
 
-  clearMessages() {
+  clearMessages(): void {
     this.messages = [];
   }
+}
 
-  clear() {
-    this.log = new Log();
+class NoWebsocketChatlogService implements ChatlogServiceInterface {
+
+  clearMessages() {
   }
 
-  setLog(log: Log) {
+  getMessages(): Message[] {
+    return [];
+  }
+
+  ping(): void {
+  }
+
+  open(username: string): void {
+  }
+
+  reconnect(): void {
+  }
+
+  close(): void {
+  }
+}
+
+@Injectable({
+  providedIn: 'root'
+})
+export class ChatlogService {
+
+  private chatlogService: ChatlogServiceInterface;
+
+  private log: Log = new Log();
+
+  private enabled: boolean = true;
+
+  constructor(
+    private toastService: ToastService
+  ) {
+    this.chatlogService = new WebsocketChatlogService(toastService)
+  }
+
+  public isWebsocketsEnabled(): boolean {
+    Logger.log("chatlogService: websockets enabled=" + this.enabled);
+    return this.enabled;
+  }
+
+  public enableWebsockets() {
+    Logger.log("chatlogService: websockets enabled.");
+    this.enabled = true;
+    this.chatlogService = new WebsocketChatlogService(this.toastService);
+  }
+
+  public disableWebsockets() {
+    Logger.log("chatlogService: websockets disabled.");
+    this.enabled = false;
+    this.chatlogService = new NoWebsocketChatlogService();
+  }
+
+  /**
+   * Used in the chatlog component to display the log.
+   * Only contains stuff, if websockets is on.
+   */
+  getMessages(): Message[] {
+    return this.chatlogService.getMessages();
+  }
+
+  clear(): void {
+    this.log = new Log();
+    this.chatlogService.clearMessages();
+  }
+
+  setLog(log: Log): void {
     Logger.log('setLog');
     Logger.logObject(log);
     this.log = log;
   }
 
-  getOffset() {
+  getOffset(): number {
     return this.log.offset;
   }
 
@@ -259,4 +288,19 @@ export class ChatlogService {
     return this.log;
   }
 
+  ping(): void {
+    this.chatlogService.ping();
+  }
+
+  open(username: string): void {
+    this.chatlogService.open(username);
+  }
+
+  reconnect(): void {
+    this.chatlogService.reconnect();
+  }
+
+  close(): void {
+    this.chatlogService.close();
+  }
 }

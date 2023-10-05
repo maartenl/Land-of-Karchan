@@ -24,29 +24,35 @@ export class Logger {
     }
 
     public static log(message: string, logLevel: LogLevel = LogLevel.DEBUG) {
-        if (this.logLevel == LogLevel.NONE) {
-            return;
-        }
-        if (logLevel.valueOf() <= this.logLevel.valueOf()) {
-            return;
-        }
-        if (!window.console) {
+        if (!this.isLogEnabled(logLevel)) {
             return;
         }
         console.log(logLevel + " " + message);
     }
 
-    public static logObject(object: Object) {
-        if (this.logLevel == LogLevel.NONE) {
-            return;
-        }
-        if (LogLevel.DEBUG.valueOf() <= this.logLevel.valueOf()) {
-            return;
-        }
-        if (!window.console) {
+    public static logObject(object: Object, logLevel: LogLevel = LogLevel.DEBUG) {
+        if (!this.isLogEnabled(logLevel)) {
             return;
         }
         console.log(object);
     }
 
+    private static isLogEnabled(logLevel: LogLevel) {
+        var isEnabled: boolean = true;
+        if (this.logLevel == LogLevel.NONE) {
+            isEnabled = false;
+        }
+        if (logLevel.valueOf() <= this.logLevel.valueOf()) {
+            isEnabled = false;
+        }
+        if (!window.console) {
+            isEnabled = false;
+        }
+        return isEnabled;
+    }
+
+    static logError(errormessage: string, err: Object) {
+        this.log(errormessage, LogLevel.SEVERE);
+        this.logObject(err, LogLevel.SEVERE);
+    }
 }
