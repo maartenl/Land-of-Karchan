@@ -1,5 +1,5 @@
 import {Component, OnInit, ViewChild} from '@angular/core';
-import { AngularEditorConfig } from '@kolkov/angular-editor';
+import {AngularEditorConfig} from '@kolkov/angular-editor';
 import {Router} from '@angular/router';
 import {FormBuilder, FormGroup} from '@angular/forms';
 
@@ -11,7 +11,7 @@ import {LanguageUtils} from '../language.utils';
 import {StringUtils} from '../string.utils';
 import {LogonmessageComponent} from './logonmessage/logonmessage.component';
 import {ChatlogService} from '../chatlog.service';
-import { Log } from './log.model';
+import {Log} from './log.model';
 import {Logger} from "../consolelog.service";
 
 /**
@@ -89,67 +89,70 @@ export class PlayComponent implements OnInit {
       return;
     }
     this.playerService.getPlayer()
-      .subscribe(
-        (result: any) => { // on success
-          this.player = result;
-          if (this.player?.websockets) {
-            this.chatlogService.enableWebsockets();
-          } else {
-            this.chatlogService.disableWebsockets();
+      .subscribe({
+          next: (result: any) => { // on success
+            this.player = result;
+            if (this.player?.websockets) {
+              this.chatlogService.enableWebsockets();
+            } else {
+              this.chatlogService.disableWebsockets();
+            }
+            this.gameService.enterGame()
+              .subscribe({
+                  next: (result: Log) => { // on success
+                    this.chatlogService.setLog(new Log(result));
+                    this.gameService.setIsGaming(true);
+                    this.playInit();
+                    this.chatlogService.open(this.karchan.name);
+                    this.lookAround();
+                  },
+                  error: (err: any) => {
+                    Logger.logError('error', err);
+                  },
+                  complete: () => { // on completion
+                  }
+                }
+              );
+          },
+          error: (err: any) => {
+            Logger.logError('error', err);
+          },
+          complete: () => { // on completion
           }
-          this.gameService.enterGame()
-            .subscribe(
-              (result: Log) => { // on success
-                this.chatlogService.setLog(new Log(result));
-                this.gameService.setIsGaming(true);
-                this.playInit();
-                this.chatlogService.open(this.karchan.name);
-                this.lookAround();
-              },
-              (err: any) => { // error
-                // console.log('error', err);
-              },
-              () => { // on completion
-              }
-            );
-        },
-        (err: any) => { // error
-          // console.log('error', err);
-        },
-        () => { // on completion
         }
       );
   }
 
   public who(): void {
     this.gameService.getWho()
-      .subscribe(
-        (data: any) => { // on success
-          if (data !== undefined) {
-            let users: Array<WhoPerson> = data.map((x: any) => new WhoPerson(x));
-            const display = new Display()
-            display.title = 'Who';
-            display.image = '';
-            if (users.length === 0) {
-              display.body = 'There are no people online at the moment.';
-            } else {
-              display.body = 'There are ' + users.length + ' players.<br/><br/><br/>';
-              display.body += '<ul>';
-              users.forEach(user => {
-                display.body += '<li>' + user.name + ', ' + user.title + (user.area === 'Land of Karchan' ? '' : ' in ' + user.area);
-                display.body += (user.sleep !== '' ? ', sleeping ' : ' ');
-                display.body += user.idleTime;
-                display.body += '</li>\r\n';
-              });
-              display.body += '</ul>\r\n';
+      .subscribe({
+          next: (data: any) => { // on success
+            if (data !== undefined) {
+              let users: Array<WhoPerson> = data.map((x: any) => new WhoPerson(x));
+              const display = new Display()
+              display.title = 'Who';
+              display.image = '';
+              if (users.length === 0) {
+                display.body = 'There are no people online at the moment.';
+              } else {
+                display.body = 'There are ' + users.length + ' players.<br/><br/><br/>';
+                display.body += '<ul>';
+                users.forEach(user => {
+                  display.body += '<li>' + user.name + ', ' + user.title + (user.area === 'Land of Karchan' ? '' : ' in ' + user.area);
+                  display.body += (user.sleep !== '' ? ', sleeping ' : ' ');
+                  display.body += user.idleTime;
+                  display.body += '</li>\r\n';
+                });
+                display.body += '</ul>\r\n';
+              }
+              this.writeStuff(display);
             }
-            this.writeStuff(display);
+          },
+          error: (err: any) => {
+            Logger.logError('error', err);
+          },
+          complete: () => { // on completion
           }
-        },
-        (err: any) => { // error
-          // console.log('error', err);
-        },
-        () => { // on completion
         }
       );
   }
@@ -193,19 +196,20 @@ export class PlayComponent implements OnInit {
   public quit(): boolean {
     Logger.log('quit');
     this.gameService.quitGame()
-      .subscribe(
-        (result: any) => { // on success
-          this.gameService.setIsGaming(false);
-          if (this.chatlogService.isWebsocketsEnabled()) {
-            this.chatlogService.clear();
-            this.chatlogService.close();
+      .subscribe({
+          next: (result: any) => { // on success
+            this.gameService.setIsGaming(false);
+            if (this.chatlogService.isWebsocketsEnabled()) {
+              this.chatlogService.clear();
+              this.chatlogService.close();
+            }
+            this.router.navigate(['/']);
+          },
+          error: (err: any) => {
+            Logger.logError('error', err);
+          },
+          complete: () => { // on completion
           }
-          this.router.navigate(['/']);
-        },
-        (err: any) => { // error
-          // console.log('error', err);
-        },
-        () => { // on completion
         }
       );
     return false;
@@ -226,7 +230,7 @@ export class PlayComponent implements OnInit {
           totalcommand = '';
         } else {
           if (htmlContent.startsWith('<p>')) {
-            totalcommand = htmlContent.substr(3);
+            totalcommand = htmlContent.substring(3);
           } else {
             totalcommand = htmlContent
           }
@@ -271,19 +275,20 @@ export class PlayComponent implements OnInit {
       this.chatlogService.clear();
     }
     this.gameService.processCommand(command, this.chatlogService.getOffset(), !this.chatlogService.isWebsocketsEnabled())
-      .subscribe(
-        (result: Display) => { // on success
-          Logger.logObject(result);
-          this.writeStuff(result);
-          if (result.log !== undefined && result.log !== null) {
-            this.chatlogService.setLog(result.log);
+      .subscribe({
+          next: (result: Display) => { // on success
+            Logger.logObject(result);
+            this.writeStuff(result);
+            if (result.log !== undefined && result.log !== null) {
+              this.chatlogService.setLog(result.log);
+            }
+            this.createForms();
+          },
+          error: (err: any) => {
+            Logger.logError('error', err);
+          },
+          complete: () => { // on completion
           }
-          this.createForms();
-        },
-        (err: any) => { // error
-          // console.log('error', err);
-        },
-        () => { // on completion
         }
       );
   }
@@ -333,7 +338,9 @@ export class PlayComponent implements OnInit {
   }
 
   public getVowel(person: Person): string {
-    if (LanguageUtils.isVowel(person.race.charAt(0))) { return 'An'; }
+    if (LanguageUtils.isVowel(person.race.charAt(0))) {
+      return 'An';
+    }
     return 'A';
   }
 
