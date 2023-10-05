@@ -31,6 +31,7 @@ import { InboxMailComponent } from './mail/inbox-mail/inbox-mail.component';
 import { ShowMailComponent } from './mail/show-mail/show-mail.component';
 import { SentMailComponent } from './mail/sent-mail/sent-mail.component';
 import { LogonmessageComponent } from './play/logonmessage/logonmessage.component';
+import { ChatlogComponent } from './play/chatlog/chatlog.component';
 
 @NgModule({
   declarations: [
@@ -50,7 +51,8 @@ import { LogonmessageComponent } from './play/logonmessage/logonmessage.componen
     InboxMailComponent,
     ShowMailComponent,
     SentMailComponent,
-    LogonmessageComponent
+    LogonmessageComponent,
+    ChatlogComponent
   ],
   imports: [
     BrowserModule,

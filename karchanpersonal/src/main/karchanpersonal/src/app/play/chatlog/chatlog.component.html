@@ -1,0 +1,14 @@
+<hr/>
+<div class="row">
+    <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+        <a class="btn btn-primary btn-sm " href="#" (click)="clearLog();"
+           title="Clears your log">Clear</a>
+        <a class="btn btn-primary btn-sm " href="#" (click)="resetLog();"
+           title="Reset your log">Reset</a>
+    </div>
+</div>
+<div id="karchan_log" [innerHTML]="getLog()"></div>
+<div *ngFor="let message of getMessages()" [innerHTML]="message.content">
+</div>
+<hr/>
+<p>&nbsp;</p>

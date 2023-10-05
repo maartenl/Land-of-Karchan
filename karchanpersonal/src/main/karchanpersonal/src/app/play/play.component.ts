@@ -10,7 +10,7 @@ import {Display, Item, Person, WhoPerson} from './display.model';
 import {LanguageUtils} from '../language.utils';
 import {StringUtils} from '../string.utils';
 import {LogonmessageComponent} from './logonmessage/logonmessage.component';
-import {ChatlogService, Message} from '../chatlog.service';
+import {ChatlogService} from '../chatlog.service';
 import { Log } from './log.model';
 import {Logger} from "../consolelog.service";
 
@@ -377,47 +377,8 @@ export class PlayComponent implements OnInit {
     return false;
   }
 
-  public clearLog(): boolean {
-    Logger.log('clearLog');
-
-    this.chatlogService.clearMessages();
-    this.chatlogService.clear();
-    return false;
-  }
-
-  public resetLog(): boolean {
-    Logger.log('resetLog');
-    this.gameService.getLog()
-      .subscribe(
-        (result: Log) => { // on success
-          this.chatlogService.clear();
-          this.chatlogService.setLog(new Log(result));
-          console.log('log rest:' + result);
-        },
-        (err: any) => { // error
-          // console.log('error', err);
-        },
-        () => { // on completion
-        }
-      );
-    return false;
-  }
-
-  /**
-   * Get the log as a string. Suitable for display.
-   * @returns a simple string containing the log received from the server (not via websockets). If not available, an empty string.
-   */
-  public getLog(): string {
-    const log = this.chatlogService.getLog();
-    return log === null || log === undefined ? '' : log.log;
-  }
-
   public getRoomDescription(body: string): string {
     return StringUtils.getCapitalized(body);
-  }
-
-  public getMessages(): Message[] {
-    return this.chatlogService.getMessages();
   }
 
   public ping(): boolean {
