@@ -136,13 +136,9 @@ public class PublicRestService
     {
       MediaType.APPLICATION_JSON
     })
-  public List<PublicPerson> who(@QueryParam("internal") String internal)
+  public List<PublicPerson> who()
   {
     LOGGER.finer("entering who");
-    if (internal != null)
-    {
-      ChatLogEndPoint.internalpong = internal.equals("on");
-    }
     List<PublicPerson> res = new ArrayList<>();
     try
     {
