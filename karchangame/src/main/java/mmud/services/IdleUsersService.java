@@ -84,7 +84,8 @@ public class IdleUsersService
       return "";
     }
     LocalDateTime now = LocalDateTime.now();
-    Long timeDiff = Duration.between(localDateTime, now).toMillis() / 1000;
+    Duration duration = Duration.between(localDateTime, now);
+    long timeDiff = duration.getSeconds();
     return "(" + timeDiff / 60 + " min, " + timeDiff % 60 + " sec idle)";
   }
 

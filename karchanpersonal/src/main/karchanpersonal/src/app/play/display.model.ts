@@ -66,6 +66,14 @@ export class WhoPerson {
    * Looks for example like "(23 min, 45 sec idle)"
    */
   idleTime: string = '';
+  /**
+   * Minutes when last logged in. For instance: logged on 23 minutes and 20 seconds ago. (see {@link sec}.
+   */
+  min: number = 0;
+  /**
+   * Seconds when last logged in. For instance: logged on 23 minutes and 10 seconds ago. (see {@link min}.
+   */
+  sec: number = 0;
 
   constructor(object?: any) {
     if (object === undefined) {
@@ -77,6 +85,8 @@ export class WhoPerson {
     this.area = object.area;
     this.sleep = object.sleep;
     this.idleTime = object.idleTime;
+    this.min = object.min;
+    this.sec = object.sec;
   }
 }
 
