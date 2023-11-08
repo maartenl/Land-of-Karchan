@@ -3,11 +3,10 @@
     <div class="col-xs-12">
       <form [formGroup]="form" novalidate>
         <fieldset class="form-group">
+          <legend>Search terms</legend>
           <input type="text" class="form-control" id="nameSearch" name="nameSearch" placeholder="Name"
                  formControlName="nameSearch"
                  #searchname>
-        </fieldset>
-        <fieldset class="form-group">
           <input type="text" class="form-control" id="dateSearch" name="dateSearch" placeholder="Date (yyyy-mm-dd)"
                  formControlName="dateSearch"
                  #searchcreation>
@@ -24,15 +23,16 @@
         <div class="card-body">
           <h5 class="card-title" *ngIf="log?.id !== undefined">Id {{ log?.id }}</h5>
           <h5 class="card-title" *ngIf="log?.name !== undefined">Name {{ log?.name }}</h5>
-          <p class="card-text" *ngIf="log?.message !== undefined">{{ log?.message }}</p>
-          <p class="card-text" *ngIf="log?.addendum !== undefined">{{ log?.addendum }}</p>
-          <p class="card-text" *ngIf="log?.deputy !== undefined">{{ log?.deputy }}</p>
-          <p class="card-text" *ngIf="log?.creation !== undefined">{{ log?.creation }}</p>
+          <p class="card-text" *ngIf="log?.message !== undefined">Message {{ log?.message }}</p>
+          <p class="card-text" *ngIf="log?.addendum !== undefined">Addendum {{ log?.addendum }}</p>
+          <p class="card-text" *ngIf="log?.deputy !== undefined">Is Deputy: {{ log?.deputy }}</p>
+          <p class="card-text" *ngIf="log?.creation !== undefined">Created: {{ log?.creation }}</p>
         </div>
       </div>
     </div>
     <div class="col-xs-12 col-xl-6">
       <table class="table table-sm table-striped table-bordered">
+        <caption>System log messages</caption>
         <thead class="thead-inverse">
         <tr>
           <th>#</th>
