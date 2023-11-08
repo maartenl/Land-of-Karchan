@@ -16,7 +16,7 @@
  */
 package mmud.commands;
 
-import mmud.Utils;
+import mmud.constants.Adverbs;
 import mmud.database.entities.characters.Person;
 import mmud.database.entities.characters.User;
 import mmud.database.entities.game.DisplayInterface;
@@ -40,7 +40,7 @@ public class BowCommand extends TargetCommand
     {
         if (command != null)
         {
-            if (Utils.existsAdverb(command))
+            if (Adverbs.existsAdverb(command))
             {
                 // bow to Marvin evilly
                 CommunicationService.getCommunicationService(aUser.getRoom()).sendMessage(aUser, aTarget,
@@ -63,7 +63,7 @@ public class BowCommand extends TargetCommand
     {
         if (command != null)
         {
-            if (!Utils.existsAdverb(command))
+            if (!Adverbs.existsAdverb(command))
             {
                 // bow unknownadverb
                 CommunicationService.getCommunicationService(aUser).writeMessage("Unknown adverb found.<BR>\r\n");

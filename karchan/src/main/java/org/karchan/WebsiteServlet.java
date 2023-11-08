@@ -211,6 +211,11 @@ public class WebsiteServlet extends HttpServlet
         LOGGER.log(Level.FINEST, "Url {0} starts with /chronicles/person.", url);
         foundMenu = Optional.of(menuFactory.createPersonMenu());
       }
+      if (url.startsWith("/help/command") && !url.startsWith("/help/commandreference"))
+      {
+        LOGGER.log(Level.FINEST, "Url {0} starts with /help/command.", url);
+        foundMenu = Optional.of(menuFactory.createCommandMenu());
+      }
     }
     List<Menu> breadcrumbs = new ArrayList<>();
     foundMenu.ifPresent(menu ->

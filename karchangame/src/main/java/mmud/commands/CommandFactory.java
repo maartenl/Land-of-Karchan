@@ -19,12 +19,11 @@ package mmud.commands;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Map;
 import java.util.TreeMap;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.logging.Logger;
 
-import mmud.Utils;
+import mmud.constants.Emotions;
 import mmud.commands.communication.*;
 import mmud.commands.guild.AcceptCommand;
 import mmud.commands.guild.ApplyCommand;
@@ -255,13 +254,13 @@ public class CommandFactory
             "guildmasterchange (\\w)+"));
     theCommandStructure.put("guild", () -> new MessageCommand("guild .+"));
 
-    for (Map.Entry<String, String> entry : Utils.getEmotions().entrySet())
+    for (String entry : Emotions.getEmotions())
     {
-      theCommandStructure.put(entry.getKey(), () -> new EmotionCommand(".+"));
+      theCommandStructure.put(entry, () -> new EmotionCommand(".+"));
     }
-    for (Map.Entry<String, String> entry : Utils.getTargetEmotions().entrySet())
+    for (String entry : Emotions.getTargetEmotions())
     {
-      theCommandStructure.put(entry.getKey(), () -> new EmotionToCommand(".+"));
+      theCommandStructure.put(entry, () -> new EmotionToCommand(".+"));
     }
   }
 
@@ -292,7 +291,7 @@ public class CommandFactory
     List<NormalCommand> result = new ArrayList<>(5);
     String[] strings = aCommand.split(" ");
     NormalCommand myCommand = null;
-    if (myCommand == null && strings.length >= 2)
+    if (strings.length >= 2)
     {
       final CommandCreator commandCreator = theCommandStructure.get(strings[0] + " " + strings[1]);
       myCommand = commandCreator == null ? null : commandCreator.createCommand();
@@ -416,13 +415,11 @@ public class CommandFactory
     @Override
     public boolean equals(Object o)
     {
-      if (!(o instanceof UserCommandInfo))
+      if (!(o instanceof UserCommandInfo myUC))
       {
         return false;
       }
-      UserCommandInfo myUC = (UserCommandInfo) o;
-      boolean p = myUC.getCommand().equals(getCommand());
-      return p;
+      return myUC.getCommand().equals(getCommand());
     }
 
     public int getTheCommandId()
@@ -451,7 +448,7 @@ public class CommandFactory
   /**
    * Returns if the map of user commands is empty.
    *
-   * @return
+   * @return true if usercommands is empty.
    */
   public static boolean noUserCommands()
   {

@@ -16,7 +16,10 @@
  */
 package mmud.database.entities.game;
 
+import java.io.Serial;
 import java.io.Serializable;
+import java.util.Arrays;
+import java.util.stream.Collectors;
 
 import jakarta.persistence.Basic;
 import jakarta.persistence.Column;
@@ -37,7 +40,7 @@ import mmud.database.OutputFormatter;
 @Table(name = "mm_help")
 @NamedQueries(
   {
-    @NamedQuery(name = "Help.findAll", query = "SELECT h FROM Help h"),
+    @NamedQuery(name = "Help.findAll", query = "SELECT h.command FROM Help h order by h.command"),
     @NamedQuery(name = "Help.findByCommand", query = "SELECT h FROM Help h WHERE h.command = :command"),
     @NamedQuery(name = "Help.findBySynopsis", query = "SELECT h FROM Help h WHERE h.synopsis = :synopsis"),
     @NamedQuery(name = "Help.findBySeealso", query = "SELECT h FROM Help h WHERE h.seealso = :seealso"),
@@ -53,6 +56,7 @@ import mmud.database.OutputFormatter;
 public class Help implements Serializable, DisplayInterface
 {
 
+  @Serial
   private static final long serialVersionUID = 1L;
   @Id
   @Basic(optional = false)
@@ -167,6 +171,34 @@ public class Help implements Serializable, DisplayInterface
   public void setSeealso(String seealso)
   {
     this.seealso = seealso;
+  }
+
+  @SuppressWarnings("unused")
+  public String getBodyForWebpage()
+  {
+    String result = " <dl><dt><b>NAME</b></dt>"
+        + "<dd><b>" + getCCommand() + "</b> - formatted output</dd><p/>"
+        + "<dt><b>SYNOPSIS</b></dt>" + "<dd>" + getCSynopsis() + "</dd><p/>"
+        + "<dt><b>DESCRIPTION</b></dt>" + "<dd>" + getCDescription() + "</dd><p/>"
+        + "<dt><b>EXAMPLES</b></dt><dd>";
+    result += getExample1Description();
+    result += getExample2Description();
+    result += "</dd><dt><b>SEE ALSO</b></dt><dd>" + getSeealsoForWebpage() + "<p/></dd></dl>";
+    return result;
+  }
+
+  /**
+   * For display purposes on the website.
+   * @return other commands, but linked.
+   */
+  public String getSeealsoForWebpage() {
+    if (seealso == null) {
+      return "";
+    }
+    return Arrays.stream(seealso.split(","))
+        .map(String::trim)
+        .map(y -> "<a href=\"/help/command.html?command=" + y + "\">" + y + "</a>")
+        .collect(Collectors.joining(", "));
   }
 
   /**
@@ -286,11 +318,10 @@ public class Help implements Serializable, DisplayInterface
   public boolean equals(Object object)
   {
     // Warning - this method won't work in the case the id fields are not set
-    if (!(object instanceof Help))
+    if (!(object instanceof Help other))
     {
       return false;
     }
-    Help other = (Help) object;
     if ((this.command == null && other.command != null) || (this.command != null && !this.command.equals(other.command)))
     {
       return false;
@@ -337,19 +368,19 @@ public class Help implements Serializable, DisplayInterface
       return "";
     }
     StringBuilder result = new StringBuilder();
-    if ((example2 != null) && !example2.trim().equals(""))
+    if (!example2.trim().isEmpty())
     {
       result.append("\"").append(example2).append("\"<p/>");
     }
-    if ((example2a != null) && !example2a.trim().equals(""))
+    if ((example2a != null) && !example2a.trim().isEmpty())
     {
       result.append("You: <tt>").append(example2a).append("</tt><br/>");
     }
-    if ((example2b != null) && !example2b.trim().equals(""))
+    if ((example2b != null) && !example2b.trim().isEmpty())
     {
       result.append("Marvin: <tt>").append(example2b).append("</tt><br/>");
     }
-    if ((example2c != null) && !example2c.trim().equals(""))
+    if ((example2c != null) && !example2c.trim().isEmpty())
     {
       result.append("Anybody: <tt>").append(example2c).append("</tt><p/>");
     }
@@ -363,15 +394,15 @@ public class Help implements Serializable, DisplayInterface
       return "";
     }
     StringBuilder result = new StringBuilder();
-    if ((example1 != null) && !example1.trim().equals(""))
+    if (!example1.trim().isEmpty())
     {
       result.append("\"").append(example1).append("\"<p/>");
     }
-    if ((example1a != null) && !example1a.trim().equals(""))
+    if ((example1a != null) && !example1a.trim().isEmpty())
     {
       result.append("You: <tt>").append(example1a).append("</tt><br/>");
     }
-    if ((example1b != null) && !example1b.trim().equals(""))
+    if ((example1b != null) && !example1b.trim().isEmpty())
     {
       result.append("Anybody: <tt>").append(example1b).append("</tt><p/>");
     }

@@ -73,6 +73,7 @@ public class ManpagesRestService // extends AbstractFacade<Area>
     })
   public String create(String json)
   {
+    LOGGER.finest("Entering create");
     AdminManpage adminManpage = AdminManpage.fromJson(json);
 
     final String name = sc.getUserPrincipal().getName();
@@ -187,7 +188,7 @@ public class ManpagesRestService // extends AbstractFacade<Area>
   public String findRange(@Context UriInfo info, @PathParam("offset") Integer offset,
                           @PathParam("pageSize") Integer pageSize)
   {
-    List<String> items = getEntityManager().createNativeQuery(AdminManpage.GET_QUERY)
+    List<String> items = getEntityManager().createNativeQuery(AdminManpage.GET_QUERY, String.class)
       .setMaxResults(pageSize)
       .setFirstResult(offset)
       .getResultList();

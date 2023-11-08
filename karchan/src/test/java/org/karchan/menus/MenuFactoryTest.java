@@ -16,10 +16,8 @@
  */
 package org.karchan.menus;
 
-import org.karchan.menus.Menu;
 import java.util.Optional;
 import static org.assertj.core.api.Assertions.assertThat;
-import org.karchan.menus.MenuFactory;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeClass;
@@ -83,23 +81,4 @@ public class MenuFactoryTest
     assertThat(findMenu).isNotPresent();
   }
 
-  @BeforeClass
-  public static void setUpClass() throws Exception
-  {
-  }
-
-  @AfterClass
-  public static void tearDownClass() throws Exception
-  {
-  }
-
-  @BeforeMethod
-  public void setUpMethod() throws Exception
-  {
-  }
-
-  @AfterMethod
-  public void tearDownMethod() throws Exception
-  {
-  }
 }

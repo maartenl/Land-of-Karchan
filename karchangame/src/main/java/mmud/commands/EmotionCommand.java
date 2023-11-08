@@ -16,7 +16,8 @@
  */
 package mmud.commands;
 
-import mmud.Utils;
+import mmud.constants.Adverbs;
+import mmud.constants.Emotions;
 import mmud.database.entities.characters.Person;
 import mmud.database.entities.characters.User;
 import mmud.database.entities.game.DisplayInterface;
@@ -24,6 +25,8 @@ import mmud.exceptions.MudException;
 import mmud.services.CommunicationService;
 import mmud.services.PersonCommunicationService;
 import mmud.services.RoomCommunicationService;
+
+import java.util.Optional;
 
 /**
  * Provides an emotional response. Acceptable format is:
@@ -47,22 +50,20 @@ public class EmotionCommand extends TargetCommand
     PersonCommunicationService communicationService = CommunicationService.getCommunicationService(aUser);
     PersonCommunicationService communicationServiceTarget = CommunicationService.getCommunicationService(aTarget);
     RoomCommunicationService communicationServiceRoom = CommunicationService.getCommunicationService(aUser.getRoom());
-    String[] plural =
-    {
-      verb.toLowerCase(), Utils.returnEmotion(verb.toLowerCase())
-    };
-    if (plural == null)
+    Optional<Emotions.Emotion> emotion = Emotions.returnEmotion(verb);
+    if (emotion.isEmpty())
     {
       return null;
     }
+    var plural = emotion.get();
     if (command != null)
     {
       // agree evilly to Karn
-      if (Utils.existsAdverb(command))
+      if (Adverbs.existsAdverb(command))
       {
-        communicationService.writeMessage("You " + plural[0] + " " + command.toLowerCase() + " to " + aTarget.getName() + ".<BR>\r\n");
-        communicationServiceTarget.writeMessage(aUser.getName() + " " + plural[1] + " " + command.toLowerCase() + " to you.<BR>\r\n");
-        communicationServiceRoom.sendMessageExcl(aUser, aTarget, aUser.getName() + " " + plural[1] + " " + command.toLowerCase() + " to " + aTarget.getName() + ".<BR>\r\n");
+        communicationService.writeMessage("You " + plural.i() + " " + command.toLowerCase() + " to " + aTarget.getName() + ".<BR>\r\n");
+        communicationServiceTarget.writeMessage(aUser.getName() + " " + plural.heshe() + " " + command.toLowerCase() + " to you.<BR>\r\n");
+        communicationServiceRoom.sendMessageExcl(aUser, aTarget, aUser.getName() + " " + plural.heshe() + " " + command.toLowerCase() + " to " + aTarget.getName() + ".<BR>\r\n");
       } else
       {
         communicationService.writeMessage("Unknown adverb found.<BR>\r\n");
@@ -70,9 +71,9 @@ public class EmotionCommand extends TargetCommand
       return aUser.getRoom();
     }
     // agree to Karn
-    communicationService.writeMessage("You " + plural[0] + " to " + aTarget.getName() + ".<BR>\r\n");
-    communicationServiceTarget.writeMessage(aUser.getName() + " " + plural[1] + " to you.<BR>\r\n");
-    communicationServiceRoom.sendMessageExcl(aUser, aTarget, aUser.getName() + " " + plural[1] + " to " + aTarget.getName() + ".<BR>\r\n");
+    communicationService.writeMessage("You " + plural.i() + " to " + aTarget.getName() + ".<BR>\r\n");
+    communicationServiceTarget.writeMessage(aUser.getName() + " " + plural.heshe() + " to you.<BR>\r\n");
+    communicationServiceRoom.sendMessageExcl(aUser, aTarget, aUser.getName() + " " + plural.heshe() + " to " + aTarget.getName() + ".<BR>\r\n");
     return aUser.getRoom();
   }
 
@@ -81,21 +82,19 @@ public class EmotionCommand extends TargetCommand
   {
     PersonCommunicationService communicationService = CommunicationService.getCommunicationService(aUser);
     RoomCommunicationService communicationServiceRoom = CommunicationService.getCommunicationService(aUser.getRoom());
-    String[] plural =
-    {
-      verb.toLowerCase(), Utils.returnEmotion(verb.toLowerCase())
-    };
-    if (plural == null)
+    Optional<Emotions.Emotion> emotion = Emotions.returnEmotion(verb);
+    if (emotion.isEmpty())
     {
       return null;
     }
+    var plural = emotion.get();
     if (command != null)
     {
       // agree evilly
-      if (Utils.existsAdverb(command))
+      if (Adverbs.existsAdverb(command))
       {
-        communicationService.writeMessage("You " + plural[0] + " " + command.toLowerCase() + ".<BR>\r\n");
-        communicationServiceRoom.sendMessageExcl(aUser, aUser.getName() + " " + plural[1] + " " + command.toLowerCase() + ".<BR>\r\n");
+        communicationService.writeMessage("You " + plural.i() + " " + command.toLowerCase() + ".<BR>\r\n");
+        communicationServiceRoom.sendMessageExcl(aUser, aUser.getName() + " " + plural.heshe() + " " + command.toLowerCase() + ".<BR>\r\n");
       } else
       {
         communicationService.writeMessage("Unknown adverb found.<BR>\r\n");
@@ -103,8 +102,8 @@ public class EmotionCommand extends TargetCommand
       return aUser.getRoom();
     }
     // agree
-    communicationService.writeMessage("You " + plural[0] + ".<BR>\r\n");
-    communicationServiceRoom.sendMessageExcl(aUser, aUser.getName() + " " + plural[1] + ".<BR>\r\n");
+    communicationService.writeMessage("You " + plural.i() + ".<BR>\r\n");
+    communicationServiceRoom.sendMessageExcl(aUser, aUser.getName() + " " + plural.heshe() + ".<BR>\r\n");
     return aUser.getRoom();
   }
 }

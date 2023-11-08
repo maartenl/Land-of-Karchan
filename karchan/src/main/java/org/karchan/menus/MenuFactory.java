@@ -18,11 +18,7 @@ package org.karchan.menus;
 
 import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -31,6 +27,7 @@ import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import jakarta.persistence.TypedQuery;
 import mmud.database.entities.characters.User;
+import mmud.database.entities.game.Help;
 import mmud.database.entities.web.Blog;
 import mmud.database.entities.web.CharacterInfo;
 import mmud.database.entities.web.Family;
@@ -81,13 +78,14 @@ public class MenuFactory
 
     Menu status = new StatusMenu("Status", "/help/status.html");
     Menu guide = new SimpleMenu("The Guide", "/help/guide.html");
+    Menu commandReference = new CommandReferenceMenu("Command reference", "/help/commandreference.html");
     Menu techSpecs = new SimpleMenu("Tech Specs", "/help/tech_specs.html");
     Menu source = new SimpleMenu("Source", "/help/source.html");
     Menu serverMetrics = new SimpleMenu("Server metrics", "/help/metrics.html");
     Menu security = new SimpleMenu("Security", "/help/security.html");
     Menu darkmode = new SimpleMenu("Darkmode", "/help/darkmode.html");
 
-    add(status, guide, techSpecs, serverMetrics, source, security, darkmode);
+    add(status, guide, commandReference, techSpecs, serverMetrics, source, security, darkmode);
 
     Menu faq = new FaqMenu("FAQ", "/help/faq.html");
     add(faq);
@@ -100,7 +98,7 @@ public class MenuFactory
     add(welcome, logon, introduction, newCharacter);
 
     Menu chronicles = new SimpleMenu("Chronicles", "/chronicles/index.html",
-      Arrays.asList(map, history, dash, people, fortunes, guilds));
+      List.of(map, history, dash, people, fortunes, guilds));
 
     add(chronicles);
 
@@ -110,7 +108,7 @@ public class MenuFactory
     add(who, theLaw);
 
     Menu help = new SimpleMenu("Help", "/help/index.html",
-      Arrays.asList(status, guide, techSpecs, serverMetrics, source, security, darkmode, faq));
+      List.of(status, guide, commandReference, techSpecs, serverMetrics, source, security, darkmode, faq));
 
     add(help);
 
@@ -119,7 +117,7 @@ public class MenuFactory
     add(links, wiki);
 
     rootMenu = new SimpleMenu("root", " root ",
-      Arrays.asList(welcome, logon, introduction, newCharacter, chronicles, who, theLaw, help, links, wiki));
+      List.of(welcome, logon, introduction, newCharacter, chronicles, who, theLaw, help, links, wiki));
     add(rootMenu);
 
     Menu blogs = new Menu("Blogs", "/blogs/index.html")
@@ -284,7 +282,11 @@ public class MenuFactory
       {
         LOGGER.finest("setDatamodel called for Person menu");
         parameters.forEach((key, value) -> LOGGER.finest(key + ":" + Arrays.toString(value)));
-        Optional<String> name = Arrays.stream(parameters.get("name")).findFirst();
+        String[] names = parameters.get("name");
+        if (names == null) {
+          return;
+        }
+        Optional<String> name = Arrays.stream(names).findFirst();
         if (name.isEmpty())
         {
           return;
@@ -304,6 +306,41 @@ public class MenuFactory
         root.put("person", person);
         root.put("family", family);
         root.put("characterInfo", characterInfo);
+      }
+    };
+  }
+
+  /**
+   * Creates the datamodel for the command explanation in the freemarker root.
+   *
+   * @return the appropriate menu
+   */
+  public Menu createCommandMenu()
+  {
+    return new Menu("Command", "help/command.html")
+    {
+      @Override
+      public void setDatamodel(EntityManager entityManager, Map<String, Object> root, Map<String, String[]> parameters)
+      {
+        LOGGER.finest("setDatamodel called for Command menu");
+        parameters.forEach((key, value) -> LOGGER.finest(key + ":" + Arrays.toString(value)));
+        String[] commands = parameters.get("command");
+        if (commands == null) {
+          return;
+        }
+        Optional<String> command = Arrays.stream(commands).findFirst().map(cmd -> cmd.toLowerCase(Locale.ROOT));
+        if (command.isEmpty())
+        {
+          return;
+        }
+
+        Help help = entityManager.find(Help.class, command.get());
+        if (help == null)
+        {
+          return;
+        }
+
+        root.put("command", help);
       }
     };
   }
