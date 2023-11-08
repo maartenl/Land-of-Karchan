@@ -7,8 +7,11 @@
           <input type="text" class="form-control" id="nameSearch" name="nameSearch" placeholder="Name"
                  formControlName="nameSearch"
                  #searchname>
-          <input type="text" class="form-control" id="dateSearch" name="dateSearch" placeholder="Date (yyyy-mm-dd)"
-                 formControlName="dateSearch"
+          <input type="text" class="form-control" id="fromSearch" name="fromSearch" placeholder="From date (yyyy-mm-dd)"
+                 formControlName="fromSearch"
+                 #searchcreation>
+          <input type="text" class="form-control" id="toSearch" name="toSearch" placeholder="To date (yyyy-mm-dd)"
+                 formControlName="toSearch"
                  #searchcreation>
         </fieldset>
         <button type="button" class="mx-1 btn btn-primary" (click)="search()">Search</button>

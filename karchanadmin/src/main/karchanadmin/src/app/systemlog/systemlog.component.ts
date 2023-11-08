@@ -4,6 +4,7 @@ import {FormBuilder, FormGroup} from '@angular/forms';
 import {Systemlog} from './systemlog.model';
 import {SystemlogService} from '../systemlog.service';
 import {ToastService} from '../toast.service';
+import {Logger} from "../consolelog.service";
 
 @Component({
   selector: 'app-systemlog',
@@ -24,7 +25,8 @@ export class SystemlogComponent implements OnInit {
     private toastService: ToastService) {
     const object = {
       nameSearch: null,
-      dateSearch: null,
+      fromSearch: null,
+      toSearch: null,
     };
     this.form = this.formBuilder.group(object);
   }
@@ -38,35 +40,32 @@ export class SystemlogComponent implements OnInit {
   }
 
   public search() {
-    if (window.console) {
-      console.log("search");
-    }
     const formModel = this.form.value;
     var name = formModel.nameSearch;
-    console.log(name);
-    var creationdate = formModel.dateSearch;
-    console.log(creationdate);
+    var fromdate = formModel.fromSearch;
+    var todate = formModel.toSearch;
+    Logger.log('search ' + name + ' ' + fromdate + ' ' + todate);
 
-    this.systemlogService.getLogs(name, creationdate).subscribe(
-      (result: Systemlog[]) => { // on success
-        if (result !== undefined && result.length !== 0) {
-          this.logs = result;
+    this.systemlogService.getLogs(name, fromdate, todate)
+      .subscribe({
+          next: (result: Systemlog[]) => {
+            if (result !== undefined) {
+              this.logs = result;
+            }
+            Logger.log('search done');
+            this.toastService.show('Logging messages successfully retrieved.', {
+              delay: 3000,
+              autohide: true,
+              headertext: 'Logging...'
+            });
+          },
+          error: (err: any) => {
+            Logger.logError('error in getLogs', err);
+          },
+          complete: () => { // on completion
+          }
         }
-        if (window.console) {
-          console.log("search done");
-        }
-        this.toastService.show('Logging messages successfully retrieved.', {
-          delay: 3000,
-          autohide: true,
-          headertext: 'Logging...'
-        });
-      },
-      (err: any) => { // error
-        // console.log('error', err);
-      },
-      () => { // on completion
-      }
-    );
+      );
   }
 
 }

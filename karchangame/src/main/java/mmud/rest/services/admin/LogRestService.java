@@ -47,24 +47,33 @@ public class LogRestService
    * @return most recent 100 log messages from the system log.
    */
   @GET
-  public String getLog(@QueryParam("name") String name, @QueryParam("creation") String creation)
+  public String getLog(@QueryParam("name") String name, @QueryParam("from") String from, @QueryParam("to") String to)
   {
-    if (creation != null && !creation.trim().equals("") && !creation.matches("[1-9]\\d\\d\\d-\\d\\d-\\d\\d"))
+    if (from != null && !from.trim().isEmpty() && !from.matches("[1-9]\\d\\d\\d-\\d\\d-\\d\\d"))
     {
-      throw new MudWebException(securityContext.getUserPrincipal().getName(), "Expected the search date to have the format yyyy-mm-dd, for example 2021-02-03", Response.Status.BAD_REQUEST);
+      throw new MudWebException(securityContext.getUserPrincipal().getName(), "Expected the from date to have the format yyyy-mm-dd, for example 2021-02-03", Response.Status.BAD_REQUEST);
     }
-    if (name != null && name.trim().equals(""))
+    if (to != null && !to.trim().isEmpty() && !to.matches("[1-9]\\d\\d\\d-\\d\\d-\\d\\d"))
+    {
+      throw new MudWebException(securityContext.getUserPrincipal().getName(), "Expected the to date to have the format yyyy-mm-dd, for example 2021-02-03", Response.Status.BAD_REQUEST);
+    }
+    if (name != null && name.trim().isEmpty())
     {
       name = null;
     }
-    if (creation != null && creation.trim().equals(""))
+    if (from != null && from.trim().isEmpty())
     {
-      creation = null;
+      from = null;
+    }
+    if (to != null && to.trim().isEmpty())
+    {
+      to = null;
     }
     String localname = name;
-    LocalDate datetime = creation == null ? null : LocalDate.parse(creation, DateTimeFormatter.ISO_LOCAL_DATE);
-    LOGGER.finest(() -> "getLog %s %s".formatted(localname, datetime));
-    List<Log> logs = logService.getLogs(localname, datetime);
+    LocalDate fromDatetime = from == null ? null : LocalDate.parse(from, DateTimeFormatter.ISO_LOCAL_DATE);
+    LocalDate toDatetime = to == null ? null : LocalDate.parse(to, DateTimeFormatter.ISO_LOCAL_DATE);
+    LOGGER.finest(() -> "getLog %s %s %s".formatted(localname, fromDatetime, toDatetime));
+    List<Log> logs = logService.getLogs(localname, fromDatetime, toDatetime);
     return "[" + logs.stream().map(log -> new AdminLog(log).toJson()).collect(Collectors.joining(",")) + "]";
   }
 }

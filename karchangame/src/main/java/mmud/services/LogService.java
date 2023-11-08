@@ -16,13 +16,6 @@
  */
 package mmud.services;
 
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.util.List;
-import java.util.logging.Logger;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import jakarta.persistence.TypedQuery;
@@ -31,6 +24,13 @@ import mmud.database.entities.characters.Person;
 import mmud.database.entities.game.Admin;
 import mmud.database.entities.game.Commandlog;
 import mmud.database.entities.game.Log;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.List;
+import java.util.logging.Logger;
 
 /**
  * @author maartenl
@@ -86,19 +86,30 @@ public class LogService
   }
 
   /**
-   * @param name     the name of the player
-   * @param creation all 1000 messages after this creation datetime.
+   * @param name the name of the player
+   * @param from all 1000 messages after and including this date.
+   * @param to   all 1000 messages up to and including this date.
    * @return list of logs
    */
   @Nonnull
-  public List<Log> getLogs(@Nullable String name, @Nullable LocalDate creation)
+  public List<Log> getLogs(@Nullable String name, @Nullable LocalDate from, @Nullable LocalDate to)
   {
     LOGGER.finest("getLogs");
-    LocalDateTime localDateTime = creation == null ? LocalDate.now().atTime(23, 59, 0) : creation.atStartOfDay();
-    TypedQuery<Log> namedQuery = getEntityManager().createNamedQuery("Log.find", Log.class)
-      .setParameter("name", name)
-      .setParameter("creation", localDateTime)
-      .setMaxResults(1000);
+    LocalDateTime fromDatetime = from == null ? null : from.atStartOfDay();
+    LocalDateTime toDatetime = (to == null ? LocalDate.now() : to).atTime(23, 59, 0);
+    TypedQuery<Log> namedQuery;
+    if (fromDatetime == null)
+    {
+      namedQuery = getEntityManager().createNamedQuery("Log.find", Log.class);
+    } else
+    {
+      namedQuery = getEntityManager().createNamedQuery("Log.findInBetween", Log.class)
+          .setParameter("from", fromDatetime);
+    }
+    namedQuery
+        .setParameter("name", name)
+        .setParameter("to", toDatetime)
+        .setMaxResults(1000);
     return namedQuery.getResultList();
   }
 
@@ -236,7 +247,8 @@ public class LogService
   public void writeLogException(Person person, Throwable throwable)
   {
     LOGGER.finer("writeLogException");
-    createLogWithPerson(person, throwable.toString(), org.apache.commons.lang3.exception.ExceptionUtils.getStackTrace(throwable));
+    createLogWithPerson(person, throwable.toString(),
+        org.apache.commons.lang3.exception.ExceptionUtils.getStackTrace(throwable));
   }
 
   /**
@@ -249,7 +261,8 @@ public class LogService
   public void writeLogException(Person person, String message, Throwable throwable)
   {
     LOGGER.finer("writeLogException");
-    createLogWithPerson(person, message, throwable.toString() + ":" + org.apache.commons.lang3.exception.ExceptionUtils.getStackTrace(throwable));
+    createLogWithPerson(person, message,
+        throwable.toString() + ":" + org.apache.commons.lang3.exception.ExceptionUtils.getStackTrace(throwable));
   }
 
   /**
@@ -261,7 +274,8 @@ public class LogService
   public void writeLogException(String message, Throwable throwable)
   {
     LOGGER.finer("writeLogException");
-    createLogWithString(null, message, throwable.toString() + ":" + org.apache.commons.lang3.exception.ExceptionUtils.getStackTrace(throwable));
+    createLogWithString(null, message,
+        throwable.toString() + ":" + org.apache.commons.lang3.exception.ExceptionUtils.getStackTrace(throwable));
   }
 
   /**
@@ -273,7 +287,8 @@ public class LogService
   public void writeLogException(Throwable throwable)
   {
     LOGGER.finer("writeLogException");
-    createLogWithString(null, throwable.toString(), org.apache.commons.lang3.exception.ExceptionUtils.getStackTrace(throwable));
+    createLogWithString(null, throwable.toString(),
+        org.apache.commons.lang3.exception.ExceptionUtils.getStackTrace(throwable));
   }
 
   /**

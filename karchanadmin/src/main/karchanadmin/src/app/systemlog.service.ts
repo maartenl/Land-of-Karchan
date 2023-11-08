@@ -19,16 +19,20 @@ export class SystemlogService {
     this.url = environment.SYSTEMLOG_URL;
   }
 
-  public getLogs(name: string | null, creation: string | null): Observable<any> {
+  public getLogs(name: string | null, fromDate: string | null, toDate: string | null): Observable<any> {
     var url = this.url;
+    var params: string[] = [];
     if (name !== null) {
-      if (creation !== null) {
-        url = url + '?name=' + name + '&creation=' + creation;
-      } else {
-        url = url + '?name=' + name;
-      }
-    } else if (creation !== null) {
-      url = url + '?creation=' + creation;
+      params.push('name=' + name);
+    }
+    if (fromDate !== null) {
+      params.push('from=' + fromDate);
+    }
+    if (toDate !== null) {
+      params.push('to=' + toDate);
+    }
+    if (params.length > 0) {
+      url = url + "?" + params.join("&");
     }
     return this.http.get<Systemlog[]>(url)
       .pipe(

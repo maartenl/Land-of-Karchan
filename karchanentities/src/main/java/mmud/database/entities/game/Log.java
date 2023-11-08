@@ -45,7 +45,8 @@ import jakarta.validation.constraints.Size;
   {
     @NamedQuery(name = "Log.findAll", query = "SELECT l FROM Log l"),
     @NamedQuery(name = "Log.findByName", query = "SELECT l FROM Log l WHERE l.name = :name"),
-    @NamedQuery(name = "Log.find", query = "SELECT l FROM Log l WHERE coalesce(:name, l.name) = l.name and :creation >= l.creation order by l.creation desc"),
+    @NamedQuery(name = "Log.find", query = "SELECT l FROM Log l WHERE coalesce(:name, l.name) = l.name and :to >= l.creation order by l.creation desc"),
+    @NamedQuery(name = "Log.findInBetween", query = "SELECT l FROM Log l WHERE coalesce(:name, l.name) = l.name and :to >= l.creation and :from <= l.creation order by l.creation desc"),
   })
 public class Log implements Serializable
 {
