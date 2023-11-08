@@ -16,12 +16,11 @@
  */
 package mmud.commands;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.TreeMap;
+import java.util.*;
 import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.function.BiConsumer;
 import java.util.logging.Logger;
+import java.util.regex.PatternSyntaxException;
 
 import mmud.constants.Emotions;
 import mmud.commands.communication.*;
@@ -269,6 +268,10 @@ public class CommandFactory
     return BOGUS.createCommand();
   }
 
+  public static NormalCommand getAdminCommand() {
+    return theCommandStructure.get("admin").createCommand();
+  }
+
   /**
    * Returns the commands to be used, based on the first word in the command
    * entered by the user.
@@ -322,18 +325,27 @@ public class CommandFactory
    * @param aCommand the string containing the command issued by the user
    * @return a list of possibly valid user defined commands.
    */
-  public static List<UserCommandInfo> getUserCommands(User user, String aCommand)
+  public static List<UserCommandInfo> getUserCommands(User user, String aCommand, BiConsumer<String, Throwable> errorConsumer)
   {
     LOGGER.entering("CommandFactory", "getUserCommands " + user + " " + aCommand);
     List<UserCommandInfo> result = new ArrayList<>();
     for (UserCommandInfo myCom : theUserCommandStructure)
     {
-      if (aCommand.matches(myCom.getCommand()))
+      try
       {
-        if (myCom.getRoom() == null || myCom.getRoom().equals(user.getRoom().getId()))
+        if (aCommand.matches(myCom.getCommand()))
         {
-          result.add(myCom);
+          if (myCom.getRoom() == null || myCom.getRoom().equals(user.getRoom().getId()))
+          {
+            result.add(myCom);
+          }
         }
+      } catch (PatternSyntaxException e) {
+        String msg = "PatternSyntaxException executing user command " + aCommand + " for user " + user.getName();
+        LOGGER.severe(msg);
+        LOGGER.throwing("CommandFactory", "getUserCommands", e);
+        errorConsumer.accept(msg, e);
+        theUserCommandStructure.remove(myCom);
       }
     }
     return Collections.unmodifiableList(result);

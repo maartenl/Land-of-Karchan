@@ -18,6 +18,7 @@ package mmud.commands;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -108,6 +109,9 @@ public class CommandRunner
       {
         return determineJackassing(aCommand, aUser);
       }
+      if (aCommand.toLowerCase(Locale.ROOT).startsWith("admin ")) {
+        return determineAdminCommand(aCommand, aUser);
+      }
       List<NormalCommand> myCol = new ArrayList<>();
       Persons persons = new Persons(personService);
       Rooms rooms = new Rooms(id -> roomsService.find(id));
@@ -178,6 +182,13 @@ public class CommandRunner
     {
       command = CommandFactory.HEEHAW.createCommand();
     }
+    command.setCallback(this);
+    return command.start(aCommand, aUser);
+  }
+
+  private DisplayInterface determineAdminCommand(String aCommand, User aUser)
+  {
+    NormalCommand command = CommandFactory.getAdminCommand();
     command.setCallback(this);
     return command.start(aCommand, aUser);
   }

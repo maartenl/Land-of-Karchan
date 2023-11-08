@@ -16,6 +16,8 @@
  */
 package mmud.exceptions;
 
+import java.util.regex.PatternSyntaxException;
+
 /**
  * A checked exception indicating that a value did not match the regular 
  * expression.
@@ -28,5 +30,9 @@ public class RegularExpressionException extends MudException
   {
     super(arg0);
   }
-  
+
+  public RegularExpressionException(String message, PatternSyntaxException e)
+  {
+    super(message, e);
+  }
 }

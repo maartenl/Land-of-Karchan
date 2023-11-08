@@ -49,7 +49,6 @@ public class LogRestService
   @GET
   public String getLog(@QueryParam("name") String name, @QueryParam("creation") String creation)
   {
-    LOGGER.finest("getLog");
     if (creation != null && !creation.trim().equals("") && !creation.matches("[1-9]\\d\\d\\d-\\d\\d-\\d\\d"))
     {
       throw new MudWebException(securityContext.getUserPrincipal().getName(), "Expected the search date to have the format yyyy-mm-dd, for example 2021-02-03", Response.Status.BAD_REQUEST);
@@ -62,8 +61,10 @@ public class LogRestService
     {
       creation = null;
     }
+    String localname = name;
     LocalDate datetime = creation == null ? null : LocalDate.parse(creation, DateTimeFormatter.ISO_LOCAL_DATE);
-    List<Log> logs = logService.getLogs(name, datetime);
+    LOGGER.finest(() -> "getLog %s %s".formatted(localname, datetime));
+    List<Log> logs = logService.getLogs(localname, datetime);
     return "[" + logs.stream().map(log -> new AdminLog(log).toJson()).collect(Collectors.joining(",")) + "]";
   }
 }

@@ -70,12 +70,14 @@ public class AdminCommandTest extends MudTest
   public void runAdminCommandAsUser()
   {
     AdminCommand adminCommand = new AdminCommand("admin .+");
+    commandRunner.setServices(null, logService, null, null, null, null, null, null);
     adminCommand.setCallback(commandRunner);
     assertThat(adminCommand.getRegExpr()).isEqualTo("admin .+");
     DisplayInterface display = adminCommand.run("admin visible false", marvin);
     assertThat(display).isNotNull();
     String log = CommunicationService.getCommunicationService(marvin).getLog(0L).log;
     assertThat(log).isEqualTo("You are not an administrator.<br />\r\n");
+    assertThat(logService.getLog()).isEqualTo("Marvin: tried admin commands, but is not an administrator.\n");
   }
 
   @Test

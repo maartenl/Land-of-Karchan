@@ -50,6 +50,7 @@ public class AdminCommand extends NormalCommand
     if (aUser.getGod() != God.GOD)
     {
       communicationService.writeMessage("You are not an administrator.<br/>\r\n");
+      getLogService().writeLog(aUser, " tried admin commands, but is not an administrator.");
       return aUser.getRoom();
 
     }

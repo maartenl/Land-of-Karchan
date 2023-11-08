@@ -21,12 +21,24 @@ import jakarta.annotation.security.DeclareRoles;
 import jakarta.annotation.security.PermitAll;
 import jakarta.annotation.security.RolesAllowed;
 import jakarta.inject.Inject;
-import jakarta.persistence.*;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
+import jakarta.persistence.PersistenceException;
+import jakarta.persistence.Query;
+import jakarta.persistence.TypedQuery;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.transaction.Transactional;
 import jakarta.validation.ConstraintViolationException;
-import jakarta.ws.rs.*;
+import jakarta.ws.rs.DELETE;
+import jakarta.ws.rs.GET;
+import jakarta.ws.rs.POST;
+import jakarta.ws.rs.PUT;
+import jakarta.ws.rs.Path;
+import jakarta.ws.rs.PathParam;
+import jakarta.ws.rs.Produces;
+import jakarta.ws.rs.QueryParam;
+import jakarta.ws.rs.WebApplicationException;
 import jakarta.ws.rs.core.Context;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
@@ -39,7 +51,13 @@ import mmud.commands.CommandRunner;
 import mmud.database.InputSanitizer;
 import mmud.database.entities.characters.Person;
 import mmud.database.entities.characters.User;
-import mmud.database.entities.game.*;
+import mmud.database.entities.game.Board;
+import mmud.database.entities.game.BoardMessage;
+import mmud.database.entities.game.DisplayInterface;
+import mmud.database.entities.game.Macro;
+import mmud.database.entities.game.MacroPK;
+import mmud.database.entities.game.Room;
+import mmud.database.entities.game.UserCommand;
 import mmud.database.enums.Sex;
 import mmud.exceptions.ExceptionUtils;
 import mmud.exceptions.MudException;
@@ -47,14 +65,22 @@ import mmud.exceptions.MudWebException;
 import mmud.rest.webentities.PrivateDisplay;
 import mmud.rest.webentities.PrivateLog;
 import mmud.rest.webentities.PrivatePerson;
-import mmud.services.*;
+import mmud.services.BoardService;
+import mmud.services.CommunicationService;
+import mmud.services.IdleUsersService;
+import mmud.services.LogService;
+import mmud.services.MailService;
+import mmud.services.PersonCommunicationService;
+import mmud.services.PlayerAuthenticationService;
 import org.apache.commons.lang3.StringUtils;
 
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.Locale;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -285,13 +311,8 @@ public class GameRestService
     query = em.createNamedQuery("BannedName.find");
     query.setParameter("name", name);
     query.setMaxResults(1);
-    if (!query.getResultList().isEmpty())
-    {
-      // banned name found!
-      return true;
-    }
-
-    return false;
+    // banned name found!
+    return !query.getResultList().isEmpty();
   }
 
   /**
@@ -446,7 +467,7 @@ public class GameRestService
             Response.Status.BAD_REQUEST);
       }
     }
-    if ((address == null) || ("".equals(address.trim())))
+    if ((address == null) || (address.trim().isEmpty()))
     {
       throw new MudWebException(name,
           "User has no address.",
@@ -671,7 +692,7 @@ public class GameRestService
           pk.setName(person.getName());
           macro = em.find(Macro.class, pk);
         }
-        if (macro == null || macro.getContents() == null || macro.getContents().trim().equals(""))
+        if (macro == null || macro.getContents() == null || macro.getContents().trim().isEmpty())
         {
           // no macro found, execute single command
           display = gameMain(person, command);
@@ -695,18 +716,18 @@ public class GameRestService
           });
       //ignore
       throw e;
-    } catch (Throwable e)
+    } catch (Exception e)
     {
       Throwable f = e;
       while (f.getCause() != null)
       {
-        if (f.getCause() instanceof WebApplicationException)
+        if (f.getCause() instanceof WebApplicationException webApplicationException)
         {
-          throw (WebApplicationException) f.getCause();
+          throw webApplicationException;
         }
         f = f.getCause();
       }
-      String message = (e.getMessage() == null || e.getMessage().trim().equals(""))
+      String message = (e.getMessage() == null || e.getMessage().trim().isEmpty())
           ? "An error occurred. Please notify Karn or one of the deps."
           : e.getMessage();
       //ignore
@@ -753,6 +774,14 @@ public class GameRestService
     LOGGER.log(Level.FINER, "gameMain");
     command = command.replace("&#39;", "'");
     logService.writeCommandLog(person, command);
+    if (command.toLowerCase(Locale.ROOT).startsWith("admin "))
+    {
+      DisplayInterface display = commandRunner.runCommand(person, command, Collections.emptyList());
+      if (display != null)
+      {
+        return createPrivateDisplay(display);
+      }
+    }
     if (CommandFactory.noUserCommands())
     {
       // get all user commands
@@ -766,7 +795,8 @@ public class GameRestService
                 userCommand.getRoom().getId()));
       }
     }
-    List<UserCommandInfo> userCommands = CommandFactory.getUserCommands(person, command);
+    List<UserCommandInfo> userCommands = CommandFactory.getUserCommands(person, command,
+        (message, exception) -> logService.writeLogException(person, message, exception));
     List<UserCommand> userCommands2 = new ArrayList<>();
     if (!userCommands.isEmpty())
     {
@@ -784,7 +814,7 @@ public class GameRestService
     {
       return createPrivateDisplayFromRoom(person);
     }
-    return createPrivateDisplay(display, person);
+    return createPrivateDisplay(display);
   }
 
   /**
@@ -865,7 +895,7 @@ public class GameRestService
     return Response.ok().build();
   }
 
-  private PrivateDisplay createPrivateDisplay(DisplayInterface display, User player) throws MudException
+  private PrivateDisplay createPrivateDisplay(DisplayInterface display) throws MudException
   {
     PrivateDisplay result = new PrivateDisplay();
     result.body = display.getBody();
@@ -876,7 +906,7 @@ public class GameRestService
 
   private PrivateDisplay createPrivateDisplayFromRoom(User player) throws MudException
   {
-    PrivateDisplay result = createPrivateDisplay(player.getRoom(), player);
+    PrivateDisplay result = createPrivateDisplay(player.getRoom());
     if (player.getRoom().getWest() != null)
     {
       result.west = true;
