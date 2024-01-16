@@ -110,7 +110,7 @@ class WebsocketChatlogService implements ChatlogServiceInterface {
     const message = new Message();
     message.content = "internalping";
     message.from = this.username;
-    message.type = "internalping";
+    message.type = "INTERNALPING";
     chatLogService.send(message);
     chatLogService.timeout = window.setTimeout(function () {
       /// ---did not receive pong in 5 seconds! ///
@@ -140,22 +140,22 @@ class WebsocketChatlogService implements ChatlogServiceInterface {
       this.timeout = null;
       this.setInterval();
     }
-    if (data.type === "chat") {
+    if (data.type === "CHAT") {
       this.messages.push(data);
     }
-    if (data.type === "info") {
+    if (data.type === "INFO") {
       this.toastService.show(data.content, {
         delay: 5000,
         autohide: true
       });
     }
-    if (data.type === "pong") {
+    if (data.type === "PONG") {
       this.toastService.show("Pong!", {
         delay: 5000,
         autohide: true
       });
     }
-    if (data.type === "internalpong") {
+    if (data.type === "INTERNALPONG") {
       Logger.log((this.counter++) + ": received internal pong");
     }
   }
