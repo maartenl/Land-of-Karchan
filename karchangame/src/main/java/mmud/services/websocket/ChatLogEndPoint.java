@@ -16,6 +16,7 @@ import jakarta.websocket.OnOpen;
 import jakarta.websocket.Session;
 import jakarta.websocket.server.ServerEndpoint;
 import mmud.rest.webentities.Message;
+import mmud.rest.webentities.MessageType;
 
 /**
  * The websocket defined for real time chat communication among players that are playing the game.
@@ -48,7 +49,7 @@ public class ChatLogEndPoint
     Message message = new Message();
     message.from = username;
     message.content = username + " has entered the game.";
-    message.type = "info";
+    message.type = MessageType.CHAT;
     broadcast(message);
   }
 
@@ -59,14 +60,14 @@ public class ChatLogEndPoint
     message.from = users.get(session.getId());
     if ("ping".equals(message.type))
     {
-      send(message.from, new Message(message.from, "pong", "pong"));
+      send(message.from, new Message(message.from, "pong", MessageType.PONG));
       return;
     }
     if ("internalping".equals(message.type))
     {
       if (internalpong)
       {
-        send(message.from, new Message(message.from, "internalpong", "internalpong"));
+        send(message.from, new Message(message.from, "internalpong", MessageType.INTERNALPONG));
       }
       return;
     }

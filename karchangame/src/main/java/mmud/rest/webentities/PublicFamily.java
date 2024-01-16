@@ -25,5 +25,4 @@ public class PublicFamily
 
     public String toname;
     public String description;
-    boolean has_char_sheet = true;
 }

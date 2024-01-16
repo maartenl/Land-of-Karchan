@@ -8,7 +8,7 @@ public class Message
   public String from;
   public String to;
   public String content;
-  public String type;
+  public MessageType type;
 
   /**
    * A default chat message.
@@ -19,7 +19,7 @@ public class Message
    */
   public Message(String to, String content, long fileLength)
   {
-    this(null, to, content, "chat", fileLength);
+    this(null, to, content, MessageType.CHAT, fileLength);
   }
 
   public String toJson()
@@ -39,7 +39,7 @@ public class Message
   {
   }
 
-  private Message(String from, String to, String content, String type, Long fileLength)
+  private Message(String from, String to, String content, MessageType type, Long fileLength)
   {
     this.from = from;
     this.to = to;
@@ -57,7 +57,7 @@ public class Message
    * @param content content of the message
    * @param type    message type, info or pong or internalpong
    */
-  public Message(String from, String content, String type)
+  public Message(String from, String content, MessageType type)
   {
     this(from, null, content, type, null);
   }
