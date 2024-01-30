@@ -30,8 +30,10 @@ import mmud.Constants;
 import mmud.database.InputSanitizer;
 import mmud.database.OutputFormatter;
 import mmud.database.entities.characters.Person;
+import mmud.database.entities.characters.User;
 import mmud.exceptions.MudException;
 import mmud.rest.webentities.Message;
+import mmud.rest.webentities.MessageType;
 import mmud.rest.webentities.PrivateLog;
 import mmud.services.websocket.ChatLogEndPoint;
 
@@ -90,7 +92,7 @@ public class PersonCommunicationService implements CommunicationService
    * <p>
    * <b>Important!</b> : Use this method only for Environmental communication or
    * personal communication , as it does not check the Ignore Flag. Use the
-   * writeMessage(Person aSource, String aMessage) for specific communication
+   * {@link #writeMessage(Person, String)}  for specific communication
    * between users.</p>
    *
    * @param aMessage the message to be written to the logfile.
@@ -401,5 +403,29 @@ public class PersonCommunicationService implements CommunicationService
   public String getDescriptionOfMoney()
   {
     return OutputFormatter.getDescriptionOfMoney(person.getCopper());
+  }
+
+  public void sendChatBubble(User person, Person from, String aMessage)
+  {
+    if (aMessage == null)
+    {
+      return;
+    }
+    if (messageConsumer != null)
+    {
+      return;
+    }
+    if (person.getWebsocketSupport())
+    {
+      aMessage = InputSanitizer.security(aMessage);
+      try
+      {
+        ChatLogEndPoint.send(person.getName(), new Message(from.getName(), aMessage, MessageType.CHATBUBBLE));
+      } catch (IOException | EncodeException e)
+      {
+        throw new MudException("error sending message", e);
+      }
+    }
+
   }
 }

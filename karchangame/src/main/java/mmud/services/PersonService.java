@@ -164,6 +164,11 @@ public class PersonService implements PersonsInterface
     getActivePlayers().forEach(p -> CommunicationService.getCommunicationService(p).writeMessage(message));
   }
 
+  public void sendChatBubble(Person from, String message)
+  {
+    getActivePlayers().forEach(to -> CommunicationService.getCommunicationService(to).sendChatBubble(to, from, message));
+  }
+
   public void sendWall(String message, Predicate<User> predicate)
   {
     getActivePlayers().stream().filter(predicate).forEach(p -> CommunicationService.getCommunicationService(p).writeMessage(message));

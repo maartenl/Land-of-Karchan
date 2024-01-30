@@ -21,7 +21,7 @@ public class IdleUsersService
    */
   private static final long MAX_IDLE_TIME = 60;
 
-  private Map<String, LocalDateTime> idleusers = new ConcurrentHashMap<>();
+  private final Map<String, LocalDateTime> idleusers = new ConcurrentHashMap<>();
 
   public void resetUser(String name)
   {
@@ -32,7 +32,6 @@ public class IdleUsersService
   {
     return idleusers.remove(name);
   }
-
 
   /**
    * Retrieves the idle time in minutes, i,e. between the last entered command
@@ -50,22 +49,6 @@ public class IdleUsersService
     }
     LocalDateTime now = LocalDateTime.now();
     return Duration.between(date, now).toMinutes();
-  }
-
-  /**
-   * Check to see if the User was inactive for more than an hour.
-   *
-   * @return true if the User was inactive (i.e. has not entered a command) for
-   * more than an hour. Wil return false if user is not playing.
-   */
-  public boolean isIdleTooLong(String name)
-  {
-    LocalDateTime localDateTime = idleusers.get(name);
-    if (localDateTime == null)
-    {
-      return false;
-    }
-    return this.getIdleTime(name) != null && this.getIdleTime(name) > MAX_IDLE_TIME;
   }
 
   /**

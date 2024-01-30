@@ -60,6 +60,7 @@ public abstract class CommunicationCommand extends TargetCommand
         CommunicationService.getCommunicationService(aTarget).writeMessage(aUser, aTarget, "<B>%SNAME "
                 + getCommType().getPlural() + " [to %TNAME]</B> : "
                 + message + "<BR>\r\n");
+        getPersonService().sendChatBubble(aUser, message);
         return aUser.getRoom();
     }
 
@@ -76,6 +77,7 @@ public abstract class CommunicationCommand extends TargetCommand
                 + "<BR>\r\n");
         CommunicationService.getCommunicationService(aUser).writeMessage(aUser, "<B>%SNAME " + getCommType().toString()
                 + "</B> : " + command + "<BR>\r\n");
+        getPersonService().sendChatBubble(aUser, command);
         return aUser.getRoom();
     }
 }
