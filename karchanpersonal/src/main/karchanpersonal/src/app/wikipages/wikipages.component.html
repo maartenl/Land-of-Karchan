@@ -69,6 +69,7 @@
                 </fieldset>
                 <div class="col-xs-12 text-right">
                     <button type="submit" [disabled]="form.pristine" class="btn btn-primary">Save</button>
+                    <button type="button" *ngIf="isDeputy()" (click)="delete()" class="btn btn-primary">Delete</button>
                     <button type="reset" [disabled]="form.pristine" class="btn btn-primary"
                         (click)="cancel()">Cancel</button>
                 </div>

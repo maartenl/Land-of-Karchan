@@ -1,11 +1,11 @@
-import { Component, OnInit } from '@angular/core';
-import { Router, ActivatedRoute, ParamMap } from '@angular/router';
-import { switchMap } from 'rxjs/operators';
-import { PlayerService } from '../player.service';
-import { Wikipage } from './wikipage.model';
+import {Component, OnInit} from '@angular/core';
+import {ActivatedRoute, Router} from '@angular/router';
+import {PlayerService} from '../player.service';
+import {Wikipage} from './wikipage.model';
 // import { Observable } from 'rxjs';
-import { FormGroup, FormBuilder } from '@angular/forms';
-import { environment } from 'src/environments/environment';
+import {FormBuilder, FormGroup} from '@angular/forms';
+import {environment} from 'src/environments/environment';
+import {ToastService} from "../toast.service";
 
 @Component({
   selector: 'app-wikipages',
@@ -29,7 +29,8 @@ export class WikipagesComponent implements OnInit {
     private playerService: PlayerService,
     private route: ActivatedRoute,
     private formBuilder: FormBuilder,
-    private router: Router) {
+    private router: Router,
+    private toastService: ToastService) {
     this.wikipage = this.createEmptyWikipage();
     this.isNew = true;
     this.form = this.formBuilder.group({
@@ -117,11 +118,25 @@ export class WikipagesComponent implements OnInit {
     const newWikipage = this.prepareSaveWikipage();
     if (this.isNew) {
       this.playerService.createWikipage(newWikipage).subscribe({
-        complete: () => this.setWikipage(newWikipage.title)
+        complete: () => {
+          this.setWikipage(newWikipage.title);
+          this.toastService.show('Wikipage created.', {
+            delay: 3000,
+            autohide: true,
+            headertext: 'Success...'
+          });
+        }
       });
     } else {
       this.playerService.updateWikipage(newWikipage).subscribe({
-        complete: () => this.setWikipage(newWikipage.title)
+        complete: () => {
+          this.setWikipage(newWikipage.title)
+          this.toastService.show('Wikipage updated.', {
+            delay: 3000,
+            autohide: true,
+            headertext: 'Success...'
+          });
+        }
       });
     }
   }
@@ -167,6 +182,17 @@ export class WikipagesComponent implements OnInit {
     this.wikipage = this.createEmptyWikipage();
     this.isNew = true;
     this.createForms();
+  }
+
+  delete() {
+    const newWikipage = this.prepareSaveWikipage();
+    this.playerService.deleteWikipage(newWikipage.title).subscribe({
+      complete: () => this.toastService.show('Wikipage deleted.', {
+        delay: 3000,
+        autohide: true,
+        headertext: 'Success...'
+      })
+    });
   }
 
   isDeputy(): boolean {

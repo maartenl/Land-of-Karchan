@@ -25,10 +25,11 @@ import jakarta.annotation.security.RolesAllowed;
 import jakarta.inject.Inject;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
-import jakarta.persistence.Query;
+import jakarta.persistence.TypedQuery;
 import jakarta.security.enterprise.SecurityContext;
 import jakarta.transaction.Transactional;
 import jakarta.ws.rs.Consumes;
+import jakarta.ws.rs.DELETE;
 import jakarta.ws.rs.GET;
 import jakarta.ws.rs.POST;
 import jakarta.ws.rs.PUT;
@@ -42,6 +43,7 @@ import jakarta.ws.rs.core.Response;
 import mmud.JsonUtils;
 import mmud.database.RegularExpressions;
 import mmud.database.entities.characters.User;
+import mmud.database.entities.game.Admin;
 import mmud.database.entities.web.Wikipage;
 import mmud.database.entities.web.WikipageHistory;
 import mmud.exceptions.MudWebException;
@@ -122,7 +124,7 @@ public class WikipageRestService
       String namedQuery = securityContext.isCallerInRole(Roles.DEPUTY)
         ? "Wikipage.findByTitleAuthorized"
         : "Wikipage.findByTitle";
-      Query query = getEntityManager().createNamedQuery(namedQuery);
+      TypedQuery<Wikipage> query = getEntityManager().createNamedQuery(namedQuery, Wikipage.class);
       query.setParameter("title", title);
 
       List<Wikipage> list = query.getResultList();
@@ -160,7 +162,7 @@ public class WikipageRestService
   public Response createWikipage(String json)
   {
     PrivateWikipage newWikipage = PrivateWikipage.fromJson(json);
-    var queryCheckExistence = getEntityManager().createNamedQuery("Wikipage.checkExistenceOfWikipage");
+    var queryCheckExistence = getEntityManager().createNamedQuery("Wikipage.checkExistenceOfWikipage", Wikipage.class);
     queryCheckExistence.setParameter("title", newWikipage.title);
 
     List<Wikipage> list = queryCheckExistence.getResultList();
@@ -178,9 +180,9 @@ public class WikipageRestService
 
     Wikipage parent = null;
 
-    if (newWikipage.parentTitle != null && !"".equals(newWikipage.parentTitle.trim()))
+    if (newWikipage.parentTitle != null && !newWikipage.parentTitle.trim().isEmpty())
     {
-      Query query = getEntityManager().createNamedQuery("Wikipage.findByTitleAuthorized");
+      var query = getEntityManager().createNamedQuery("Wikipage.findByTitleAuthorized", Wikipage.class);
       query.setParameter("title", newWikipage.parentTitle);
 
       List<Wikipage> parents = query.getResultList();
@@ -246,7 +248,7 @@ public class WikipageRestService
       String namedQuery = securityContext.isCallerInRole(Roles.DEPUTY)
         ? "Wikipage.findByTitleAuthorized"
         : "Wikipage.findByTitle";
-      Query queryCheckExistence = getEntityManager().createNamedQuery(namedQuery);
+      var queryCheckExistence = getEntityManager().createNamedQuery(namedQuery, Wikipage.class);
       queryCheckExistence.setParameter("title", title);
 
       List<Wikipage> list = queryCheckExistence.getResultList();
@@ -264,9 +266,9 @@ public class WikipageRestService
 
       Wikipage parent = null;
 
-      if (privateWikipage.parentTitle != null && !"".equals(privateWikipage.parentTitle.trim()))
+      if (privateWikipage.parentTitle != null && !privateWikipage.parentTitle.trim().isEmpty())
       {
-        Query query = getEntityManager().createNamedQuery("Wikipage.findByTitleAuthorized");
+        var query = getEntityManager().createNamedQuery("Wikipage.findByTitleAuthorized", Wikipage.class);
         query.setParameter("title", privateWikipage.parentTitle);
 
         List<Wikipage> parents = query.getResultList();
@@ -319,5 +321,63 @@ public class WikipageRestService
       throw new MudWebException(name, e, Response.Status.BAD_REQUEST);
     }
     return Response.ok().build();
+  }
+
+
+  /**
+   * Deletes a wikipage.
+   *
+   * @param title the (unique) title of the wikpage to delete.
+   * @return Response.ok if everything is okay.
+   * @throws WebApplicationException UNAUTHORIZED, if the authorisation failed. This is only available to deps.
+   *                                 BAD_REQUEST if an unexpected exception crops up.
+   */
+  @DELETE
+  @Path("{title}")
+  public Response deleteWikipage(@PathParam("title") String title)
+  {
+    LOGGER.entering("WikipageRestService", "deleteWikipage");
+    String name = securityContext.getCallerPrincipal().getName();
+    if (!securityContext.isCallerInRole(Roles.DEPUTY)) {
+      throw new MudWebException(null, "You are not a deputy.", Response.Status.UNAUTHORIZED);
+    }
+    try
+    {
+      TypedQuery<Wikipage> query = getEntityManager().createNamedQuery("Wikipage.findByTitleAuthorized", Wikipage.class);
+      query.setParameter("title", title);
+
+      Wikipage wikipage = query.getSingleResult();
+
+      if (wikipage == null)
+      {
+        throw new MudWebException(null, "Wikipage was not found.", Response.Status.NOT_FOUND);
+      }
+      if (!wikipage.getChildren().isEmpty())
+      {
+        throw new MudWebException(null, "Wikipage has children.", Response.Status.NOT_ACCEPTABLE);
+      }
+
+      WikipageHistory historie = new WikipageHistory(wikipage);
+      getEntityManager().persist(historie);
+      Admin admin = getAdmin(name);
+      logService.writeDeputyLog(admin, "Wikipage with title " + wikipage.getTitle() + " removed.");
+
+      getEntityManager().remove(wikipage);
+
+    } catch (MudWebException e)
+    {
+      //ignore and rethrow
+      throw e;
+    } catch (Exception e)
+    {
+      // anything else, throw a BAD REQUEST
+      throw new MudWebException(name, e, Response.Status.BAD_REQUEST);
+    }
+    return Response.ok().build();
+  }
+
+  private Admin getAdmin(String name)
+  {
+    return getEntityManager().find(Admin.class, name);
   }
 }

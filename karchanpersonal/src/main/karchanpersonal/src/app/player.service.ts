@@ -525,4 +525,13 @@ export class PlayerService {
     this.errorsService.addHttpError(error, ignore);
   }
 
+  public deleteWikipage(title: string) : Observable<any> {
+    return this.http.delete(this.getWikipagesUrl(title))
+      .pipe(
+        catchError(err => {
+          this.handleError(err);
+          return [];
+        })
+      );
+  }
 }
