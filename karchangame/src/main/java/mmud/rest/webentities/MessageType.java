@@ -11,6 +11,11 @@ public enum MessageType
    */
   PONG,
   /**
+   * The internal ping-pong for checking of the connection. We're expecting a {@link #INTERNALPONG}, if we sent
+   * this message.
+   */
+  INTERNALPING,
+  /**
    * The internal ping-pong for checking of the connection.
    */
   INTERNALPONG,
