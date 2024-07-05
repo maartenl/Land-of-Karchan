@@ -3,6 +3,7 @@ import { FormControl, FormGroup, FormBuilder } from '@angular/forms';
 
 import { Template } from './template.model';
 import { TemplateService } from '../template.service';
+import {ToastService} from "../toast.service";
 
 @Component({
   selector: 'app-templates',
@@ -18,6 +19,7 @@ export class TemplatesComponent implements OnInit {
   templateForm: FormGroup;
 
   constructor(private templateService: TemplateService,
+              private toastService: ToastService,
     private formBuilder: FormBuilder) {
     this.templateForm = this.formBuilder.group({
       name: '',
@@ -92,6 +94,11 @@ export class TemplatesComponent implements OnInit {
     this.templateService.updateTemplate(template).subscribe(
       (result: any) => { // on success
         this.templates[index] = template;
+        this.toastService.show('Template successfully updated.', {
+          delay: 3000,
+          autohide: true,
+          headertext: 'Updated...'
+        });
       },
       (err: any) => { // error
         // console.log('error', err);
