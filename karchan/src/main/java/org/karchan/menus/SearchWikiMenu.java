@@ -31,7 +31,6 @@ public class SearchWikiMenu extends Menu
       return;
     }
     String searchparams = String.join("", parameters.get(SEARCHPARAMETERS));
-    LOGGER.info(searchparams);
 
     boolean isDeputy = root.get("isDeputy").equals(Boolean.TRUE);
 
