@@ -1,7 +1,7 @@
 package org.karchan.menus;
 
 import jakarta.persistence.EntityManager;
-import jakarta.persistence.Query;
+import jakarta.persistence.TypedQuery;
 import mmud.database.entities.web.Wikipage;
 
 import java.util.Collections;
@@ -14,6 +14,7 @@ public class SearchWikiMenu extends Menu
   private static final Logger LOGGER = Logger.getLogger(SearchWikiMenu.class.getName());
 
   private static final int MAX_SEARCH_RESULTS = 50;
+  public static final String SEARCHPARAMETERS = "searchparams";
 
   public SearchWikiMenu(String name, String url)
   {
@@ -24,25 +25,24 @@ public class SearchWikiMenu extends Menu
   public void setDatamodel(EntityManager entityManager, Map<String, Object> root, Map<String, String[]> parameters)
   {
     LOGGER.entering("SearchWikiMenu", "setDatamodel");
-    if (!parameters.containsKey("searchparams"))
+    if (!parameters.containsKey(SEARCHPARAMETERS))
     {
       root.put("foundWikipages", Collections.emptyList());
       return;
     }
-    String searchparams = String.join("", parameters.get("searchparams"));
+    String searchparams = String.join("", parameters.get(SEARCHPARAMETERS));
     LOGGER.info(searchparams);
 
     boolean isDeputy = root.get("isDeputy").equals(Boolean.TRUE);
 
     String sql = isDeputy ?
-        "SELECT * FROM wikipages WHERE MATCH(content) AGAINST (?1 IN BOOLEAN MODE)" :
-        "SELECT * FROM wikipages WHERE MATCH(content) AGAINST (?1 IN BOOLEAN MODE) and administration = false";
-    Query searchResults = entityManager.createNativeQuery(sql, Wikipage.class);
+        "Wikipage.searchWikipagesAsDeputy" :
+        "Wikipage.searchWikipages";
+    TypedQuery<Wikipage> searchResults = entityManager.createNamedQuery(sql, Wikipage.class);
     searchResults.setMaxResults(MAX_SEARCH_RESULTS);
     searchResults.setParameter(1, searchparams);
-    @SuppressWarnings("unchecked")
-    List<Wikipage> foundWikipages = (List<Wikipage>) searchResults.getResultList();
+    List<Wikipage> foundWikipages = searchResults.getResultList();
     root.put("foundWikipages", foundWikipages);
-    root.put("searchparams", searchparams);
+    root.put(SEARCHPARAMETERS, searchparams);
   }
 }

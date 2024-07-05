@@ -16,12 +16,6 @@
  */
 package mmud.database.entities.web;
 
-import java.io.Serializable;
-import java.math.BigDecimal;
-import java.time.LocalDateTime;
-import java.util.List;
-import java.util.logging.Logger;
-
 import jakarta.persistence.Basic;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -30,7 +24,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.Lob;
 import jakarta.persistence.ManyToOne;
-import jakarta.persistence.NamedQueries;
+import jakarta.persistence.NamedNativeQuery;
 import jakarta.persistence.NamedQuery;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.OrderBy;
@@ -41,26 +35,38 @@ import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 import mmud.database.RegularExpressions;
 
+import java.io.Serializable;
+import java.math.BigDecimal;
+import java.time.LocalDateTime;
+import java.util.List;
+
 /**
- *
  * @author maartenl
  */
 @Entity
 @Table(name = "wikipages")
-@NamedQueries(
-        {
-          @NamedQuery(name = "Wikipage.findByTitle", query = "SELECT w FROM Wikipage w WHERE w.title = :title and w.administration = false"),
-          @NamedQuery(name = "Wikipage.findByTitleAuthorized", query = "SELECT w FROM Wikipage w WHERE w.title = :title"),
-          @NamedQuery(name = "Wikipage.checkExistenceOfWikipage", query = "SELECT w FROM Wikipage w WHERE w.title = :title"),
-          @NamedQuery(name = "Wikipage.findFrontpage", query = "SELECT w FROM Wikipage w WHERE w.title = 'FrontPage' and w.administration = false"),
-          @NamedQuery(name = "Wikipage.findRecentEdits", query = "SELECT w FROM Wikipage w WHERE w.administration = false order by w.modifiedDate desc")
-        })
+@NamedQuery(name = "Wikipage.findByTitle", query = "SELECT w FROM Wikipage w WHERE w.title = :title and w" +
+    ".administration = false")
+@NamedQuery(name = "Wikipage.findByTitleAuthorized", query = "SELECT w FROM Wikipage w WHERE w.title = :title")
+@NamedQuery(name = "Wikipage.checkExistenceOfWikipage", query = "SELECT w FROM Wikipage w WHERE w.title = :title")
+@NamedQuery(name = "Wikipage.findFrontpage", query = "SELECT w FROM Wikipage w WHERE w.title = 'FrontPage' and w" +
+    ".administration = false")
+@NamedQuery(name = "Wikipage.findRecentEdits", query = "SELECT w FROM Wikipage w WHERE w.administration = false order" +
+    " by w.modifiedDate desc")
+@NamedNativeQuery(
+    name = "Wikipage.searchWikipagesAsDeputy",
+    query = "SELECT * FROM wikipages WHERE MATCH(content) AGAINST (?1 IN BOOLEAN MODE)",
+    resultClass = Wikipage.class
+)
+@NamedNativeQuery(
+    name = "Wikipage.searchWikipages",
+    query = "SELECT * FROM wikipages WHERE MATCH(content) AGAINST (?1 IN BOOLEAN MODE) and administration = false",
+    resultClass = Wikipage.class
+)
 public class Wikipage implements Serializable
 {
 
   private static final long serialVersionUID = 1L;
-
-  private final static Logger LOGGER = Logger.getLogger(Wikipage.class.getName());
 
   @Id
   @Basic(optional = false)
@@ -137,7 +143,8 @@ public class Wikipage implements Serializable
     this.title = title;
   }
 
-  public Wikipage(String title, String name, LocalDateTime createDate, LocalDateTime modifiedDate, String version, String content)
+  public Wikipage(String title, String name, LocalDateTime createDate, LocalDateTime modifiedDate, String version,
+                  String content)
   {
     this.title = title;
     this.name = name;
@@ -289,11 +296,7 @@ public class Wikipage implements Serializable
       return false;
     }
     Wikipage other = (Wikipage) object;
-    if ((this.title == null && other.title != null) || (this.title != null && !this.title.equals(other.title)))
-    {
-      return false;
-    }
-    return true;
+    return (this.title != null || other.title == null) && (this.title == null || this.title.equals(other.title));
   }
 
   @Override
