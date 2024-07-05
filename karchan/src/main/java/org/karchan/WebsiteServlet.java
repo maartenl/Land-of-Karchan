@@ -146,9 +146,7 @@ public class WebsiteServlet extends HttpServlet
 
     response.setContentType("text/html;charset=UTF-8");
 
-
     Cookies cookies = new Cookies(request, response);
-
 
     // Actual logic goes here.
 

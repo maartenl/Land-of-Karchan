@@ -113,7 +113,11 @@ public class MenuFactory
     add(help);
 
     Menu links = new SimpleMenu("Links", "/links.html");
-    Menu wiki = new WikiMenu("Wiki", "/wiki/index.html");
+    WikiMenu frontWiki = new WikiMenu("Main page", "/wiki/index.html");
+    SearchWikiMenu searchWiki = new SearchWikiMenu("Search", "/wiki/search.html");
+    add(frontWiki, searchWiki);
+    Menu wiki =  new SimpleMenu("Wiki", " /wiki/menu.html",
+        List.of(frontWiki, searchWiki));
     add(links, wiki);
 
     rootMenu = new SimpleMenu("root", " root ",
