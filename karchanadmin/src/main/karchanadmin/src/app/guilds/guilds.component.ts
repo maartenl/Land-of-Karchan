@@ -5,7 +5,7 @@ import { AdminComponent } from '../admin/admin.component';
 import { ToastService } from '../toast.service';
 import { AdminRestService } from '../admin/admin-rest.service';
 import { GuildsRestService } from '../guilds-rest.service';
-import { Guild } from './guild.model';
+import {Guild, Guildmember} from './guild.model';
 
 @Component({
   selector: 'app-guilds',
@@ -14,6 +14,8 @@ import { Guild } from './guild.model';
 })
 export class GuildsComponent extends AdminComponent<Guild, string> implements OnInit {
   form: FormGroup;
+
+  guildmembers: Guildmember[] = [] = new Array<Guildmember>(0);
 
   constructor(
     private guildsRestService: GuildsRestService,
@@ -104,6 +106,11 @@ export class GuildsComponent extends AdminComponent<Guild, string> implements On
     this.guildsRestService.get(id).subscribe({
       next: (data) => {
         if (data !== undefined) { this.setGuild(data); }
+      }
+    });
+    this.guildsRestService.getGuildmembers(id).subscribe({
+      next: (data) => {
+        if (data !== undefined) { this.guildmembers = data; }
       }
     });
     return false;

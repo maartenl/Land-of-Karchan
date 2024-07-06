@@ -50,6 +50,21 @@
                     <button type="reset" class="mx-1 btn btn-secondary" (click)="cancel()">Cancel</button>
                 </div>
             </form>
+            <h2>Guildmembers</h2>
+            <table class="table table-sm table-hover">
+                <thead>
+                <tr>
+                    <th scope="col">Name</th>
+                    <th scope="col">Guildrank</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr *ngFor="let guildmember of guildmembers">
+                    <td><a [routerLink]="['/characters', guildmember.name]">{{ guildmember.name }}</a></td>
+                    <td>{{ guildmember.guildrank }}</td>
+                </tr>
+                </tbody>
+            </table>
         </div>
         <div class="col-xs-12 col-xl-6">
             <button type="button" class="mx-1 btn btn-secondary" (click)="refresh()">Refresh</button>

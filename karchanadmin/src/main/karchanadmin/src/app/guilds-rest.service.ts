@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Guild } from './guilds/guild.model';
+import {Guild, Guildmember} from './guilds/guild.model';
 import { Observable } from 'rxjs';
 import { catchError, publishReplay, refCount, map } from 'rxjs/operators';
 import { HttpClient } from '@angular/common/http';
@@ -90,6 +90,24 @@ export class GuildsRestService implements AdminRestService<Guild, string> {
     // new
     return this.http.post(this.url, guild)
       .pipe(
+        catchError(err => {
+          this.handleError(err);
+          return [];
+        })
+      );
+  }
+
+
+  getGuildmembers(guild: string): Observable<Guildmember[]> {
+    return this.http.get<Guildmember[]>(this.url + "/" + guild + "/guildmembers")
+      .pipe(
+        map(items => {
+          const newItems = new Array<Guildmember>();
+          items.forEach(item => newItems.push(new Guildmember(item)));
+          return newItems;
+        }),
+        publishReplay(1),
+        refCount(),
         catchError(err => {
           this.handleError(err);
           return [];
