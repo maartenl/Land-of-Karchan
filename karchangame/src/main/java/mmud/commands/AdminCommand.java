@@ -17,7 +17,10 @@
 package mmud.commands;
 
 import mmud.database.entities.characters.Administrator;
+import mmud.database.entities.characters.Person;
 import mmud.database.entities.characters.User;
+import mmud.database.entities.game.Chatline;
+import mmud.database.entities.game.Chatlineusers;
 import mmud.database.entities.game.DisplayInterface;
 import mmud.database.enums.God;
 import mmud.exceptions.MudException;
@@ -30,12 +33,24 @@ import mmud.services.PersonService;
 import java.util.stream.Collectors;
 
 /**
- * Shows the current date in the game: "date".
+ * Admin commands are commands executed by users that have god set to 1.
  *
  * @author maartenl
+ * @see God#GOD
  */
 public class AdminCommand extends NormalCommand
 {
+
+  public static final String ADMIN_RESET_COMMANDS = "admin reset commands";
+  public static final String ADMIN_WALL = "admin wall";
+  public static final String ADMIN_RUNEVENT = "admin runevent";
+  public static final String ADMIN_VISIBLE = "admin visible";
+  public static final String ADMIN_CHATLINE = "admin chatline ";
+  public static final String ADMIN_CHATLINES = "admin chatlines";
+  public static final String ADMIN_FROG = "admin frog";
+  public static final String ADMIN_JACKASS = "admin jackass";
+  public static final String ADMIN_KICK = "admin kick";
+  public static final String ADMIN_HELP = "admin help";
 
   public AdminCommand(String aRegExpr)
   {
@@ -55,12 +70,12 @@ public class AdminCommand extends NormalCommand
 
     }
     Administrator administrator = (Administrator) aUser;
-    if (command.equalsIgnoreCase("admin reset commands"))
+    if (command.equalsIgnoreCase(ADMIN_RESET_COMMANDS))
     {
       CommandFactory.clearUserCommandStructure();
       communicationService.writeMessage("User commands have been reloaded from database.<br/>\r\n");
     }
-    if (command.toLowerCase().startsWith("admin wall"))
+    if (command.toLowerCase().startsWith(ADMIN_WALL))
     {
       PersonService personService = getPersonService();
       final String message = command.substring(11);
@@ -68,13 +83,13 @@ public class AdminCommand extends NormalCommand
       getLogService().writeLog(administrator, "admin command 'wall' executed.", message);
       communicationService.writeMessage("Wall message sent.<br/>\r\n");
     }
-    if (command.toLowerCase().startsWith("admin runevent"))
+    if (command.toLowerCase().startsWith(ADMIN_RUNEVENT))
     {
       EventsService eventsService = getEventsService();
       eventsService.runSingleEvent(administrator, Integer.valueOf(command.substring(15)));
       communicationService.writeMessage("Event run attempted.<br/>\r\n");
     }
-    if (command.toLowerCase().startsWith("admin visible"))
+    if (command.toLowerCase().startsWith(ADMIN_VISIBLE))
     {
       if (command.equalsIgnoreCase("admin visible off"))
       {
@@ -89,7 +104,13 @@ public class AdminCommand extends NormalCommand
         getLogService().writeLog(aUser, " turned visible.");
       }
     }
-    if (command.toLowerCase().startsWith("admin chatlines"))
+    if (command.toLowerCase().startsWith(ADMIN_CHATLINE))
+    {
+      final String chatline = command.substring(ADMIN_CHATLINE.length());
+      getChatService().getChatline(chatline).ifPresent(chatline1 -> writeUsersOfChatline(chatline1,
+          communicationService));
+    }
+    if (command.toLowerCase().startsWith(ADMIN_CHATLINES))
     {
       String table =
           "<table><tr><th>id</th><th>name</th><th>attribute</th><th>colour</th><th>last used</th><th>owner</th></tr>" +
@@ -101,12 +122,12 @@ public class AdminCommand extends NormalCommand
                           "</td><td>" + chat.getColour() +
                           "</td><td>" + chat.getLastchattime() +
                           "</td><td>" + (chat.getOwner() != null ? chat.getOwner().getName() : null) +
-                      "</td></tr>")
+                          "</td></tr>")
                   .collect(Collectors.joining()) +
               "</table><br/>\r\n";
       communicationService.writeMessage(table);
     }
-    if (command.toLowerCase().startsWith("admin frog"))
+    if (command.toLowerCase().startsWith(ADMIN_FROG))
     {
       PersonService personService = getPersonService();
       String[] commands = command.split(" ");
@@ -136,7 +157,7 @@ public class AdminCommand extends NormalCommand
           "changed into a frog!<br/>\r\n");
       getLogService().writeLog(person, " was changed into a frog by " + aUser.getName() + " for " + amount + ".");
     }
-    if (command.toLowerCase().startsWith("admin jackass"))
+    if (command.toLowerCase().startsWith(ADMIN_JACKASS))
     {
       PersonService personService = getPersonService();
       String[] commands = command.split(" ");
@@ -166,7 +187,7 @@ public class AdminCommand extends NormalCommand
           "changed into a jackass!<br/>\r\n");
       getLogService().writeLog(person, " was changed into a jackass by " + aUser.getName() + " for " + amount + ".");
     }
-    if (command.toLowerCase().startsWith("admin kick"))
+    if (command.toLowerCase().startsWith(ADMIN_KICK))
     {
       PersonService personService = getPersonService();
       String[] commands = command.split(" ");
@@ -200,11 +221,12 @@ public class AdminCommand extends NormalCommand
       getLogService().writeLog(person,
           " has been kicked out of the game by " + aUser.getName() + " for " + minutes + " minutes.");
     }
-    if (command.equalsIgnoreCase("admin help"))
+    if (command.equalsIgnoreCase(ADMIN_HELP))
     {
       communicationService.writeMessage("Possible commands are:<ul>"
           + "<li>admin help - this help text</li>"
           + "<li>admin wall &lt;message&gt; - pages all users with the message entered</li>"
+          + "<li>admin chatline &lt;chatline&gt; - shows all users on a chatline</li>"
           + "<li>admin chatlines - shows all available chatlines, with info</li>"
           + "<li>admin kick &lt;playername&gt; [&lt;minutes&gt;] - kicks a user off the game. When the minutes are " +
           "provided,"
@@ -220,6 +242,22 @@ public class AdminCommand extends NormalCommand
           + "</ul>\r\n");
     }
     return aUser.getRoom();
+  }
+
+  private void writeUsersOfChatline(Chatline chatline, PersonCommunicationService communicationService)
+  {
+    String table =
+        "<table><tr><th>Names</th></tr>" +
+            chatline.getUsers().stream()
+                .map(Chatlineusers::getUser)
+                .map(Person::getName)
+                .sorted()
+                .map(username ->
+                    "<tr><td>" + username +
+                        "</td></tr>")
+                .collect(Collectors.joining()) +
+            "</table><br/>\r\n";
+    communicationService.writeMessage(table);
   }
 
 }
