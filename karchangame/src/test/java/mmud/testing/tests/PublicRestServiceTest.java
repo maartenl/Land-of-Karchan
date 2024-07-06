@@ -363,6 +363,7 @@ public class PublicRestServiceTest
     message.setMessage("First post!");
     message.setPosttime(firstDate);
     message.setRemoved(Boolean.FALSE);
+    message.setPinned(Boolean.FALSE);
     list.add(message);
     message = new BoardMessage();
     message.setId(2L);
@@ -370,6 +371,7 @@ public class PublicRestServiceTest
     message.setMessage("Damn!");
     message.setPosttime(secondDate);
     message.setRemoved(Boolean.FALSE);
+    message.setPinned(Boolean.FALSE);
     list.add(message);
     Query query = mock(Query.class);
     EntityManager entityManager = mock(EntityManager.class);

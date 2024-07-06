@@ -46,8 +46,8 @@ import mmud.database.entities.characters.User;
           @NamedQuery(name = "BoardMessage.findAll", query = "SELECT b FROM BoardMessage b"),
           @NamedQuery(name = "BoardMessage.findByName", query = "SELECT b FROM BoardMessage b WHERE b.user = :person"),
           @NamedQuery(name = "BoardMessage.deleteByName", query = "DELETE FROM BoardMessage b WHERE b.user = :person"),
-          @NamedQuery(name = "BoardMessage.news", query = "SELECT b FROM BoardMessage b WHERE b.board.name = 'logonmessage' and b.posttime > :lastSunday order by b.id desc"),
-          @NamedQuery(name = "BoardMessage.recent", query = "SELECT b FROM BoardMessage b WHERE b.board = :board order by b.id desc")
+          @NamedQuery(name = "BoardMessage.news", query = "SELECT b FROM BoardMessage b WHERE b.board.name = 'logonmessage' and b.posttime > :lastSunday order by b.pinned, b.id desc"),
+          @NamedQuery(name = "BoardMessage.recent", query = "SELECT b FROM BoardMessage b WHERE b.board = :board order by b.pinned desc, b.id desc")
         })
 public class BoardMessage implements Serializable
 {
@@ -76,6 +76,8 @@ public class BoardMessage implements Serializable
   private String message;
   @Column(name = "removed")
   private Boolean removed;
+  @Column(name = "pinned")
+  private Boolean pinned;
 
   public BoardMessage()
   {
@@ -120,6 +122,20 @@ public class BoardMessage implements Serializable
   public void setRemoved(Boolean removed)
   {
     this.removed = removed;
+  }
+
+  /**
+   * Indicates if a message of a board is pinned or not.
+   */
+  public Boolean getPinned()
+  {
+    return pinned;
+  }
+
+  public BoardMessage setPinned(Boolean pinned)
+  {
+    this.pinned = pinned;
+    return this;
   }
 
   public Board getBoard()

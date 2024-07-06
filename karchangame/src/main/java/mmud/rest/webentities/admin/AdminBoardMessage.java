@@ -31,6 +31,7 @@ public class AdminBoardMessage
   public LocalDateTime posttime;
   public String message;
   public Boolean removed;
+  public Boolean pinned;
 
   public AdminBoardMessage()
   {
@@ -45,6 +46,7 @@ public class AdminBoardMessage
     this.posttime = item.getPosttime();
     this.message = item.getMessage();
     this.removed = item.getRemoved();
+    this.pinned = item.getPinned();
   }
 
   public String toJson()

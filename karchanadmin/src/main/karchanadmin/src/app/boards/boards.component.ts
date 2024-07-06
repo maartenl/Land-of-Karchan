@@ -128,10 +128,27 @@ export class BoardsComponent extends AdminComponent<Board, number> implements On
       next: (data) => {
         message.removed = !message.removed;
         this.boardmessages = [...this.boardmessages];
-        this.getToastService().show(message.getType() + ' ' + message.getIdentifier() + ' successfully updated.', {
+        this.getToastService().show(message.getType() + ' ' + message.getIdentifier() + ' successfully removed.', {
           delay: 3000,
           autohide: true,
-          headertext: 'Updated...'
+          headertext: 'Removed...'
+        });
+      }
+    });
+    return false;
+  }
+
+  pinMessage(message: BoardMessage) {
+    const newmessage = new BoardMessage(message);
+    newmessage.pinned = !newmessage.pinned;
+    this.boardsRestService.updateMessage(newmessage).subscribe({
+      next: (data) => {
+        message.pinned = !message.pinned;
+        this.boardmessages = [...this.boardmessages];
+        this.getToastService().show(message.getType() + ' ' + message.getIdentifier() + ' successfully pinned.', {
+          delay: 3000,
+          autohide: true,
+          headertext: 'Pinned...'
         });
       }
     });

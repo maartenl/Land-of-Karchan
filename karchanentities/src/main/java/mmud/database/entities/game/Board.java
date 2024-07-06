@@ -16,13 +16,6 @@
  */
 package mmud.database.entities.game;
 
-import java.io.Serializable;
-import java.time.LocalDateTime;
-import java.util.Comparator;
-import java.util.Set;
-import java.util.TreeSet;
-import java.util.logging.Logger;
-
 import jakarta.persistence.Basic;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
@@ -39,11 +32,20 @@ import jakarta.persistence.OrderBy;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
+import mmud.database.entities.DateTimeUtilities;
 import mmud.database.entities.Ownage;
 import mmud.database.entities.characters.User;
 import mmud.exceptions.BoardException;
 import mmud.exceptions.MudException;
 import org.eclipse.persistence.annotations.Customizer;
+
+import java.io.Serial;
+import java.io.Serializable;
+import java.time.LocalDateTime;
+import java.util.Comparator;
+import java.util.Set;
+import java.util.TreeSet;
+import java.util.logging.Logger;
 
 /**
  * @author maartenl
@@ -51,17 +53,18 @@ import org.eclipse.persistence.annotations.Customizer;
 @Entity
 @Table(name = "mm_boards")
 @NamedQueries(
-  {
-    @NamedQuery(name = "Board.findAll", query = "SELECT b FROM Board b"),
-    @NamedQuery(name = "Board.findById", query = "SELECT b FROM Board b WHERE b.id = :id"),
-    @NamedQuery(name = "Board.findByName", query = "SELECT b FROM Board b WHERE b.name = :name"),
-    @NamedQuery(name = "Board.findByCreation", query = "SELECT b FROM Board b WHERE b.creation = :creation"),
-    @NamedQuery(name = "Board.countAll", query = "SELECT count(b) FROM Board b"),
-  })
+    {
+        @NamedQuery(name = "Board.findAll", query = "SELECT b FROM Board b"),
+        @NamedQuery(name = "Board.findById", query = "SELECT b FROM Board b WHERE b.id = :id"),
+        @NamedQuery(name = "Board.findByName", query = "SELECT b FROM Board b WHERE b.name = :name"),
+        @NamedQuery(name = "Board.findByCreation", query = "SELECT b FROM Board b WHERE b.creation = :creation"),
+        @NamedQuery(name = "Board.countAll", query = "SELECT count(b) FROM Board b"),
+    })
 @Customizer(MessagesFilterForBoard.class)
 public class Board implements Serializable, DisplayInterface, Ownage
 {
 
+  @Serial
   private static final long serialVersionUID = 1L;
 
   private static final long ONE_WEEK = 1000l * 60l * 60l * 24l * 7l;
@@ -232,6 +235,7 @@ public class Board implements Serializable, DisplayInterface, Ownage
     boardMessage.setPerson(aUser);
     boardMessage.setPosttime(LocalDateTime.now());
     boardMessage.setRemoved(false);
+    boardMessage.setPinned(false);
     return messages.add(boardMessage);
   }
 
@@ -255,20 +259,17 @@ public class Board implements Serializable, DisplayInterface, Ownage
   {
     StringBuilder builder = new StringBuilder(getDescription());
     builder.append("<hr/>");
-    final Set<BoardMessage> sortedMessages = new TreeSet<>(new Comparator<BoardMessage>()
-    {
-
-      @Override
-      public int compare(BoardMessage arg0, BoardMessage arg1)
-      {
-        return arg0.getPosttime().compareTo(arg1.getPosttime());
-      }
-    });
+    final Set<BoardMessage> sortedMessages =
+        new TreeSet<>(Comparator.comparing(BoardMessage::getPinned).reversed().thenComparing(BoardMessage::getPosttime));
     sortedMessages.addAll(messages);
     for (BoardMessage message : sortedMessages)
     {
-      builder.append(message.getPosttime());
+      builder.append(DateTimeUtilities.getFullDatetime(message.getPosttime()));
       builder.append("<p>");
+      if (Boolean.TRUE.equals(message.getPinned()))
+      {
+        builder.append("<span class=\"chat-red\">*</span>");
+      }
       builder.append(message.getMessage());
       builder.append("</p><i>");
       if (message.getPerson() == null)

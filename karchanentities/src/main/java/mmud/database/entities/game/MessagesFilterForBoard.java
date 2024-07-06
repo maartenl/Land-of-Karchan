@@ -27,7 +27,7 @@ import org.eclipse.persistence.mappings.OneToManyMapping;
 
 /**
  * This class is customizing the collection of Messages on a Board to only
- * contain messages of the last week.
+ * contain messages of the last week with pinned on top.
  *
  * @author maartenl
  */
@@ -44,11 +44,10 @@ public class MessagesFilterForBoard implements DescriptorCustomizer
             .getReferenceClass());
     Expression fkExp = eb.getField("mm_boardmessages.boardid").equal(eb.getParameter("mm_boards.id"));
     Expression activeExp = eb.get("removed").equal(0);
-//    TemporalField fieldUS = WeekFields.of(Locale.US).dayOfWeek();
-//    LocalDate lastSunday = LocalDate.now().with(fieldUS, 1);
 
     Expression recent = eb.get("posttime").greaterThan(DateTimeUtilities.getLastSunday(LocalDateTime.now()));
-    mapping.setSelectionCriteria(fkExp.and(activeExp).and(recent));
+    Expression pinned = eb.get("pinned").equal(true);
+    mapping.setSelectionCriteria(fkExp.and(activeExp).and(recent.or(pinned)));
   }
 
 }

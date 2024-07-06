@@ -62,6 +62,7 @@
                         <th scope="col">Name</th>
                         <th scope="col">Posttime</th>
                         <th scope="col">Removed</th>
+                        <th scope="col">Pinned</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -72,6 +73,10 @@
                         <td>
                             <input type="checkbox" class="form-check-input" id="removed"
                                 (click)="removeMessage(boardmessage)" [checked]="boardmessage?.removed">
+                        </td>
+                        <td>
+                            <input type="checkbox" class="form-check-input" id="pinned"
+                                   (click)="pinMessage(boardmessage)" [checked]="boardmessage?.pinned">
                         </td>
                     </tr>
                 </tbody>
