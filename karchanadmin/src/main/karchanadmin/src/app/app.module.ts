@@ -2,7 +2,7 @@ import {BrowserModule} from '@angular/platform-browser';
 import {NgModule} from '@angular/core';
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 import {CookieService} from 'ngx-cookie-service';
-import {HTTP_INTERCEPTORS, HttpClientModule} from '@angular/common/http';
+import { HTTP_INTERCEPTORS, provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 
 import {NgbModule} from '@ng-bootstrap/ng-bootstrap';
 
@@ -40,48 +40,41 @@ import {AttributesComponent} from './attributes/attributes.component';
 
 export const isMock = environment.mock;
 
-@NgModule({
-  declarations: [
-    AppComponent,
-    BlogsComponent,
-    TemplatesComponent,
-    ErrorsComponent,
-    SystemlogComponent,
-    RoomsComponent,
-    MethodsComponent,
-    CommandsComponent,
-    ToastComponent,
-    AreasComponent,
-    ItemsComponent,
-    BanComponent,
-    BannedComponent,
-    BannednamesComponent,
-    SillynamesComponent,
-    UnbannedComponent,
-    ManpagesComponent,
-    EventsComponent,
-    WorldattributesComponent,
-    CharactersComponent,
-    BoardsComponent,
-    GuildsComponent,
-    AdministratorComponent,
-    AttributesComponent
-  ],
-  imports: [
-    BrowserModule,
-    FormsModule,
-    ReactiveFormsModule,
-    AppRoutingModule,
-    HttpClientModule,
-    ScrollingModule,
-    NgbModule,
-    NoopAnimationsModule
-  ],
-  providers: [CookieService, {
-    provide: HTTP_INTERCEPTORS,
-    useClass: isMock ? MockHttpInterceptor : DefaultHttpInterceptor,
-    multi: true
-  }],
-  bootstrap: [AppComponent]
-})
+@NgModule({ declarations: [
+        AppComponent,
+        BlogsComponent,
+        TemplatesComponent,
+        ErrorsComponent,
+        SystemlogComponent,
+        RoomsComponent,
+        MethodsComponent,
+        CommandsComponent,
+        ToastComponent,
+        AreasComponent,
+        ItemsComponent,
+        BanComponent,
+        BannedComponent,
+        BannednamesComponent,
+        SillynamesComponent,
+        UnbannedComponent,
+        ManpagesComponent,
+        EventsComponent,
+        WorldattributesComponent,
+        CharactersComponent,
+        BoardsComponent,
+        GuildsComponent,
+        AdministratorComponent,
+        AttributesComponent
+    ],
+    bootstrap: [AppComponent], imports: [BrowserModule,
+        FormsModule,
+        ReactiveFormsModule,
+        AppRoutingModule,
+        ScrollingModule,
+        NgbModule,
+        NoopAnimationsModule], providers: [CookieService, {
+            provide: HTTP_INTERCEPTORS,
+            useClass: isMock ? MockHttpInterceptor : DefaultHttpInterceptor,
+            multi: true
+        }, provideHttpClient(withInterceptorsFromDi())] })
 export class AppModule { }
