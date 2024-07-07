@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { Router, ActivatedRoute, ParamMap } from '@angular/router';
 
-import { CookieService } from 'ngx-cookie-service';
 import { ChristmasUtils } from './christmas.utils';
+import {ThemeService} from "./theme.service";
 
 @Component({
   selector: 'app-root',
@@ -10,21 +10,14 @@ import { ChristmasUtils } from './christmas.utils';
   styleUrls: ['./app.component.css']
 })
 export class AppComponent implements OnInit {
-  darkmode: boolean = false;
-
   collapsed = true;
 
-  constructor(
-    private cookieService: CookieService,
+  constructor(private themeService: ThemeService,
     private router: Router) {
   }
 
   ngOnInit(): void {
-    // check darkmode
-    this.darkmode = this.cookieService.check('karchandarkmode');
-    if (this.darkmode) {
-      document.getElementById('pagestyle')?.setAttribute('href', 'assets/css/bootstrap.darkmode.min.css');
-    }
+    if (window.console) { console.log('Is darkmode active: ' + this.themeService.isDarkThemeActive()); }
   }
 
   getFavicon(): string {

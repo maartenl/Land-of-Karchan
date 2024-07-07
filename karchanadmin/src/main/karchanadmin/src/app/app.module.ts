@@ -37,6 +37,7 @@ import {GuildsComponent} from './guilds/guilds.component';
 import {NoopAnimationsModule} from '@angular/platform-browser/animations';
 import {AdministratorComponent} from './administrator/administrator.component';
 import {AttributesComponent} from './attributes/attributes.component';
+import {ThemeService} from "./theme.service";
 
 export const isMock = environment.mock;
 
