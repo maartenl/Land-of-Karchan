@@ -4,7 +4,7 @@ import {
   FormsModule,
   ReactiveFormsModule
 } from '@angular/forms';
-import { HttpClientModule } from '@angular/common/http';
+import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 import { AngularEditorModule } from '@kolkov/angular-editor';
 
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
@@ -33,41 +33,35 @@ import { SentMailComponent } from './mail/sent-mail/sent-mail.component';
 import { LogonmessageComponent } from './play/logonmessage/logonmessage.component';
 import { ChatlogComponent } from './play/chatlog/chatlog.component';
 
-@NgModule({
-  declarations: [
-    AppComponent,
-    ErrorsComponent,
-    GameComponent,
-    MailComponent,
-    GuildComponent,
-    GuildMasterComponent,
-    GuildMemberComponent,
-    PlayerSettingsComponent,
-    WikipagesComponent,
-    PicturesComponent,
-    PlayComponent,
-    ToastComponent,
-    ComposeMailComponent,
-    InboxMailComponent,
-    ShowMailComponent,
-    SentMailComponent,
-    LogonmessageComponent,
-    ChatlogComponent
-  ],
-  imports: [
-    BrowserModule,
-    AppRoutingModule,
-    FormsModule,
-    ReactiveFormsModule,
-    HttpClientModule,
-    AngularEditorModule,
-    NgbModule
-  ],
-  providers: [
-    PlayerService,
-    ErrorsService,
-    CookieService
-  ],
-  bootstrap: [AppComponent]
-})
+@NgModule({ declarations: [
+        AppComponent,
+        ErrorsComponent,
+        GameComponent,
+        MailComponent,
+        GuildComponent,
+        GuildMasterComponent,
+        GuildMemberComponent,
+        PlayerSettingsComponent,
+        WikipagesComponent,
+        PicturesComponent,
+        PlayComponent,
+        ToastComponent,
+        ComposeMailComponent,
+        InboxMailComponent,
+        ShowMailComponent,
+        SentMailComponent,
+        LogonmessageComponent,
+        ChatlogComponent
+    ],
+    bootstrap: [AppComponent], imports: [BrowserModule,
+        AppRoutingModule,
+        FormsModule,
+        ReactiveFormsModule,
+        AngularEditorModule,
+        NgbModule], providers: [
+        PlayerService,
+        ErrorsService,
+        CookieService,
+        provideHttpClient(withInterceptorsFromDi())
+    ] })
 export class AppModule { }
