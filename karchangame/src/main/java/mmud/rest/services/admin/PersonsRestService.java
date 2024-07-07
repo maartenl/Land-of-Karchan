@@ -51,6 +51,7 @@ import mmud.exceptions.MudException;
 import mmud.exceptions.MudWebException;
 import mmud.rest.webentities.admin.AdminCharacter;
 import mmud.services.LogService;
+import mmud.services.PersonService;
 import org.apache.commons.lang3.StringUtils;
 
 /**
@@ -69,6 +70,9 @@ public class PersonsRestService
 
   @Inject
   private LogService logService;
+
+  @Inject
+  private PersonService personService;
 
   @Context
   private SecurityContext sc;
@@ -232,13 +236,13 @@ public class PersonsRestService
   {
     LOGGER.finer("entering remove");
     final String name = sc.getUserPrincipal().getName();
-    final User character = getEntityManager().find(User.class, id);
+    final Person character = getEntityManager().find(Person.class, id);
     if (character == null)
     {
       throw new MudWebException(name, "Character " + id + " not found.", Response.Status.NOT_FOUND);
     }
     Admin admin = (new OwnerHelper(getEntityManager())).authorize(name, character);
-    getEntityManager().remove(character);
+    personService.deletePerson(character);
     logService.writeDeputyLog(admin, "Character '" + character.getName() + "' deleted.");
   }
 

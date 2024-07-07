@@ -69,6 +69,7 @@ import mmud.rest.webentities.PrivatePassword;
 import mmud.rest.webentities.PrivatePerson;
 import mmud.services.LogService;
 import mmud.services.MailService;
+import mmud.services.PersonService;
 import mmud.services.PlayerAuthenticationService;
 import mmud.services.PrivateService;
 import mmud.services.PublicService;
@@ -116,6 +117,9 @@ public class PrivateRestService
 
   @Inject
   private PlayerAuthenticationService playerAuthenticationService;
+
+  @Inject
+  private PersonService personService;
 
   public PrivateService getPrivateService()
   {
@@ -625,17 +629,8 @@ public class PrivateRestService
   public Response deletePerson(@Context HttpServletRequest requestContext, @PathParam("name") String name)
   {
     LOGGER.log(Level.FINER, "entering deletePerson {0}", name);
-    Person person = authenticate(name);
-    var deleteBoardMessagesQuery = em.createNamedQuery("BoardMessage.deleteByName");
-    deleteBoardMessagesQuery.setParameter("person", person);
-    LOGGER.log(Level.FINER, "deleting {0} boardmessages", deleteBoardMessagesQuery.executeUpdate());
-    var deleteMailsSentQuery = em.createNamedQuery("Mail.deleteByName");
-    deleteMailsSentQuery.setParameter("person", person);
-    LOGGER.log(Level.FINER, "deleting {0} mudmails sent", deleteMailsSentQuery.executeUpdate());
-    var deleteMailsReceivedQuery = em.createNamedQuery("MailReceiver.deleteByName");
-    deleteMailsReceivedQuery.setParameter("person", person);
-    LOGGER.log(Level.FINER, "deleting {0} mudmails received", deleteMailsReceivedQuery.executeUpdate());
-    em.remove(person);
+    User person = authenticate(name);
+    personService.deletePerson(person);
     playerAuthenticationService.logoff(requestContext);
     LOGGER.finer("exiting deletePerson");
     return createResponse();

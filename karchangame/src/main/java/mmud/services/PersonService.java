@@ -19,6 +19,7 @@ package mmud.services;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Predicate;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import com.google.common.annotations.VisibleForTesting;
@@ -172,6 +173,24 @@ public class PersonService implements PersonsInterface
   public void sendWall(String message, Predicate<User> predicate)
   {
     getActivePlayers().stream().filter(predicate).forEach(p -> CommunicationService.getCommunicationService(p).writeMessage(message));
+  }
+
+  /**
+   * Permanently removes a person from the database, including all related items like boardposts and mudmails and
+   * the like. Bear this in mind.
+   * @param person the person to be deleted.
+   */
+  public void deletePerson(Person person) {
+    var deleteBoardMessagesQuery = em.createNamedQuery("BoardMessage.deleteByName");
+    deleteBoardMessagesQuery.setParameter("person", person);
+    LOGGER.log(Level.FINER, "deleting {0} boardmessages", deleteBoardMessagesQuery.executeUpdate());
+    var deleteMailsSentQuery = em.createNamedQuery("Mail.deleteByName");
+    deleteMailsSentQuery.setParameter("person", person);
+    LOGGER.log(Level.FINER, "deleting {0} mudmails sent", deleteMailsSentQuery.executeUpdate());
+    var deleteMailsReceivedQuery = em.createNamedQuery("MailReceiver.deleteByName");
+    deleteMailsReceivedQuery.setParameter("person", person);
+    LOGGER.log(Level.FINER, "deleting {0} mudmails received", deleteMailsReceivedQuery.executeUpdate());
+    em.remove(person);
   }
 
   @VisibleForTesting
