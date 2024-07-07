@@ -1,7 +1,7 @@
 import {Component, OnInit} from '@angular/core';
 import {environment} from '../environments/environment';
-import {CookieService} from 'ngx-cookie-service';
 import {ChristmasUtils} from './christmas.utils';
+import {ThemeService} from "./theme.service";
 
 @Component({
   selector: 'app-root',
@@ -11,28 +11,16 @@ import {ChristmasUtils} from './christmas.utils';
 export class AppComponent implements OnInit {
   production: boolean = true;
 
-  darkmode: boolean = false;
-
   collapsed = true;
 
-  constructor(
-    private cookieService: CookieService) {
+  constructor(private themeService: ThemeService) {
     this.production = environment.production;
     if (window.console) { console.log('Production: ' + this.production); }
   }
 
   ngOnInit(): void {
-    this.darkmode = this.cookieService.check('karchandarkmode');
-    if (this.darkmode) {
-      const bootstrapcss = document.getElementById('pagestyle');
-      if (bootstrapcss !== null) {
-        bootstrapcss.setAttribute('href', 'assets/css/bootstrap.darkmode.min.css');
-      }
-      const karchancss = document.getElementById('karchanpagestyle');
-      if (karchancss !== null) {
-        karchancss.setAttribute('href', 'assets/css/karchan.darkmode.css');
-      }
-    }
+    if (window.console) { console.log('Is darkmode active: ' + this.themeService.isDarkThemeActive()); }
+
   }
 
   getFavicon(): string {
