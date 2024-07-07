@@ -66,10 +66,10 @@
           "builder": "@angular-devkit/build-angular:dev-server",
           "configurations": {
             "production": {
-              "browserTarget": "karchanadmin:build:production"
+              "buildTarget": "karchanadmin:build:production"
             },
             "development": {
-              "browserTarget": "karchanadmin:build:development"
+              "buildTarget": "karchanadmin:build:development"
             }
           },
           "defaultConfiguration": "development"
@@ -77,7 +77,7 @@
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n",
           "options": {
-            "browserTarget": "karchanadmin:build"
+            "buildTarget": "karchanadmin:build"
           }
         },
         "test": {
