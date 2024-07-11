@@ -7,6 +7,7 @@ import {PlayerService} from '../player.service';
 import {ToastService} from '../toast.service';
 import {ChatlogService} from '../chatlog.service';
 import {Logger, LogLevel} from "../consolelog.service";
+import {ThemeService} from "../theme.service";
 
 @Component({
   selector: 'app-player-settings',
@@ -29,7 +30,8 @@ export class PlayerSettingsComponent implements OnInit {
     private playerService: PlayerService,
     private chatlogService: ChatlogService,
     private formBuilder: FormBuilder,
-    private toastService: ToastService) {
+    private toastService: ToastService,
+    private themeService: ThemeService) {
     this.player = new Player(); // dummy player
     this.playerForm = this.formBuilder.group({
       title: '',
@@ -128,6 +130,10 @@ export class PlayerSettingsComponent implements OnInit {
       () => { // on completion
       }
     );
+  }
+
+  darkmode() {
+    this.themeService.toggleTheme();
   }
 
   prepareSavePlayer(): Player {
@@ -261,4 +267,12 @@ export class PlayerSettingsComponent implements OnInit {
     return Family.FAMILYVALUES;
   }
 
+  getDarkmodeLabel(): string {
+    if (this.themeService.isDarkThemeActive()) {
+      return "Turn darkmode off";
+    }
+    else {
+      return "Turn darkmode on";
+    }
+  }
 }

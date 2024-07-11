@@ -62,6 +62,9 @@
           <h3>Settings</h3>
         </div>
         <div class="col-xs-12 col-sm-12">
+          <button type="button" (click)="darkmode();" class="btn btn-primary" id="darkmodeToggle">{{getDarkmodeLabel()}}</button>
+        </div>
+        <div class="col-xs-12 col-sm-12">
           <fieldset class="form-group">
             <label for="websockets">Websockets</label>
             <input class="form-control form-check-input" type="checkbox" value="" id="websockets"
