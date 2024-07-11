@@ -2,6 +2,8 @@ import { Injectable, WritableSignal, effect, signal } from "@angular/core";
 import {CookieService} from "ngx-cookie-service";
 
 /**
+ * This service switches from dark theme to light theme by replacing CSS stylesheets in the head
+ * of the HTML document using Javascript.
  * https://medium.com/@davdifr/theme-switcher-in-angular-from-dark-to-light-and-back-again-f42fc3f9fab0
  */
 @Injectable({
