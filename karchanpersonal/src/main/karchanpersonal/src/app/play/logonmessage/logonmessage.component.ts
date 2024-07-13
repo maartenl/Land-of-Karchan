@@ -1,7 +1,9 @@
-import { Component, ViewChild, OnInit, TemplateRef } from '@angular/core';
-import { GameService } from 'src/app/game.service';
+import {Component, OnInit, TemplateRef, ViewChild} from '@angular/core';
+import {GameService} from 'src/app/game.service';
 
-import {NgbModal, ModalDismissReasons} from '@ng-bootstrap/ng-bootstrap';
+import {ModalDismissReasons, NgbModal} from '@ng-bootstrap/ng-bootstrap';
+import {Logonmessage} from "./logonmessage.model";
+import {Logger} from "../../consolelog.service";
 
 @Component({
   selector: 'app-logonmessage',
@@ -14,25 +16,20 @@ export class LogonmessageComponent implements OnInit {
 
   closeResult = '';
 
-  logonmessage: string = '';
+  logonmessage: Logonmessage = new Logonmessage();
 
   constructor(
     private modalService: NgbModal,
-    private gameService: GameService
-  ) { }
+    private gameService: GameService,
+  ) {
+  }
 
   ngOnInit(): void {
     this.gameService.getLogonmessage()
-    .subscribe(
-      (result: string) => { // on success
-        this.logonmessage = result;
-      },
-      (err: any) => { // error
-        // console.log('error', err);
-      },
-      () => { // on completion
-      }
-    );
+      .subscribe({
+          next: (result) => this.logonmessage = new Logonmessage(result)
+        }
+      );
   }
 
   close(message: string) {
@@ -61,5 +58,11 @@ export class LogonmessageComponent implements OnInit {
     } else {
       return `with: ${reason}`;
     }
+  }
+
+  getColour(): string {
+    const style = "chat-" + this.logonmessage.colour;
+    Logger.logEntering("getColour " + style);
+    return style;
   }
 }

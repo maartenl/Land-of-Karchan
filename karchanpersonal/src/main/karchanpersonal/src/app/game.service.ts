@@ -9,6 +9,7 @@ import {ErrorsService} from './errors.service';
 import {PlayerService} from './player.service';
 import {Display} from './play/display.model';
 import { Log } from './play/log.model';
+import {Logonmessage} from "./play/logonmessage/logonmessage.model";
 
 @Injectable({
   providedIn: 'root'
@@ -44,9 +45,9 @@ export class GameService {
     return this.http.post(url, null);
   }
 
-  getLogonmessage(): Observable<string> {
+  getLogonmessage(): Observable<Logonmessage> {
     const url: string = this.getGameUrl() + 'logonmessage';
-    return this.http.get(url, {responseType: 'text'});
+    return this.http.get<Logonmessage>(url);
   }
 
   getWho(): Observable<any> {

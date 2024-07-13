@@ -105,4 +105,8 @@ export class Logger {
     this.log(errormessage, LogLevel.SEVERE);
     this.logObject(err, LogLevel.SEVERE);
   }
+
+  static logEntering(message: string) {
+    this.log(message, LogLevel.DEBUG);
+  }
 }

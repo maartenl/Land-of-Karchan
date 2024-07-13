@@ -51,8 +51,6 @@ import mmud.commands.CommandRunner;
 import mmud.database.InputSanitizer;
 import mmud.database.entities.characters.Person;
 import mmud.database.entities.characters.User;
-import mmud.database.entities.game.Board;
-import mmud.database.entities.game.BoardMessage;
 import mmud.database.entities.game.DisplayInterface;
 import mmud.database.entities.game.Macro;
 import mmud.database.entities.game.MacroPK;
@@ -62,8 +60,11 @@ import mmud.database.enums.Sex;
 import mmud.exceptions.ExceptionUtils;
 import mmud.exceptions.MudException;
 import mmud.exceptions.MudWebException;
+import mmud.rest.webentities.PrivateBoard;
+import mmud.rest.webentities.PrivateBoardMessage;
 import mmud.rest.webentities.PrivateDisplay;
 import mmud.rest.webentities.PrivateLog;
+import mmud.rest.webentities.PrivateLogonMessage;
 import mmud.rest.webentities.PrivatePerson;
 import mmud.services.BoardService;
 import mmud.services.CommunicationService;
@@ -83,6 +84,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.stream.Collectors;
 
 import static mmud.Constants.DATETIME_FORMAT;
 
@@ -544,38 +546,29 @@ public class GameRestService
   @Path("{name}/logonmessage")
   @Produces(
       {
-          MediaType.TEXT_HTML
+          MediaType.APPLICATION_JSON
       })
   public String getLogonMessage(@PathParam("name") String name)
   {
     LOGGER.finer("entering getLogonMessage");
     User person = authenticateToEnterGame(name);
-    // write logon message
-    Board newsBoard = boardService.getNewsBoard();
-    StringBuilder buffer = new StringBuilder(newsBoard.getDescription());
-    List<BoardMessage> news = boardService.getNews();
-    for (BoardMessage newMessage : news)
-    {
-      buffer.append("<hr/>");
-      buffer.append(newMessage.getPosttime());
-      buffer.append("<p/>\r\n");
-      buffer.append(newMessage.getMessage());
-      buffer.append("<p><i>");
-      buffer.append(newMessage.getPerson().getName());
-      buffer.append("</i>");
-    }
+    List<PrivateBoardMessage> news =
+        boardService.getNews().stream().map(PrivateBoardMessage::new).collect(Collectors.toList());
+    PrivateBoard newsBoard = new PrivateBoard(boardService.getNewsBoard(), news);
     // has guild
+    String guildmessage = null;
+    String alarmDescription = null;
+    String colour = null;
     if (person.getGuild() != null)
     {
       // guild logonmessage
-      if (person.getGuild().getLogonmessage() != null)
-      {
-        buffer.append(person.getGuild().getLogonmessage()).append("<hr/>");
-      }
+        guildmessage = person.getGuild().getLogonmessage();
       // guild alarm message
-      buffer.append(person.getGuild().getAlarmDescription()).append("<hr/>");
+      alarmDescription = person.getGuild().getAlarmDescription();
+      colour = person.getGuild().getColour();
     }
-    return buffer.toString();
+    PrivateLogonMessage logonMessage = new PrivateLogonMessage(guildmessage, alarmDescription, colour, newsBoard);
+    return logonMessage.toJson();
   }
 
   /**

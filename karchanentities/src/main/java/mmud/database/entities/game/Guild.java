@@ -430,7 +430,7 @@ public class Guild implements Serializable, DisplayInterface, Ownage
     }
     return "The minimum amount of members of this guild is "
       + getMinguildmembers()
-      + ".<br/>The guild has too few members, and will be removed in "
+      + ". The guild has too few members, and will be removed in "
       + getDaysguilddeath() + " days.";
   }
 

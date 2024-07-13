@@ -5,7 +5,22 @@
             <span aria-hidden="true">&times;</span>
         </button>
     </div>
-    <div class="modal-body" [innerHTML]="logonmessage">
+    <div class="modal-body">
+        <div [innerHTML]="logonmessage.newsBoard.description">
+        </div>
+        <div class="card" *ngFor="let message of logonmessage.newsBoard.messages">
+            <div class="card-body">
+                <p>{{ message.posttime }}</p>
+                <p [innerHTML]="message.message "></p>
+            </div>
+            <div class="card-footer text-muted">
+                <p><i>{{ message.name }}</i></p>
+            </div>
+        </div>
+        <hr>
+        <p *ngIf="logonmessage.guildmessage != ''" [class]="getColour()">{{ logonmessage.guildmessage }}</p>
+        <p *ngIf="logonmessage.guildAlarmDescription != ''"
+           [class]="getColour()">{{ logonmessage.guildAlarmDescription }}"></p>
     </div>
     <div class="modal-footer">
         <button type="button" class="btn btn-outline-dark" (click)="close('Ok click')">Ok</button>
