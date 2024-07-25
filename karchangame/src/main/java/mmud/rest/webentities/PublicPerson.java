@@ -16,18 +16,18 @@
  */
 package mmud.rest.webentities;
 
+import mmud.JsonUtils;
+import mmud.database.entities.characters.User;
+import mmud.rest.webentities.admin.AdminManpage;
+
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-import jakarta.xml.bind.annotation.XmlRootElement;
-import mmud.database.entities.characters.User;
-
 /**
  * @author maartenl
  */
-@XmlRootElement
 public class PublicPerson
 {
 
@@ -36,6 +36,7 @@ public class PublicPerson
   public String title;
   public String familyname;
   public String sleep;
+  public String afk;
   public String area;
   public String sex;
   /**
@@ -80,6 +81,7 @@ public class PublicPerson
     this.title = person.getTitle();
     this.familyname = person.getFamilyname();
     this.sleep = person.getSleep() ? "sleeping" : "";
+    this.afk = person.getAfk();
     this.area = person.getRoom().getArea().getShortdescription();
     if (person.getLastlogin() != null)
     {
@@ -89,4 +91,15 @@ public class PublicPerson
     }
     this.idleTime = idleTime;
   }
+
+  public String toJson()
+  {
+    return JsonUtils.toJson(this);
+  }
+
+  public static PublicPerson fromJson(String json)
+  {
+    return JsonUtils.fromJson(json, PublicPerson.class);
+  }
+
 }

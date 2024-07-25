@@ -142,6 +142,7 @@ export class PlayComponent implements OnInit {
                 users.forEach(user => {
                   display.body += '<li>' + user.name + ', ' + user.title + (user.area === 'Land of Karchan' ? '' : ' in ' + user.area);
                   display.body += (user.sleep !== '' ? ', sleeping ' : ' ');
+                  display.body += user.afk;
                   display.body += user.idleTime;
                   display.body += " (logged on " + user.min + " minutes and " + user.sec + " seconds ago.)";
                   display.body += '</li>\r\n';

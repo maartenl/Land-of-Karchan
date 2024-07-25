@@ -63,6 +63,10 @@ export class WhoPerson {
   area: string = '';
   sleep: string = '';
   /**
+   * An html string indicating if the person is AFK, and why.
+   */
+  afk: string = '';
+  /**
    * Looks for example like "(23 min, 45 sec idle)"
    */
   idleTime: string = '';
@@ -84,6 +88,12 @@ export class WhoPerson {
     this.familyname = object.familyname;
     this.area = object.area;
     this.sleep = object.sleep;
+    if (object.afk === undefined || object.afk === null)
+    {
+      this.afk = '';
+    } else {
+      this.afk = " <span class=\"badge bg-primary\">" + object.afk + "</span>";
+    }
     this.idleTime = object.idleTime;
     this.min = object.min;
     this.sec = object.sec;

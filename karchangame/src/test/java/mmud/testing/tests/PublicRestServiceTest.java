@@ -260,9 +260,9 @@ public class PublicRestServiceTest
     publicRestService.setPersonBean(personService);
 
     // Unit under test is exercised.
-    List<PublicPerson> result = publicRestService.who();
+    String result = publicRestService.who();
     // Verification code (JUnit/TestNG asserts), if any.
-    assertEquals(result.size(), 0);
+    assertThat(result).isEqualTo("[]");
   }
 
   @Test
@@ -294,28 +294,9 @@ public class PublicRestServiceTest
     idleUsersService.resetUser("Hotblack");
     publicRestService.setIdleUsersService(idleUsersService);
     // Unit under test is exercised.
-    List<PublicPerson> result = publicRestService.who();
+    String result = publicRestService.who();
     // Verification code (JUnit/TestNG asserts), if any.
-    assertNotNull(result, "list expected");
-    assertEquals(result.size(), 2);
-    PublicPerson expected = new PublicPerson();
-    expected.name = "Hotblack";
-    expected.sleep = "";
-    expected.area = "On board the Starship Heart of Gold";
-    expected.min = 16L;
-    expected.sec = 40L;
-    expected.idleTime = "";
-    expected.title = "Guitar keyboard player of the rock group Disaster Area";
-    compare(result.get(0), expected);
-    expected = new PublicPerson();
-    expected.name = "Marvin";
-    expected.sleep = "sleeping";
-    expected.area = "On board the Starship Heart of Gold";
-    expected.min = 33L;
-    expected.sec = 20L;
-    expected.title = "The Paranoid Android";
-    expected.idleTime = null;
-    compare(result.get(1), expected);
+    assertThat(result).isNotNull().isEqualTo("[{\"area\":\"On board the Starship Heart of Gold\",\"familyvalues\":[],\"idleTime\":\"(0 min, 0 sec idle)\",\"min\":16,\"name\":\"Hotblack\",\"sec\":40,\"sleep\":\"\",\"title\":\"Guitar keyboard player of the rock group Disaster Area\"},{\"area\":\"On board the Starship Heart of Gold\",\"familyvalues\":[],\"idleTime\":\"\",\"min\":33,\"name\":\"Marvin\",\"sec\":20,\"sleep\":\"sleeping\",\"title\":\"The Paranoid Android\"}]");
   }
 
   @Test

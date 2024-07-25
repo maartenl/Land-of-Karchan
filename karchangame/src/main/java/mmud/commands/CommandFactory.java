@@ -112,6 +112,7 @@ public class CommandFactory
     // quit command has been replaced with a specific rest service.
     // theCommandStructure.put("quit", new QuitCommand("quit"));
     theCommandStructure.put("sleep", () -> new SleepCommand("sleep"));
+    theCommandStructure.put("afk", () -> new AfkCommand("afk|afk .+"));
     theCommandStructure.put("condition", () -> new ConditionCommand("(condition)|(condition .+)"));
     theCommandStructure.put("awaken", () -> new AwakenCommand("awaken"));
     theCommandStructure.put("ask", () -> new AskCommand("ask (to (\\w)+ )?.+"));

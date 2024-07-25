@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.stream.Collectors;
 
 import com.google.common.annotations.VisibleForTesting;
 import jakarta.inject.Inject;
@@ -32,7 +33,6 @@ import jakarta.ws.rs.GET;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.PathParam;
 import jakarta.ws.rs.Produces;
-import jakarta.ws.rs.QueryParam;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import mmud.database.entities.characters.User;
@@ -48,7 +48,6 @@ import mmud.services.BoardService;
 import mmud.services.IdleUsersService;
 import mmud.services.PersonService;
 import mmud.services.PublicService;
-import mmud.services.websocket.ChatLogEndPoint;
 
 /**
  * Contains all rest calls that are available to the world, without
@@ -136,7 +135,7 @@ public class PublicRestService
     {
       MediaType.APPLICATION_JSON
     })
-  public List<PublicPerson> who()
+  public String who()
   {
     LOGGER.finer("entering who");
     List<PublicPerson> res = new ArrayList<>();
@@ -159,7 +158,7 @@ public class PublicRestService
       throw new MudWebException(e, Response.Status.BAD_REQUEST);
     }
     LOGGER.finer("exiting who");
-    return res;
+    return "[" + res.stream().map(PublicPerson::toJson).collect(Collectors.joining(",")) + "]";
   }
 
   @VisibleForTesting
