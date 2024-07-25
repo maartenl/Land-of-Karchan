@@ -7,7 +7,7 @@ import { HttpErrorResponse } from '@angular/common/http';
 import { environment } from '../environments/environment';
 
 import { ErrorsService } from './errors.service';
-import { ItemDefinition } from './items/item.model';
+import {Item, ItemDefinition} from './items/item.model';
 import { AdminRestService } from './admin/admin-rest.service';
 import { ToastService } from './toast.service';
 
@@ -61,6 +61,27 @@ export class ItemsRestService implements AdminRestService<ItemDefinition, number
         })
       );
     return this.cache$;
+  }
+
+
+  /**
+   * Retrieves all items with this itemdefinition.
+   */
+  public getAllItems(itemdefinitionid: number): Observable<Item[]> {
+    return this.http.get<Item[]>(this.url + '/' + itemdefinitionid + '/items')
+      .pipe(
+        map(items => {
+          const newItems = new Array<Item>();
+          items.forEach(item => newItems.push(new Item(item)));
+          return newItems;
+        }),
+        publishReplay(1),
+        refCount(),
+        catchError(err => {
+          this.handleError(err);
+          return [];
+        })
+      );
   }
 
   public clearCache() {

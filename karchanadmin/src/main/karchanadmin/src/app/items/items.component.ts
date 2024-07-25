@@ -3,9 +3,10 @@ import {Component, OnInit} from '@angular/core';
 import {FormBuilder, FormGroup} from '@angular/forms';
 
 import {ItemsRestService} from '../items-rest.service';
-import {ItemDefinition} from './item.model';
+import {Item, ItemDefinition} from './item.model';
 import {AdminComponent} from '../admin/admin.component';
 import {ToastService} from '../toast.service';
+import {Command} from "../commands/command.model";
 
 @Component({
   selector: 'app-items',
@@ -13,6 +14,8 @@ import {ToastService} from '../toast.service';
   styleUrls: ['./items.component.css']
 })
 export class ItemsComponent extends AdminComponent<ItemDefinition, number> implements OnInit {
+
+  iteminstances: Item[] = [] = new Array<Item>(0);
 
   form: FormGroup;
 
@@ -159,6 +162,11 @@ export class ItemsComponent extends AdminComponent<ItemDefinition, number> imple
     this.itemsRestService.get(id).subscribe({
       next: (data) => {
         if (data !== undefined) { this.setItem(data); }
+      }
+    });
+    this.itemsRestService.getAllItems(id).subscribe({
+      next: (data) => {
+        if (data !== undefined) { this.iteminstances = data; }
       }
     });
     return false;

@@ -86,8 +86,43 @@ export class ItemDefinition implements AdminObject<number> {
     }
 
     getType(): string {
-        return 'Item';
+        return 'ItemDefinition';
     }
+
+}
+
+export class Item {
+  id: number | null = null;
+  itemid: number | null = null;
+  containerid: number | null = null;
+  containerdefid: number | null = null;
+  belongsto: string | null = null;
+  room: number | null = null;
+  discriminator: number | null = null;
+  shopkeeper: string | null = null;
+
+  creation: string | null = null;
+  owner: string | null = null;
+
+  constructor(object?: any) {
+    if (object === undefined) {
+      return;
+    }
+    this.id = object.id;
+    this.itemid = object.itemid;
+    this.containerid = object.containerid;
+    this.containerdefid = object.containerdefid;
+    this.belongsto = object.belongsto;
+    this.room = object.room;
+    this.discriminator = object.discriminator;
+    this.shopkeeper = object.shopkeeper;
+    this.creation = object.creation;
+    this.owner = object.owner;
+  }
+
+  getType(): string {
+    return 'Item';
+  }
 
 }
 

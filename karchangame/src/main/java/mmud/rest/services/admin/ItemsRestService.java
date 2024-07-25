@@ -16,10 +16,6 @@
  */
 package mmud.rest.services.admin;
 
-import java.time.LocalDateTime;
-import java.util.List;
-import java.util.logging.Logger;
-
 import jakarta.annotation.security.DeclareRoles;
 import jakarta.annotation.security.RolesAllowed;
 import jakarta.inject.Inject;
@@ -42,9 +38,14 @@ import jakarta.ws.rs.core.UriInfo;
 import mmud.database.entities.game.Admin;
 import mmud.database.entities.items.ItemDefinition;
 import mmud.exceptions.MudWebException;
+import mmud.rest.webentities.admin.AdminItem;
 import mmud.rest.webentities.admin.AdminItemDefinition;
 import mmud.services.LogService;
 import org.apache.commons.lang3.StringUtils;
+
+import java.time.LocalDateTime;
+import java.util.List;
+import java.util.logging.Logger;
 
 /**
  * @author maartenl
@@ -69,9 +70,9 @@ public class ItemsRestService
 
   @POST
   @Consumes(
-    {
-      MediaType.APPLICATION_JSON
-    })
+      {
+          MediaType.APPLICATION_JSON
+      })
   public void create(String json)
   {
     AdminItemDefinition adminItemDefinition = AdminItemDefinition.fromJson(json);
@@ -108,7 +109,8 @@ public class ItemsRestService
       ItemDefinition key = getEntityManager().find(ItemDefinition.class, adminItemDefinition.keyid);
       if (key == null)
       {
-        throw new MudWebException(name, "Item definition for key of item " + item.getId() + " not found.", Response.Status.NOT_FOUND);
+        throw new MudWebException(name, "Item definition for key of item " + item.getId() + " not found.",
+            Response.Status.NOT_FOUND);
       }
       item.setKey(key);
     }
@@ -128,9 +130,9 @@ public class ItemsRestService
   @PUT
   @Path("{id}")
   @Consumes(
-    {
-      MediaType.APPLICATION_JSON
-    })
+      {
+          MediaType.APPLICATION_JSON
+      })
   public void edit(@PathParam("id") Long id, String json)
   {
     AdminItemDefinition adminItemDefinition = AdminItemDefinition.fromJson(json);
@@ -165,14 +167,16 @@ public class ItemsRestService
       item.setWearable(StringUtils.stripToNull(adminItemDefinition.wearable));
     } catch (IllegalArgumentException e)
     {
-      throw new MudWebException(name, "Wearable " + adminItemDefinition.wearable + " not proper.", Response.Status.BAD_REQUEST);
+      throw new MudWebException(name, "Wearable " + adminItemDefinition.wearable + " not proper.",
+          Response.Status.BAD_REQUEST);
     }
     try
     {
       item.setWieldable(StringUtils.stripToNull(adminItemDefinition.wieldable));
     } catch (IllegalArgumentException e)
     {
-      throw new MudWebException(name, "Wieldable " + adminItemDefinition.wieldable + " not proper.", Response.Status.BAD_REQUEST);
+      throw new MudWebException(name, "Wieldable " + adminItemDefinition.wieldable + " not proper.",
+          Response.Status.BAD_REQUEST);
     }
     item.setDescription(adminItemDefinition.description);
     item.setReaddescription(StringUtils.stripToNull(adminItemDefinition.readdescr));
@@ -186,7 +190,8 @@ public class ItemsRestService
       ItemDefinition key = getEntityManager().find(ItemDefinition.class, adminItemDefinition.keyid);
       if (key == null)
       {
-        throw new MudWebException(name, "Item definition for key of item " + item.getId() + " not found.", Response.Status.NOT_FOUND);
+        throw new MudWebException(name, "Item definition for key of item " + item.getId() + " not found.",
+            Response.Status.NOT_FOUND);
       }
       item.setKey(key);
     }
@@ -205,7 +210,6 @@ public class ItemsRestService
 
   @DELETE
   @Path("{id}")
-
   public void remove(@PathParam("id") String id)
   {
     final String name = sc.getUserPrincipal().getName();
@@ -222,9 +226,9 @@ public class ItemsRestService
   @GET
   @Path("{id}")
   @Produces(
-    {
-      MediaType.APPLICATION_JSON
-    })
+      {
+          MediaType.APPLICATION_JSON
+      })
 
   public String find(@PathParam("id") Long id)
   {
@@ -239,9 +243,9 @@ public class ItemsRestService
 
   @GET
   @Produces(
-    {
-      MediaType.APPLICATION_JSON
-    })
+      {
+          MediaType.APPLICATION_JSON
+      })
   public Response findAll(@Context UriInfo info)
   {
     return Response.ok(StreamerHelper.getStream(getEntityManager(), AdminItemDefinition.GET_QUERY)).build();
@@ -250,18 +254,33 @@ public class ItemsRestService
   @GET
   @Path("{offset}/{pageSize}")
   @Produces(
-    {
-      MediaType.APPLICATION_JSON
-    })
+      {
+          MediaType.APPLICATION_JSON
+      })
 
   public String findRange(@Context UriInfo info, @PathParam("offset") Integer offset,
                           @PathParam("pageSize") Integer pageSize
   )
   {
     List<String> items = getEntityManager().createNativeQuery(AdminItemDefinition.GET_QUERY)
-      .setMaxResults(pageSize)
-      .setFirstResult(offset)
-      .getResultList();
+        .setMaxResults(pageSize)
+        .setFirstResult(offset)
+        .getResultList();
+    return "[" + String.join(",", items) + "]";
+  }
+
+  @GET
+  @Path("{id}/items")
+  @Produces(
+      {
+          MediaType.APPLICATION_JSON
+      })
+  public String getItemInstances(@PathParam("id") Long id)
+  {
+    final List<String> items =
+        getEntityManager().createNativeQuery(AdminItem.GET_QUERY)
+            .setParameter(1, id)
+            .getResultList();
     return "[" + String.join(",", items) + "]";
   }
 
