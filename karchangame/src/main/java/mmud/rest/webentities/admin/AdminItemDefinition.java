@@ -6,7 +6,7 @@ import java.util.stream.Collectors;
 import mmud.JsonUtils;
 import mmud.database.entities.items.ItemDefinition;
 
-public class AdminItem
+public class AdminItemDefinition
 {
   public static final String GET_QUERY = "select json_object(\"id\", id, \"name\", name, \"adjectives\", adjectives, \"owner\", owner, \"creation\", creation) from mm_items order by id";
 
@@ -44,12 +44,12 @@ public class AdminItem
   public Integer discriminator;
   public Boolean bound;
 
-  public AdminItem()
+  public AdminItemDefinition()
   {
     // empty constructor, for creating a web entity from scratch.
   }
 
-  public AdminItem(ItemDefinition item)
+  public AdminItemDefinition(ItemDefinition item)
   {
     this.id = item.getId();
     this.name = item.getName();
@@ -135,9 +135,9 @@ public class AdminItem
       '}';
   }
 
-  public static AdminItem fromJson(String json)
+  public static AdminItemDefinition fromJson(String json)
   {
-    return JsonUtils.fromJson(json, AdminItem.class);
+    return JsonUtils.fromJson(json, AdminItemDefinition.class);
   }
 
 

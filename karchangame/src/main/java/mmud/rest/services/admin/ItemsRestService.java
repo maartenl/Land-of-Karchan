@@ -42,7 +42,7 @@ import jakarta.ws.rs.core.UriInfo;
 import mmud.database.entities.game.Admin;
 import mmud.database.entities.items.ItemDefinition;
 import mmud.exceptions.MudWebException;
-import mmud.rest.webentities.admin.AdminItem;
+import mmud.rest.webentities.admin.AdminItemDefinition;
 import mmud.services.LogService;
 import org.apache.commons.lang3.StringUtils;
 
@@ -74,50 +74,50 @@ public class ItemsRestService
     })
   public void create(String json)
   {
-    AdminItem adminItem = AdminItem.fromJson(json);
+    AdminItemDefinition adminItemDefinition = AdminItemDefinition.fromJson(json);
     final String name = sc.getUserPrincipal().getName();
     Admin admin = getEntityManager().find(Admin.class, name);
 
     ItemDefinition item = new ItemDefinition();
-    item.setId(adminItem.id);
-    item.setName(adminItem.name);
-    item.setAdjectives(adminItem.adjectives);
+    item.setId(adminItemDefinition.id);
+    item.setName(adminItemDefinition.name);
+    item.setAdjectives(adminItemDefinition.adjectives);
 //    item.setManaincrease(adminItem.manaincrease);
 //    item.setHitincrease(adminItem.hitincrease);
 //    item.setVitalincrease(adminItem.vitalincrease);
 //    item.setMovementincrease(adminItem.movementincrease);
 //    item.setPasdefense(adminItem.pasdefense);
 //    item.setDamageresistance(adminItem.damageresistance);
-    item.setEatable(StringUtils.stripToNull(adminItem.eatable));
-    item.setDrinkable(StringUtils.stripToNull(adminItem.drinkable));
-    item.setLightable(adminItem.lightable);
-    item.setGetable(adminItem.getable);
-    item.setDropable(adminItem.dropable);
-    item.setVisible(adminItem.visible);
-    item.setDescription(adminItem.description);
-    item.setReaddescription(StringUtils.stripToNull(adminItem.readdescr));
-    item.setWieldable(StringUtils.stripToNull(adminItem.wieldable));
-    item.setWearable(StringUtils.stripToNull(adminItem.wearable));
-    item.setCopper(adminItem.copper);
-    item.setWeight(adminItem.weight);
-    item.setContainer(adminItem.container);
-    item.setCapacity(adminItem.capacity);
-    item.setOpenable(adminItem.isopenable);
-    if (adminItem.keyid != null)
+    item.setEatable(StringUtils.stripToNull(adminItemDefinition.eatable));
+    item.setDrinkable(StringUtils.stripToNull(adminItemDefinition.drinkable));
+    item.setLightable(adminItemDefinition.lightable);
+    item.setGetable(adminItemDefinition.getable);
+    item.setDropable(adminItemDefinition.dropable);
+    item.setVisible(adminItemDefinition.visible);
+    item.setDescription(adminItemDefinition.description);
+    item.setReaddescription(StringUtils.stripToNull(adminItemDefinition.readdescr));
+    item.setWieldable(StringUtils.stripToNull(adminItemDefinition.wieldable));
+    item.setWearable(StringUtils.stripToNull(adminItemDefinition.wearable));
+    item.setCopper(adminItemDefinition.copper);
+    item.setWeight(adminItemDefinition.weight);
+    item.setContainer(adminItemDefinition.container);
+    item.setCapacity(adminItemDefinition.capacity);
+    item.setOpenable(adminItemDefinition.isopenable);
+    if (adminItemDefinition.keyid != null)
     {
-      ItemDefinition key = getEntityManager().find(ItemDefinition.class, adminItem.keyid);
+      ItemDefinition key = getEntityManager().find(ItemDefinition.class, adminItemDefinition.keyid);
       if (key == null)
       {
         throw new MudWebException(name, "Item definition for key of item " + item.getId() + " not found.", Response.Status.NOT_FOUND);
       }
       item.setKey(key);
     }
-    item.setContaintype(adminItem.containtype);
-    item.setNotes(StringUtils.stripToNull(adminItem.notes));
-    item.setImage(StringUtils.stripToNull(adminItem.image));
-    item.setTitle(StringUtils.stripToNull(adminItem.title));
-    item.setDiscriminator(adminItem.discriminator);
-    item.setBound(adminItem.bound);
+    item.setContaintype(adminItemDefinition.containtype);
+    item.setNotes(StringUtils.stripToNull(adminItemDefinition.notes));
+    item.setImage(StringUtils.stripToNull(adminItemDefinition.image));
+    item.setTitle(StringUtils.stripToNull(adminItemDefinition.title));
+    item.setDiscriminator(adminItemDefinition.discriminator);
+    item.setBound(adminItemDefinition.bound);
     item.setCreation(LocalDateTime.now());
     item.setOwner(admin);
     ValidationUtils.checkValidation(name, item);
@@ -133,72 +133,72 @@ public class ItemsRestService
     })
   public void edit(@PathParam("id") Long id, String json)
   {
-    AdminItem adminItem = AdminItem.fromJson(json);
+    AdminItemDefinition adminItemDefinition = AdminItemDefinition.fromJson(json);
     final String name = sc.getUserPrincipal().getName();
-    if (!id.equals(adminItem.id))
+    if (!id.equals(adminItemDefinition.id))
     {
       throw new MudWebException(name, "Item definition ids do not match.", Response.Status.BAD_REQUEST);
     }
-    ItemDefinition item = getEntityManager().find(ItemDefinition.class, adminItem.id);
+    ItemDefinition item = getEntityManager().find(ItemDefinition.class, adminItemDefinition.id);
 
     if (item == null)
     {
       throw new MudWebException(name, "Item definition " + id + " not found.", Response.Status.NOT_FOUND);
     }
     Admin admin = (new OwnerHelper(getEntityManager())).authorize(name, item);
-    item.setName(adminItem.name);
-    item.setAdjectives(adminItem.adjectives);
+    item.setName(adminItemDefinition.name);
+    item.setAdjectives(adminItemDefinition.adjectives);
 //    item.setManaincrease(adminItem.manaincrease);
 //    item.setHitincrease(adminItem.hitincrease);
 //    item.setVitalincrease(adminItem.vitalincrease);
 //    item.setMovementincrease(adminItem.movementincrease);
 //    item.setPasdefense(adminItem.pasdefense);
 //    item.setDamageresistance(adminItem.damageresistance);
-    item.setEatable(StringUtils.stripToNull(adminItem.eatable));
-    item.setDrinkable(StringUtils.stripToNull(adminItem.drinkable));
-    item.setLightable(adminItem.lightable);
-    item.setGetable(adminItem.getable);
-    item.setDropable(adminItem.dropable);
-    item.setVisible(adminItem.visible);
+    item.setEatable(StringUtils.stripToNull(adminItemDefinition.eatable));
+    item.setDrinkable(StringUtils.stripToNull(adminItemDefinition.drinkable));
+    item.setLightable(adminItemDefinition.lightable);
+    item.setGetable(adminItemDefinition.getable);
+    item.setDropable(adminItemDefinition.dropable);
+    item.setVisible(adminItemDefinition.visible);
     try
     {
-      item.setWearable(StringUtils.stripToNull(adminItem.wearable));
+      item.setWearable(StringUtils.stripToNull(adminItemDefinition.wearable));
     } catch (IllegalArgumentException e)
     {
-      throw new MudWebException(name, "Wearable " + adminItem.wearable + " not proper.", Response.Status.BAD_REQUEST);
+      throw new MudWebException(name, "Wearable " + adminItemDefinition.wearable + " not proper.", Response.Status.BAD_REQUEST);
     }
     try
     {
-      item.setWieldable(StringUtils.stripToNull(adminItem.wieldable));
+      item.setWieldable(StringUtils.stripToNull(adminItemDefinition.wieldable));
     } catch (IllegalArgumentException e)
     {
-      throw new MudWebException(name, "Wieldable " + adminItem.wieldable + " not proper.", Response.Status.BAD_REQUEST);
+      throw new MudWebException(name, "Wieldable " + adminItemDefinition.wieldable + " not proper.", Response.Status.BAD_REQUEST);
     }
-    item.setDescription(adminItem.description);
-    item.setReaddescription(StringUtils.stripToNull(adminItem.readdescr));
-    item.setCopper(adminItem.copper);
-    item.setWeight(adminItem.weight);
-    item.setContainer(adminItem.container);
-    item.setCapacity(adminItem.capacity);
-    item.setOpenable(adminItem.isopenable);
-    if (adminItem.keyid != null)
+    item.setDescription(adminItemDefinition.description);
+    item.setReaddescription(StringUtils.stripToNull(adminItemDefinition.readdescr));
+    item.setCopper(adminItemDefinition.copper);
+    item.setWeight(adminItemDefinition.weight);
+    item.setContainer(adminItemDefinition.container);
+    item.setCapacity(adminItemDefinition.capacity);
+    item.setOpenable(adminItemDefinition.isopenable);
+    if (adminItemDefinition.keyid != null)
     {
-      ItemDefinition key = getEntityManager().find(ItemDefinition.class, adminItem.keyid);
+      ItemDefinition key = getEntityManager().find(ItemDefinition.class, adminItemDefinition.keyid);
       if (key == null)
       {
         throw new MudWebException(name, "Item definition for key of item " + item.getId() + " not found.", Response.Status.NOT_FOUND);
       }
       item.setKey(key);
     }
-    item.setContaintype(adminItem.containtype);
-    item.setNotes(StringUtils.stripToNull(adminItem.notes));
-    item.setImage(StringUtils.stripToNull(adminItem.image));
-    item.setTitle(StringUtils.stripToNull(adminItem.title));
-    if (adminItem.bound != null)
+    item.setContaintype(adminItemDefinition.containtype);
+    item.setNotes(StringUtils.stripToNull(adminItemDefinition.notes));
+    item.setImage(StringUtils.stripToNull(adminItemDefinition.image));
+    item.setTitle(StringUtils.stripToNull(adminItemDefinition.title));
+    if (adminItemDefinition.bound != null)
     {
-      item.setBound(adminItem.bound);
+      item.setBound(adminItemDefinition.bound);
     }
-    item.setOwner(OwnerHelper.getNewOwner(adminItem.owner, admin, getEntityManager()));
+    item.setOwner(OwnerHelper.getNewOwner(adminItemDefinition.owner, admin, getEntityManager()));
     ValidationUtils.checkValidation(name, item);
     logService.writeDeputyLog(admin, "Item definition '" + item.getId() + "' updated.");
   }
@@ -234,7 +234,7 @@ public class ItemsRestService
     {
       throw new MudWebException(name, "Item definition " + id + " not found.", Response.Status.NOT_FOUND);
     }
-    return new AdminItem(item).toJson();
+    return new AdminItemDefinition(item).toJson();
   }
 
   @GET
@@ -244,7 +244,7 @@ public class ItemsRestService
     })
   public Response findAll(@Context UriInfo info)
   {
-    return Response.ok(StreamerHelper.getStream(getEntityManager(), AdminItem.GET_QUERY)).build();
+    return Response.ok(StreamerHelper.getStream(getEntityManager(), AdminItemDefinition.GET_QUERY)).build();
   }
 
   @GET
@@ -258,7 +258,7 @@ public class ItemsRestService
                           @PathParam("pageSize") Integer pageSize
   )
   {
-    List<String> items = getEntityManager().createNativeQuery(AdminItem.GET_QUERY)
+    List<String> items = getEntityManager().createNativeQuery(AdminItemDefinition.GET_QUERY)
       .setMaxResults(pageSize)
       .setFirstResult(offset)
       .getResultList();
