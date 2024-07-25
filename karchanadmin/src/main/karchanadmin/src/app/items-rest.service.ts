@@ -7,17 +7,17 @@ import { HttpErrorResponse } from '@angular/common/http';
 import { environment } from '../environments/environment';
 
 import { ErrorsService } from './errors.service';
-import { Item } from './items/item.model';
+import { ItemDefinition } from './items/item.model';
 import { AdminRestService } from './admin/admin-rest.service';
 import { ToastService } from './toast.service';
 
 @Injectable({
   providedIn: 'root'
 })
-export class ItemsRestService implements AdminRestService<Item, number> {
+export class ItemsRestService implements AdminRestService<ItemDefinition, number> {
   url: string;
 
-  cache$: Observable<Item[]> | null = null;
+  cache$: Observable<ItemDefinition[]> | null = null;
 
   constructor(
     private http: HttpClient,
@@ -26,10 +26,10 @@ export class ItemsRestService implements AdminRestService<Item, number> {
     this.url = environment.ITEMS_URL;
   }
 
-  public get(id: number): Observable<Item> {
-    return this.http.get<Item>(this.url + '/' + id)
+  public get(id: number): Observable<ItemDefinition> {
+    return this.http.get<ItemDefinition>(this.url + '/' + id)
       .pipe(
-        map(item => new Item(item)),
+        map(item => new ItemDefinition(item)),
         catchError(err => {
           this.handleError(err);
           return [];
@@ -37,7 +37,7 @@ export class ItemsRestService implements AdminRestService<Item, number> {
       );
   }
 
-  public getAll(): Observable<Item[]> {
+  public getAll(): Observable<ItemDefinition[]> {
     if (this.cache$) {
       return this.cache$;
     }
@@ -46,11 +46,11 @@ export class ItemsRestService implements AdminRestService<Item, number> {
       autohide: true,
       headertext: 'Loading...'
     });
-    this.cache$ = this.http.get<Item[]>(this.url)
+    this.cache$ = this.http.get<ItemDefinition[]>(this.url)
       .pipe(
         map(items => {
-          const newItems = new Array<Item>();
-          items.forEach(item => newItems.push(new Item(item)));
+          const newItems = new Array<ItemDefinition>();
+          items.forEach(item => newItems.push(new ItemDefinition(item)));
           return newItems;
         }),
         publishReplay(1),
@@ -67,7 +67,7 @@ export class ItemsRestService implements AdminRestService<Item, number> {
     this.cache$ = null;
   }
 
-  public delete(item: Item): Observable<any> {
+  public delete(item: ItemDefinition): Observable<any> {
     return this.http.delete(this.url + '/' + item.id)
       .pipe(
         catchError(err => {
@@ -77,9 +77,9 @@ export class ItemsRestService implements AdminRestService<Item, number> {
       );
   }
 
-  public update(item: Item): any {
+  public update(item: ItemDefinition): any {
     // update
-    return this.http.put<Item[]>(this.url + '/' + item.id, item)
+    return this.http.put<ItemDefinition[]>(this.url + '/' + item.id, item)
       .pipe(
         catchError(err => {
           this.handleError(err);
@@ -88,7 +88,7 @@ export class ItemsRestService implements AdminRestService<Item, number> {
       );
   }
 
-  public create(item: Item): any {
+  public create(item: ItemDefinition): any {
     // new
     return this.http.post(this.url, item)
       .pipe(

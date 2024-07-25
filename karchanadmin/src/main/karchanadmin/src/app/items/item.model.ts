@@ -1,6 +1,6 @@
 import {AdminObject} from '../admin/admin-object.model';
 
-export class Item implements AdminObject<number> {
+export class ItemDefinition implements AdminObject<number> {
   id: number | null = null;
   name: string | null = null;
   adjectives: string | null = null;
@@ -90,3 +90,5 @@ export class Item implements AdminObject<number> {
     }
 
 }
+
+

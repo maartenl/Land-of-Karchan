@@ -3,7 +3,7 @@ import {Component, OnInit} from '@angular/core';
 import {FormBuilder, FormGroup} from '@angular/forms';
 
 import {ItemsRestService} from '../items-rest.service';
-import {Item} from './item.model';
+import {ItemDefinition} from './item.model';
 import {AdminComponent} from '../admin/admin.component';
 import {ToastService} from '../toast.service';
 
@@ -12,7 +12,7 @@ import {ToastService} from '../toast.service';
   templateUrl: './items.component.html',
   styleUrls: ['./items.component.css']
 })
-export class ItemsComponent extends AdminComponent<Item, number> implements OnInit {
+export class ItemsComponent extends AdminComponent<ItemDefinition, number> implements OnInit {
 
   form: FormGroup;
 
@@ -98,10 +98,10 @@ export class ItemsComponent extends AdminComponent<Item, number> implements OnIn
     this.itemsRestService.getAll()
       .subscribe({
         next: data => {
-          const ownerFilter = (item: Item) => this.searchTerms.owner === undefined ||
+          const ownerFilter = (item: ItemDefinition) => this.searchTerms.owner === undefined ||
             this.searchTerms.owner === null ||
             this.searchTerms.owner === item.owner;
-          const nameFilter = (item: Item) => this.searchTerms.name === undefined ||
+          const nameFilter = (item: ItemDefinition) => this.searchTerms.name === undefined ||
             this.searchTerms.name === null ||
             (item.name !== null && item.name.includes(this.searchTerms.name));
           this.items = data.filter(ownerFilter).filter(nameFilter);
@@ -109,7 +109,7 @@ export class ItemsComponent extends AdminComponent<Item, number> implements OnIn
       });
   }
 
-  setForm(item?: Item) {
+  setForm(item?: ItemDefinition) {
     const object = item === undefined ? {
       id: null,
       adjectives: '',
@@ -164,7 +164,7 @@ export class ItemsComponent extends AdminComponent<Item, number> implements OnIn
     return false;
   }
 
-  private setItem(item: Item) {
+  private setItem(item: ItemDefinition) {
     this.item = item;
     this.form.reset({
       id: item.id,
@@ -204,14 +204,14 @@ export class ItemsComponent extends AdminComponent<Item, number> implements OnIn
     });
   }
 
-  getForm(): Item {
+  getForm(): ItemDefinition {
     const formModel = this.form.value;
 
     // return new `Item` object containing a combination of original blog value(s)
     // and deep copies of changed form model values
     const creation = this.item === undefined || this.item === null  ? null : this.item.creation;
     const owner = this.item === undefined || this.item === null ? null : this.item.owner;
-    const saveItem: Item = new Item({
+    const saveItem: ItemDefinition = new ItemDefinition({
       id: formModel.id as number,
       adjectives: formModel.adjectives as string,
       name: formModel.name as string,
@@ -252,8 +252,8 @@ export class ItemsComponent extends AdminComponent<Item, number> implements OnIn
     return this.toastService;
   }
 
-  makeItem(): Item {
-    return new Item();
+  makeItem(): ItemDefinition {
+    return new ItemDefinition();
   }
 
   sortById() {
@@ -291,7 +291,7 @@ export class ItemsComponent extends AdminComponent<Item, number> implements OnIn
     if (window.console) {
       console.log('sortByName');
     }
-    this.items = this.items.sort((a: Item, b: Item) => {
+    this.items = this.items.sort((a: ItemDefinition, b: ItemDefinition) => {
       const aname = a.name === null ? '' : a.name;
       const bname = b.name === null ? '' : b.name;
       return aname.localeCompare(bname)
