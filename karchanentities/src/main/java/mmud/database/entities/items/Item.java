@@ -16,15 +16,7 @@
  */
 package mmud.database.entities.items;
 
-import java.io.Serializable;
-import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
+import jakarta.annotation.Nonnull;
 import jakarta.persistence.Basic;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
@@ -38,7 +30,6 @@ import jakarta.persistence.Inheritance;
 import jakarta.persistence.InheritanceType;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
-import jakarta.persistence.NamedQueries;
 import jakarta.persistence.NamedQuery;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
@@ -58,6 +49,15 @@ import mmud.database.enums.Wielding;
 import mmud.exceptions.ItemException;
 import mmud.exceptions.MudException;
 
+import java.io.Serializable;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 /**
  * An item. To be more precise an instance of an item definition. An item can
  * either reside in a room, on a person or in another item.
@@ -71,16 +71,23 @@ import mmud.exceptions.MudException;
 @Entity
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 @DiscriminatorColumn(
-        name = "discriminator",
-        discriminatorType = DiscriminatorType.INTEGER)
+    name = "discriminator",
+    discriminatorType = DiscriminatorType.INTEGER)
 @Table(name = "mm_itemtable")
 @NamedQuery(name = "Item.findAll", query = "SELECT i FROM Item i")
 @NamedQuery(name = "Item.findById", query = "SELECT i FROM Item i WHERE i.id = :id")
-@NamedQuery(name = "Item.drop", query = "UPDATE Item i SET i.belongsto = null, i.room = :room WHERE i = :item and i.belongsto = :person and i.room is null and i.container is null and i.itemDefinition.dropable <> 0")
-@NamedQuery(name = "Item.get", query = "UPDATE Item i SET i.room = null, i.belongsto = :person WHERE i = :item and i.belongsto is null and i.room = :room and i.container is null and i.itemDefinition.getable <> 0")
-@NamedQuery(name = "Item.give", query = "UPDATE Item i SET i.belongsto = :toperson WHERE i = :item and i.belongsto = :fromperson and i.room is null and i.container is null and i.itemDefinition.getable <> 0")
-@NamedQuery(name = "Item.put", query = "UPDATE Item i SET i.container = :container, i.belongsto = null, i.room = null WHERE i = :item and i.belongsto = :person and i.room is null and i.container is null and i.itemDefinition.getable <> 0")
-@NamedQuery(name = "Item.retrieve", query = "UPDATE Item i SET i.container = null, i.belongsto = :person, i.room = null WHERE i = :item and i.belongsto is null and i.room is null and i.container = :container and i.itemDefinition.getable <> 0")
+@NamedQuery(name = "Item.drop", query = "UPDATE Item i SET i.belongsto = null, i.room = :room WHERE i = :item and i" +
+    ".belongsto = :person and i.room is null and i.container is null and i.itemDefinition.dropable <> 0")
+@NamedQuery(name = "Item.get", query = "UPDATE Item i SET i.room = null, i.belongsto = :person WHERE i = :item and i" +
+    ".belongsto is null and i.room = :room and i.container is null and i.itemDefinition.getable <> 0")
+@NamedQuery(name = "Item.give", query = "UPDATE Item i SET i.belongsto = :toperson WHERE i = :item and i.belongsto = " +
+    ":fromperson and i.room is null and i.container is null and i.itemDefinition.getable <> 0")
+@NamedQuery(name = "Item.put", query = "UPDATE Item i SET i.container = :container, i.belongsto = null, i.room = null" +
+    " WHERE i = :item and i.belongsto = :person and i.room is null and i.container is null and i.itemDefinition" +
+    ".getable <> 0")
+@NamedQuery(name = "Item.retrieve", query = "UPDATE Item i SET i.container = null, i.belongsto = :person, i.room = " +
+    "null WHERE i = :item and i.belongsto is null and i.room is null and i.container = :container and i" +
+    ".itemDefinition.getable <> 0")
 abstract public class Item implements Serializable, DisplayInterface, AttributeWrangler, ItemWrangler, Ownage
 {
 
@@ -152,7 +159,7 @@ abstract public class Item implements Serializable, DisplayInterface, AttributeW
   {
     this.itemDefinition = id;
     this.creation = LocalDateTime.now();
-    this.discriminator = 0;
+    this.discriminator = id.getDiscriminator();
   }
 
   public Integer getDiscriminator()
@@ -214,7 +221,7 @@ abstract public class Item implements Serializable, DisplayInterface, AttributeW
     return getItemDefinition().isContainer();
   }
 
-  public void setContainer(Item container)
+  public void setContainer(@Nonnull Item container)
   {
     if (!container.isContainer())
     {
@@ -333,8 +340,8 @@ abstract public class Item implements Serializable, DisplayInterface, AttributeW
     if (getItemDefinition().getId() > 0)
     {
       builder.append("With your expert eye your judge this item to be worth ").
-              append(OutputFormatter.getDescriptionOfMoney(getCopper())).
-              append(".<br/>\r\n");
+          append(OutputFormatter.getDescriptionOfMoney(getCopper())).
+          append(".<br/>\r\n");
       if (isDrinkable())
       {
         builder.append("You can try drinking it.<br/>\r\n");
@@ -426,9 +433,9 @@ abstract public class Item implements Serializable, DisplayInterface, AttributeW
   public void setAttribute(String name, String value)
   {
     LOGGER.log(Level.FINER, "setAttribute name={0} value={1}", new Object[]
-    {
-      name, value
-    });
+        {
+            name, value
+        });
     Itemattribute attr = getItemattribute(name);
     if (attr == null)
     {
@@ -447,9 +454,9 @@ abstract public class Item implements Serializable, DisplayInterface, AttributeW
     if (attr == null)
     {
       LOGGER.log(Level.FINER, "verifyAttribute (name={0}, value={1}) not found on item {2}.", new Object[]
-      {
-        name, value, getId()
-      });
+          {
+              name, value, getId()
+          });
       return false;
     }
     if (attr.getValue() == value)
@@ -522,17 +529,17 @@ abstract public class Item implements Serializable, DisplayInterface, AttributeW
     if (!isOpenable())
     {
       throw new ItemException(getDescription()
-              + "cannot be opened.");
+          + "cannot be opened.");
     }
     if (isOpen())
     {
       throw new ItemException(getDescription()
-              + " is already open.");
+          + " is already open.");
     }
     if (isLocked())
     {
       throw new ItemException(getDescription()
-              + " is locked.");
+          + " is locked.");
     }
     setAttribute("isopen", "true");
   }
@@ -546,17 +553,17 @@ abstract public class Item implements Serializable, DisplayInterface, AttributeW
     if (!isOpenable())
     {
       throw new ItemException(getDescription()
-              + "cannot be closed.");
+          + "cannot be closed.");
     }
     if (!isOpen())
     {
       throw new ItemException(getDescription()
-              + " is already closed.");
+          + " is already closed.");
     }
     if (isLocked())
     {
       throw new ItemException(getDescription()
-              + " is locked.");
+          + " is locked.");
     }
     setAttribute("isopen", "false");
   }
@@ -610,7 +617,8 @@ abstract public class Item implements Serializable, DisplayInterface, AttributeW
     // return items.remove(item);
     // note: as the collection is an orphan, the delete
     // on the set will take place automatically.
-    throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose
+    // Tools | Templates.
   }
 
   /**
@@ -626,7 +634,7 @@ abstract public class Item implements Serializable, DisplayInterface, AttributeW
     {
       return verifyAttribute("drinkable", "true");
     }
-    return getItemDefinition().getDrinkable() != null && !getItemDefinition().getDrinkable().trim().equals("");
+    return getItemDefinition().getDrinkable() != null && !getItemDefinition().getDrinkable().trim().isEmpty();
   }
 
   /**
@@ -788,8 +796,10 @@ abstract public class Item implements Serializable, DisplayInterface, AttributeW
 
   public boolean isReadable()
   {
-    boolean foundAttribute = getAttribute("readable") != null && getAttribute("readable").getValue() != null && !getAttribute("readable").getValue().trim().equals("");
-    boolean foundReadable = (getItemDefinition().getReaddescription() != null && !getItemDefinition().getReaddescription().trim().equals(""));
+    boolean foundAttribute =
+        getAttribute("readable") != null && getAttribute("readable").getValue() != null && !getAttribute("readable").getValue().trim().isEmpty();
+    boolean foundReadable =
+        (getItemDefinition().getReaddescription() != null && !getItemDefinition().getReaddescription().trim().isEmpty());
     return foundAttribute || foundReadable;
   }
 
@@ -818,12 +828,12 @@ abstract public class Item implements Serializable, DisplayInterface, AttributeW
       public String getBody() throws MudException
       {
         String read
-                = getAttribute("readable") == null ? null : getAttribute("readable").getValue();
-        if (read == null || read.trim().equals(""))
+            = getAttribute("readable") == null ? null : getAttribute("readable").getValue();
+        if (read == null || read.trim().isEmpty())
         {
           read = getItemDefinition().getReaddescription();
         }
-        if (read == null || read.trim().equals(""))
+        if (read == null || read.trim().isEmpty())
         {
           return null;
         }
@@ -872,20 +882,20 @@ abstract public class Item implements Serializable, DisplayInterface, AttributeW
   public boolean isVisible()
   {
     return getItemDefinition().getId() >= 0
-            && (getItemDefinition().getVisible() == null || getItemDefinition().getVisible());
+        && (getItemDefinition().getVisible() == null || getItemDefinition().getVisible());
   }
 
   /**
    * Returns the category of the item.
    *
-   * @return
+   * @return the category of the item.
    */
-  abstract public ItemCategory getCategory();
+  public abstract ItemCategory getCategory();
 
   /**
    * Items are sellable by default, unless attribute "notsellable" is set.
    *
-   * @return
+   * @return can the item be sold.
    * @see Attributes#NOTSELLABLE
    */
   public boolean isSellable()
@@ -984,5 +994,37 @@ abstract public class Item implements Serializable, DisplayInterface, AttributeW
       throw new MudException("Item already assigned.");
     }
     this.room = room;
+  }
+
+  public void assignTo(Room room, Person belongsto, Item container)
+  {
+    if (getBelongsTo() != null || getRoom() != null || getContainer() != null)
+    {
+      throw new MudException("Item already assigned.");
+    }
+    int counter = 0;
+    if (room != null)
+    {
+      counter++;
+    }
+    if (container != null)
+    {
+      counter++;
+    }
+    if (belongsto != null)
+    {
+      counter++;
+    }
+    if (counter == 0)
+    {
+      throw new MudException("Item not assigned to anything.");
+    }
+    if (counter > 1)
+    {
+      throw new MudException("Item  assigned to more than one mud object.");
+    }
+    this.room = room;
+    this.belongsto = belongsto;
+    this.container = container;
   }
 }

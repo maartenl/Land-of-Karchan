@@ -16,8 +16,6 @@
  */
 package mmud.database.entities.items;
 
-import java.util.logging.Logger;
-
 import jakarta.persistence.DiscriminatorValue;
 import jakarta.persistence.Entity;
 import jakarta.persistence.JoinColumn;
@@ -28,8 +26,9 @@ import mmud.database.entities.characters.Shopkeeper;
 import mmud.database.entities.game.DisplayInterface;
 import mmud.exceptions.MudException;
 
+import java.util.logging.Logger;
+
 /**
- *
  * @author maartenl
  */
 @Entity
@@ -37,57 +36,73 @@ import mmud.exceptions.MudException;
 public class ShopkeeperList extends Item
 {
 
-    private static final Logger LOGGER = Logger.getLogger(ShopkeeperList.class.getName());
+  private static final Logger LOGGER = Logger.getLogger(ShopkeeperList.class.getName());
 
-    /**
-     * In the database, this column is actually Nullable, as it has no value
-     * for superclasses of shopkeeperlist.
-     */
-    @ManyToOne(optional = false)
-    @JoinColumn(name = "shopkeeper", nullable = false, referencedColumnName = "name")
-    @NotNull
-    private Shopkeeper shopkeeper;
+  /**
+   * In the database, this column is actually Nullable, as it has no value
+   * for superclasses of shopkeeperlist.
+   */
+  @ManyToOne(optional = false)
+  @JoinColumn(name = "shopkeeper", nullable = false, referencedColumnName = "name")
+  @NotNull
+  private Shopkeeper shopkeeper;
 
-    @Override
-    public ItemCategory getCategory()
+  @Override
+  public ItemCategory getCategory()
+  {
+    return ItemCategory.SHOPKEEPERLIST;
+  }
+
+  public ShopkeeperList setShopkeeper(Shopkeeper shopkeeper)
+  {
+    this.shopkeeper = shopkeeper;
+    return this;
+  }
+
+  public ShopkeeperList()
+  {
+    // Class 'ShopkeeperList' should have [public, protected] no-arg constructor
+  }
+
+  public ShopkeeperList(ItemDefinition itemDefinition)
+  {
+    super(itemDefinition);
+  }
+
+  /**
+   * Not only shows the reading of the item, but also the shopkeeper list.
+   *
+   * @return
+   */
+  @Override
+  public DisplayInterface getRead()
+  {
+    LOGGER.info("ShopkeeperList getRead");
+    final DisplayInterface display = super.getRead();
+    return new DisplayInterface()
     {
-        return ItemCategory.SHOPKEEPERLIST;
-    }
+      @Override
+      public String getMainTitle() throws MudException
+      {
+        return display.getMainTitle();
+      }
 
-    /**
-     * Not only shows the reading of the item, but also the shopkeeper list.
-     *
-     * @return
-     */
-    @Override
-    public DisplayInterface getRead()
-    {
-        LOGGER.info("ShopkeeperList getRead");
-        final DisplayInterface display = super.getRead();
-        return new DisplayInterface()
-        {
-            @Override
-            public String getMainTitle() throws MudException
-            {
-                return display.getMainTitle();
-            }
+      @Override
+      public String getImage() throws MudException
+      {
+        return display.getImage();
+      }
 
-            @Override
-            public String getImage() throws MudException
-            {
-                return display.getImage();
-            }
-
-            @Override
-            public String getBody() throws MudException
-            {
-                String read = display.getBody();
-                StringBuilder builder = new StringBuilder();
-                OutputFormatter.addShopkeeperList(shopkeeper.getItems(), builder);
-                read = read.replace("%VIEW", builder.toString());
-                return read;
-            }
-        };
-    }
+      @Override
+      public String getBody() throws MudException
+      {
+        String read = display.getBody();
+        StringBuilder builder = new StringBuilder();
+        OutputFormatter.addShopkeeperList(shopkeeper.getItems(), builder);
+        read = read.replace("%VIEW", builder.toString());
+        return read;
+      }
+    };
+  }
 
 }

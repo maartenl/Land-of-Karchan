@@ -15,19 +15,21 @@ import { ToastService } from './toast.service';
   providedIn: 'root'
 })
 export class ItemsRestService implements AdminRestService<ItemDefinition, number> {
-  url: string;
 
   cache$: Observable<ItemDefinition[]> | null = null;
+  private definitionsUrl: string;
+  private itemsUrl: string;
 
   constructor(
     private http: HttpClient,
     private errorsService: ErrorsService,
     private toastService: ToastService) {
-    this.url = environment.ITEMS_URL;
+    this.definitionsUrl = environment.ITEMDEFINITIONS_URL;
+    this.itemsUrl = environment.ITEMS_URL;
   }
 
   public get(id: number): Observable<ItemDefinition> {
-    return this.http.get<ItemDefinition>(this.url + '/' + id)
+    return this.http.get<ItemDefinition>(this.definitionsUrl + '/' + id)
       .pipe(
         map(item => new ItemDefinition(item)),
         catchError(err => {
@@ -46,7 +48,7 @@ export class ItemsRestService implements AdminRestService<ItemDefinition, number
       autohide: true,
       headertext: 'Loading...'
     });
-    this.cache$ = this.http.get<ItemDefinition[]>(this.url)
+    this.cache$ = this.http.get<ItemDefinition[]>(this.definitionsUrl)
       .pipe(
         map(items => {
           const newItems = new Array<ItemDefinition>();
@@ -68,7 +70,7 @@ export class ItemsRestService implements AdminRestService<ItemDefinition, number
    * Retrieves all items with this itemdefinition.
    */
   public getAllItems(itemdefinitionid: number): Observable<Item[]> {
-    return this.http.get<Item[]>(this.url + '/' + itemdefinitionid + '/items')
+    return this.http.get<Item[]>(this.definitionsUrl + '/' + itemdefinitionid + '/items')
       .pipe(
         map(items => {
           const newItems = new Array<Item>();
@@ -89,7 +91,28 @@ export class ItemsRestService implements AdminRestService<ItemDefinition, number
   }
 
   public delete(item: ItemDefinition): Observable<any> {
-    return this.http.delete(this.url + '/' + item.id)
+    return this.http.delete(this.definitionsUrl + '/' + item.id)
+      .pipe(
+        catchError(err => {
+          this.handleError(err);
+          return [];
+        })
+      );
+  }
+
+  public deleteIteminstance(item: Item): Observable<any> {
+    return this.http.delete(this.itemsUrl + '/' + item.id)
+      .pipe(
+        catchError(err => {
+          this.handleError(err);
+          return [];
+        })
+      );
+  }
+
+  public createIteminstance(item: Item): any {
+    // new
+    return this.http.post(this.itemsUrl, item)
       .pipe(
         catchError(err => {
           this.handleError(err);
@@ -100,7 +123,7 @@ export class ItemsRestService implements AdminRestService<ItemDefinition, number
 
   public update(item: ItemDefinition): any {
     // update
-    return this.http.put<ItemDefinition[]>(this.url + '/' + item.id, item)
+    return this.http.put<ItemDefinition[]>(this.definitionsUrl + '/' + item.id, item)
       .pipe(
         catchError(err => {
           this.handleError(err);
@@ -111,7 +134,7 @@ export class ItemsRestService implements AdminRestService<ItemDefinition, number
 
   public create(item: ItemDefinition): any {
     // new
-    return this.http.post(this.url, item)
+    return this.http.post(this.definitionsUrl, item)
       .pipe(
         catchError(err => {
           this.handleError(err);

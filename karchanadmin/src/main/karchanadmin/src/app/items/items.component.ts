@@ -7,6 +7,7 @@ import {Item, ItemDefinition} from './item.model';
 import {AdminComponent} from '../admin/admin.component';
 import {ToastService} from '../toast.service';
 import {Command} from "../commands/command.model";
+import {Logger} from "../consolelog.service";
 
 @Component({
   selector: 'app-items',
@@ -18,6 +19,8 @@ export class ItemsComponent extends AdminComponent<ItemDefinition, number> imple
   iteminstances: Item[] = [] = new Array<Item>(0);
 
   form: FormGroup;
+
+  itemForm: FormGroup;
 
   SearchTerms = class {
     owner: string | null = null;
@@ -78,6 +81,19 @@ export class ItemsComponent extends AdminComponent<ItemDefinition, number> imple
       owner: null
     };
     this.form = this.formBuilder.group(object);
+    const item = {
+      id: null,
+      itemid: null,
+      containerid:  null,
+      containerdefid: null,
+      belongsto: null ,
+      room:  null ,
+      discriminator: null ,
+      shopkeeper: null ,
+      creation: null ,
+      owner:  null
+    }
+    this.itemForm = this.formBuilder.group(item);
     this.makeItem();
     this.getItems();
   }
@@ -265,9 +281,7 @@ export class ItemsComponent extends AdminComponent<ItemDefinition, number> imple
   }
 
   sortById() {
-    if (window.console) {
-      console.log('sortById');
-    }
+    Logger.log('sortById');
     this.items = this.items.sort((a, b) => {
       const aid = a.id === null ? -1 : a.id;
       const bid = b.id === null ? -1 : b.id;
@@ -278,9 +292,7 @@ export class ItemsComponent extends AdminComponent<ItemDefinition, number> imple
   }
 
   sortByAdjectives() {
-    if (window.console) {
-      console.log('sortByAdjectives');
-    }
+    Logger.log('sortByAdjectives');
     this.items = this.items.sort((a, b) => {
       if (a.adjectives === b.adjectives) {
         return 0;
@@ -296,9 +308,7 @@ export class ItemsComponent extends AdminComponent<ItemDefinition, number> imple
   }
 
   sortByName() {
-    if (window.console) {
-      console.log('sortByName');
-    }
+    Logger.log('sortByName');
     this.items = this.items.sort((a: ItemDefinition, b: ItemDefinition) => {
       const aname = a.name === null ? '' : a.name;
       const bname = b.name === null ? '' : b.name;
@@ -308,4 +318,57 @@ export class ItemsComponent extends AdminComponent<ItemDefinition, number> imple
     return false;
   }
 
+  deleteItemInstance(item: Item) {
+    Logger.log('deleteItemInstance');
+    this.itemsRestService.deleteIteminstance(item).subscribe(
+      (result: any) => { // on success
+        this.iteminstances = this.iteminstances
+          .filter((bl) => bl === undefined ||
+            bl.id !== item?.id);
+        this.iteminstances = [...this.iteminstances];
+        this.getToastService().show(item.getType() + ' ' + item.id + ' successfully deleted.', {
+          delay: 3000,
+          autohide: true,
+          headertext: 'Deleted...'
+        });
+      },
+      (err: any) => { // error
+        // console.log('error', err);
+      },
+      () => { // on completion
+      }
+    );
+  }
+
+  createIteminstance() {
+    const formModel = this.itemForm.value;
+
+    // return new `Item` object containing a combination of original blog value(s)
+    // and deep copies of changed form model values
+    const item: Item = new Item({
+      id: null,
+      itemid: formModel.itemid as number,
+      containerid: formModel.containerid as number,
+      belongsto: formModel.belongsto as string,
+      room: formModel.room as number,
+      discriminator: formModel.discriminator as number,
+      shopkeeper: formModel.shopkeeper as string,
+      creation: null,
+      owner: formModel.owner as string
+    });
+    this.itemsRestService.createIteminstance(item).subscribe(
+      (result: any) => { // on success
+        this.getToastService().show(item.getType() + ' successfully created.', {
+          delay: 3000,
+          autohide: true,
+          headertext: 'Created...'
+        });
+      },
+      (err: any) => { // error
+        // console.log('error', err);
+      },
+      () => { // on completion
+      }
+    );
+  }
 }

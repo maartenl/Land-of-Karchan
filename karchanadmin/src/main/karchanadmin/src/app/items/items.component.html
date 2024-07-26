@@ -157,6 +157,64 @@
                     <button type="reset" class="mx-1 btn btn-secondary" (click)="cancel()">Cancel</button>
                 </div>
             </form>
+            <h2>Item instance</h2>
+            <form [formGroup]="itemForm" novalidate>
+                <div class="row">
+                    <div class="col">
+                        <fieldset class="form-group">
+                            <label for="id">Id</label>
+                            <input type="number" class="form-control" name="id"
+                                   formControlName="id" readonly>
+                        </fieldset>
+                    </div>
+                    <div class="col">
+                        <fieldset class="form-group">
+                            <label for="itemid">Item definition id</label>
+                            <input type="number" class="form-control" id="itemid" name="itemid"
+                                   formControlName="itemid">
+                        </fieldset>
+                    </div>
+                    <div class="col">
+                        <fieldset class="form-group">
+                            <label for="belongsto">Belongs to</label>
+                            <input type="text" class="form-control" id="belongsto" name="belongsto"
+                                   formControlName="belongsto">
+                        </fieldset>
+                    </div>
+                    <div class="col">
+                        <fieldset class="form-group">
+                            <label for="containerid">Container id</label>
+                            <input type="number" class="form-control" id="containerid" name="containerid"
+                                   formControlName="containerid">
+                        </fieldset>
+                    </div>
+                    <div class="col">
+                        <fieldset class="form-group">
+                            <label for="room">Room</label>
+                            <input type="number" class="form-control" name="room"
+                                   formControlName="room">
+                        </fieldset>
+                    </div>
+                    <div class="col">
+                        <fieldset class="form-group">
+                            <label for="discriminator">Discriminator</label>
+                            <input type="number" class="form-control" name="discriminator"
+                                   formControlName="discriminator">
+                        </fieldset>
+                    </div>
+                    <div class="col">
+                        <fieldset class="form-group">
+                            <label for="shopkeeper">Shopkeeper</label>
+                            <input type="text" class="form-control" id="shopkeeper" name="shopkeeper"
+                                   formControlName="shopkeeper">
+                        </fieldset>
+                    </div>
+                </div>
+                <div class="col-xs-12 col-sm-12 text-right">
+                    <button type="submit" [disabled]="itemForm.pristine" class="mx-1 btn btn-primary"
+                            (click)="createIteminstance()">Create</button>
+                </div>
+            </form>
             <h2>Item instances</h2>
             <table class="table table-sm table-hover">
                 <thead>
@@ -181,6 +239,11 @@
                     <td>{{ item.discriminator }}</td>
                     <td><a [routerLink]="['/characters', item.shopkeeper]">{{ item.shopkeeper }}</a></td>
                     <td>{{ item.owner }}</td>
+                    <td>
+                        <button type="button" class="close" aria-label="Close" (click)="deleteItemInstance(item)">
+                            <i class="material-icons" aria-hidden="true">delete</i>
+                        </button>
+                    </td>
                 </tr>
                 </tbody>
             </table>

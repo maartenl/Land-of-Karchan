@@ -13,6 +13,7 @@ export const environment = {
   METHODS_URL: '/assets/methods.json',
   COMMANDS_URL: '/assets/commands.json',
   AREAS_URL: '/assets/areas.json',
+  ITEMDEFINITIONS_URL: '/assets/items.json',
   ITEMS_URL: '/assets/items.json',
   BAN_URL: '/assets/ban.json',
   MANPAGES_URL: '/assets/manpages.json',

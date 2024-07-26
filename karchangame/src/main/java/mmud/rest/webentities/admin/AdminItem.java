@@ -1,5 +1,6 @@
 package mmud.rest.webentities.admin;
 
+import jakarta.json.bind.annotation.JsonbCreator;
 import mmud.JsonUtils;
 import mmud.database.entities.items.Item;
 
@@ -25,6 +26,12 @@ public record AdminItem(Integer id,
       where mm_itemtable.itemid = ?
       order by mm_itemtable.id
       """;
+
+  @JsonbCreator
+  public AdminItem
+  {
+    // empty constructor, because I need to put the annotation @JsonbCreator somewhere.
+  }
 
   public AdminItem(Item item)
   {
