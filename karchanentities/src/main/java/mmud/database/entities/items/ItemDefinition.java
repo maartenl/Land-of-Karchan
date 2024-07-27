@@ -218,16 +218,6 @@ public class ItemDefinition implements Serializable, Ownage
     this.id = id;
   }
 
-  public ItemDefinition(Long id, String description, int weight, int container, LocalDateTime creation, int isopenable)
-  {
-    this.id = id;
-    this.description = description;
-    this.weight = weight;
-    this.container = container;
-    this.creation = creation;
-    this.isopenable = isopenable;
-  }
-
   /**
    * Return the id.
    *

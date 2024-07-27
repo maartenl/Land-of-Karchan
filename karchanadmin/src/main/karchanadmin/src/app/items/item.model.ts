@@ -23,7 +23,7 @@ export class ItemDefinition implements AdminObject<number> {
   wearable: number | null = null;
   copper: number | null = null;
   weight: number | null = null;
-  container: number | null = null;
+  container: boolean | null = null;
   capacity: number | null = null;
   isopenable: boolean | null = null;
   keyid: number | null = null;
