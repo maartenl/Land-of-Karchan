@@ -92,6 +92,9 @@ export class ItemsComponent extends AdminComponent<ItemDefinition, number> imple
     if (isNaN(idNumber)) {
       return;
     }
+    this.route.params.subscribe(res => {
+      if (res['id'] !== 0) this.setItemById(res['id']) // 'id' here is an example url parameter
+    })
     this.setItemById(idNumber);
   }
 
