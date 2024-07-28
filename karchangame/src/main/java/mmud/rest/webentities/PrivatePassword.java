@@ -16,14 +16,11 @@
  */
 package mmud.rest.webentities;
 
-import jakarta.xml.bind.annotation.XmlRootElement;
 import mmud.JsonUtils;
 
 /**
- *
  * @author maartenl
  */
-@XmlRootElement
 public class PrivatePassword
 {
 

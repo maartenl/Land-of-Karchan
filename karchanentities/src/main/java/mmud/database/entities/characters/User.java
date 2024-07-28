@@ -16,11 +16,6 @@
  */
 package mmud.database.entities.characters;
 
-import java.time.Duration;
-import java.time.LocalDateTime;
-import java.util.*;
-import java.util.logging.Logger;
-
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.DiscriminatorValue;
@@ -48,6 +43,14 @@ import mmud.encryption.HexEncoder;
 import mmud.exceptions.MudException;
 import org.apache.commons.lang3.StringUtils;
 
+import java.time.Duration;
+import java.time.LocalDateTime;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Optional;
+import java.util.Set;
+import java.util.logging.Logger;
+
 /**
  * A user in the game. Might be an administrator.
  *
@@ -56,10 +59,13 @@ import org.apache.commons.lang3.StringUtils;
 @Entity
 @DiscriminatorValue("0")
 @NamedQuery(name = "User.findByName", query = "SELECT p FROM User p WHERE lower(p.name) = lower(:name)")
-@NamedQuery(name = "User.findActiveByName", query = "SELECT p FROM User p WHERE lower(p.name) = lower(:name) and p.active=1")
-@NamedQuery(name = "User.fortunes", query = "SELECT p.name, p.copper FROM Person p WHERE p.god = 0 ORDER by p.copper DESC, p.name ASC")
+@NamedQuery(name = "User.findActiveByName", query = "SELECT p FROM User p WHERE lower(p.name) = lower(:name) and p" +
+    ".active=1")
+@NamedQuery(name = "User.fortunes", query = "SELECT p.name, p.copper FROM Person p WHERE p.god = 0 ORDER by p.copper " +
+    "DESC, p.name ASC")
 @NamedQuery(name = "User.who", query = "SELECT p FROM User p WHERE p.god <=1 and p.active=1 ")
-@NamedQuery(name = "User.status", query = "select p from Person p, Admin a WHERE a.name = p.name AND a.validuntil > CURRENT_DATE")
+@NamedQuery(name = "User.status", query = "select p from Person p, Admin a WHERE a.name = p.name AND a.validuntil > " +
+    "CURRENT_DATE")
 @NamedQuery(name = "User.everybodymail", query = "select p from User p where p.lastlogin > :olddate")
 public class User extends Person
 {
@@ -76,7 +82,9 @@ public class User extends Person
   @Size(max = 80)
   @Column(name = "realname")
   private String realname;
-  // @Pattern(regexp="[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?", message="Invalid email")//if the field contains email address consider using this annotation to enforce field validation
+  // @Pattern(regexp="[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9]
+  // (?:[a-z0-9-]*[a-z0-9])?\\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?", message="Invalid email")//if the field contains
+  // email address consider using this annotation to enforce field validation
   @Size(max = 40)
   @Column(name = "email")
   private String email;
@@ -157,30 +165,30 @@ public class User extends Person
    * The list of people that you are ignoring.
    */
   @ManyToMany(targetEntity = User.class, fetch = FetchType.LAZY, cascade =
-    {
-      CascadeType.ALL
-    })
+      {
+          CascadeType.ALL
+      })
   @JoinTable(name = "mm_ignore", joinColumns =
-    {
-      @JoinColumn(name = "fromperson", referencedColumnName = "name")
-    }, inverseJoinColumns =
-    {
-      @JoinColumn(name = "toperson", referencedColumnName = "name")
-    })
+      {
+          @JoinColumn(name = "fromperson", referencedColumnName = "name")
+      }, inverseJoinColumns =
+      {
+          @JoinColumn(name = "toperson", referencedColumnName = "name")
+      })
   private Set<User> ignoringSet = new HashSet<>();
   /**
    * The list of people that is ignoring you.
    */
   @ManyToMany(mappedBy = "ignoringSet", targetEntity = User.class, fetch = FetchType.LAZY, cascade =
-    {
-      CascadeType.ALL
-    })
+      {
+          CascadeType.ALL
+      })
   private Set<User> ignoredSet = new HashSet<>();
   @JoinColumn(name = "guild", referencedColumnName = "name")
   @ManyToOne(fetch = FetchType.LAZY, cascade =
-    {
-      CascadeType.PERSIST
-    })
+      {
+          CascadeType.PERSIST
+      })
   private Guild guild;
   /**
    * The guild rank of this person. Let me remind you that the "guild" is
@@ -188,10 +196,10 @@ public class User extends Person
    * read-only by means of the insertable and updatable as false.
    */
   @JoinColumns(
-    {
-      @JoinColumn(name = "guildlevel", referencedColumnName = "guildlevel"),
-      @JoinColumn(name = "guild", referencedColumnName = "guildname", insertable = false, updatable = false)
-    })
+      {
+          @JoinColumn(name = "guildlevel", referencedColumnName = "guildlevel"),
+          @JoinColumn(name = "guild", referencedColumnName = "guildname", insertable = false, updatable = false)
+      })
   @ManyToOne
   private Guildrank guildrank;
 
@@ -580,8 +588,8 @@ public class User extends Person
       return false;
     }
     if (chatline.getAttributename() == null ||
-      chatline.getAttributename().trim().equals("") ||
-      getAttribute(chatline.getAttributename()) != null)
+        chatline.getAttributename().trim().equals("") ||
+        getAttribute(chatline.getAttributename()) != null)
     {
       Chatlineusers user = new Chatlineusers();
       user.setUser(this);
@@ -599,24 +607,24 @@ public class User extends Person
       return false;
     }
     chatlines.stream()
-      .filter(x -> x.getChatline().getChatname().equalsIgnoreCase(chatlinename))
-      .findFirst()
-      .ifPresent(xx -> chatlines.remove(xx));
+        .filter(x -> x.getChatline().getChatname().equalsIgnoreCase(chatlinename))
+        .findFirst()
+        .ifPresent(xx -> chatlines.remove(xx));
     return true;
   }
 
   public boolean hasChatLine(String name)
   {
     Optional<Chatlineusers> first = chatlines.stream()
-      .filter(x -> x.getChatline().getChatname().equalsIgnoreCase(name))
-      .findFirst();
+        .filter(x -> x.getChatline().getChatname().equalsIgnoreCase(name))
+        .findFirst();
     if (first.isPresent())
     {
       String attributename = first.get().getChatline().getAttributename();
       return attributename == null ||
-              attributename.trim().isEmpty() ||
-        (getAttribute(attributename) != null &&
-          "true".equalsIgnoreCase(getAttribute(attributename).getValue()));
+          attributename.trim().isEmpty() ||
+          (getAttribute(attributename) != null &&
+              "true".equalsIgnoreCase(getAttribute(attributename).getValue()));
     }
     return false;
   }
@@ -624,16 +632,16 @@ public class User extends Person
   public Optional<Chatline> getChatLine(String name)
   {
     Optional<Chatline> first = chatlines.stream()
-      .map(Chatlineusers::getChatline)
-      .filter(x -> x.getChatname().equalsIgnoreCase(name))
-      .findFirst();
+        .map(Chatlineusers::getChatline)
+        .filter(x -> x.getChatname().equalsIgnoreCase(name))
+        .findFirst();
     if (first.isPresent())
     {
       String attributename = first.get().getAttributename();
       if (attributename == null ||
-              attributename.trim().isEmpty() ||
-        (getAttribute(attributename) != null &&
-          "true".equalsIgnoreCase(getAttribute(attributename).getValue())))
+          attributename.trim().isEmpty() ||
+          (getAttribute(attributename) != null &&
+              "true".equalsIgnoreCase(getAttribute(attributename).getValue())))
       {
         return first;
       }
@@ -921,6 +929,5 @@ public class User extends Person
   {
     this.ooc = b;
   }
-
 
 }

@@ -458,7 +458,7 @@ public class GameRestService
     LOGGER.log(Level.FINER, "entering logon {0}", name);
 
     String address = requestContext.getHeader(X_FORWARDED_FOR);
-    if ((address == null) || ("".equals(address.trim())))
+    if ((address == null) || (address.trim().isEmpty()))
     {
       address = requestContext.getRemoteAddr();
       if (VPS386.equals(address))
@@ -553,7 +553,7 @@ public class GameRestService
     LOGGER.finer("entering getLogonMessage");
     User person = authenticateToEnterGame(name);
     List<PrivateBoardMessage> news =
-        boardService.getNews().stream().map(PrivateBoardMessage::new).collect(Collectors.toList());
+        boardService.getNews().stream().map(PrivateBoardMessage::new).toList();
     PrivateBoard newsBoard = new PrivateBoard(boardService.getNewsBoard(), news);
     // has guild
     String guildmessage = null;
@@ -594,7 +594,7 @@ public class GameRestService
   {
     LOGGER.finer("entering enterGame");
     User person = authenticateToEnterGame(name);
-    PrivateLog log = null;
+    PrivateLog log;
     try
     {
       person.activate();
@@ -659,7 +659,7 @@ public class GameRestService
       log = false;
     }
     command = InputSanitizer.security(command);
-    PrivateDisplay display = null;
+    PrivateDisplay display;
     User person = authenticate(name);
     idleUsersService.resetUser(person.getName());
     PersonCommunicationService communicationService = CommunicationService.getCommunicationService(person);
@@ -929,11 +929,7 @@ public class GameRestService
     {
       if (person.getVisible())
       {
-        PrivatePerson pp = new PrivatePerson();
-        pp.race = person.getRace();
-        pp.name = person.getName();
-        pp.familyname = person.getFamilyname();
-        persons.add(pp);
+        persons.add(PrivatePerson.createSimplePrivatePerson(person));
       }
     }
     result.persons = persons;

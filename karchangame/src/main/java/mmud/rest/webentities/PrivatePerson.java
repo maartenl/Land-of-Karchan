@@ -16,10 +16,11 @@
  */
 package mmud.rest.webentities;
 
+import jakarta.xml.bind.annotation.XmlRootElement;
+import mmud.database.entities.characters.Person;
+
 import java.util.ArrayList;
 import java.util.List;
-
-import jakarta.xml.bind.annotation.XmlRootElement;
 
 /**
  * @author maartenl
@@ -64,5 +65,17 @@ public class PrivatePerson
 
   public PrivatePerson()
   {
+  }
+
+  /**
+   * Used for the list of people in a room for example.
+   */
+  public static PrivatePerson createSimplePrivatePerson(Person person)
+  {
+    PrivatePerson pp = new PrivatePerson();
+    pp.race = person.getRace();
+    pp.name = person.getName();
+    pp.familyname = person.getFamilyname();
+    return pp;
   }
 }

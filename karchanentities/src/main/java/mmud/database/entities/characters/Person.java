@@ -61,10 +61,10 @@ import mmud.exceptions.ItemException;
 import mmud.exceptions.MoneyException;
 import mmud.exceptions.MudException;
 
-import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.io.Serial;
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -372,6 +372,27 @@ public abstract class Person implements Serializable, AttributeWrangler, Display
 
   @Column(name = "websockets")
   private boolean websocketSupport;
+
+  @Column(name = "posx")
+  private BigDecimal posx;
+  @Column(name = "posy")
+  private BigDecimal posy;
+  @Column(name = "posz")
+  private BigDecimal posz;
+
+  @Column(name = "rotx")
+  private BigDecimal rotx;
+  @Column(name = "roty")
+  private BigDecimal roty;
+  @Column(name = "rotz")
+  private BigDecimal rotz;
+
+  @Column(name = "scalex")
+  private BigDecimal scalex;
+  @Column(name = "scaley")
+  private BigDecimal scaley;
+  @Column(name = "scalez")
+  private BigDecimal scalez;
 
   public Person()
   {
@@ -795,7 +816,7 @@ public abstract class Person implements Serializable, AttributeWrangler, Display
   @Nullable
   public String getAfk()
   {
-        return afk;
+    return afk;
   }
 
   public void setAfk(String afk)
@@ -1404,9 +1425,9 @@ public abstract class Person implements Serializable, AttributeWrangler, Display
     }
     LOGGER.log(Level.FINER, "verifyAttribute (name={0}, value={1}) with (name={2}, value={3}) no match on user {4}.",
         new Object[]
-        {
-            name, value, attr.getName(), attr.getValue(), getName()
-        });
+            {
+                name, value, attr.getName(), attr.getValue(), getName()
+            });
     return false;
   }
 
@@ -2284,5 +2305,27 @@ public abstract class Person implements Serializable, AttributeWrangler, Display
   public void setWebsocketSupport(boolean websocketSupport)
   {
     this.websocketSupport = websocketSupport;
+  }
+
+
+  public Transform getTransform()
+  {
+    return new Transform(new Position(posx, posy, posz), new Rotation(rotx, roty, rotz), new Scale(scalex, scaley,
+        scalez));
+  }
+
+  public void setTransform(Transform transform)
+  {
+    posx = transform.position().xPosition();
+    posy = transform.position().yPosition();
+    posz = transform.position().zPosition();
+
+    rotx = transform.rotation().xRotation();
+    roty = transform.rotation().yRotation();
+    rotz = transform.rotation().zRotation();
+
+    scalex = transform.scale().xScale();
+    scaley = transform.scale().yScale();
+    scalez = transform.scale().zScale();
   }
 }
