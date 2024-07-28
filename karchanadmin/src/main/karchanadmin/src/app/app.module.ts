@@ -37,7 +37,7 @@ import {GuildsComponent} from './guilds/guilds.component';
 import {NoopAnimationsModule} from '@angular/platform-browser/animations';
 import {AdministratorComponent} from './administrator/administrator.component';
 import {AttributesComponent} from './attributes/attributes.component';
-import {ThemeService} from "./theme.service";
+import {ItemSubComponent} from "./item-sub/item-sub.component";
 
 export const isMock = environment.mock;
 
@@ -63,17 +63,18 @@ export const isMock = environment.mock;
         WorldattributesComponent,
         CharactersComponent,
         BoardsComponent,
+        ItemSubComponent,
         GuildsComponent,
         AdministratorComponent,
         AttributesComponent
     ],
     bootstrap: [AppComponent], imports: [BrowserModule,
-        FormsModule,
-        ReactiveFormsModule,
-        AppRoutingModule,
-        ScrollingModule,
-        NgbModule,
-        NoopAnimationsModule], providers: [CookieService, {
+    FormsModule,
+    ReactiveFormsModule,
+    AppRoutingModule,
+    ScrollingModule,
+    NgbModule,
+    NoopAnimationsModule], providers: [CookieService, {
             provide: HTTP_INTERCEPTORS,
             useClass: isMock ? MockHttpInterceptor : DefaultHttpInterceptor,
             multi: true

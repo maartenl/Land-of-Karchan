@@ -9,6 +9,7 @@ import {AdminRestService} from '../admin/admin-rest.service';
 import {Attribute} from '../attribute.model';
 import {CharactersRestService} from '../characters-rest.service';
 import {AttributesRestService} from '../attributes-rest.service';
+import {Item} from "../items/item.model";
 
 @Component({
   selector: 'app-characters',
@@ -16,6 +17,8 @@ import {AttributesRestService} from '../attributes-rest.service';
   styleUrls: ['./characters.component.css']
 })
 export class CharactersComponent extends AdminComponent<MudCharacter, string> implements OnInit {
+  iteminstances: Item[] = [] = new Array<Item>(0);
+
   form: FormGroup;
 
   attributeForm: FormGroup;
@@ -224,6 +227,13 @@ export class CharactersComponent extends AdminComponent<MudCharacter, string> im
       next: (data: MudCharacter) => {
         if (data !== undefined) {
           this.setCharacter(data);
+        }
+      }
+    });
+    this.charactersRestService.getAllItems(name).subscribe({
+      next: (data) => {
+        if (data !== undefined) {
+          this.iteminstances = data;
         }
       }
     });

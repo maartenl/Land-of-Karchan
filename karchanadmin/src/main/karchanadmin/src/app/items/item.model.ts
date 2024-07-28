@@ -93,6 +93,7 @@ export class ItemDefinition implements AdminObject<number> {
 
 export class Item {
   id: number | null = null;
+  description: string | null = null;
   itemid: number | null = null;
   containerid: number | null = null;
   containerdefid: number | null = null;
@@ -109,6 +110,7 @@ export class Item {
       return;
     }
     this.id = object.id;
+    this.description = object.description;
     this.itemid = object.itemid;
     this.containerid = object.containerid;
     this.containerdefid = object.containerdefid;

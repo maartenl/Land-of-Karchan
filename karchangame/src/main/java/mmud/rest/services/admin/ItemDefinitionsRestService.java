@@ -280,6 +280,7 @@ public class ItemDefinitionsRestService
     final List<String> items =
         getEntityManager().createNativeQuery(AdminItem.GET_ITEMDEFS_QUERY)
             .setParameter(1, id)
+            .setMaxResults(10000)
             .getResultList();
     return "[" + String.join(",", items) + "]";
   }

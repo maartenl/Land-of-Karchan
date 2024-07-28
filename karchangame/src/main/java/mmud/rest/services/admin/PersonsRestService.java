@@ -317,6 +317,7 @@ public class PersonsRestService
     final List<String> items =
         getEntityManager().createNativeQuery(AdminItem.GET_PERSONS_QUERY)
             .setParameter(1, id)
+            .setMaxResults(10000)
             .getResultList();
     return "[" + String.join(",", items) + "]";
   }

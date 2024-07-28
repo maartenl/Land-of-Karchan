@@ -10,6 +10,7 @@ import { environment } from '../environments/environment';
 import { ErrorsService } from './errors.service';
 import { AdminRestService } from './admin/admin-rest.service';
 import { ToastService } from './toast.service';
+import {Item} from "./items/item.model";
 
 @Injectable({
   providedIn: 'root'
@@ -93,6 +94,26 @@ export class CharactersRestService implements AdminRestService<MudCharacter, str
     // new
     return this.http.post(this.url, character)
       .pipe(
+        catchError(err => {
+          this.handleError(err);
+          return [];
+        })
+      );
+  }
+
+  /**
+   * Retrieves all items in the inventory of this character.
+   */
+  public getAllItems(name: String): Observable<Item[]> {
+    return this.http.get<Item[]>(this.url + '/' + name + '/items')
+      .pipe(
+        map(items => {
+          const newItems = new Array<Item>();
+          items.forEach(item => newItems.push(new Item(item)));
+          return newItems;
+        }),
+        publishReplay(1),
+        refCount(),
         catchError(err => {
           this.handleError(err);
           return [];

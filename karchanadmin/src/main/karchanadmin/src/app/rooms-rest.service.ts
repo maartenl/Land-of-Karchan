@@ -11,6 +11,7 @@ import { ErrorsService } from './errors.service';
 import { Room } from './rooms/room.model';
 import { Command } from './commands/command.model';
 import { ToastService } from './toast.service';
+import {Item} from "./items/item.model";
 
 @Injectable({
   providedIn: 'root'
@@ -114,6 +115,27 @@ export class RoomsRestService implements AdminRestService<Room, number> {
     // new
     return this.http.post(this.url, room)
       .pipe(
+        catchError(err => {
+          this.handleError(err);
+          return [];
+        })
+      );
+  }
+
+
+  /**
+   * Retrieves all items within this room.
+   */
+  public getAllItems(roomid: number): Observable<Item[]> {
+    return this.http.get<Item[]>(this.url + '/' + roomid + '/items')
+      .pipe(
+        map(items => {
+          const newItems = new Array<Item>();
+          items.forEach(item => newItems.push(new Item(item)));
+          return newItems;
+        }),
+        publishReplay(1),
+        refCount(),
         catchError(err => {
           this.handleError(err);
           return [];

@@ -7,6 +7,7 @@ import {RoomsRestService} from '../rooms-rest.service';
 import {Room} from './room.model';
 import {Command} from '../commands/command.model';
 import {ToastService} from '../toast.service';
+import {Item} from "../items/item.model";
 
 @Component({
   selector: 'app-rooms',
@@ -14,6 +15,7 @@ import {ToastService} from '../toast.service';
   styleUrls: ['./rooms.component.css']
 })
 export class RoomsComponent extends AdminComponent<Room, number> implements OnInit {
+  iteminstances: Item[] = [] = new Array<Item>(0);
 
   commands: Command[] = [] = new Array<Command>(0);
 
@@ -141,6 +143,13 @@ export class RoomsComponent extends AdminComponent<Room, number> implements OnIn
     this.roomsRestService.getCommands(id).subscribe({
       next: (data) => {
         if (data !== undefined) { this.commands = data; }
+      }
+    });
+    this.roomsRestService.getAllItems(id).subscribe({
+      next: (data) => {
+        if (data !== undefined) {
+          this.iteminstances = data;
+        }
       }
     });
     return false;

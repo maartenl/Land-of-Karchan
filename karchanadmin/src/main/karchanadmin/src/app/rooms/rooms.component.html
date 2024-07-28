@@ -44,7 +44,7 @@
                 <fieldset class="form-group">
                     <label for="picture">Picture</label>
                     <input type="text" class="form-control" id="picture" name="picture" formControlName="picture">
-                    <small id="picture" class="form-text text-muted">Only valid urls please. For example:
+                    <small id="picture_info" class="form-text text-muted">Only valid urls please. For example:
                         'https://www.pictures.org/gif/web.gif'.</small>
                 </fieldset>
                 <fieldset class="form-group">
@@ -109,9 +109,9 @@
                     <input type="text" class="form-control" id="owner" name="owner" formControlName="owner">
                 </fieldset>
                 <fieldset class="form-group">
-                    <label for="body">Contents</label>
+                    <label for="contents">Contents</label>
                     <textarea class="form-control" id="contents" rows="13" formControlName="contents"></textarea>
-                    <small id="contents" class="form-text text-muted">First letter will automatically be turned into
+                    <small id="contents_info" class="form-text text-muted">First letter will automatically be turned into
                         a calligraphic picture.</small>
                 </fieldset>
                 <div class="col-xs-12 col-sm-12 text-right">
@@ -123,6 +123,7 @@
                     <button type="reset" class="mx-1 btn btn-secondary" (click)="cancel()">Cancel</button>
                 </div>
             </form>
+            <app-item-sub [iteminstances]="iteminstances"></app-item-sub>
             <h2>Commands</h2>
             <table class="table table-sm table-hover">
                 <thead>

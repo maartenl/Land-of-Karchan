@@ -63,7 +63,6 @@ export class ItemdefinitionsRestService  implements AdminRestService<ItemDefinit
     return this.cache$;
   }
 
-
   /**
    * Retrieves all items with this itemdefinition.
    */
