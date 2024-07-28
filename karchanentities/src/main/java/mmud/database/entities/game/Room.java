@@ -23,6 +23,7 @@ import jakarta.validation.constraints.Size;
 import mmud.database.Attributes;
 import mmud.database.entities.Ownage;
 import mmud.database.entities.characters.Person;
+import mmud.database.entities.characters.Position;
 import mmud.database.entities.characters.User;
 import mmud.database.entities.items.Item;
 import mmud.database.entities.items.ItemWrangler;
@@ -32,6 +33,7 @@ import org.eclipse.persistence.annotations.Customizer;
 
 import java.io.Serial;
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.*;
 import java.util.logging.Level;
@@ -92,6 +94,21 @@ public class Room implements Serializable, DisplayInterface, ItemWrangler, Attri
     @JoinColumn(name = "owner", referencedColumnName = "name")
     @ManyToOne
     private Admin owner;
+
+    @Column(name = "minx")
+    private BigDecimal minx;
+    @Column(name = "miny")
+    private BigDecimal miny;
+    @Column(name = "minz")
+    private BigDecimal minz;
+    @Column(name = "maxx")
+    private BigDecimal maxx;
+    @Column(name = "maxy")
+    private BigDecimal maxy;
+    @Column(name = "maxz")
+    private BigDecimal maxz;
+
+
     @OneToMany(mappedBy = "down")
     private Collection<Room> roomCollection;
     @JoinColumn(name = "down", referencedColumnName = "id")
@@ -390,6 +407,44 @@ public class Room implements Serializable, DisplayInterface, ItemWrangler, Attri
     {
         this.items = items;
     }
+
+    /**
+     * @return Returns the minimum point of a cube.
+     *
+     */
+    public Position getMinimumPoint()
+    {
+        return new Position(minx, miny, minz);
+    }
+
+    /**
+     * @return Returns the maximum point of a cube.
+     */
+    public Position getMaximumPoint()
+    {
+        return new Position(maxx, maxy, maxz);
+    }
+
+    /**
+     * Sets the minimum point of a cube.
+     */
+    public void setMinimumPoint(Position position)
+    {
+        minx = position.xPosition();
+        miny = position.yPosition();
+        minz = position.zPosition();
+    }
+
+    /**
+     * Sets the maximum point of a cube.
+     */
+    public void setMaximumPoint(Position position)
+    {
+        maxx = position.xPosition();
+        maxy = position.yPosition();
+        maxz = position.zPosition();
+    }
+
 
     @Override
     public int hashCode()

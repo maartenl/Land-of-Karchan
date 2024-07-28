@@ -19,16 +19,16 @@ package mmud.rest.webentities;
 import jakarta.json.bind.annotation.JsonbCreator;
 import mmud.Constants;
 import mmud.JsonUtils;
+import mmud.database.entities.characters.Position;
 import mmud.database.entities.game.Room;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * @author maartenl
  */
 public record PrivateRoom(Long roomid, String image, String title, String content, Long west, Long east, Long north,
-                          Long south, Long up, Long down, List<PrivatePerson> persons, List<PrivateItem> items)
+                          Long south, Long up, Long down, List<PrivatePerson> persons, List<PrivateItem> items, Position minimum, Position maximum)
 {
 
   @JsonbCreator
@@ -50,7 +50,9 @@ public record PrivateRoom(Long roomid, String image, String title, String conten
             .stream()
             .map(PrivatePerson::createSimplePrivatePerson)
             .toList(),
-        Constants.addInventoryForRoom(room.getItems())
+        Constants.addInventoryForRoom(room.getItems()),
+        room.getMinimumPoint(),
+        room.getMaximumPoint()
     );
   }
 
