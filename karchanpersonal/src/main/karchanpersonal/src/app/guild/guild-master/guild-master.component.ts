@@ -1,9 +1,9 @@
-import { Component, OnInit, Input } from '@angular/core';
-import { FormControl, FormGroup, FormBuilder } from '@angular/forms';
+import {Component, Input, OnInit} from '@angular/core';
+import {FormBuilder, FormGroup} from '@angular/forms';
 
-import { Guild, GuildHopefuls, GuildHopeful, GuildRanks, GuildRank, GuildMembers, GuildMember } from '../guild.model';
-import { PlayerService } from '../../player.service';
-import { ToastService } from 'src/app/toast.service';
+import {Guild, GuildHopeful, GuildHopefuls, GuildMember, GuildMembers, GuildRank, GuildRanks} from '../guild.model';
+import {PlayerService} from '../../player.service';
+import {ToastService} from 'src/app/toast.service';
 
 @Component({
   selector: 'app-guild-master',

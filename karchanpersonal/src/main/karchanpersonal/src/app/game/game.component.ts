@@ -1,9 +1,9 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 
-import { PlayerService } from '../player.service';
-import { HasNewMail } from './newmail.model';
-import { ChristmasUtils } from '../christmas.utils';
-import { ToastService } from '../toast.service';
+import {PlayerService} from '../player.service';
+import {HasNewMail} from './newmail.model';
+import {ChristmasUtils} from '../christmas.utils';
+import {ToastService} from '../toast.service';
 
 @Component({
   selector: 'app-game',
@@ -13,7 +13,8 @@ import { ToastService } from '../toast.service';
 export class GameComponent implements OnInit {
   constructor(
     private playerService: PlayerService,
-    private toastService: ToastService) { }
+    private toastService: ToastService) {
+  }
 
   hasNewMail: boolean = false;
 
@@ -21,19 +22,21 @@ export class GameComponent implements OnInit {
 
   ngOnInit() {
     this.playerService.hasNewMail()
-      .subscribe((result: HasNewMail) => { // on success
-        this.hasNewMail = result.hasMail;
-        if (this.hasNewMail) {
-          this.toastService.show('You have new mail.', {
-            delay: 5000,
-            autohide: true,
-            headertext: 'Message'
-          });
-        }
-      },
-        (err: any) => { // error
+      .subscribe({
+        next: (result: HasNewMail) => { // on success
+          this.hasNewMail = result.hasMail;
+          if (this.hasNewMail) {
+            this.toastService.show('You have new mail.', {
+              delay: 5000,
+              autohide: true,
+              headertext: 'Message'
+            });
+          }
+        },
+        error: (err: any) => { // error
           this.error = true;
-        });
+        }
+      });
   }
 
   public isLoggedIn(): boolean {

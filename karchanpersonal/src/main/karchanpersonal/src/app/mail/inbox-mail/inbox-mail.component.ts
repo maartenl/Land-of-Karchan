@@ -25,22 +25,23 @@ export class InboxMailComponent implements OnInit {
 
   ngOnInit() {
     // retrieve the next page of mails starting from the last mail in the array
-    this.playerService.getMail(this.mails.getNumberOfMails()).subscribe(
-      (result: Mail[]) => { // on success
-        if (result !== undefined && result.length !== 0) {
-          result.forEach(value => {
-              if (value.whensent !== null) {
-                value.whensent = value.whensent.replace('[UTC]', '')
+    this.playerService.getMail(this.mails.getNumberOfMails()).subscribe({
+        next: (result: Mail[]) => { // on success
+          if (result !== undefined && result.length !== 0) {
+            result.forEach(value => {
+                if (value.whensent !== null) {
+                  value.whensent = value.whensent.replace('[UTC]', '')
+                }
               }
-            }
-          );
-          this.mails.addAll(result);
+            );
+            this.mails.addAll(result);
+          }
+        },
+        error: (err: any) => { // error
+          // console.log('error', err);
+        },
+        complete: () => { // on completion
         }
-      },
-      (err: any) => { // error
-        // console.log('error', err);
-      },
-      () => { // on completion
       }
     );
   }
@@ -62,19 +63,20 @@ export class InboxMailComponent implements OnInit {
   }
 
   public deleteMail(mail: Mail): boolean {
-    this.playerService.deleteMail(mail).subscribe(
-      (result: any) => { // on success
-        this.mails.delete(mail);
-        this.toastService.show('Mail deleted.', {
-          delay: 3000,
-          autohide: true,
-          headertext: 'Deleted...'
-        });
-      },
-      (err: any) => { // error
-        // console.log('error', err);
-      },
-      () => { // on completion
+    this.playerService.deleteMail(mail).subscribe({
+        next: (result: any) => { // on success
+          this.mails.delete(mail);
+          this.toastService.show('Mail deleted.', {
+            delay: 3000,
+            autohide: true,
+            headertext: 'Deleted...'
+          });
+        },
+        error: (err: any) => { // error
+          // console.log('error', err);
+        },
+        complete: () => { // on completion
+        }
       }
     );
     return false;
@@ -111,23 +113,24 @@ export class InboxMailComponent implements OnInit {
       return true;
     }
     // retrieve the next page of mails starting from the last mail in the array
-    this.playerService.getMail(this.mails.getNumberOfMails()).subscribe(
-      (result: Mail[]) => { // on success
-        if (result !== undefined && result.length !== 0) {
-          result.forEach(value => {
-              if (value.whensent !== null) {
-                value.whensent = value.whensent.replace('[UTC]', '')
+    this.playerService.getMail(this.mails.getNumberOfMails()).subscribe({
+        next: (result: Mail[]) => { // on success
+          if (result !== undefined && result.length !== 0) {
+            result.forEach(value => {
+                if (value.whensent !== null) {
+                  value.whensent = value.whensent.replace('[UTC]', '')
+                }
               }
-            }
-          );
-          this.mails.addAll(result);
-          this.mails.next();
+            );
+            this.mails.addAll(result);
+            this.mails.next();
+          }
+        },
+        error: (err: any) => { // error
+          // console.log('error', err);
+        },
+        complete: () => { // on completion
         }
-      },
-      (err: any) => { // error
-        // console.log('error', err);
-      },
-      () => { // on completion
       }
     );
     return false;

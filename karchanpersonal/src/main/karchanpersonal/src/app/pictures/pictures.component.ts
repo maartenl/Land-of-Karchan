@@ -1,9 +1,9 @@
-import { Component, OnInit } from '@angular/core';
-import { PlayerService } from '../player.service';
-import { Picture } from './picture.model';
-import { FormControl, FormGroup, FormBuilder } from '@angular/forms';
-import { environment } from 'src/environments/environment';
-import { ToastService } from '../toast.service';
+import {Component, OnInit} from '@angular/core';
+import {PlayerService} from '../player.service';
+import {Picture} from './picture.model';
+import {FormBuilder, FormGroup} from '@angular/forms';
+import {environment} from 'src/environments/environment';
+import {ToastService} from '../toast.service';
 
 @Component({
   selector: 'app-pictures',
@@ -125,7 +125,9 @@ export class PicturesComponent implements OnInit {
       reader.onload = () => {
         if (reader.result !== null) {
           const content: string = reader.result.toString();
-          if (!content.startsWith('data:')) { return; }
+          if (!content.startsWith('data:')) {
+            return;
+          }
 
           this.form.patchValue({
             mimeType: content.substring(5).split(';')[0],

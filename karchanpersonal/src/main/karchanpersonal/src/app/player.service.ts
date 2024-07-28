@@ -1,26 +1,21 @@
-import { Observable } from 'rxjs';
-import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
-import { HttpHeaders } from '@angular/common/http';
-import { HttpErrorResponse } from '@angular/common/http';
-import { CookieService } from 'ngx-cookie-service';
+import {Observable} from 'rxjs';
+import {Injectable} from '@angular/core';
+import {HttpClient, HttpErrorResponse, HttpHeaders} from '@angular/common/http';
+import {CookieService} from 'ngx-cookie-service';
 
-import { environment } from '../environments/environment';
+import {environment} from '../environments/environment';
 
-import { ErrorsService } from './errors.service';
-import { Player, PasswordReset } from './player-settings/player.model';
-import { Mail, MailList } from './mail/mail.model';
-import {
-  Guild, GuildHopeful, GuildMember, GuildRank,
-  GuildHopefuls, GuildMembers, GuildRanks
-} from './guild/guild.model';
-import { Family } from './player-settings/family.model';
-import { Wikipage } from './wikipages/wikipage.model';
-import { Picture } from './pictures/picture.model';
-import { HasNewMail } from './game/newmail.model';
-import { ErrorMessage } from './errors/errormessage.model';
+import {ErrorsService} from './errors.service';
+import {PasswordReset, Player} from './player-settings/player.model';
+import {Mail} from './mail/mail.model';
+import {Guild, GuildHopeful, GuildMember, GuildRank} from './guild/guild.model';
+import {Family} from './player-settings/family.model';
+import {Wikipage} from './wikipages/wikipage.model';
+import {Picture} from './pictures/picture.model';
+import {HasNewMail} from './game/newmail.model';
+import {ErrorMessage} from './errors/errormessage.model';
 
-import { catchError, map, tap } from 'rxjs/operators';
+import {catchError} from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root'
@@ -142,7 +137,9 @@ export class PlayerService {
 
   private getGuildranksUrl(): string {
     return this.guildranksUrl.replace('[player]', this.getName());
-  } private getGuildhopefulsUrl(): string {
+  }
+
+  private getGuildhopefulsUrl(): string {
     return this.guildhopefulsUrl.replace('[player]', this.getName());
   }
 
@@ -434,7 +431,7 @@ export class PlayerService {
     const headers = new HttpHeaders()
       .append('Content-Type', 'text/html; charset=utf-8')
       .append('Accept', 'text/html');
-    return this.http.post(this.wikipagesPreviewUrl, contents, { responseType: 'text', headers })
+    return this.http.post(this.wikipagesPreviewUrl, contents, {responseType: 'text', headers})
       .pipe(
         catchError(err => {
           this.handleError(err);
@@ -525,7 +522,7 @@ export class PlayerService {
     this.errorsService.addHttpError(error, ignore);
   }
 
-  public deleteWikipage(title: string) : Observable<any> {
+  public deleteWikipage(title: string): Observable<any> {
     return this.http.delete(this.getWikipagesUrl(title))
       .pipe(
         catchError(err => {

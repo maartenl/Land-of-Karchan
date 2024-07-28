@@ -57,15 +57,11 @@ export class PlayerSettingsComponent implements OnInit {
 
   ngOnInit() {
     this.playerService.getPlayer()
-      .subscribe(
-        (result: any) => { // on success
-          this.player = result;
-          this.resetForm(result);
-        },
-        (err: any) => { // error
-          // console.log("error", err);
-        },
-        () => { // on completion
+      .subscribe({
+          next: (result: any) => { // on success
+            this.player = result;
+            this.resetForm(result);
+          }
         }
       );
   }
@@ -116,18 +112,14 @@ export class PlayerSettingsComponent implements OnInit {
     } else {
       this.chatlogService.disableWebsockets();
     }
-    this.playerService.updatePlayer(newPlayer).subscribe(
-      (result: any) => { // on success
-        this.toastService.show('Settings successfully updated.', {
-          delay: 3000,
-          autohide: true,
-          headertext: 'Updated...'
-        });
-      },
-      (err: any) => { // error
-        // console.log('error', err);
-      },
-      () => { // on completion
+    this.playerService.updatePlayer(newPlayer).subscribe({
+        next: (result: any) => { // on success
+          this.toastService.show('Settings successfully updated.', {
+            delay: 3000,
+            autohide: true,
+            headertext: 'Updated...'
+          });
+        }
       }
     );
   }
@@ -270,8 +262,7 @@ export class PlayerSettingsComponent implements OnInit {
   getDarkmodeLabel(): string {
     if (this.themeService.isDarkThemeActive()) {
       return "Turn darkmode off";
-    }
-    else {
+    } else {
       return "Turn darkmode on";
     }
   }

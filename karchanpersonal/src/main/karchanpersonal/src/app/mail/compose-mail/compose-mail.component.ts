@@ -68,19 +68,20 @@ export class ComposeMailComponent implements OnInit {
 
   public send(): void {
     const newMail: Mail = this.prepareSaveMail();
-    this.playerService.sendMail(newMail).subscribe(
-      (result: any) => { // on success
-        this.resetForm();
-        this.toastService.show('New mail sent.', {
-          delay: 3000,
-          autohide: true,
-          headertext: 'Success...'
-        });
-      },
-      (err: any) => { // error
-        // console.log('error', err);
-      },
-      () => { // on completion
+    this.playerService.sendMail(newMail).subscribe({
+        next: (result: any) => { // on success
+          this.resetForm();
+          this.toastService.show('New mail sent.', {
+            delay: 3000,
+            autohide: true,
+            headertext: 'Success...'
+          });
+        },
+        error: (err: any) => { // error
+          // console.log('error', err);
+        },
+        complete: () => { // on completion
+        }
       }
     );
   }

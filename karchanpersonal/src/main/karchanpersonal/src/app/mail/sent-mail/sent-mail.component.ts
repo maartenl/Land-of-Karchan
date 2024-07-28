@@ -23,22 +23,18 @@ export class SentMailComponent implements OnInit {
 
   ngOnInit() {
     // retrieve the next page of mails starting from the last mail in the array
-    this.playerService.getSentMail(this.mails.getNumberOfMails()).subscribe(
-      (result: Mail[]) => { // on success
-        if (result !== undefined && result.length !== 0) {
-          result.forEach(value => {
-              if (value.whensent !== null) {
-                value.whensent = value.whensent.replace('[UTC]', '')
+    this.playerService.getSentMail(this.mails.getNumberOfMails()).subscribe({
+        next: (result: Mail[]) => { // on success
+          if (result !== undefined && result.length !== 0) {
+            result.forEach(value => {
+                if (value.whensent !== null) {
+                  value.whensent = value.whensent.replace('[UTC]', '')
+                }
               }
-            }
-          );
-          this.mails.addAll(result);
+            );
+            this.mails.addAll(result);
+          }
         }
-      },
-      (err: any) => { // error
-        // console.log('error', err);
-      },
-      () => { // on completion
       }
     );
   }
@@ -63,23 +59,19 @@ export class SentMailComponent implements OnInit {
       return true;
     }
     // retrieve the next page of mails starting from the last mail in the array
-    this.playerService.getSentMail(this.mails.getNumberOfMails()).subscribe(
-      (result: Mail[]) => { // on success
-        if (result !== undefined && result.length !== 0) {
-          result.forEach(value => {
-              if (value.whensent !== null) {
-                value.whensent = value.whensent.replace('[UTC]', '')
+    this.playerService.getSentMail(this.mails.getNumberOfMails()).subscribe({
+        next: (result: Mail[]) => { // on success
+          if (result !== undefined && result.length !== 0) {
+            result.forEach(value => {
+                if (value.whensent !== null) {
+                  value.whensent = value.whensent.replace('[UTC]', '')
+                }
               }
-            }
-          );
-          this.mails.addAll(result);
-          this.mails.next();
+            );
+            this.mails.addAll(result);
+            this.mails.next();
+          }
         }
-      },
-      (err: any) => { // error
-        // console.log('error', err);
-      },
-      () => { // on completion
       }
     );
     return false;

@@ -1,8 +1,8 @@
-import { Component, OnInit } from '@angular/core';
-import { FormControl, FormGroup, FormBuilder } from '@angular/forms';
+import {Component, OnInit} from '@angular/core';
+import {FormBuilder} from '@angular/forms';
 
-import { Guild, GuildHopefuls, GuildRanks, GuildMembers } from './guild.model';
-import { PlayerService } from '../player.service';
+import {Guild} from './guild.model';
+import {PlayerService} from '../player.service';
 
 @Component({
   selector: 'app-guild',
@@ -15,21 +15,22 @@ export class GuildComponent implements OnInit {
   hasGuild = false;
 
   constructor(private playerService: PlayerService,
-    private formBuilder: FormBuilder) {
+              private formBuilder: FormBuilder) {
   }
 
   ngOnInit() {
     // retrieve the next page of mails starting from the last mail in the array
-    this.playerService.getGuild().subscribe(
-      (result: Guild) => { // on success
-        result.creation = result.creation.replace('[UTC]', '');
-        this.guild = result;
-        this.hasGuild = true;
-      },
-      (err: any) => { // error
-        // console.log("error", err);
-      },
-      () => { // on completion
+    this.playerService.getGuild().subscribe({
+        next: (result: Guild) => { // on success
+          result.creation = result.creation.replace('[UTC]', '');
+          this.guild = result;
+          this.hasGuild = true;
+        },
+        error: (err: any) => { // error
+          // console.log("error", err);
+        },
+        complete: () => { // on completion
+        }
       }
     );
   }
