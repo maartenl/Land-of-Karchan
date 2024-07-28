@@ -17,13 +17,42 @@ public record AdminItem(Integer id,
                         String owner,
                         LocalDateTime creation)
 {
-  public static final String GET_QUERY = """
+  /**
+   * Provides all item instances with this itemdefinition.
+   */
+  public static final String GET_ITEMDEFS_QUERY = """
       select json_object("id", mm_itemtable.id, "itemid", mm_itemtable.itemid, "containerid", mm_itemtable.containerid, "containerdefid", container.itemid, "belongsto", mm_itemtable.belongsto, "room",
                          mm_itemtable.room, "discriminator", mm_itemtable.discriminator, "shopkeeper", mm_itemtable.shopkeeper, "owner", mm_itemtable.owner, "creation", mm_itemtable.creation)
       from mm_itemtable
                left join mm_itemtable container
                          on (container.id = mm_itemtable.containerid)
       where mm_itemtable.itemid = ?
+      order by mm_itemtable.id
+      """;
+
+  /**
+   * Provides all item instances belonging to a person.
+   */
+  public static final String GET_PERSONS_QUERY = """
+      select json_object("id", mm_itemtable.id, "itemid", mm_itemtable.itemid, "containerid", mm_itemtable.containerid, "containerdefid", container.itemid, "belongsto", mm_itemtable.belongsto, "room",
+                         mm_itemtable.room, "discriminator", mm_itemtable.discriminator, "shopkeeper", mm_itemtable.shopkeeper, "owner", mm_itemtable.owner, "creation", mm_itemtable.creation)
+      from mm_itemtable
+               left join mm_itemtable container
+                         on (container.id = mm_itemtable.containerid)
+      where mm_itemtable.belongsto = ?
+      order by mm_itemtable.id
+      """;
+
+  /**
+   * Provides all item instances in a room.
+   */
+  public static final String GET_ROOMS_QUERY = """
+      select json_object("id", mm_itemtable.id, "itemid", mm_itemtable.itemid, "containerid", mm_itemtable.containerid, "containerdefid", container.itemid, "belongsto", mm_itemtable.belongsto, "room",
+                         mm_itemtable.room, "discriminator", mm_itemtable.discriminator, "shopkeeper", mm_itemtable.shopkeeper, "owner", mm_itemtable.owner, "creation", mm_itemtable.creation)
+      from mm_itemtable
+               left join mm_itemtable container
+                         on (container.id = mm_itemtable.containerid)
+      where mm_itemtable.room = ?
       order by mm_itemtable.id
       """;
 

@@ -6,8 +6,8 @@ import {ItemsRestService} from '../items-rest.service';
 import {Item, ItemDefinition} from './item.model';
 import {AdminComponent} from '../admin/admin.component';
 import {ToastService} from '../toast.service';
-import {Command} from "../commands/command.model";
 import {Logger} from "../consolelog.service";
+import {ItemdefinitionsRestService} from "../itemdefinitions-rest.service";
 
 @Component({
   selector: 'app-items',
@@ -40,6 +40,7 @@ export class ItemsComponent extends AdminComponent<ItemDefinition, number> imple
   }
 
   constructor(
+    private itemdefinitionsRestService: ItemdefinitionsRestService,
     private itemsRestService: ItemsRestService,
     private route: ActivatedRoute,
     private formBuilder: FormBuilder,
@@ -84,14 +85,14 @@ export class ItemsComponent extends AdminComponent<ItemDefinition, number> imple
     const item = {
       id: null,
       itemid: null,
-      containerid:  null,
+      containerid: null,
       containerdefid: null,
-      belongsto: null ,
-      room:  null ,
-      discriminator: null ,
-      shopkeeper: null ,
-      creation: null ,
-      owner:  null
+      belongsto: null,
+      room: null,
+      discriminator: null,
+      shopkeeper: null,
+      creation: null,
+      owner: null
     }
     this.itemForm = this.formBuilder.group(item);
     this.makeItem();
@@ -114,7 +115,7 @@ export class ItemsComponent extends AdminComponent<ItemDefinition, number> imple
   }
 
   getItems() {
-    this.itemsRestService.getAll()
+    this.itemdefinitionsRestService.getAll()
       .subscribe({
         next: data => {
           const ownerFilter = (item: ItemDefinition) => this.searchTerms.owner === undefined ||
@@ -175,14 +176,18 @@ export class ItemsComponent extends AdminComponent<ItemDefinition, number> imple
     if (id === undefined || id === null) {
       return false;
     }
-    this.itemsRestService.get(id).subscribe({
+    this.itemdefinitionsRestService.get(id).subscribe({
       next: (data) => {
-        if (data !== undefined) { this.setItem(data); }
+        if (data !== undefined) {
+          this.setItem(data);
+        }
       }
     });
-    this.itemsRestService.getAllItems(id).subscribe({
+    this.itemdefinitionsRestService.getAllItems(id).subscribe({
       next: (data) => {
-        if (data !== undefined) { this.iteminstances = data; }
+        if (data !== undefined) {
+          this.iteminstances = data;
+        }
       }
     });
     return false;
@@ -233,7 +238,7 @@ export class ItemsComponent extends AdminComponent<ItemDefinition, number> imple
 
     // return new `Item` object containing a combination of original blog value(s)
     // and deep copies of changed form model values
-    const creation = this.item === undefined || this.item === null  ? null : this.item.creation;
+    const creation = this.item === undefined || this.item === null ? null : this.item.creation;
     const owner = this.item === undefined || this.item === null ? null : this.item.owner;
     const saveItem: ItemDefinition = new ItemDefinition({
       id: formModel.id as number,
@@ -268,8 +273,8 @@ export class ItemsComponent extends AdminComponent<ItemDefinition, number> imple
     return saveItem;
   }
 
-  getRestService(): ItemsRestService {
-    return this.itemsRestService;
+  getRestService(): ItemdefinitionsRestService {
+    return this.itemdefinitionsRestService;
   }
 
   getToastService(): ToastService {

@@ -278,7 +278,7 @@ public class ItemDefinitionsRestService
   public String getItemInstances(@PathParam("id") Long id)
   {
     final List<String> items =
-        getEntityManager().createNativeQuery(AdminItem.GET_QUERY)
+        getEntityManager().createNativeQuery(AdminItem.GET_ITEMDEFS_QUERY)
             .setParameter(1, id)
             .getResultList();
     return "[" + String.join(",", items) + "]";

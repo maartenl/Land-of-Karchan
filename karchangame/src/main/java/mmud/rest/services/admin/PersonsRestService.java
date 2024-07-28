@@ -50,6 +50,7 @@ import mmud.database.enums.Sex;
 import mmud.exceptions.MudException;
 import mmud.exceptions.MudWebException;
 import mmud.rest.webentities.admin.AdminCharacter;
+import mmud.rest.webentities.admin.AdminItem;
 import mmud.services.LogService;
 import mmud.services.PersonService;
 import org.apache.commons.lang3.StringUtils;
@@ -303,6 +304,21 @@ public class PersonsRestService
   public String count()
   {
     return String.valueOf(getEntityManager().createNamedQuery("Person.countAll").getSingleResult());
+  }
+
+  @GET
+  @Path("{id}/items")
+  @Produces(
+      {
+          MediaType.APPLICATION_JSON
+      })
+  public String getItemInstances(@PathParam("id") String id)
+  {
+    final List<String> items =
+        getEntityManager().createNativeQuery(AdminItem.GET_PERSONS_QUERY)
+            .setParameter(1, id)
+            .getResultList();
+    return "[" + String.join(",", items) + "]";
   }
 
   private EntityManager getEntityManager()

@@ -47,6 +47,7 @@ import mmud.database.entities.game.Area;
 import mmud.database.entities.game.Room;
 import mmud.database.entities.game.UserCommand;
 import mmud.exceptions.MudWebException;
+import mmud.rest.webentities.admin.AdminItem;
 import mmud.rest.webentities.admin.AdminRoom;
 import mmud.rest.webentities.admin.AdminUserCommand;
 import mmud.services.RoomsService;
@@ -366,6 +367,21 @@ public class RoomsRestService
       return String.valueOf(getEntityManager().createNamedQuery("Room.countAll").getSingleResult());
     }
     return String.valueOf(getEntityManager().createNamedQuery("Room.countAllByDescription").setParameter(DESCRIPTION, "%" + description + "%").getSingleResult());
+  }
+
+  @GET
+  @Path("{id}/items")
+  @Produces(
+      {
+          MediaType.APPLICATION_JSON
+      })
+  public String getItemInstances(@PathParam("id") Long id)
+  {
+    final List<String> items =
+        getEntityManager().createNativeQuery(AdminItem.GET_ROOMS_QUERY)
+            .setParameter(1, id)
+            .getResultList();
+    return "[" + String.join(",", items) + "]";
   }
 
   private EntityManager getEntityManager()
