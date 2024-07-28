@@ -1,21 +1,20 @@
-import { Injectable } from '@angular/core';
-import { MudCharacter } from './characters/character.model';
+import {Injectable} from '@angular/core';
+import {MudCharacter} from './characters/character.model';
 import {Observable, ReplaySubject, share} from 'rxjs';
-import { catchError, publishReplay, refCount, map } from 'rxjs/operators';
-import { HttpClient } from '@angular/common/http';
-import { HttpErrorResponse } from '@angular/common/http';
+import {catchError, map} from 'rxjs/operators';
+import {HttpClient, HttpErrorResponse} from '@angular/common/http';
 
-import { environment } from '../environments/environment';
+import {environment} from '../environments/environment';
 
-import { ErrorsService } from './errors.service';
-import { AdminRestService } from './admin/admin-rest.service';
-import { ToastService } from './toast.service';
+import {ErrorsService} from './errors.service';
+import {AdminRestService} from './admin/admin-rest.service';
+import {ToastService} from './toast.service';
 import {Item} from "./items/item.model";
 
 @Injectable({
   providedIn: 'root'
 })
-export class CharactersRestService implements AdminRestService<MudCharacter, string>   {
+export class CharactersRestService implements AdminRestService<MudCharacter, string> {
 
   url: string;
 

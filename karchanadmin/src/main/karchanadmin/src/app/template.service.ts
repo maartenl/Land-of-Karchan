@@ -1,15 +1,13 @@
-import { Observable } from 'rxjs';
-import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
-import { HttpErrorResponse } from '@angular/common/http';
+import {Observable} from 'rxjs';
+import {Injectable} from '@angular/core';
+import {HttpClient, HttpErrorResponse} from '@angular/common/http';
 
-import { catchError, map, tap } from 'rxjs/operators';
+import {catchError} from 'rxjs/operators';
 
-import { environment } from '../environments/environment';
+import {environment} from '../environments/environment';
 
-import { ErrorsService } from './errors.service';
-import { Template } from './templates/template.model';
-import { ErrorMessage } from './errors/errormessage.model';
+import {ErrorsService} from './errors.service';
+import {Template} from './templates/template.model';
 
 @Injectable({
   providedIn: 'root'
@@ -23,23 +21,23 @@ export class TemplateService {
 
   public getTemplates(): Observable<any> {
     return this.http.get<Template[]>(this.url)
-    .pipe(
-      catchError(err => {
-        this.handleError(err);
-        return [];
-      })
-    );
+      .pipe(
+        catchError(err => {
+          this.handleError(err);
+          return [];
+        })
+      );
   }
 
   public updateTemplate(template: Template): any {
     // update
     return this.http.put<Template[]>(this.url + '/' + template.id, template)
-    .pipe(
-      catchError(err => {
-        this.handleError(err);
-        return [];
-      })
-    );
+      .pipe(
+        catchError(err => {
+          this.handleError(err);
+          return [];
+        })
+      );
   }
 
   /**

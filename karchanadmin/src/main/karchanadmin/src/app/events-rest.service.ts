@@ -1,20 +1,19 @@
-import {Observable, of, from, share, ReplaySubject} from 'rxjs';
-import { catchError, publishReplay, refCount, map } from 'rxjs/operators';
-import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
-import { HttpErrorResponse } from '@angular/common/http';
+import {Observable, ReplaySubject, share} from 'rxjs';
+import {catchError, map} from 'rxjs/operators';
+import {Injectable} from '@angular/core';
+import {HttpClient, HttpErrorResponse} from '@angular/common/http';
 
-import { environment } from '../environments/environment';
+import {environment} from '../environments/environment';
 
-import { ErrorsService } from './errors.service';
-import { AdminRestService } from './admin/admin-rest.service';
-import { ToastService } from './toast.service';
-import { MudEvent } from './events/event.model';
+import {ErrorsService} from './errors.service';
+import {AdminRestService} from './admin/admin-rest.service';
+import {ToastService} from './toast.service';
+import {MudEvent} from './events/event.model';
 
 @Injectable({
   providedIn: 'root'
 })
-export class EventsRestService implements AdminRestService<MudEvent, number>  {
+export class EventsRestService implements AdminRestService<MudEvent, number> {
 
   url: string;
 

@@ -1,9 +1,9 @@
-import { Component, OnInit } from '@angular/core';
-import { FormGroup, FormBuilder } from '@angular/forms';
+import {Component, OnInit} from '@angular/core';
+import {FormBuilder, FormGroup} from '@angular/forms';
 
-import { ToastService } from '../../toast.service';
-import { Bannedname } from '../bannednames.model';
-import { BanRestService } from 'src/app/ban-rest.service';
+import {ToastService} from '../../toast.service';
+import {Bannedname} from '../bannednames.model';
+import {BanRestService} from 'src/app/ban-rest.service';
 
 @Component({
   selector: 'app-bannednames',
@@ -97,21 +97,22 @@ export class BannednamesComponent implements OnInit {
 
   public createItem(): void {
     const itemFromForm = this.getForm();
-    this.banRestService.createBannedname(itemFromForm).subscribe(
-      (result: any) => { // on success
-        itemFromForm.setIdentifier(result);
-        this.items.push(itemFromForm);
-        this.items = [...this.items];
-        this.toastService.show(this.item?.getType() + ' ' + this.item?.getIdentifier() + ' successfully created.', {
-          delay: 3000,
-          autohide: true,
-          headertext: 'Created...'
-        });
-      },
-      (err: any) => { // error
-        // console.log('error', err);
-      },
-      () => { // on completion
+    this.banRestService.createBannedname(itemFromForm).subscribe({
+        next: (result: any) => { // on success
+          itemFromForm.setIdentifier(result);
+          this.items.push(itemFromForm);
+          this.items = [...this.items];
+          this.toastService.show(this.item?.getType() + ' ' + this.item?.getIdentifier() + ' successfully created.', {
+            delay: 3000,
+            autohide: true,
+            headertext: 'Created...'
+          });
+        },
+        error: (err: any) => { // error
+          // console.log('error', err);
+        },
+        complete: () => { // on completion
+        }
       }
     );
     return;
@@ -124,22 +125,23 @@ export class BannednamesComponent implements OnInit {
       }
       return;
     }
-    this.banRestService.deleteBannedname(this.item).subscribe(
-      (result: any) => { // on success
-        this.items = this.items
-          .filter((bl) => bl === undefined ||
-            bl?.getIdentifier() !== this.item?.getIdentifier());
-        this.items = [...this.items];
-        this.toastService.show(this.item?.getType() + ' ' + this.item?.getIdentifier() + ' successfully deleted.', {
-          delay: 3000,
-          autohide: true,
-          headertext: 'Deleted...'
-        });
-      },
-      (err: any) => { // error
-        // console.log('error', err);
-      },
-      () => { // on completion
+    this.banRestService.deleteBannedname(this.item).subscribe({
+        next: (result: any) => { // on success
+          this.items = this.items
+            .filter((bl) => bl === undefined ||
+              bl?.getIdentifier() !== this.item?.getIdentifier());
+          this.items = [...this.items];
+          this.toastService.show(this.item?.getType() + ' ' + this.item?.getIdentifier() + ' successfully deleted.', {
+            delay: 3000,
+            autohide: true,
+            headertext: 'Deleted...'
+          });
+        },
+        error: (err: any) => { // error
+          // console.log('error', err);
+        },
+        complete: () => { // on completion
+        }
       }
     );
 

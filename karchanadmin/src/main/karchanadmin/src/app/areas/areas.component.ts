@@ -1,14 +1,12 @@
-import { CollectionViewer, DataSource } from '@angular/cdk/collections';
-import { BehaviorSubject, Observable, of, Subscription } from 'rxjs';
-import { Router, ActivatedRoute, ParamMap } from '@angular/router';
-import { Component, OnInit, ViewChild } from '@angular/core';
-import { FormControl, FormGroup, FormBuilder } from '@angular/forms';
+import {ActivatedRoute} from '@angular/router';
+import {Component, OnInit} from '@angular/core';
+import {FormBuilder, FormGroup} from '@angular/forms';
 
-import { AreasRestService } from '../areas-rest.service';
-import { Area } from './area.model';
-import { AdminComponent } from '../admin/admin.component';
-import { ToastService } from '../toast.service';
-import { AdminRestService } from '../admin/admin-rest.service';
+import {AreasRestService} from '../areas-rest.service';
+import {Area} from './area.model';
+import {AdminComponent} from '../admin/admin.component';
+import {ToastService} from '../toast.service';
+import {AdminRestService} from '../admin/admin-rest.service';
 
 @Component({
   selector: 'app-areas',
@@ -106,7 +104,9 @@ export class AreasComponent extends AdminComponent<Area, string> implements OnIn
     }
     this.areasRestService.get(id).subscribe({
       next: (data) => {
-        if (data !== undefined) { this.setArea(data); }
+        if (data !== undefined) {
+          this.setArea(data);
+        }
       }
     });
     return false;

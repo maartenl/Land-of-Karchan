@@ -1,8 +1,8 @@
-import { Component, OnInit } from '@angular/core';
-import { FormControl, FormGroup, FormBuilder } from '@angular/forms';
+import {Component, OnInit} from '@angular/core';
+import {FormBuilder, FormGroup} from '@angular/forms';
 
-import { Template } from './template.model';
-import { TemplateService } from '../template.service';
+import {Template} from './template.model';
+import {TemplateService} from '../template.service';
 import {ToastService} from "../toast.service";
 
 @Component({
@@ -20,7 +20,7 @@ export class TemplatesComponent implements OnInit {
 
   constructor(private templateService: TemplateService,
               private toastService: ToastService,
-    private formBuilder: FormBuilder) {
+              private formBuilder: FormBuilder) {
     this.templateForm = this.formBuilder.group({
       name: '',
       content: '',
@@ -30,24 +30,25 @@ export class TemplatesComponent implements OnInit {
 
   ngOnInit() {
     // retrieve the next page of mails starting from the last mail in the array
-    this.templateService.getTemplates().subscribe(
-      (result: Template[]) => { // on success
-        if (result !== undefined && result.length !== 0) {
-          result.forEach((value) => {
-            if (value.created !== null) {
-              value.created = value.created.replace('[UTC]', '');
-            }
-            if (value.modified !== null) {
-              value.modified = value.modified.replace('[UTC]', '');
-            }
-          });
-          this.templates = result;
+    this.templateService.getTemplates().subscribe({
+        next: (result: Template[]) => { // on success
+          if (result !== undefined && result.length !== 0) {
+            result.forEach((value) => {
+              if (value.created !== null) {
+                value.created = value.created.replace('[UTC]', '');
+              }
+              if (value.modified !== null) {
+                value.modified = value.modified.replace('[UTC]', '');
+              }
+            });
+            this.templates = result;
+          }
+        },
+        error: (err: any) => { // error
+          // console.log('error', err);
+        },
+        complete: () => { // on completion
         }
-      },
-      (err: any) => { // error
-        // console.log('error', err);
-      },
-      () => { // on completion
       }
     );
   }
@@ -112,7 +113,7 @@ export class TemplatesComponent implements OnInit {
       return null;
     }
     const formModel = this.templateForm.value;
-  
+
     // return new `Template` object containing a combination of original template value(s)
     // and deep copies of changed form model values
     const saveTemplate: Template = {

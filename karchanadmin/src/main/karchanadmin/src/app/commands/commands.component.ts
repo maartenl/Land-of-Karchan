@@ -1,13 +1,11 @@
-import { CollectionViewer, DataSource } from '@angular/cdk/collections';
-import { BehaviorSubject, Observable, of, Subscription } from 'rxjs';
-import { Router, ActivatedRoute, ParamMap } from '@angular/router';
-import { Component, OnInit, ViewChild } from '@angular/core';
-import { FormControl, FormGroup, FormBuilder } from '@angular/forms';
+import {ActivatedRoute} from '@angular/router';
+import {Component, OnInit} from '@angular/core';
+import {FormBuilder, FormGroup} from '@angular/forms';
 
-import { CommandsRestService } from '../commands-rest.service';
-import { Command } from './command.model';
-import { AdminComponent } from '../admin/admin.component';
-import { ToastService } from '../toast.service';
+import {CommandsRestService} from '../commands-rest.service';
+import {Command} from './command.model';
+import {AdminComponent} from '../admin/admin.component';
+import {ToastService} from '../toast.service';
 
 @Component({
   selector: 'app-commands',
@@ -104,7 +102,9 @@ export class CommandsComponent extends AdminComponent<Command, number> implement
     }
     this.commandsRestService.get(id).subscribe({
       next: (data) => {
-        if (data !== undefined) { this.setCommand(data); }
+        if (data !== undefined) {
+          this.setCommand(data);
+        }
       }
     });
     return false;
@@ -183,10 +183,10 @@ export class CommandsComponent extends AdminComponent<Command, number> implement
     if (window.console) {
       console.log('sortByMethodName');
     }
-    this.items = this.items.sort((a, b) => { 
+    this.items = this.items.sort((a, b) => {
       const amethodName = a.methodName === null ? '' : a.methodName;
       const bmethodName = b.methodName === null ? '' : b.methodName;
-      return amethodName.localeCompare(bmethodName); 
+      return amethodName.localeCompare(bmethodName);
     });
     this.items = [...this.items];
     return false;

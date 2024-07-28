@@ -1,16 +1,15 @@
 import {Observable, of, ReplaySubject, share} from 'rxjs';
-import { catchError, publishReplay, refCount, map } from 'rxjs/operators';
-import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
-import { HttpErrorResponse } from '@angular/common/http';
+import {catchError, map} from 'rxjs/operators';
+import {Injectable} from '@angular/core';
+import {HttpClient, HttpErrorResponse} from '@angular/common/http';
 
-import { environment } from '../environments/environment';
+import {environment} from '../environments/environment';
 
-import { AdminRestService } from './admin/admin-rest.service';
-import { ErrorsService } from './errors.service';
-import { Room } from './rooms/room.model';
-import { Command } from './commands/command.model';
-import { ToastService } from './toast.service';
+import {AdminRestService} from './admin/admin-rest.service';
+import {ErrorsService} from './errors.service';
+import {Room} from './rooms/room.model';
+import {Command} from './commands/command.model';
+import {ToastService} from './toast.service';
 import {Item} from "./items/item.model";
 
 @Injectable({

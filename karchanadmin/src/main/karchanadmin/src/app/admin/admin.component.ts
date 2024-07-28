@@ -1,6 +1,6 @@
-import { AdminObject } from './admin-object.model';
-import { AdminRestService } from './admin-rest.service';
-import { ToastService } from '../toast.service';
+import {AdminObject} from './admin-object.model';
+import {AdminRestService} from './admin-rest.service';
+import {ToastService} from '../toast.service';
 
 /**
  * The idea here is to contain common functionality in this class,
@@ -54,22 +54,23 @@ export abstract class AdminComponent<T extends AdminObject<U>, U> {
     if (window.console) {
       console.log('delete item ' + this.item.getIdentifier());
     }
-    this.getRestService().delete(this.item).subscribe(
-      (result: any) => { // on success
-        this.items = this.items
-          .filter((bl) => bl === undefined ||
-            bl.getIdentifier() !== this.item?.getIdentifier());
-        this.items = [...this.items];
-        this.getToastService().show(this.item?.getType() + ' ' + this.item?.getIdentifier() + ' successfully deleted.', {
-          delay: 3000,
-          autohide: true,
-          headertext: 'Deleted...'
-        });
-      },
-      (err: any) => { // error
-        // console.log('error', err);
-      },
-      () => { // on completion
+    this.getRestService().delete(this.item).subscribe({
+        next: (result: any) => { // on success
+          this.items = this.items
+            .filter((bl) => bl === undefined ||
+              bl.getIdentifier() !== this.item?.getIdentifier());
+          this.items = [...this.items];
+          this.getToastService().show(this.item?.getType() + ' ' + this.item?.getIdentifier() + ' successfully deleted.', {
+            delay: 3000,
+            autohide: true,
+            headertext: 'Deleted...'
+          });
+        },
+        error: (err: any) => { // error
+          // console.log('error', err);
+        },
+        complete: () => { // on completion
+        }
       }
     );
 
@@ -77,7 +78,7 @@ export abstract class AdminComponent<T extends AdminObject<U>, U> {
 
   abstract getForm(): T;
 
-  abstract setItemById(id: U | undefined | null) : boolean;
+  abstract setItemById(id: U | undefined | null): boolean;
 
   public createItem(): void {
     const itemFromForm = this.getForm();

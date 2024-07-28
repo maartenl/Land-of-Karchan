@@ -41,22 +41,23 @@ export class ItemSubComponent implements OnInit {
 
   deleteItemInstance(item: Item) {
     Logger.log('deleteItemInstance');
-    this.itemsRestService.deleteIteminstance(item).subscribe(
-      (result: any) => { // on success
-        this.iteminstances = this.iteminstances
-          .filter((bl) => bl === undefined ||
-            bl.id !== item?.id);
-        this.iteminstances = [...this.iteminstances];
-        this.toastService.show(item.getType() + ' ' + item.id + ' successfully deleted.', {
-          delay: 3000,
-          autohide: true,
-          headertext: 'Deleted...'
-        });
-      },
-      (err: any) => { // error
-        // console.log('error', err);
-      },
-      () => { // on completion
+    this.itemsRestService.deleteIteminstance(item).subscribe({
+        next: (result: any) => { // on success
+          this.iteminstances = this.iteminstances
+            .filter((bl) => bl === undefined ||
+              bl.id !== item?.id);
+          this.iteminstances = [...this.iteminstances];
+          this.toastService.show(item.getType() + ' ' + item.id + ' successfully deleted.', {
+            delay: 3000,
+            autohide: true,
+            headertext: 'Deleted...'
+          });
+        },
+        error: (err: any) => { // error
+          // console.log('error', err);
+        },
+        complete: () => { // on completion
+        }
       }
     );
   }

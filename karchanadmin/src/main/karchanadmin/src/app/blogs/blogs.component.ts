@@ -1,9 +1,8 @@
-import { Component, OnInit } from '@angular/core';
-import { FormControl, FormGroup, FormBuilder } from '@angular/forms';
+import {Component, OnInit} from '@angular/core';
+import {FormBuilder, FormGroup} from '@angular/forms';
 
-import { Blog } from './blog.model';
-import { BlogService } from '../blog.service';
-import { ReturnStatement } from '@angular/compiler';
+import {Blog} from './blog.model';
+import {BlogService} from '../blog.service';
 
 @Component({
   selector: 'app-blogs',
@@ -19,7 +18,7 @@ export class BlogsComponent implements OnInit {
   blogForm: FormGroup;
 
   constructor(private blogService: BlogService,
-    private formBuilder: FormBuilder) {
+              private formBuilder: FormBuilder) {
     this.blogForm = this.formBuilder.group({
       title: '',
       urlTitle: '',
@@ -29,24 +28,25 @@ export class BlogsComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.blogService.getBlogs().subscribe(
-      (result: Blog[]) => { // on success
-        if (result !== undefined && result.length !== 0) {
-          result.forEach((value) => {
-            if (value.creation !== null) {
-              value.creation = value.creation.replace('[UTC]', '');
-            }
-            if (value.modification !== null) {
-              value.modification = value.modification.replace('[UTC]', '');
-            }
-          });
-          this.blogs = result;
+    this.blogService.getBlogs().subscribe({
+        next: (result: Blog[]) => { // on success
+          if (result !== undefined && result.length !== 0) {
+            result.forEach((value) => {
+              if (value.creation !== null) {
+                value.creation = value.creation.replace('[UTC]', '');
+              }
+              if (value.modification !== null) {
+                value.modification = value.modification.replace('[UTC]', '');
+              }
+            });
+            this.blogs = result;
+          }
+        },
+        error: (err: any) => { // error
+          // console.log('error', err);
+        },
+        complete: () => { // on completion
         }
-      },
-      (err: any) => { // error
-        // console.log('error', err);
-      },
-      () => { // on completion
       }
     );
   }
@@ -119,7 +119,7 @@ export class BlogsComponent implements OnInit {
     );
   }
 
-  prepareSave(): Blog  | null {
+  prepareSave(): Blog | null {
     if (this.blog === null) {
       return null;
     }

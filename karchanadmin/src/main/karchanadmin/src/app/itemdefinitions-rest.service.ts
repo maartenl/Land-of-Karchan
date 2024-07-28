@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import {Injectable} from '@angular/core';
 import {AdminRestService} from "./admin/admin-rest.service";
 import {Item, ItemDefinition} from "./items/item.model";
 import {Observable, ReplaySubject, share} from "rxjs";
@@ -6,7 +6,7 @@ import {HttpClient, HttpErrorResponse} from "@angular/common/http";
 import {ErrorsService} from "./errors.service";
 import {ToastService} from "./toast.service";
 import {environment} from "../environments/environment";
-import {catchError, map, publishReplay, refCount} from "rxjs/operators";
+import {catchError, map} from "rxjs/operators";
 
 /**
  * Anything regarding Rest calls for changing and retrieving and deleteing Item Definitions.
@@ -14,7 +14,7 @@ import {catchError, map, publishReplay, refCount} from "rxjs/operators";
 @Injectable({
   providedIn: 'root'
 })
-export class ItemdefinitionsRestService  implements AdminRestService<ItemDefinition, number> {
+export class ItemdefinitionsRestService implements AdminRestService<ItemDefinition, number> {
 
   cache$: Observable<ItemDefinition[]> | null = null;
 

@@ -1,7 +1,7 @@
-import { Component, OnInit } from '@angular/core';
-import { Router, ActivatedRoute, ParamMap } from '@angular/router';
+import {Component, OnInit} from '@angular/core';
+import {Router} from '@angular/router';
 
-import { ChristmasUtils } from './christmas.utils';
+import {ChristmasUtils} from './christmas.utils';
 import {ThemeService} from "./theme.service";
 
 @Component({
@@ -13,11 +13,13 @@ export class AppComponent implements OnInit {
   collapsed = true;
 
   constructor(private themeService: ThemeService,
-    private router: Router) {
+              private router: Router) {
   }
 
   ngOnInit(): void {
-    if (window.console) { console.log('Is darkmode active: ' + this.themeService.isDarkThemeActive()); }
+    if (window.console) {
+      console.log('Is darkmode active: ' + this.themeService.isDarkThemeActive());
+    }
   }
 
   getFavicon(): string {

@@ -1,4 +1,4 @@
-import { Injectable, WritableSignal, effect, signal } from "@angular/core";
+import {effect, Injectable} from "@angular/core";
 import {CookieService} from "ngx-cookie-service";
 
 /**

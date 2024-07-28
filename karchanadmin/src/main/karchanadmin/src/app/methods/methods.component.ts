@@ -1,15 +1,12 @@
-import { CollectionViewer, DataSource } from '@angular/cdk/collections';
-import { BehaviorSubject, Observable, of, Subscription } from 'rxjs';
-import { Router, ActivatedRoute, ParamMap } from '@angular/router';
-import { Component, OnInit, ViewChild } from '@angular/core';
-import { FormControl, FormGroup, FormBuilder } from '@angular/forms';
-import { CdkVirtualScrollViewport } from '@angular/cdk/scrolling';
+import {ActivatedRoute} from '@angular/router';
+import {Component, OnInit} from '@angular/core';
+import {FormBuilder, FormGroup} from '@angular/forms';
 
-import { MethodsRestService } from '../methods-rest.service';
-import { Method } from './method.model';
-import { Command } from '../commands/command.model';
-import { AdminComponent } from '../admin/admin.component';
-import { ToastService } from '../toast.service';
+import {MethodsRestService} from '../methods-rest.service';
+import {Method} from './method.model';
+import {Command} from '../commands/command.model';
+import {AdminComponent} from '../admin/admin.component';
+import {ToastService} from '../toast.service';
 
 @Component({
   selector: 'app-methods',
@@ -102,7 +99,9 @@ export class MethodsComponent extends AdminComponent<Method, string> implements 
     });
     this.methodsRestService.getCommands(name).subscribe({
       next: (data) => {
-        if (data !== undefined) { this.commands = data; }
+        if (data !== undefined) {
+          this.commands = data;
+        }
       }
     });
     return false;
