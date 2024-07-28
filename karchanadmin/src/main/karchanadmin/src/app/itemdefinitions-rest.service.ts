@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import {AdminRestService} from "./admin/admin-rest.service";
 import {Item, ItemDefinition} from "./items/item.model";
-import {Observable} from "rxjs";
+import {Observable, ReplaySubject, share} from "rxjs";
 import {HttpClient, HttpErrorResponse} from "@angular/common/http";
 import {ErrorsService} from "./errors.service";
 import {ToastService} from "./toast.service";
@@ -53,8 +53,12 @@ export class ItemdefinitionsRestService  implements AdminRestService<ItemDefinit
           items.forEach(item => newItems.push(new ItemDefinition(item)));
           return newItems;
         }),
-        publishReplay(1),
-        refCount(),
+        share({
+          connector: () => new ReplaySubject(1),
+          resetOnError: false,
+          resetOnComplete: false,
+          resetOnRefCountZero: false
+        }),
         catchError(err => {
           this.handleError(err);
           return [];
@@ -74,8 +78,12 @@ export class ItemdefinitionsRestService  implements AdminRestService<ItemDefinit
           items.forEach(item => newItems.push(new Item(item)));
           return newItems;
         }),
-        publishReplay(1),
-        refCount(),
+        share({
+          connector: () => new ReplaySubject(1),
+          resetOnError: false,
+          resetOnComplete: false,
+          resetOnRefCountZero: false
+        }),
         catchError(err => {
           this.handleError(err);
           return [];

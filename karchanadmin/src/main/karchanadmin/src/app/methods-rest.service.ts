@@ -1,4 +1,4 @@
-import { Observable, of, from } from 'rxjs';
+import {Observable, of, from, share, ReplaySubject} from 'rxjs';
 import { catchError, publishReplay, refCount, map } from 'rxjs/operators';
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
@@ -68,8 +68,12 @@ export class MethodsRestService implements AdminRestService<Method, string> {
           items.forEach(item => newItems.push(new Method(item)));
           return newItems;
         }),
-        publishReplay(1),
-        refCount(),
+        share({
+          connector: () => new ReplaySubject(1),
+          resetOnError: false,
+          resetOnComplete: false,
+          resetOnRefCountZero: false
+        }),
         catchError(err => {
           this.handleError(err);
           return [];

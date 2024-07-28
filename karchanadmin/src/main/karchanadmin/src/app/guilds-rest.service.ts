@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import {Guild, Guildmember} from './guilds/guild.model';
-import { Observable } from 'rxjs';
+import {Observable, ReplaySubject, share} from 'rxjs';
 import { catchError, publishReplay, refCount, map } from 'rxjs/operators';
 import { HttpClient } from '@angular/common/http';
 import { HttpErrorResponse } from '@angular/common/http';
@@ -51,8 +51,12 @@ export class GuildsRestService implements AdminRestService<Guild, string> {
           items.forEach(item => newItems.push(new Guild(item)));
           return newItems;
         }),
-        publishReplay(1),
-        refCount(),
+        share({
+          connector: () => new ReplaySubject(1),
+          resetOnError: false,
+          resetOnComplete: false,
+          resetOnRefCountZero: false
+        }),
         catchError(err => {
           this.handleError(err);
           return [];
@@ -106,8 +110,12 @@ export class GuildsRestService implements AdminRestService<Guild, string> {
           items.forEach(item => newItems.push(new Guildmember(item)));
           return newItems;
         }),
-        publishReplay(1),
-        refCount(),
+        share({
+          connector: () => new ReplaySubject(1),
+          resetOnError: false,
+          resetOnComplete: false,
+          resetOnRefCountZero: false
+        }),
         catchError(err => {
           this.handleError(err);
           return [];

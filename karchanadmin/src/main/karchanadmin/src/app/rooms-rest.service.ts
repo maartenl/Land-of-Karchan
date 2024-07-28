@@ -1,4 +1,4 @@
-import { Observable, of } from 'rxjs';
+import {Observable, of, ReplaySubject, share} from 'rxjs';
 import { catchError, publishReplay, refCount, map } from 'rxjs/operators';
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
@@ -75,8 +75,12 @@ export class RoomsRestService implements AdminRestService<Room, number> {
           items.forEach(item => newItems.push(new Room(item)));
           return newItems;
         }),
-        publishReplay(1),
-        refCount(),
+        share({
+          connector: () => new ReplaySubject(1),
+          resetOnError: false,
+          resetOnComplete: false,
+          resetOnRefCountZero: false
+        }),
         catchError(err => {
           this.handleError(err);
           return [];
@@ -134,8 +138,12 @@ export class RoomsRestService implements AdminRestService<Room, number> {
           items.forEach(item => newItems.push(new Item(item)));
           return newItems;
         }),
-        publishReplay(1),
-        refCount(),
+        share({
+          connector: () => new ReplaySubject(1),
+          resetOnError: false,
+          resetOnComplete: false,
+          resetOnRefCountZero: false
+        }),
         catchError(err => {
           this.handleError(err);
           return [];
