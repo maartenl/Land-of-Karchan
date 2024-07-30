@@ -22,13 +22,15 @@ import mmud.JsonUtils;
 import mmud.database.entities.characters.Position;
 import mmud.database.entities.game.Room;
 
+import java.util.Collections;
 import java.util.List;
 
 /**
  * @author maartenl
  */
 public record PrivateRoom(Long roomid, String image, String title, String content, Long west, Long east, Long north,
-                          Long south, Long up, Long down, List<PrivatePerson> persons, List<PrivateItem> items, Position minimum, Position maximum)
+                          Long south, Long up, Long down, List<PrivatePerson> persons, List<PrivateItem> items,
+                          Position minimum, Position maximum, Position center)
 {
 
   @JsonbCreator
@@ -52,8 +54,17 @@ public record PrivateRoom(Long roomid, String image, String title, String conten
             .toList(),
         Constants.addInventoryForRoom(room.getItems()),
         room.getMinimumPoint(),
-        room.getMaximumPoint()
+        room.getMaximumPoint(),
+        room.getCenterPoint()
     );
+  }
+
+  public static PrivateRoom createCoordinatesPrivateRoom(Room room)
+  {
+    return new PrivateRoom(room.getId(), null, null, null,
+        null,
+        null, null, null, null, null, Collections.emptyList(), Collections.emptyList(), room.getMinimumPoint(),
+        room.getMaximumPoint(), room.getCenterPoint());
   }
 
   public String toJson()

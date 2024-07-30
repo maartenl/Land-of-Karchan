@@ -22,6 +22,7 @@ import jakarta.annotation.security.RolesAllowed;
 import jakarta.inject.Inject;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
+import jakarta.persistence.TypedQuery;
 import jakarta.transaction.Transactional;
 import jakarta.ws.rs.Consumes;
 import jakarta.ws.rs.GET;
@@ -43,10 +44,13 @@ import mmud.database.entities.game.Room;
 import mmud.exceptions.MudException;
 import mmud.exceptions.MudWebException;
 import mmud.rest.webentities.PrivateRoom;
+import mmud.rest.webentities.admin.AdminRoom;
 import mmud.services.LogService;
 import mmud.services.PlayerAuthenticationService;
 
+import java.util.List;
 import java.util.logging.Logger;
+import java.util.stream.Collectors;
 
 /**
  * Contains all rest calls used by the graphical client, with
@@ -250,6 +254,35 @@ public class GraphicsRestService
     person.setRoom(room);
     return createResponse();
   }
+
+  /**
+   * @return list of room ids, including coordinates.
+   */
+  @GET
+  @Path("rooms")
+  @Produces(
+      {
+          MediaType.APPLICATION_JSON
+      })
+  public String getRooms()
+  {
+    LOGGER.finer("entering getRooms");
+    String result;
+    try
+    {
+      List<Room> rooms = getEntityManager().createNamedQuery("Room.findIfCoordinates", Room.class).getResultList();
+      result = "[" + rooms.stream().map(room -> PrivateRoom.createCoordinatesPrivateRoom(room).toJson()).collect(Collectors.joining(",")) + "]";
+    } catch (MudWebException | MudException e)
+    {
+      //ignore
+      throw e;
+    } catch (Exception e)
+    {
+      throw new MudWebException(null, e, Status.BAD_REQUEST);
+    }
+    return result;
+  }
+
 
   private User authenticate(String name)
   {

@@ -57,6 +57,7 @@ import java.util.logging.Logger;
 @NamedQuery(name = "Room.findMaxId", query = "SELECT max(r.id) FROM Room r")
 @NamedQuery(name = "Room.findByCreation", query = "SELECT r FROM Room r WHERE r.creation = :creation")
 @NamedQuery(name = "Room.findByTitle", query = "SELECT r FROM Room r WHERE r.title = :title")
+@NamedQuery(name = "Room.findIfCoordinates", query = "SELECT r FROM Room r WHERE r.minx is not null")
 @NamedQuery(name = "Room.findByPicture", query = "SELECT r FROM Room r WHERE r.picture = :picture")
 @Customizer(PersonsFilterForRoom.class)
 public class Room implements Serializable, DisplayInterface, ItemWrangler, AttributeWrangler, Ownage
@@ -107,7 +108,12 @@ public class Room implements Serializable, DisplayInterface, ItemWrangler, Attri
     private BigDecimal maxy;
     @Column(name = "maxz")
     private BigDecimal maxz;
-
+    @Column(name = "curx")
+    private BigDecimal curx;
+    @Column(name = "cury")
+    private BigDecimal cury;
+    @Column(name = "curz")
+    private BigDecimal curz;
 
     @OneToMany(mappedBy = "down")
     private Collection<Room> roomCollection;
@@ -426,6 +432,16 @@ public class Room implements Serializable, DisplayInterface, ItemWrangler, Attri
     }
 
     /**
+     * @return Returns the center point of a cube.
+     * This is the point where a person can stand in the cube, if he previously didn't have any coordinates
+     * assigned but it in the room.
+     */
+    public Position getCenterPoint()
+    {
+        return new Position(curx, cury, curz);
+    }
+
+    /**
      * Sets the minimum point of a cube.
      */
     public void setMinimumPoint(Position position)
@@ -444,7 +460,6 @@ public class Room implements Serializable, DisplayInterface, ItemWrangler, Attri
         maxy = position.yPosition();
         maxz = position.zPosition();
     }
-
 
     @Override
     public int hashCode()
