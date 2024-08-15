@@ -14,6 +14,8 @@ export class TemplatesComponent implements OnInit {
 
   templates: Template[] = new Array<Template>(0);
 
+  history: Template[] = new Array<Template>(0);
+
   template: Template | null = null;
 
   templateForm: FormGroup;
@@ -76,6 +78,7 @@ export class TemplatesComponent implements OnInit {
 
   public setTemplate(template: Template): void {
     this.template = template;
+    this.history = [];
     this.templateForm.reset({
       name: template.name,
       content: template.content,
@@ -92,8 +95,8 @@ export class TemplatesComponent implements OnInit {
     if (template === null) {
       return;
     }
-    this.templateService.updateTemplate(template).subscribe(
-      (result: any) => { // on success
+    this.templateService.updateTemplate(template).subscribe({
+      next: (result: any) => { // on success
         this.templates[index] = template;
         this.toastService.show('Template successfully updated.', {
           delay: 3000,
@@ -101,11 +104,7 @@ export class TemplatesComponent implements OnInit {
           headertext: 'Updated...'
         });
       },
-      (err: any) => { // error
-        // console.log('error', err);
-      },
-      () => { // on completion
-      });
+    });
   }
 
   prepareSave(): Template | null {
@@ -128,4 +127,22 @@ export class TemplatesComponent implements OnInit {
     };
     return saveTemplate;
   }
+
+  getHistory(): boolean {
+    if (this.template === null) {
+      return false;
+    }
+    this.templateService.getHistoricTemplates(this.template).subscribe({
+      next: (result: Template[]) => { // on success
+        this.history = [...result];
+        this.toastService.show('History successfully retrieved.', {
+          delay: 3000,
+          autohide: true,
+          headertext: 'History retrieved...'
+        });
+      },
+    });
+    return false;
+  }
 }
+

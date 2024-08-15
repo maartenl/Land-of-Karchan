@@ -1,49 +1,81 @@
 <div class="container-fluid">
-  <div class="row row-content">
-    <div class="col-xs-12 col-xl-6">
-      <h3>Compose Template</h3>
-      <form [formGroup]="templateForm" (ngSubmit)="saveTemplate()" novalidate>
-        <fieldset class="form-group">
-          <label for="name">Name</label>
-          <input type="text" class="form-control" id="name" name="name" formControlName="name">
-          <small id="name" class="form-text text-muted">Kindly do not change it, unless you really need to.</small>
-        </fieldset>
-        <fieldset class="form-group">
-          <label for="comment">Comment</label>
-          <input type="text" class="form-control" id="comment" name="comment" formControlName="comment">
-        </fieldset>
-        <fieldset class="form-group">
-          <label for="body">Contents</label>
-          <textarea class="form-control" id="content" rows="33" formControlName="content"></textarea>
-        </fieldset>
-        <div class="col-xs-12 col-sm-12 text-right">
-          <button type="submit" [disabled]="templateForm.pristine" class="btn btn-primary">Save</button>
-          <button type="reset" [disabled]="templateForm.pristine" class="btn btn-primary" (click)="cancel()">Cancel</button>
+    <div class="row row-content">
+        <div class="col-xs-12 col-xl-6">
+            <h3>Compose Template</h3>
+            <form [formGroup]="templateForm" (ngSubmit)="saveTemplate()" novalidate>
+                <fieldset class="form-group">
+                    <legend>Name of the template</legend>
+                    <label for="name">Name</label>
+                    <input type="text" class="form-control" id="name" name="name" formControlName="name">
+                    <small id="nameTooltip" class="form-text text-muted">Kindly do not change it, unless you really need
+                        to.</small>
+                </fieldset>
+                <fieldset class="form-group">
+                    <legend>Comments on the template</legend>
+                    <label for="comment">Comment</label>
+                    <input type="text" class="form-control" id="comment" name="comment" formControlName="comment">
+                </fieldset>
+                <fieldset class="form-group">
+                    <legend>The content of the template</legend>
+                    <label for="content">Contents</label>
+                    <textarea class="form-control" id="content" rows="33" formControlName="content"></textarea>
+                </fieldset>
+                <div class="col-xs-12 col-sm-12 text-right">
+                    <button type="submit" [disabled]="templateForm.pristine" class="btn btn-primary">Save</button>
+                    <button type="reset" [disabled]="templateForm.pristine" class="btn btn-primary" (click)="cancel()">
+                        Cancel
+                    </button>
+                </div>
+            </form>
+            <div class="col-xs-12 col-sm-12 text-right">
+                <button type="button" class="btn btn-primary" (click)="getHistory()">Get history</button>
+            </div>
+            <table class="table table-sm table-striped table-bordered">
+                <caption>Old versions of Templates</caption>
+                <thead class="thead-inverse">
+                <tr>
+                    <th>#</th>
+                    <th>Version</th>
+                    <th>Created</th>
+                    <th>Modified</th>
+                    <th>Editor</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr *ngFor="let historicTemplate of history">
+                    <td (click)="setTemplate(historicTemplate)">{{ historicTemplate.id }}</td>
+                    <td (click)="setTemplate(historicTemplate)">{{ historicTemplate.version }}</td>
+                    <td (click)="setTemplate(historicTemplate)">{{ historicTemplate.created | date:'medium' }}</td>
+                    <td (click)="setTemplate(historicTemplate)">{{ historicTemplate.modified | date:'medium' }}</td>
+                    <td (click)="setTemplate(historicTemplate)">{{ historicTemplate.editor }}</td>
+                </tr>
+                </tbody>
+            </table>
         </div>
-      </form>
+        <div class="col-xs-12 col-xl-6">
+            <table class="table table-sm table-striped table-bordered">
+                <caption>Templates</caption>
+                <thead class="thead-inverse">
+                <tr>
+                    <th>#</th>
+                    <th>Name</th>
+                    <th>Version</th>
+                    <th>Created</th>
+                    <th>Modified</th>
+                    <th>Editor</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr *ngFor="let template of templates">
+                    <td (click)="setTemplate(template)">{{ template.id }}</td>
+                    <td (click)="setTemplate(template)">{{ template.name }}</td>
+                    <td (click)="setTemplate(template)">{{ template.version }}</td>
+                    <td (click)="setTemplate(template)">{{ template.created | date:'medium' }}</td>
+                    <td (click)="setTemplate(template)">{{ template.modified | date:'medium' }}</td>
+                    <td (click)="setTemplate(template)">{{ template.editor }}</td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
     </div>
-    <div class="col-xs-12 col-xl-6">
-      <table class="table table-sm table-striped table-bordered">
-        <thead class="thead-inverse">
-          <tr>
-            <th>#</th>
-            <th>Name</th>
-            <th>Version</th>
-            <th>Created</th>
-            <th>Modified</th>
-            <th>Editor</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr *ngFor="let template of templates">
-            <td (click)="setTemplate(template)">{{ template.id }}</td>
-            <td (click)="setTemplate(template)">{{ template.name }}</td>
-            <td (click)="setTemplate(template)">{{ template.version }}</td>
-            <td (click)="setTemplate(template)">{{ template.created | date:'medium' }}</td>
-            <td (click)="setTemplate(template)">{{ template.modified | date:'medium' }}</td>
-            <td (click)="setTemplate(template)">{{ template.editor }}</td>
-          </tr>
-        </tbody>
-      </table>
-  </div>
 </div>

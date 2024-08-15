@@ -16,11 +16,6 @@
  */
 package mmud.rest.services.admin;
 
-import java.time.LocalDateTime;
-import java.util.List;
-import java.util.logging.Logger;
-import java.util.stream.Collectors;
-
 import jakarta.annotation.security.DeclareRoles;
 import jakarta.annotation.security.RolesAllowed;
 import jakarta.inject.Inject;
@@ -42,8 +37,13 @@ import mmud.database.entities.game.Admin;
 import mmud.database.entities.web.HistoricTemplate;
 import mmud.database.entities.web.HtmlTemplate;
 import mmud.exceptions.MudWebException;
+import mmud.rest.webentities.admin.AdminHistoricTemplate;
 import mmud.rest.webentities.admin.AdminTemplate;
 import mmud.services.LogService;
+
+import java.time.LocalDateTime;
+import java.util.logging.Logger;
+import java.util.stream.Collectors;
 
 /**
  * The REST service for dealing with Templates.
@@ -71,9 +71,9 @@ public class TemplatesRestService
   @PUT
   @Path("{id}")
   @Consumes(
-    {
-      MediaType.APPLICATION_JSON
-    })
+      {
+          MediaType.APPLICATION_JSON
+      })
   public void edit(@PathParam("id") Long id, AdminTemplate template)
   {
     LOGGER.info("edit");
@@ -101,10 +101,10 @@ public class TemplatesRestService
   @GET
   @Path("{id}")
   @Produces(
-    {
-      MediaType.APPLICATION_JSON
-    })
-  public AdminTemplate find(@PathParam("id") Long id)
+      {
+          MediaType.APPLICATION_JSON
+      })
+  public String find(@PathParam("id") Long id)
   {
     final String name = sc.getUserPrincipal().getName();
     HtmlTemplate entity = getEntityManager().find(HtmlTemplate.class, id);
@@ -112,15 +112,40 @@ public class TemplatesRestService
     {
       throw new MudWebException(name, "Template " + id + " not found.", Response.Status.NOT_FOUND);
     }
-    return new AdminTemplate(entity);
+    return new AdminTemplate(entity).toJson();
+  }
+
+  @GET
+  @Path("{id}/history")
+  @Produces(
+      {
+          MediaType.APPLICATION_JSON
+      })
+  public String findHistory(@PathParam("id") Long id)
+  {
+    final String name = sc.getUserPrincipal().getName();
+    HtmlTemplate htmlTemplate = getEntityManager().find(HtmlTemplate.class, id);
+    if (htmlTemplate == null)
+    {
+      throw new MudWebException(name, "Template " + id + " not found.", Response.Status.NOT_FOUND);
+    }
+
+    return "[" +
+        getEntityManager().createNamedQuery("HistoricTemplate.findByName", HistoricTemplate.class).setParameter("name"
+                , htmlTemplate.getName()).getResultList()
+            .stream()
+            .map(AdminHistoricTemplate::new)
+            .map(AdminHistoricTemplate::toJson)
+            .collect(Collectors.joining(","))
+        + "]";
   }
 
   @GET
   @Produces(
-    {
-      MediaType.APPLICATION_JSON
-    })
-  public List<AdminTemplate> findAll()
+      {
+          MediaType.APPLICATION_JSON
+      })
+  public String findAll()
   {
     final String name = sc.getUserPrincipal().getName();
     Admin admin = getEntityManager().find(Admin.class, name);
@@ -128,8 +153,12 @@ public class TemplatesRestService
     {
       throw new MudWebException(name, "Admin " + name + " not found.", Response.Status.NOT_FOUND);
     }
-    TypedQuery<HtmlTemplate> templates = getEntityManager().createNamedQuery("HtmlTemplate.findAll", HtmlTemplate.class);
-    return templates.getResultList().stream().map(x -> new AdminTemplate(x)).collect(Collectors.toList());
+    TypedQuery<HtmlTemplate> templates = getEntityManager().createNamedQuery("HtmlTemplate.findAll",
+        HtmlTemplate.class);
+    return "[" + templates.getResultList().stream()
+        .map(AdminTemplate::new)
+        .map(AdminTemplate::toJson)
+        .collect(Collectors.joining(",")) + "]";
   }
 
   protected EntityManager getEntityManager()
@@ -142,7 +171,8 @@ public class TemplatesRestService
     Admin person = getEntityManager().find(Admin.class, name);
     if (person == null)
     {
-      throw new MudWebException(name, "Admin was not found.", "Admin was not found  (" + name + ")", Response.Status.BAD_REQUEST);
+      throw new MudWebException(name, "Admin was not found.", "Admin was not found  (" + name + ")",
+          Response.Status.BAD_REQUEST);
     }
     return person;
   }

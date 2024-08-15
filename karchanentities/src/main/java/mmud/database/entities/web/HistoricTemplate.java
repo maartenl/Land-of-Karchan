@@ -16,10 +16,6 @@
  */
 package mmud.database.entities.web;
 
-import java.io.Serializable;
-import java.math.BigDecimal;
-import java.time.LocalDateTime;
-
 import jakarta.persistence.Basic;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -27,12 +23,16 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Lob;
-import jakarta.persistence.NamedQueries;
 import jakarta.persistence.NamedQuery;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
+
+import java.io.Serial;
+import java.io.Serializable;
+import java.math.BigDecimal;
+import java.time.LocalDateTime;
 
 /**
  * Basically, all the old templates are stored as backups.
@@ -41,18 +41,12 @@ import jakarta.validation.constraints.Size;
  */
 @Entity
 @Table(name = "templates_his")
-@NamedQueries(
-        {
-          @NamedQuery(name = "HistoricTemplate.findAll", query = "SELECT h FROM HistoricTemplate h"),
-          @NamedQuery(name = "HistoricTemplate.findById", query = "SELECT h FROM HistoricTemplate h WHERE h.id = :id"),
-          @NamedQuery(name = "HistoricTemplate.findByName", query = "SELECT h FROM HistoricTemplate h WHERE h.name = :name"),
-          @NamedQuery(name = "HistoricTemplate.findByCreated", query = "SELECT h FROM HistoricTemplate h WHERE h.created = :created"),
-          @NamedQuery(name = "HistoricTemplate.findByModified", query = "SELECT h FROM HistoricTemplate h WHERE h.modified = :modified"),
-          @NamedQuery(name = "HistoricTemplate.findByVersion", query = "SELECT h FROM HistoricTemplate h WHERE h.version = :version")
-        })
+@NamedQuery(name = "HistoricTemplate.findByName", query = "SELECT h FROM HistoricTemplate h WHERE h.name = :name " +
+    "order by h.version")
 public class HistoricTemplate implements Serializable
 {
 
+  @Serial
   private static final long serialVersionUID = 1L;
 
   @Id
@@ -84,7 +78,8 @@ public class HistoricTemplate implements Serializable
   @Column(name = "content")
   private String content;
 
-  // @Max(value=?)  @Min(value=?)//if you know range of your decimal fields consider using these annotations to enforce field validation
+  // @Max(value=?)  @Min(value=?)//if you know range of your decimal fields consider using these annotations to
+  // enforce field validation
   @Min(1)
   @Basic(optional = false)
   @NotNull

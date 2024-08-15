@@ -20,13 +20,13 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 import jakarta.xml.bind.annotation.XmlRootElement;
+import mmud.JsonUtils;
 import mmud.database.entities.web.HistoricTemplate;
 
 /**
  * @see {@link HistoricTemplate}
  * @author maartenl
  */
-@XmlRootElement
 public class AdminHistoricTemplate
 {
 
@@ -54,5 +54,15 @@ public class AdminHistoricTemplate
     version = template.getVersion();
     editor = template.getEditor();
     comment = template.getComment();
+  }
+
+  public String toJson()
+  {
+    return JsonUtils.toJson(this);
+  }
+
+  public static AdminHistoricTemplate fromJson(String json)
+  {
+    return JsonUtils.fromJson(json, AdminHistoricTemplate.class);
   }
 }

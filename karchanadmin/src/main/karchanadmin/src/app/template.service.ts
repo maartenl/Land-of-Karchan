@@ -19,8 +19,18 @@ export class TemplateService {
     this.url = environment.TEMPLATES_URL;
   }
 
-  public getTemplates(): Observable<any> {
+  public getTemplates(): Observable<Template[]> {
     return this.http.get<Template[]>(this.url)
+      .pipe(
+        catchError(err => {
+          this.handleError(err);
+          return [];
+        })
+      );
+  }
+
+  public getHistoricTemplates(template: Template): Observable<Template[]> {
+    return this.http.get<Template[]>(this.url+ '/' + template.id + '/history')
       .pipe(
         catchError(err => {
           this.handleError(err);
