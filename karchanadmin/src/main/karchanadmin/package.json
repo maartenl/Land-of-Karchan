@@ -26,8 +26,10 @@
     "@types/node": "^20.3.2",
     "bootstrap": "^5.3.3",
     "bootswatch": "^5.3.3",
+    "diff-match-patch-ts": "^0.6.0",
     "material-icons": "^1.13.12",
     "ngx-cookie-service": "^18.0.0",
+    "ngx-diff": "^9.0.0",
     "rxjs": "~7.5.0",
     "tslib": "^2.3.0",
     "zone.js": "~0.14.7"
