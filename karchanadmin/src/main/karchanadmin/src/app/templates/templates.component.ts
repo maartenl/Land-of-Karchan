@@ -20,6 +20,10 @@ export class TemplatesComponent implements OnInit {
 
   templateForm: FormGroup;
 
+  oldDocumentContents: string | undefined;
+
+  newDocumentContents: string | undefined;
+
   constructor(private templateService: TemplateService,
               private toastService: ToastService,
               private formBuilder: FormBuilder) {
@@ -79,6 +83,8 @@ export class TemplatesComponent implements OnInit {
   public setTemplate(template: Template): void {
     this.template = template;
     this.history = [];
+    this.oldDocumentContents = undefined;
+    this.newDocumentContents = undefined;
     this.templateForm.reset({
       name: template.name,
       content: template.content,
@@ -143,6 +149,22 @@ export class TemplatesComponent implements OnInit {
       },
     });
     return false;
+  }
+
+  compare(oldTemplate: Template, newTemplate: Template | null) {
+    if (newTemplate == null) {
+      return;
+    }
+    if (oldTemplate.content == null) {
+      this.oldDocumentContents = undefined;
+    } else {
+      this.oldDocumentContents = oldTemplate.content;
+    }
+    if (newTemplate == null || newTemplate.content == null) {
+      this.newDocumentContents = undefined;
+    } else {
+      this.newDocumentContents = newTemplate.content;
+    }
   }
 }
 

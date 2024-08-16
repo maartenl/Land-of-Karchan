@@ -38,6 +38,7 @@ import {NoopAnimationsModule} from '@angular/platform-browser/animations';
 import {AdministratorComponent} from './administrator/administrator.component';
 import {AttributesComponent} from './attributes/attributes.component';
 import {ItemSubComponent} from "./item-sub/item-sub.component";
+import {UnifiedDiffComponent} from "ngx-diff";
 
 export const isMock = environment.mock;
 
@@ -74,6 +75,7 @@ export const isMock = environment.mock;
     AppRoutingModule,
     ScrollingModule,
     NgbModule,
+    UnifiedDiffComponent,
     NoopAnimationsModule], providers: [CookieService, {
             provide: HTTP_INTERCEPTORS,
             useClass: isMock ? MockHttpInterceptor : DefaultHttpInterceptor,
