@@ -18,9 +18,11 @@
             </div>
         </div>
         <hr>
-        <p *ngIf="logonmessage.guildmessage != ''" [class]="getColour()">{{ logonmessage.guildmessage }}</p>
         <p *ngIf="logonmessage.guildAlarmDescription != ''"
            [class]="getColour()">{{ logonmessage.guildAlarmDescription }}"></p>
+    </div>
+    <div class="modal-body" *ngIf="logonmessage.guildmessage != ''" [class]="getColour()"
+         [innerHTML]="logonmessage.guildmessage">
     </div>
     <div class="modal-footer">
         <button type="button" class="btn btn-outline-dark" (click)="close('Ok click')">Ok</button>
