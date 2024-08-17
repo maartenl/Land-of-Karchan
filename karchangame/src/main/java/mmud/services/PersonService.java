@@ -16,12 +16,6 @@
  */
 package mmud.services;
 
-import java.util.List;
-import java.util.Optional;
-import java.util.function.Predicate;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
 import com.google.common.annotations.VisibleForTesting;
 import jakarta.inject.Inject;
 import jakarta.persistence.EntityManager;
@@ -29,8 +23,12 @@ import jakarta.persistence.PersistenceContext;
 import jakarta.persistence.TypedQuery;
 import mmud.database.entities.characters.Person;
 import mmud.database.entities.characters.User;
-import mmud.database.entities.game.Chatline;
 import mmud.scripting.PersonsInterface;
+
+import java.util.List;
+import java.util.function.Predicate;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * @author maartenl
@@ -167,7 +165,8 @@ public class PersonService implements PersonsInterface
 
   public void sendChatBubble(Person from, String message)
   {
-    getActivePlayers().forEach(to -> CommunicationService.getCommunicationService(to).sendChatBubble(to, from, message));
+    getActivePlayers().forEach(to -> CommunicationService.getCommunicationService(to).sendChatBubble(to, from,
+        message));
   }
 
   public void sendWall(String message, Predicate<User> predicate)
@@ -178,12 +177,17 @@ public class PersonService implements PersonsInterface
   /**
    * Permanently removes a person from the database, including all related items like boardposts and mudmails and
    * the like. Bear this in mind.
+   *
    * @param person the person to be deleted.
    */
-  public void deletePerson(Person person) {
-    var deleteBoardMessagesQuery = em.createNamedQuery("BoardMessage.deleteByName");
-    deleteBoardMessagesQuery.setParameter("person", person);
-    LOGGER.log(Level.FINER, "deleting {0} boardmessages", deleteBoardMessagesQuery.executeUpdate());
+  public void deletePerson(Person person)
+  {
+    if (person.isUser())
+    {
+      var deleteBoardMessagesQuery = em.createNamedQuery("BoardMessage.deleteByName");
+      deleteBoardMessagesQuery.setParameter("person", person);
+      LOGGER.log(Level.FINER, "deleting {0} boardmessages", deleteBoardMessagesQuery.executeUpdate());
+    }
     var deleteMailsSentQuery = em.createNamedQuery("Mail.deleteByName");
     deleteMailsSentQuery.setParameter("person", person);
     LOGGER.log(Level.FINER, "deleting {0} mudmails sent", deleteMailsSentQuery.executeUpdate());
