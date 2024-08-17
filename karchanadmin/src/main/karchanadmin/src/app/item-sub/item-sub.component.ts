@@ -39,7 +39,7 @@ export class ItemSubComponent implements OnInit {
   }
 
 
-  deleteItemInstance(item: Item) {
+  deleteItemInstance(item: Item): boolean {
     Logger.log('deleteItemInstance');
     this.itemsRestService.deleteIteminstance(item).subscribe({
         next: (result: any) => { // on success
@@ -60,6 +60,7 @@ export class ItemSubComponent implements OnInit {
         }
       }
     );
+    return false;
   }
 
   createIteminstance() {

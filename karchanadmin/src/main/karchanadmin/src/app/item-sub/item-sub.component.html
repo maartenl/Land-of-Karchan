@@ -84,9 +84,7 @@
         <td><a [routerLink]="['/characters', item.shopkeeper]">{{ item.shopkeeper }}</a></td>
         <td>{{ item.owner }}</td>
         <td>
-            <button type="button" class="close" aria-label="Close" (click)="deleteItemInstance(item)">
-                <i class="material-icons" aria-hidden="true">delete</i>
-            </button>
+            <button type="button" class="mx-1 btn btn-secondary btn-sm" (click)="deleteItemInstance(item)">Delete</button>
         </td>
     </tr>
     </tbody>
