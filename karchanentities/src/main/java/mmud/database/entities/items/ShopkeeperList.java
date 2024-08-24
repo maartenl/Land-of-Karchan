@@ -20,6 +20,7 @@ import jakarta.persistence.DiscriminatorValue;
 import jakarta.persistence.Entity;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.NamedQuery;
 import jakarta.validation.constraints.NotNull;
 import mmud.database.OutputFormatter;
 import mmud.database.entities.characters.Shopkeeper;
@@ -33,6 +34,7 @@ import java.util.logging.Logger;
  */
 @Entity
 @DiscriminatorValue("1")
+@NamedQuery(name = "ShopkeeperList.deleteByShopkeeper", query = "DELETE FROM ShopkeeperList i where i.shopkeeper.name = :shopkeeper")
 public class ShopkeeperList extends Item
 {
 

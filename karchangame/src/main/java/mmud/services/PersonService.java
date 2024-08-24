@@ -188,6 +188,15 @@ public class PersonService implements PersonsInterface
       deleteBoardMessagesQuery.setParameter("person", person);
       LOGGER.log(Level.FINER, "deleting {0} boardmessages", deleteBoardMessagesQuery.executeUpdate());
     }
+    if (person.isShopkeeper())
+    {
+      var deleteShopkeeperItems = em.createNamedQuery("ShopkeeperList.deleteByShopkeeper");
+      deleteShopkeeperItems.setParameter("shopkeeper", person.getName());
+      LOGGER.log(Level.FINER, "deleting {0} shopkeeper items", deleteShopkeeperItems.executeUpdate());
+    }
+    var deleteAnswersQuery = em.createNamedQuery("Answer.deleteAnswers");
+    deleteAnswersQuery.setParameter("person", person);
+    LOGGER.log(Level.FINER, "deleting {0} answers", deleteAnswersQuery.executeUpdate());
     var deleteMailsSentQuery = em.createNamedQuery("Mail.deleteByName");
     deleteMailsSentQuery.setParameter("person", person);
     LOGGER.log(Level.FINER, "deleting {0} mudmails sent", deleteMailsSentQuery.executeUpdate());

@@ -1262,6 +1262,20 @@ public abstract class Person implements Serializable, AttributeWrangler, Display
     return (getGod() == God.DEFAULT_USER || getGod() == God.GOD);
   }
 
+  /**
+   * Indicates if this is a shopkeeper, a specialized bot.
+   * @return true if it is a shopkeeper, false
+   * otherwise.
+   */
+  public boolean isShopkeeper()
+  {
+    if (getGod() == null)
+    {
+      return true;
+    }
+    return (getGod() == God.SHOPKEEPER);
+  }
+
   @Override
   public int hashCode()
   {
