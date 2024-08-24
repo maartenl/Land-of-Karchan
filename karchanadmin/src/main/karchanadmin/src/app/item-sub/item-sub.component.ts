@@ -38,9 +38,20 @@ export class ItemSubComponent implements OnInit {
   ngOnInit(): void {
   }
 
-
-  deleteItemInstance(item: Item): boolean {
+  deleteItemInstance(): boolean {
     Logger.log('deleteItemInstance');
+    const formModel = this.itemForm.value;
+    const item: Item = new Item({
+      id: formModel.id as number,
+      itemid: formModel.itemid as number,
+      containerid: formModel.containerid as number,
+      belongsto: formModel.belongsto as string,
+      room: formModel.room as number,
+      discriminator: formModel.discriminator as number,
+      shopkeeper: formModel.shopkeeper as string,
+      creation: null,
+      owner: formModel.owner as string
+    });
     this.itemsRestService.deleteIteminstance(item).subscribe({
         next: (result: any) => { // on success
           this.iteminstances = this.iteminstances

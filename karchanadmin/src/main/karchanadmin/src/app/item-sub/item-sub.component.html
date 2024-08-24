@@ -5,7 +5,7 @@
             <fieldset class="form-group">
                 <label for="id">Id</label>
                 <input type="number" class="form-control" id="id" name="id"
-                       formControlName="id" readonly>
+                       formControlName="id">
             </fieldset>
         </div>
         <div class="col">
@@ -54,6 +54,7 @@
     <div class="col-xs-12 col-sm-12 text-right">
         <button type="submit" [disabled]="itemForm.pristine" class="mx-1 btn btn-primary"
                 (click)="createIteminstance()">Create</button>
+        <button type="button" class="mx-1 btn btn-secondary" (click)="deleteItemInstance()">Delete</button>
     </div>
 </form>
 <table class="table table-sm table-hover">
@@ -83,9 +84,6 @@
         <td>{{ item.discriminator }}</td>
         <td><a [routerLink]="['/characters', item.shopkeeper]">{{ item.shopkeeper }}</a></td>
         <td>{{ item.owner }}</td>
-        <td>
-            <button type="button" class="mx-1 btn btn-secondary btn-sm" (click)="deleteItemInstance(item)">Delete</button>
-        </td>
     </tr>
     </tbody>
 </table>
