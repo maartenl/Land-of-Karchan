@@ -61,7 +61,7 @@ public class WebsiteServlet extends HttpServlet
 
   private static final String VERSION_COOKIENAME = "karchanversion";
 
-  private static final String CURRENT_VERSION = "2.0.14-SNAPSHOT";
+  private static final String CURRENT_VERSION = "2.0.14";
 
   /**
    * For example: https://www.karchan.org. If it isn't configured, then no redirect takes place.
