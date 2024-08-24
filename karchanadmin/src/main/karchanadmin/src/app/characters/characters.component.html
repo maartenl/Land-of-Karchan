@@ -49,7 +49,8 @@
           <input type="text" class="form-control" id="title" name="title" formControlName="title">
         </fieldset>
         <fieldset class="form-group">
-          <label for="room">Room</label>
+          <label for="room">Room <a [routerLink]="['/rooms', item?.room]">{{ item?.room }}</a>
+          </label>
           <input type="number" class="form-control" id="room" name="room" formControlName="room">
         </fieldset>
         <fieldset class="form-group">
