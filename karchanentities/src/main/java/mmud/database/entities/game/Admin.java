@@ -47,7 +47,6 @@ import mmud.database.entities.items.ItemDefinition;
           @NamedQuery(name = "Admin.findByName", query = "SELECT a FROM Admin a WHERE a.name = :name"),
           @NamedQuery(name = "Admin.findValidByName", query = "SELECT a FROM Admin a WHERE a.name = :name AND a.validuntil > current_date"),
           @NamedQuery(name = "Admin.findValid", query = "SELECT a FROM Admin a WHERE a.validuntil > current_date"),
-          @NamedQuery(name = "Admin.findByPasswd", query = "SELECT a FROM Admin a WHERE a.passwd = :passwd"),
           @NamedQuery(name = "Admin.findByIp", query = "SELECT a FROM Admin a WHERE a.ip = :ip"),
           @NamedQuery(name = "Admin.findByCreated", query = "SELECT a FROM Admin a WHERE a.created = :created"),
           @NamedQuery(name = "Admin.findByValiduntil", query = "SELECT a FROM Admin a WHERE a.validuntil = :validuntil"),
@@ -68,11 +67,6 @@ public class Admin implements Serializable
   @Size(min = 1, max = 39)
   @Column(name = "name")
   private String name;
-  @Basic(optional = false)
-  @NotNull
-  @Size(min = 1, max = 45)
-  @Column(name = "passwd")
-  private String passwd;
   @Basic(optional = false)
   @NotNull
   @Size(min = 1, max = 38)
@@ -122,16 +116,6 @@ public class Admin implements Serializable
     this.name = name;
   }
 
-  public Admin(String name, String passwd, String ip, LocalDateTime created, LocalDateTime validuntil, String email)
-  {
-    this.name = name;
-    this.passwd = passwd;
-    this.ip = ip;
-    this.created = created;
-    this.validuntil = validuntil;
-    this.email = email;
-  }
-
   public String getName()
   {
     return name;
@@ -140,16 +124,6 @@ public class Admin implements Serializable
   public void setName(String name)
   {
     this.name = name;
-  }
-
-  public String getPasswd()
-  {
-    return passwd;
-  }
-
-  public void setPasswd(String passwd)
-  {
-    this.passwd = passwd;
   }
 
   public String getIp()

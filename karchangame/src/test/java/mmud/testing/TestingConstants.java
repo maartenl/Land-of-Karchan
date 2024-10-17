@@ -141,7 +141,6 @@ public class TestingConstants
     admin.setIp("10.0.0.12");
     admin.setEmail("maarten_l@yahoo.com");
     admin.setName("Karn");
-    admin.setPasswd("somesecretpasswordthatnobodycanguessinanmillionyears");
     admin.setValiduntil(LocalDateTime.now().plusSeconds(100_000_000L));
     return admin;
   }
