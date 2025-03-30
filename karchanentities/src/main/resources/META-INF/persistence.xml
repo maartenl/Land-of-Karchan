@@ -62,6 +62,9 @@
     <class>mmud.database.entities.game.MacroPK</class>
     <class>mmud.database.entities.game.GuildrankPK</class>
     <class>mmud.database.entities.game.AnswerPK</class>
+    <class>mmud.database.entities.paypal.PaypalLog</class>
+    <class>mmud.database.entities.paypal.PaypalPayment</class>
+    <class>mmud.database.entities.paypal.PaypalRequest</class>
     <exclude-unlisted-classes>true</exclude-unlisted-classes>
     <properties>
       <property name="jakarta.persistence.schema-generation.database.action" value="none"/>
