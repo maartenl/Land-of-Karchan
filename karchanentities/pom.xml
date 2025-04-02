@@ -83,7 +83,7 @@
           </tagletArtifact>
           <!--                Configuration below should be removed, once the generation of
                           JavaDFoc files no longer generates a failed build.-->
-          <source>17</source>
+          <source>23</source>
           <doclint>none</doclint>
           <additionalOptions>-Xdoclint:none</additionalOptions>
           <additionalJOption>-Xdoclint:none</additionalJOption>
@@ -106,7 +106,7 @@
           <artifactId>maven-compiler-plugin</artifactId>
           <version>3.8.1</version>
           <configuration>
-            <release>17</release>
+            <release>23</release>
           </configuration>
         </plugin>
         <plugin>

@@ -13,7 +13,7 @@
   <url>https://www.karchan.org</url>
 
   <properties>
-    <maven.compiler.release>17</maven.compiler.release>
+    <maven.compiler.release>23</maven.compiler.release>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <project.encoding>UTF-8</project.encoding>
     <jakartaee.version>10.0.0</jakartaee.version>
@@ -27,7 +27,7 @@
     <owasp-java-html-sanitizer.version>20220608.1</owasp-java-html-sanitizer.version>
     <assertj.version>3.24.2</assertj.version>
     <testng.version>7.6.1</testng.version>
-    <commons-lang3.version>3.4</commons-lang3.version>
+    <commons-lang3.version>3.17.0</commons-lang3.version>
     <guava.version>31.1-jre</guava.version>
     <!-- used for EclipseLink extentions, for example Customizer/QueryHints -->
     <eclipselink.version>4.0.0</eclipselink.version>
@@ -36,6 +36,7 @@
     <jasson.version>3.0.0</jasson.version>
     <karchanentities.version>1.0.11-SNAPSHOT</karchanentities.version>
     <mockito.version>4.8.1</mockito.version>
+    <graaljs.version>24.1.2</graaljs.version>
   </properties>
 
   <build>
@@ -55,7 +56,7 @@
           <artifactId>maven-compiler-plugin</artifactId>
           <version>3.8.1</version>
           <configuration>
-            <release>17</release>
+            <release>23</release>
           </configuration>
         </plugin>
         <plugin>
