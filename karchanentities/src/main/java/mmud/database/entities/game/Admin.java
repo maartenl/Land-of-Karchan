@@ -17,6 +17,7 @@
 package mmud.database.entities.game;
 
 import java.io.Serializable;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Collection;
 
@@ -36,22 +37,19 @@ import mmud.database.entities.items.Item;
 import mmud.database.entities.items.ItemDefinition;
 
 /**
- *
  * @author maartenl
  */
 @Entity
 @Table(name = "mm_admin")
-@NamedQueries(
-        {
-          @NamedQuery(name = "Admin.findAll", query = "SELECT a FROM Admin a"),
-          @NamedQuery(name = "Admin.findByName", query = "SELECT a FROM Admin a WHERE a.name = :name"),
-          @NamedQuery(name = "Admin.findValidByName", query = "SELECT a FROM Admin a WHERE a.name = :name AND a.validuntil > current_date"),
-          @NamedQuery(name = "Admin.findValid", query = "SELECT a FROM Admin a WHERE a.validuntil > current_date"),
-          @NamedQuery(name = "Admin.findByIp", query = "SELECT a FROM Admin a WHERE a.ip = :ip"),
-          @NamedQuery(name = "Admin.findByCreated", query = "SELECT a FROM Admin a WHERE a.created = :created"),
-          @NamedQuery(name = "Admin.findByValiduntil", query = "SELECT a FROM Admin a WHERE a.validuntil = :validuntil"),
-          @NamedQuery(name = "Admin.findByEmail", query = "SELECT a FROM Admin a WHERE a.email = :email")
-        })
+@NamedQuery(name = "Admin.findAll", query = "SELECT a FROM Admin a")
+@NamedQuery(name = "Admin.findByName", query = "SELECT a FROM Admin a WHERE a.name = :name")
+@NamedQuery(name = "Admin.findValidByName", query = "SELECT a FROM Admin a WHERE a.name = :name AND a.validuntil " +
+  "> current_date")
+@NamedQuery(name = "Admin.findValid", query = "SELECT a FROM Admin a WHERE a.validuntil > current_date")
+@NamedQuery(name = "Admin.findByIp", query = "SELECT a FROM Admin a WHERE a.ip = :ip")
+@NamedQuery(name = "Admin.findByCreated", query = "SELECT a FROM Admin a WHERE a.created = :created")
+@NamedQuery(name = "Admin.findByValiduntil", query = "SELECT a FROM Admin a WHERE a.validuntil = :validuntil")
+@NamedQuery(name = "Admin.findByEmail", query = "SELECT a FROM Admin a WHERE a.email = :email")
 public class Admin implements Serializable
 {
 
@@ -79,8 +77,10 @@ public class Admin implements Serializable
   @Basic(optional = false)
   @NotNull
   @Column(name = "validuntil")
-  private LocalDateTime validuntil;
-  // @Pattern(regexp="[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?", message="Invalid email")//if the field contains email address consider using this annotation to enforce field validation
+  private LocalDate validuntil;
+  // @Pattern(regexp="[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9]
+  // (?:[a-z0-9-]*[a-z0-9])?\\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?", message="Invalid email")//if the field contains
+  // email address consider using this annotation to enforce field validation
   @Basic(optional = false)
   @NotNull
   @Size(min = 1, max = 80)
@@ -146,12 +146,12 @@ public class Admin implements Serializable
     this.created = created;
   }
 
-  public LocalDateTime getValiduntil()
+  public LocalDate getValiduntil()
   {
     return validuntil;
   }
 
-  public void setValiduntil(LocalDateTime validuntil)
+  public void setValiduntil(LocalDate validuntil)
   {
     this.validuntil = validuntil;
   }
@@ -164,7 +164,7 @@ public class Admin implements Serializable
    */
   public boolean isValid()
   {
-    return validuntil.isAfter(LocalDateTime.now());
+    return validuntil.isAfter(LocalDate.now());
   }
 
   public String getEmail()
@@ -294,11 +294,7 @@ public class Admin implements Serializable
       return false;
     }
     Admin other = (Admin) object;
-    if ((this.name == null && other.name != null) || (this.name != null && !this.name.equals(other.name)))
-    {
-      return false;
-    }
-    return true;
+    return (this.name != null || other.name == null) && (this.name == null || this.name.equals(other.name));
   }
 
   @Override

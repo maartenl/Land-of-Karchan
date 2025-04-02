@@ -16,6 +16,7 @@
  */
 package mmud.testing;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 import mmud.database.entities.characters.Administrator;
@@ -141,7 +142,7 @@ public class TestingConstants
     admin.setIp("10.0.0.12");
     admin.setEmail("maarten_l@yahoo.com");
     admin.setName("Karn");
-    admin.setValiduntil(LocalDateTime.now().plusSeconds(100_000_000L));
+    admin.setValiduntil(LocalDate.now().plusMonths(12));
     return admin;
   }
 

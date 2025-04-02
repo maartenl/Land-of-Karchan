@@ -1,5 +1,6 @@
 package mmud.rest.webentities.admin;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 import mmud.JsonUtils;
@@ -16,7 +17,7 @@ public class AdminAdmin
   public String title;
   public LocalDateTime creation;
   public String email;
-  public LocalDateTime validuntil;
+  public LocalDate validuntil;
 
   public AdminAdmin()
   {
