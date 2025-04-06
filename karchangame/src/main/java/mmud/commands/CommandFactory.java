@@ -108,7 +108,8 @@ public class CommandFactory
   static
   {
     theCommandStructure.put("bow", () -> new BowCommand("bow( to (\\w)+)?( (\\w)+)?"));
-    theCommandStructure.put("me", new CommandCreatorImpl());
+    theCommandStructure.put("me", () -> new MeCommand("me .+"));
+    theCommandStructure.put("me's", () -> new MeApostropheCommand("me's .+"));
     // quit command has been replaced with a specific rest service.
     // theCommandStructure.put("quit", new QuitCommand("quit"));
     theCommandStructure.put("sleep", () -> new SleepCommand("sleep"));
@@ -490,20 +491,6 @@ public class CommandFactory
   {
     UserCommandInfo info = new UserCommandInfo(aCommandId, aCommand, aMethodName, aRoom);
     CommandFactory.theUserCommandStructure.add(info);
-  }
-
-  private static class CommandCreatorImpl implements CommandCreator
-  {
-
-    public CommandCreatorImpl()
-    {
-    }
-
-    @Override
-    public NormalCommand createCommand()
-    {
-      return new MeCommand("me .+");
-    }
   }
 
 }
