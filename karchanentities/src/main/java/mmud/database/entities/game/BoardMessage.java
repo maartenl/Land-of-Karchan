@@ -28,7 +28,6 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.Lob;
 import jakarta.persistence.ManyToOne;
-import jakarta.persistence.NamedQueries;
 import jakarta.persistence.NamedQuery;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotNull;
@@ -36,19 +35,15 @@ import jakarta.validation.constraints.Size;
 import mmud.database.entities.characters.User;
 
 /**
- *
  * @author maartenl
  */
 @Entity
 @Table(name = "mm_boardmessages")
-@NamedQueries(
-        {
-          @NamedQuery(name = "BoardMessage.findAll", query = "SELECT b FROM BoardMessage b"),
-          @NamedQuery(name = "BoardMessage.findByName", query = "SELECT b FROM BoardMessage b WHERE b.user = :person"),
-          @NamedQuery(name = "BoardMessage.deleteByName", query = "DELETE FROM BoardMessage b WHERE b.user = :person"),
-          @NamedQuery(name = "BoardMessage.news", query = "SELECT b FROM BoardMessage b WHERE b.board.name = 'logonmessage' and b.posttime > :lastSunday order by b.pinned, b.id desc"),
-          @NamedQuery(name = "BoardMessage.recent", query = "SELECT b FROM BoardMessage b WHERE b.board = :board order by b.pinned desc, b.id desc")
-        })
+@NamedQuery(name = "BoardMessage.deleteByName", query = "DELETE FROM BoardMessage b WHERE b.user = :person")
+@NamedQuery(name = "BoardMessage.news", query = "SELECT b FROM BoardMessage b WHERE b.board.name = 'logonmessage' and" +
+    " b.posttime > :lastSunday and b.removed = false order by b.pinned, b.id desc")
+@NamedQuery(name = "BoardMessage.recent", query = "SELECT b FROM BoardMessage b WHERE b.board = :board order by b" +
+    ".pinned desc, b.id desc")
 public class BoardMessage implements Serializable
 {
 
@@ -76,6 +71,8 @@ public class BoardMessage implements Serializable
   private String message;
   @Column(name = "removed")
   private Boolean removed;
+  @Column(name = "offensive")
+  private Boolean offensive;
   @Column(name = "pinned")
   private Boolean pinned;
 
@@ -93,7 +90,7 @@ public class BoardMessage implements Serializable
    */
   public String getMessage()
   {
-    if (getRemoved())
+    if (getOffensive())
     {
       return "<FONT COLOR=red>[Message has been removed due to offensive content.]</FONT>";
     }
@@ -106,17 +103,37 @@ public class BoardMessage implements Serializable
   }
 
   /**
-   * Indicates that the message has been removed. (possibly due to bad content)
+   * Indicates that the message has been removed.
    *
    * @return true if removed, false otherwise.
    */
-  public Boolean getRemoved()
+  public boolean getRemoved()
   {
+    if (removed == null) {
+      return false;
+    }
     return removed;
   }
 
   /**
+   * Indicates that the message has been removed, due to offensive content.
    *
+   * @return true if removed, false otherwise.
+   */
+  public Boolean getOffensive()
+  {
+    return offensive;
+  }
+
+  /**
+   * @param offensive true if the message needs be removed, due to offensive content, false otherwise.
+   */
+  public void setOffensive(Boolean offensive)
+  {
+    this.offensive = offensive;
+  }
+
+  /**
    * @param removed true if the message needs be removed, fals otherwise.
    */
   public void setRemoved(Boolean removed)

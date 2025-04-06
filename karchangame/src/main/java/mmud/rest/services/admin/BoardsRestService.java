@@ -226,6 +226,7 @@ public class BoardsRestService
       throw new MudWebException(name, "Boardmessage " + messageid + " does not belong to board " + id + ".", Response.Status.NOT_FOUND);
     }
     boardmessage.setRemoved(adminBoardMessage.removed);
+    boardmessage.setOffensive(adminBoardMessage.offensive);
     boardmessage.setPinned(adminBoardMessage.pinned);
     logService.writeDeputyLog(admin, "Boardmessage '" + messageid + "' updated.");
   }

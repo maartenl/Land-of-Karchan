@@ -138,6 +138,23 @@ export class BoardsComponent extends AdminComponent<Board, number> implements On
     return false;
   }
 
+  offensiveMessage(message: BoardMessage) {
+    const newmessage = new BoardMessage(message);
+    newmessage.offensive = !newmessage.offensive;
+    this.boardsRestService.updateMessage(newmessage).subscribe({
+      next: (data) => {
+        message.offensive = !message.offensive;
+        this.boardmessages = [...this.boardmessages];
+        this.getToastService().show(message.getType() + ' ' + message.getIdentifier() + ' successfully offensive.', {
+          delay: 3000,
+          autohide: true,
+          headertext: 'Offensive...'
+        });
+      }
+    });
+    return false;
+  }
+
   pinMessage(message: BoardMessage) {
     const newmessage = new BoardMessage(message);
     newmessage.pinned = !newmessage.pinned;

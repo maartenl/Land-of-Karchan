@@ -235,6 +235,7 @@ public class Board implements Serializable, DisplayInterface, Ownage
     boardMessage.setPerson(aUser);
     boardMessage.setPosttime(LocalDateTime.now());
     boardMessage.setRemoved(false);
+    boardMessage.setOffensive(false);
     boardMessage.setPinned(false);
     return messages.add(boardMessage);
   }
@@ -261,7 +262,7 @@ public class Board implements Serializable, DisplayInterface, Ownage
     builder.append("<hr/>");
     final Set<BoardMessage> sortedMessages =
         new TreeSet<>(Comparator.comparing(BoardMessage::getPinned).reversed().thenComparing(BoardMessage::getPosttime));
-    sortedMessages.addAll(messages);
+    sortedMessages.addAll(messages.stream().filter(boardMessage -> !boardMessage.getRemoved()).toList());
     for (BoardMessage message : sortedMessages)
     {
       builder.append(DateTimeUtilities.getFullDatetime(message.getPosttime()));

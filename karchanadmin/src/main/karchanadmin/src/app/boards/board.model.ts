@@ -42,6 +42,7 @@ export class BoardMessage implements AdminObject<number> {
     posttime: string | null = null;
     message: string | null = null;
     removed: boolean | null = null;
+    offensive: boolean | null = null;
     pinned: boolean = false;
 
     constructor(object?: any) {
@@ -54,6 +55,7 @@ export class BoardMessage implements AdminObject<number> {
         this.posttime = object.posttime;
         this.message = object.message;
         this.removed = object.removed;
+        this.offensive = object.offensive;
         this.pinned = object.pinned;
     }
 
