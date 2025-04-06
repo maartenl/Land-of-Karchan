@@ -30,6 +30,7 @@ import {SentMailComponent} from './mail/sent-mail/sent-mail.component';
 import {LogonmessageComponent} from './play/logonmessage/logonmessage.component';
 import {ChatlogComponent} from './play/chatlog/chatlog.component';
 import {ThemeService} from "./theme.service";
+import { TextareaAutoresizeDirective } from './textarea-autoresize.directive';
 
 @NgModule({
   declarations: [
@@ -50,7 +51,8 @@ import {ThemeService} from "./theme.service";
     ShowMailComponent,
     SentMailComponent,
     LogonmessageComponent,
-    ChatlogComponent
+    ChatlogComponent,
+    TextareaAutoresizeDirective
   ],
   bootstrap: [AppComponent],
   imports: [BrowserModule,

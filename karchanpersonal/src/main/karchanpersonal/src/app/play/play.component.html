@@ -42,13 +42,15 @@
           <app-chatlog></app-chatlog>
           <form [formGroup]="commandForm" (ngSubmit)="play()" novalidate>
             <div class="row">
-              <div class="col">
+              <div class="col-md-6 col-sm-12">
                 <fieldset class="form-group">
-                  <input type="text" autocorrect="off" autocapitalize="none" class="form-control" id="command" name="command"
-                         formControlName="command" size="60"/>
+                  <textarea autocorrect="off" autocapitalize="none" class="form-control" id="command" name="command"
+                         formControlName="command" cols="60" rows="1" (keydown.enter)="play()"
+                         appTextareaAutoresize>
+                         </textarea>
                 </fieldset>
               </div>
-              <div class="col">
+              <div class="col-md-6 col-sm-12">
                 <fieldset class="form-group">
                   <input type="submit" class="btn btn-outline-primary" value="Submit"/>
                 </fieldset>
