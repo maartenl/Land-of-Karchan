@@ -37,6 +37,12 @@
           <td *ngIf="attribute?.objecttype === 'PERSON'">
             <a [routerLink]="['/characters/', attribute.objectid]">{{ attribute.objectid }}</a>
           </td>
+          <td *ngIf="attribute?.objecttype === 'ITEM'">
+             {{ attribute.objectid }}
+          </td>
+          <td *ngIf="attribute?.objecttype === 'ROOM'">
+            <a [routerLink]="['/rooms/', attribute.objectid]">{{ attribute.objectid }}</a>
+          </td>
           <td *ngIf="attribute">
             <a href="#" (click)="deleteAttribute(attribute)">
               <i class="material-icons align-middle">delete</i>

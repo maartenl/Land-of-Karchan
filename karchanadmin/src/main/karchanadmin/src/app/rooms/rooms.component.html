@@ -138,7 +138,62 @@
                     </tr>
                 </tbody>
             </table>
-        </div>
+            <h2>Attributes</h2>
+            <table class="table table-sm table-hover">
+              <thead>
+              <tr>
+                <th scope="col">Id</th>
+                <th scope="col">Name</th>
+                <th scope="col">Value</th>
+                <th scope="col">Type</th>
+                <th scope="col"></th>
+              </tr>
+              </thead>
+              <tbody>
+              <tr *ngFor="let attribute of attributes" (click)="setAttribute(attribute)">
+                <td *ngIf="attribute">{{ attribute.id }}</td>
+                <td *ngIf="attribute">
+                  <a [routerLink]="['/attributes/', attribute.name]">{{ attribute.name }}</a>
+                </td>
+                <td *ngIf="attribute">{{ attribute.value }}</td>
+                <td *ngIf="attribute">{{ attribute.valueType }}</td>
+                <td *ngIf="attribute">
+                  <a href="#" (click)="deleteAttribute(attribute)">
+                    <i class="material-icons align-middle">delete</i>
+                  </a>
+                </td>
+              </tr>
+              </tbody>
+            </table>
+            <h1>Attribute {{ attribute === undefined || attribute === null ? '-' : attribute.name }}</h1>
+            <form [formGroup]="attributeForm" novalidate>
+              <fieldset class="form-group">
+                <label for="id">Id</label>
+                <input type="number" readonly class="form-control" id="id" name="id" formControlName="id">
+              </fieldset>
+              <fieldset class="form-group">
+                <label for="name">Name</label>
+                <input type="text" class="form-control" id="attrname" name="name" formControlName="name">
+              </fieldset>
+              <fieldset class="form-group">
+                <label for="value">Value</label>
+                <input type="text" class="form-control" id="value" name="value" formControlName="value">
+              </fieldset>
+              <fieldset class="form-group">
+                <label for="valueType">Type</label>
+                <input type="text" class="form-control" id="valueType" name="valueType" formControlName="valueType">
+              </fieldset>
+              <div class="col-xs-12 col-sm-12 text-right">
+                <button type="submit" [disabled]="attributeForm.pristine" class="mx-1 btn btn-primary"
+                        (click)="updateAttribute()">Update
+                </button>
+                <button type="submit" [disabled]="attributeForm.pristine" class="mx-1 btn btn-primary"
+                        (click)="createAttribute()">Create
+                </button>
+                <button type="reset" class="mx-1 btn btn-secondary" (click)="cancelAttribute()">Cancel</button>
+              </div>
+            </form>
+         </div>
         <div class="col-xs-12 col-xl-6">
             <button type="button" class="mx-1 btn btn-secondary" (click)="refresh()">Refresh</button>
             <cdk-virtual-scroll-viewport style="height: 400px;" [itemSize]="33">

@@ -9,6 +9,8 @@ import {environment} from '../environments/environment';
 
 import {ErrorsService} from './errors.service';
 import {Attribute} from './attribute.model';
+import { Room } from './rooms/room.model';
+import { Item } from './items/item.model';
 
 @Injectable({
   providedIn: 'root'
@@ -24,6 +26,36 @@ export class AttributesRestService {
 
   public getFromCharacter(character: MudCharacter): Observable<Attribute[]> {
     return this.http.get<Attribute[]>(this.url + '/byType/PERSON/' + character.name)
+      .pipe(
+        map(items => {
+          const newItems = new Array<Attribute>();
+          items.forEach(item => newItems.push(new Attribute(item)));
+          return newItems;
+        }),
+        catchError(err => {
+          this.handleError(err);
+          return [];
+        })
+      );
+  }
+
+  public getFromRoom(roomid: number): Observable<Attribute[]> {
+    return this.http.get<Attribute[]>(this.url + '/byType/ROOM/' + roomid)
+      .pipe(
+        map(items => {
+          const newItems = new Array<Attribute>();
+          items.forEach(item => newItems.push(new Attribute(item)));
+          return newItems;
+        }),
+        catchError(err => {
+          this.handleError(err);
+          return [];
+        })
+      );
+  }
+
+  public getFromItem(item: Item): Observable<Attribute[]> {
+    return this.http.get<Attribute[]>(this.url + '/byType/ITEM/' + item.id)
       .pipe(
         map(items => {
           const newItems = new Array<Attribute>();

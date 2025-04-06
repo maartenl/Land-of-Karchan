@@ -16,9 +16,6 @@
  */
 package mmud.database.entities.items;
 
-import java.io.Serializable;
-import java.util.Objects;
-
 import jakarta.persistence.Basic;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -28,25 +25,28 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.Lob;
 import jakarta.persistence.ManyToOne;
-import jakarta.persistence.NamedQueries;
 import jakarta.persistence.NamedQuery;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import mmud.database.entities.game.Attribute;
 
+import java.io.Serializable;
+import java.util.Objects;
+
 /**
- *
  * @author maartenl
  */
 @Entity
 @Table(name = "mm_itemattributes")
-@NamedQueries(
-        {
-          @NamedQuery(name = "Itemattribute.findAll", query = "SELECT i FROM Itemattribute i"),
-          @NamedQuery(name = "Itemattribute.findByName", query = "SELECT i FROM Itemattribute i WHERE i.name = :name"),
-          @NamedQuery(name = "Itemattribute.findByValueType", query = "SELECT i FROM Itemattribute i WHERE i.valueType = :valueType")
-        })
+@NamedQuery(name = "Itemattribute.findAll", query = "SELECT i FROM Itemattribute i")
+@NamedQuery(name = "Itemattribute.findByName", query = "SELECT i FROM Itemattribute i WHERE i.name = :name order by i" +
+    ".item.id")
+@NamedQuery(name = "Itemattribute.findByNameAndItemid", query = "SELECT i FROM Itemattribute i WHERE i.name = :name " +
+    "and i.item.id = :itemid")
+@NamedQuery(name = "Itemattribute.findByItemid", query = "SELECT i FROM Itemattribute i WHERE i.item.id = :itemid")
+@NamedQuery(name = "Itemattribute.findByValueType", query = "SELECT i FROM Itemattribute i WHERE i.valueType = " +
+    ":valueType")
 public class Itemattribute implements Serializable, Attribute
 {
 

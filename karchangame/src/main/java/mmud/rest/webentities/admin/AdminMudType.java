@@ -5,5 +5,6 @@ package mmud.rest.webentities.admin;
  */
 public enum AdminMudType
 {
-  PERSON
+  PERSON,
+  ROOM, ITEM
 }

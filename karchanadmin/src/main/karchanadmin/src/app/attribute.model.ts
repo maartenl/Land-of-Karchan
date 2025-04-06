@@ -20,7 +20,7 @@ export class Attribute {
    */
   valueType: string | null = null;
   /**
-   * What kind of mud object contains this attribute. For example: PERSON.
+   * What kind of mud object contains this attribute. For example: PERSON, ITEM, ROOM.
    */
   objecttype: string | null = null;
   /**

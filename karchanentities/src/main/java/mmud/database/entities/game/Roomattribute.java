@@ -31,9 +31,11 @@ import java.util.Objects;
 @Table(name = "mm_roomattributes")
 
 @NamedQuery(name = "Roomattribute.findAll", query = "SELECT r FROM Roomattribute r")
-@NamedQuery(name = "Roomattribute.findByName", query = "SELECT r FROM Roomattribute r WHERE r.name = :name")
+@NamedQuery(name = "Roomattribute.findByName", query = "SELECT r FROM Roomattribute r WHERE r.name = :name order by r.room.id")
 @NamedQuery(name = "Roomattribute.findByValueType", query = "SELECT r FROM Roomattribute r WHERE r.valueType = :valueType")
-
+@NamedQuery(name = "Roomattribute.findByNameAndRoomid", query = "SELECT r FROM Roomattribute r WHERE r.name = :name " +
+  "and r.room.id = :roomid")
+@NamedQuery(name = "Roomattribute.findByRoomid", query = "SELECT r FROM Roomattribute r WHERE r.room.id = :roomid")
 public class Roomattribute implements Serializable, Attribute
 {
 

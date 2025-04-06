@@ -32,7 +32,7 @@ import java.util.Objects;
 @Table(name = "mm_charattributes")
 @NamedQuery(name = "Charattribute.findAll", query = "SELECT c FROM Charattribute c")
 @NamedQuery(name = "Charattribute.deleteByName", query = "DELETE FROM Charattribute c WHERE c.name = :name")
-@NamedQuery(name = "Charattribute.findByName", query = "SELECT c FROM Charattribute c WHERE c.name = :name")
+@NamedQuery(name = "Charattribute.findByName", query = "SELECT c FROM Charattribute c WHERE c.name = :name order by c.person.name")
 @NamedQuery(name = "Charattribute.findByNameAndPerson", query = "SELECT c FROM Charattribute c WHERE c.name = :name and c.person.name = :person")
 @NamedQuery(name = "Charattribute.findByPerson", query = "SELECT c FROM Charattribute c WHERE c.person.name = :person")
 @NamedQuery(name = "Charattribute.findByValueType", query = "SELECT c FROM Charattribute c WHERE c.valueType = :valueType")

@@ -8,6 +8,8 @@ import {Room} from './room.model';
 import {Command} from '../commands/command.model';
 import {ToastService} from '../toast.service';
 import {Item} from "../items/item.model";
+import { Attribute } from '../attribute.model';
+import { AttributesRestService } from '../attributes-rest.service';
 
 @Component({
   selector: 'app-rooms',
@@ -20,6 +22,12 @@ export class RoomsComponent extends AdminComponent<Room, number> implements OnIn
   commands: Command[] = [] = new Array<Command>(0);
 
   form: FormGroup;
+
+  attributeForm: FormGroup;
+  
+  attributes: Array<Attribute> = [];
+  
+  attribute: Attribute | null = null;
 
   SearchTerms = class {
     owner: string | null = null;
@@ -60,6 +68,7 @@ export class RoomsComponent extends AdminComponent<Room, number> implements OnIn
 
   constructor(
     private roomsRestService: RoomsRestService,
+    private attributesRestService: AttributesRestService,
     private route: ActivatedRoute,
     private formBuilder: FormBuilder,
     private toastService: ToastService) {
@@ -79,6 +88,13 @@ export class RoomsComponent extends AdminComponent<Room, number> implements OnIn
       area: null
     };
     this.form = this.formBuilder.group(object);
+    const attribute = {
+      id: null,
+      name: null,
+      value: null,
+      valueType: null
+    }
+    this.attributeForm = this.formBuilder.group(attribute);
     this.item = this.makeItem();
     this.getItems();
   }
@@ -152,6 +168,13 @@ export class RoomsComponent extends AdminComponent<Room, number> implements OnIn
         }
       }
     });
+    this.attributesRestService.getFromRoom(id).subscribe({
+      next: (data) => {
+        if (data !== undefined) {
+          this.attributes = data;
+        }
+      }
+    })
     return false;
   }
 
@@ -195,4 +218,111 @@ export class RoomsComponent extends AdminComponent<Room, number> implements OnIn
       }
     });
   }
+
+  setAttribute(attribute: Attribute) {
+    this.attribute = attribute;
+    this.setAttributeForm(attribute);
+    return false;
+  }
+
+  deleteAttribute(attribute: Attribute) {
+    if (window.console) {
+      console.log("deleteAttribute " + attribute);
+    }
+    this.attributesRestService.delete(attribute).subscribe(
+      (result: any) => { // on success
+        const index = this.attributes.indexOf(attribute, 0);
+        if (index > -1) {
+          this.attributes.splice(index, 1);
+        }
+        this.toastService.show('Attribute successfully deleted.', {
+          delay: 3000,
+          autohide: true,
+          headertext: 'Deleted...'
+        });
+      }
+    );
+    return false;
+  }
+
+  updateAttribute() {
+    const attribute = this.getAttributeForm();
+    if (window.console) {
+      console.log("updateAttribute " + attribute);
+    }
+    if (attribute === null || attribute === undefined) {
+      return false;
+    }
+    this.attributesRestService.update(attribute).subscribe(
+      (result: any) => { // on success
+        this.attributes = this.attributes.map(u => u.id !== attribute.id ? u : attribute);
+        this.toastService.show('Attribute successfully updated.', {
+          delay: 3000,
+          autohide: true,
+          headertext: 'Updated...'
+        });
+      }
+    );
+    return false;
+  }
+
+  createAttribute() {
+    const attribute = this.getAttributeForm();
+    if (window.console) {
+      console.log("createAttribute " + attribute);
+    }
+    if (attribute === null || attribute === undefined) {
+      return false;
+    }
+    attribute.id = null;
+    this.attributesRestService.update(attribute).subscribe(
+      (result: any) => { // on success
+        this.attributes.push(attribute);
+        this.toastService.show('Attribute successfully created.', {
+          delay: 3000,
+          autohide: true,
+          headertext: 'Created...'
+        });
+      }
+    );
+    return false;
+  }
+
+  cancelAttribute() {
+    this.setAttributeForm();
+    return false;
+  }
+
+  setAttributeForm(item?: Attribute) {
+    const object = item === undefined ? {
+      id: null,
+      name: null,
+      value: null,
+      valueType: null,
+    } : item;
+    if (this.attributeForm === undefined) {
+      this.attributeForm = this.formBuilder.group(object);
+    } else {
+      this.attributeForm.reset(object);
+    }
+  }
+
+  getAttributeForm(): Attribute | null {
+    const formModel = this.attributeForm.value;
+
+    if (this.item === null || this.item === undefined) {
+      return null;
+    }
+
+    const saveAttribute: Attribute = new Attribute({
+      id: formModel.id as number,
+      name: formModel.name as string,
+      value: formModel.value as string,
+      valueType: formModel.valueType as string,
+      objecttype: 'ROOM',
+      objectid: this.item.id as number,
+    });
+    return saveAttribute;
+  }
+
 }
