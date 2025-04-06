@@ -198,8 +198,7 @@ public class GameRestService
     {
       throw new MudWebException(name, "You are not logged in as " + name, Response.Status.UNAUTHORIZED);
     }
-    User person = getPlayer(name);
-    return person;
+    return getPlayer(name);
   }
 
   /**
@@ -743,6 +742,13 @@ public class GameRestService
   private PrivateDisplay runMultipleCommands(User person, String command)
       throws MudException
   {
+    if (command.toLowerCase().contains("heehaw") || command.toLowerCase().contains("ribbit"))
+    {
+      logService.writeLog(person, "Tried to run multiple commands (maybe in a macro) with either jackassing or frogging in it.");
+      PersonCommunicationService communicationService = CommunicationService.getCommunicationService(person);
+      communicationService.writeMessage("I'm sorry, I cannot execute that command.<br/>\r\n");
+      return createPrivateDisplayFromRoom(person);
+    }
     PrivateDisplay result = null;
     // multiple commands
     String[] splitted = command.split(" ; ");

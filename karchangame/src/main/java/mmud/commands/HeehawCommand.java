@@ -17,13 +17,18 @@
 package mmud.commands;
 
 import java.time.LocalDateTime;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
+import java.time.Month;
+import java.util.concurrent.TimeUnit;
 
 import com.google.common.annotations.VisibleForTesting;
+import com.google.common.cache.CacheBuilder;
+import com.google.common.cache.CacheLoader;
+import com.google.common.cache.LoadingCache;
 import mmud.database.entities.characters.User;
 import mmud.database.entities.game.DisplayInterface;
 import mmud.services.CommunicationService;
+
+import javax.annotation.Nonnull;
 
 /**
  * The Heehaw Command: "heehaw". Makes you go "Heeehaw!". It's a punishment
@@ -35,7 +40,27 @@ import mmud.services.CommunicationService;
  */
 public class HeehawCommand extends NormalCommand
 {
-  private final Map<String, LocalDateTime> heehaws = new ConcurrentHashMap<>();
+  private static final LoadingCache<String, LocalDateTime> heehaws;
+
+  static
+  {
+    // just put a default here.
+    // as long as it is sufficiently old, it'll be fine.
+    CacheLoader<String, LocalDateTime> loader = new CacheLoader<>()
+    {
+      @Nonnull
+      @Override
+      public LocalDateTime load(@Nonnull String key)
+      {
+        // just put a default here.
+        // as long as it is sufficiently old, it'll be fine.
+        return LocalDateTime.of(2010, Month.JANUARY, 1, 0, 0, 0);
+      }
+    };
+    heehaws = CacheBuilder.newBuilder()
+      .expireAfterAccess(20, TimeUnit.SECONDS)
+      .build(loader);
+  }
 
   public HeehawCommand(String aRegExpr)
   {
@@ -50,7 +75,7 @@ public class HeehawCommand extends NormalCommand
       return null;
     }
     LocalDateTime tenSecondsAgo = LocalDateTime.now().plusSeconds(-10L);
-    if (heehaws.get(aUser.getName()) != null && tenSecondsAgo.isBefore(heehaws.get(aUser.getName())))
+    if (tenSecondsAgo.isBefore(heehaws.getUnchecked(aUser.getName())))
     {
       CommunicationService.getCommunicationService(aUser).writeMessage("You cannot say 'Heehaw' that fast! You will get tongue tied!<br/>\r\n");
       return aUser.getRoom();
@@ -61,7 +86,6 @@ public class HeehawCommand extends NormalCommand
     if (aUser.getJackassing() == 0)
     {
       CommunicationService.getCommunicationService(aUser.getRoom()).sendMessage(aUser, "A jackass called " + aUser.getName() + " magically changes back to a " + aUser.getRace() + ".<br/>\n");
-      heehaws.remove(aUser.getName());
     } else
     {
       CommunicationService.getCommunicationService(aUser).writeMessage("You feel the need to say 'Heehaw' just " + aUser.getJackassing() + " times.<br/>\r\n");

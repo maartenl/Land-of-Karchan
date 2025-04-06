@@ -17,13 +17,18 @@
 package mmud.commands;
 
 import java.time.LocalDateTime;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
+import java.time.Month;
+import java.util.concurrent.TimeUnit;
 
 import com.google.common.annotations.VisibleForTesting;
+import com.google.common.cache.CacheBuilder;
+import com.google.common.cache.CacheLoader;
+import com.google.common.cache.LoadingCache;
 import mmud.database.entities.characters.User;
 import mmud.database.entities.game.DisplayInterface;
 import mmud.services.CommunicationService;
+
+import javax.annotation.Nonnull;
 
 /**
  * The Ribbit Command: "Rrribbit". Makes you go "Rrribbit". It's a punishment
@@ -35,7 +40,29 @@ import mmud.services.CommunicationService;
  */
 public class RibbitCommand extends NormalCommand
 {
-  private final Map<String, LocalDateTime> ribbits = new ConcurrentHashMap<>();
+
+  private static final LoadingCache<String, LocalDateTime> ribbits;
+
+  static
+  {
+    // just put a default here.
+    // as long as it is sufficiently old, it'll be fine.
+    CacheLoader<String, LocalDateTime> loader = new CacheLoader<>()
+    {
+      @Nonnull
+      @Override
+      public LocalDateTime load(@Nonnull String key)
+      {
+        // just put a default here.
+        // as long as it is sufficiently old, it'll be fine.
+        return LocalDateTime.of(2010, Month.JANUARY, 1, 0, 0, 0);
+      }
+    };
+    ribbits = CacheBuilder.newBuilder()
+      .expireAfterAccess(20, TimeUnit.SECONDS)
+      .build(loader);
+  }
+
 
   public RibbitCommand(String aRegExpr)
   {
@@ -56,18 +83,20 @@ public class RibbitCommand extends NormalCommand
       return null;
     }
     LocalDateTime tenSecondsAgo = LocalDateTime.now().plusSeconds(-10L);
-    if (ribbits.get(aUser.getName()) != null && tenSecondsAgo.isBefore(ribbits.get(aUser.getName())))
+    if (tenSecondsAgo.isBefore(ribbits.getUnchecked(aUser.getName())))
     {
-      CommunicationService.getCommunicationService(aUser).writeMessage("You cannot say 'Ribbit' that fast! You will get tongue tied!<br/>\r\n");
+      CommunicationService.getCommunicationService(aUser).writeMessage("You cannot say 'Ribbit' that fast! You will " +
+        "get tongue tied!<br/>\r\n");
       return aUser.getRoom();
     }
-    CommunicationService.getCommunicationService(aUser.getRoom()).sendMessage(aUser, "A frog called " + aUser.getName() + " says \"Rrribbit!\""
+    CommunicationService.getCommunicationService(aUser.getRoom()).sendMessage(aUser,
+      "A frog called " + aUser.getName() + " says \"Rrribbit!\""
       + ".<br/>\n");
     aUser.lessFrogging();
     if (aUser.getFrogging() == 0)
     {
-      CommunicationService.getCommunicationService(aUser.getRoom()).sendMessage(aUser, "A frog called " + aUser.getName() + " magically changes back to a " + aUser.getRace() + ".<br/>\n");
-      ribbits.remove(aUser.getName());
+      CommunicationService.getCommunicationService(aUser.getRoom()).sendMessage(aUser,
+        "A frog called " + aUser.getName() + " magically changes back to a " + aUser.getRace() + ".<br/>\n");
     } else
     {
       CommunicationService.getCommunicationService(aUser).writeMessage("You feel the need to say 'Ribbit' just " + aUser.getFrogging() + " times.<br/>\r\n");
