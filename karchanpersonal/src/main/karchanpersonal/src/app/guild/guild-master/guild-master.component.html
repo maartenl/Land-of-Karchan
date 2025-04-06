@@ -31,46 +31,75 @@
           <textarea class="form-control" id="logonmessage" rows="13" formControlName="logonmessage"></textarea>
         </fieldset>
         <fieldset class="form-group">
-          <label for="colour" [ngStyle]="getStyle()">Colour</label>
+          <label for="colour" [ngClass]="getCssColourClass()">Colour</label>
+          <!-- created using Colours.getColoursAsInputfield() -->
           <select class="form-control" id="colour" name="colour" formControlName="colour">
             <option selected="selected" value="black">black</option>
+            <option value="airred">airred</option>
+            <option value="ajax">ajax</option>
+            <option value="amerrose">amerrose</option>
+            <option value="asparagus">asparagus</option>
+            <option value="auburn">auburn</option>
+            <option value="avocado">avocado</option>
+            <option value="byzantine">byzantine</option>
+            <option value="carlsberg">carlsberg</option>
+            <option value="carmine">carmine</option>
+            <option value="cerise">cerise</option>
+            <option value="chili">chili</option>
             <option value="chocolate">chocolate</option>
+            <option value="cinnabar">cinnabar</option>
             <option value="cornflowerblue">cornflowerblue</option>
-            <option value="red">red</option>
+            <option value="cyanblue">cyanblue</option>
             <option value="darkcyan">darkcyan</option>
             <option value="darkgoldenrod">darkgoldenrod</option>
             <option value="darkorange">darkorange</option>
             <option value="darkorchid">darkorchid</option>
+            <option value="darkpastelgreen">darkpastelgreen</option>
             <option value="deeppink">deeppink</option>
             <option value="deepskyblue">deepskyblue</option>
             <option value="dodgerblue">dodgerblue</option>
             <option value="forestgreen">forestgreen</option>
             <option value="fuchsia">fuchsia</option>
+            <option value="gamboge">gamboge</option>
+            <option value="glaucous">glaucous</option>
             <option value="gold">gold</option>
             <option value="goldenrod">goldenrod</option>
+            <option value="green">green</option>
             <option value="hotpink">hotpink</option>
             <option value="indianred">indianred</option>
+            <option value="iris">iris</option>
+            <option value="jungle">jungle</option>
+            <option value="kelly">kelly</option>
             <option value="lightcoral">lightcoral</option>
             <option value="lightseagreen">lightseagreen</option>
             <option value="lime">lime</option>
             <option value="limegreen">limegreen</option>
+            <option value="madrid">madrid</option>
             <option value="mediumorchid">mediumorchid</option>
             <option value="mediumpurple">mediumpurple</option>
             <option value="mediumslateblue">mediumslateblue</option>
             <option value="mediumvioletred">mediumvioletred</option>
+            <option value="myrtle">myrtle</option>
+            <option value="neonorange">neonorange</option>
             <option value="olive">olive</option>
             <option value="olivedrab">olivedrab</option>
             <option value="orangered">orangered</option>
             <option value="orchid">orchid</option>
             <option value="palevioletred">palevioletred</option>
             <option value="peru">peru</option>
+            <option value="pistachio">pistachio</option>
+            <option value="red">red</option>
             <option value="royalblue">royalblue</option>
+            <option value="ruby">ruby</option>
+            <option value="russet">russet</option>
+            <option value="sanguine">sanguine</option>
             <option value="seagreen">seagreen</option>
+            <option value="secret">secret</option>
             <option value="sienna">sienna</option>
             <option value="steelblue">steelblue</option>
             <option value="teal">teal</option>
-            <option value="cyanblue">cyanblue</option>
-            <option value="green">green</option>
+            <option value="tearose">tearose</option>
+            <option value="watermelon">watermelon</option>
           </select>
         </fieldset>
         <div class="card" style="width: 100%;">

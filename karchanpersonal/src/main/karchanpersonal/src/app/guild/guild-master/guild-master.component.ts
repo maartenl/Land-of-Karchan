@@ -91,13 +91,10 @@ export class GuildMasterComponent implements OnInit {
     return false;
   }
 
-  public getStyle() {
+  public getCssColourClass() {
     const formModel = this.guildForm.value;
-    const styles = {
-      // CSS property names
-      'color': formModel.colour as string
-    };
-    return styles;
+    const colour = formModel.colour as string
+    return "chat-" + colour;
   }
 
   save() {

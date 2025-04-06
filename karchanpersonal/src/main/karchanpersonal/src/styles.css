@@ -77,154 +77,70 @@ h4 {
   color: white !important;
 }
 
-.chat-black {
-  color: #000000;
-}
-
-.chat-chocolate {
-  color: #D2691E;
-}
-
-.chat-cornflowerblue {
-  color: #6495ED;
-}
-
-.chat-red {
-  color: #FF0000;
-}
-
-.chat-darkcyan {
-  color: #008B8B;
-}
-
-.chat-darkgoldenrod {
-  color: #B8860B;
-}
-
-.chat-darkorange {
-  color: #FF8C00;
-}
-
-.chat-darkorchid {
-  color: #9932CC;
-}
-
-.chat-deeppink {
-  color: #FF1493;
-}
-
-.chat-deepskyblue {
-  color: #00BFFF;
-}
-
-.chat-dodgerblue {
-  color: #1E90FF;
-}
-
-.chat-forestgreen {
-  color: #228B22;
-}
-
-.chat-fuchsia {
-  color: #FF00FF;
-}
-
-.chat-gold {
-  color: #FFD700;
-}
-
-.chat-goldenrod {
-  color: #DAA520;
-}
-
-.chat-hotpink {
-  color: #FF69B4;
-}
-
-.chat-indianred {
-  color: #CD5C5C;
-}
-
-.chat-lightcoral {
-  color: #F08080;
-}
-
-.chat-lightseagreen {
-  color: #20B2AA;
-}
-
-.chat-lime {
-  color: #00FF00;
-}
-
-.chat-limegreen {
-  color: #32CD32;
-}
-
-.chat-mediumorchid {
-  color: #BA55D3;
-}
-
-.chat-mediumpurple {
-  color: #9370DB;
-}
-
-.chat-mediumslateblue {
-  color: #7B68EE;
-}
-
-.chat-mediumvioletred {
-  color: #C71585;
-}
-
-.chat-olive {
-  color: #808000;
-}
-
-.chat-olivedrab {
-  color: #6B8E23;
-}
-
-.chat-orangered {
-  color: #FF4500;
-}
-
-.chat-orchid {
-  color: #DA70D6;
-}
-
-.chat-palevioletred {
-  color: #DB7093;
-}
-
-.chat-peru {
-  color: #CD853F;
-}
-
-.chat-royalblue {
-  color: #4169E1;
-}
-
-.chat-seagreen {
-  color: #2E8B57;
-}
-
-.chat-sienna {
-  color: #A0522D;
-}
-
-.chat-steelblue {
-  color: #4682B4;
-}
-
-.chat-teal {
-  color: #008080;
-}
-
-.chat-cyanblue {
-  color: #4c76a2;
-}
-
-.chat-green {
-  color: green;
-}
+/* created using Colours.getColoursAsCss() */
+.chat-airred { color: #fd5c63;}
+.chat-ajax { color: #d2122e;}
+.chat-amerrose { color: #ff033e;}
+.chat-asparagus { color: #87a96b;}
+.chat-auburn { color: #a52a2a;}
+.chat-avocado { color: #568203;}
+.chat-black { color: #000000;}
+.chat-byzantine { color: #3457d5;}
+.chat-carlsberg { color: #17b169;}
+.chat-carmine { color: #ff0038;}
+.chat-cerise { color: #de3163;}
+.chat-chili { color: #e23d28;}
+.chat-chocolate { color: #D2691E;}
+.chat-cinnabar { color: #e44d2e;}
+.chat-cornflowerblue { color: #6495ED;}
+.chat-cyanblue { color: #4c76a2;}
+.chat-darkcyan { color: #008B8B;}
+.chat-darkgoldenrod { color: #B8860B;}
+.chat-darkorange { color: #FF8C00;}
+.chat-darkorchid { color: #9932CC;}
+.chat-darkpastelgreen { color: #03c03c;}
+.chat-deeppink { color: #FF1493;}
+.chat-deepskyblue { color: #00BFFF;}
+.chat-dodgerblue { color: #1E90FF;}
+.chat-forestgreen { color: #228B22;}
+.chat-fuchsia { color: #FF00FF;}
+.chat-gamboge { color: #e49b0f;}
+.chat-glaucous { color: #6082b6;}
+.chat-gold { color: #FFD700;}
+.chat-goldenrod { color: #DAA520;}
+.chat-green { color: green;}
+.chat-hotpink { color: #FF69B4;}
+.chat-indianred { color: #CD5C5C;}
+.chat-iris { color: #5a4fcf;}
+.chat-jungle { color: #29ab87;}
+.chat-kelly { color: #4cbb17;}
+.chat-lightcoral { color: #F08080;}
+.chat-lightseagreen { color: #20B2AA;}
+.chat-lime { color: #00FF00;}
+.chat-limegreen { color: #32CD32;}
+.chat-madrid { color: #febe10;}
+.chat-mediumorchid { color: #BA55D3;}
+.chat-mediumpurple { color: #9370DB;}
+.chat-mediumslateblue { color: #7B68EE;}
+.chat-mediumvioletred { color: #C71585;}
+.chat-myrtle { color: #317873;}
+.chat-neonorange { color: #ff5f1f;}
+.chat-olive { color: #808000;}
+.chat-olivedrab { color: #6B8E23;}
+.chat-orangered { color: #FF4500;}
+.chat-orchid { color: #DA70D6;}
+.chat-palevioletred { color: #DB7093;}
+.chat-peru { color: #CD853F;}
+.chat-pistachio { color: #93c572;}
+.chat-red { color: #FF0000;}
+.chat-royalblue { color: #4169E1;}
+.chat-ruby { color: #e0115f;}
+.chat-russet { color: #80461b;}
+.chat-sanguine { color: #bc3f4a;}
+.chat-seagreen { color: #2E8B57;}
+.chat-secret { color: #f9629f;}
+.chat-sienna { color: #A0522D;}
+.chat-steelblue { color: #4682B4;}
+.chat-teal { color: #008080;}
+.chat-tearose { color: #f88379;}
+.chat-watermelon { color: #e37383;}

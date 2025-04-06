@@ -19,6 +19,7 @@ package org.karchan.menus;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.TypedQuery;
 import mmud.constants.Adverbs;
+import mmud.constants.Colours;
 import mmud.constants.Emotions;
 
 import java.util.List;
@@ -42,5 +43,6 @@ public class CommandReferenceMenu extends Menu
     root.put("adverbs", Adverbs.getAdverbs());
     root.put("emotions", Emotions.getEmotions());
     root.put("targetEmotions", Emotions.getTargetEmotions());
+    root.put("colours", Colours.getColours());
   }
 }
