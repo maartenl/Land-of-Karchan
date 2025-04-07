@@ -84,6 +84,42 @@
           <artifactId>maven-project-info-reports-plugin</artifactId>
           <version>3.0.0</version>
         </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-javadoc-plugin</artifactId>
+          <version>3.6.0</version>
+          <configuration>
+              <taglet>org.taglet.plantuml.PlantumlTaglet</taglet>
+              <!-- <tagletpath>/path/to/taglet.jar</tagletpath> -->
+              <tagletArtifact>
+                <groupId>org.taglet.plantuml</groupId>
+                <artifactId>plantumltaglet</artifactId>
+                <version>1.1</version>
+              </tagletArtifact>
+              <!--                Configuration below should be removed, once the generation of
+                              JavaDFoc files no longer generates a failed build.-->
+              <source>23</source>
+              <doclint>none</doclint>
+              <additionalOptions>-Xdoclint:none</additionalOptions>
+              <additionalJOption>-Xdoclint:none</additionalJOption>
+            <!-- Default configuration for all reports -->
+            <noqualifier>all</noqualifier>
+            <destDir>javadoc</destDir>
+          </configuration>
+          <executions>
+            <execution>
+              <id>aggregate</id>
+              <goals>
+                <goal>aggregate</goal>
+              </goals>
+              <configuration>
+                <!-- Specific configuration for the aggregate report -->
+                <reportOutputDirectory>${user.dir}/documents</reportOutputDirectory>
+                <destDir>javadoc</destDir>
+              </configuration>
+            </execution>
+          </executions>
+        </plugin>
       </plugins>
     </pluginManagement>
   </build>
