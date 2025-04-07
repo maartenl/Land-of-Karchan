@@ -41,7 +41,8 @@ import mmud.database.entities.characters.Person;
  */
 @Entity
 @Table(name = "mm_mailtable")
-@NamedQuery(name = "MailReceiver.deleteByName", query = "DELETE FROM MailReceiver m WHERE m.toname = :person")
+@NamedQuery(name = "MailReceiver.deleteByToname", query = "DELETE FROM MailReceiver m WHERE m.toname = :person")
+@NamedQuery(name = "MailReceiver.deleteByName", query = "DELETE FROM MailReceiver m WHERE m.mail.name = :person")
 public class MailReceiver implements Serializable
 {
 

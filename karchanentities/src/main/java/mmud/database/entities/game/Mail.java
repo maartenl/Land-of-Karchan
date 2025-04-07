@@ -46,7 +46,7 @@ import mmud.database.entities.characters.Person;
 @Table(name = "mm_mailcontents")
 @NamedQueries(
   {
-    @NamedQuery(name = "Mail.deleteByName", query = "DELETE FROM Mail m WHERE m.name = :person"),
+    @NamedQuery(name = "Mail.deleteByName", query = "DELETE FROM Mail m WHERE m.name = :person or m.toname = :person"),
     @NamedQuery(name = "Mail.listmail", query = "SELECT DISTINCT r FROM Mail m, MailReceiver r WHERE m = r.mail and r.deleted = false and r.toname = :name order by m.whensent desc"),
     @NamedQuery(name = "Mail.listsentmail", query = "SELECT DISTINCT m FROM Mail m WHERE m.deleted = false and m.name = :name order by m.whensent desc"),
     @NamedQuery(name = "Mail.nonewmail", query = "UPDATE MailReceiver r SET r.newmail = false WHERE r.toname = :name"),

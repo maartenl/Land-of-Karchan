@@ -197,12 +197,19 @@ public class PersonService implements PersonsInterface
     var deleteAnswersQuery = em.createNamedQuery("Answer.deleteAnswers");
     deleteAnswersQuery.setParameter("person", person);
     LOGGER.log(Level.FINER, "deleting {0} answers", deleteAnswersQuery.executeUpdate());
-    var deleteMailsSentQuery = em.createNamedQuery("Mail.deleteByName");
-    deleteMailsSentQuery.setParameter("person", person);
-    LOGGER.log(Level.FINER, "deleting {0} mudmails sent", deleteMailsSentQuery.executeUpdate());
-    var deleteMailsReceivedQuery = em.createNamedQuery("MailReceiver.deleteByName");
+
+    // remove the persons the mudmail was actually sent to
+    var deleteMailsReceivedQuery = em.createNamedQuery("MailReceiver.deleteByToname");
     deleteMailsReceivedQuery.setParameter("person", person);
     LOGGER.log(Level.FINER, "deleting {0} mudmails received", deleteMailsReceivedQuery.executeUpdate());
+    var deleteMailsSentQuery = em.createNamedQuery("MailReceiver.deleteByName");
+    deleteMailsSentQuery.setParameter("person", person);
+    LOGGER.log(Level.FINER, "deleting {0} mudmails sent", deleteMailsSentQuery.executeUpdate());
+    // remove the mudmail itself.
+    var deleteMailsQuery = em.createNamedQuery("Mail.deleteByName");
+    deleteMailsQuery.setParameter("person", person);
+    LOGGER.log(Level.FINER, "deleting {0} mudmails", deleteMailsQuery.executeUpdate());
+
     em.remove(person);
   }
 

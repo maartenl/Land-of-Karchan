@@ -88,6 +88,9 @@
  * <TR valign=top><TD><A HREF="#mm_macro">mm_macro</A></TD><TD><A HREF="#important"><SUP>(Note)</SUP></A>Contains
  * macros created by players in the game.</TD></TR>
  * <TR valign=top><TD><A HREF="#mm_mailtable">mm_mailtable</A></TD><TD><A HREF="#important"><SUP>(Note)</SUP></A>Contains
+ * the persons to which a mudmail has been sent (can be more than one). For instance, a mudmail to the deputies will be sent to the four
+ * deputies, which means this table contains four entries.</TD></TR>
+ * <TR valign=top><TD><A HREF="#mm_mailcontents">mm_mailcontents</A></TD><TD><A HREF="#important"><SUP>(Note)</SUP></A>Contains
  * mud mail of characters in the game</TD></TR>
  * <TR valign=top><TD><A HREF="#mm_methods">mm_methods</A></TD><TD><A HREF="#important"><SUP>(Note)</SUP></A>Special
  * methods that can be entered in the database to provide characters with
@@ -347,6 +350,8 @@
  * <DT>id
  * <DD>the id of the mail, a unique reference id that is automatically
  * assigned.
+ * <DT>toname
+ * <DD>the name of the person the mudmail was sent to, must be a single user.
  * <DT>haveread
  * <DD>if the mail items has been read or not. (read=1, not read=0)
  * <DT>newmail
@@ -354,8 +359,25 @@
  * session.
  * <DT>deleted
  * <DD>indicates that the message has been deleted.
- * <DT>item_id
- * <DD>indicates that this message has its representative item in the game.
+ * <DT>contentsid
+ * <DD>refers to the actual contents of the mudmail
+ * </DL>
+ * <H4><A HREF="#contents"><A NAME="mm_mailcontents">mm_mailcontents</A></H4>
+ * <DL>
+ * <DT>id
+ * <DD>the id of the mail, a unique reference id that is automatically
+ * assigned.
+ * <DT>subject</DT>
+ * <dd>the subject of the mudmail</dd>
+ * <dt>name</dt><dd>the name of the person sending the mudmail</dd>
+ * <DT>toname
+ * <DD>the name of the person the mudmail was sent to, can also be "guild" or "deputies" or "guild:guildname" or "everybody".
+ * <DT>whensent
+ * <DD>timestamp when the mudmail was sent
+ * <DT>body
+ * <DD>the actual body of the mail
+ * <DT>deleted
+ * <DD>indicates that the message has been deleted.
  * </DL>
  *
  * <A NAME="mm_sillynamestable">
