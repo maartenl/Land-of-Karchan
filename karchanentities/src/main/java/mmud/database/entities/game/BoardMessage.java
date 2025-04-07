@@ -41,7 +41,7 @@ import mmud.database.entities.characters.User;
 @Table(name = "mm_boardmessages")
 @NamedQuery(name = "BoardMessage.deleteByName", query = "DELETE FROM BoardMessage b WHERE b.user = :person")
 @NamedQuery(name = "BoardMessage.news", query = "SELECT b FROM BoardMessage b WHERE b.board.name = 'logonmessage' and" +
-    " b.posttime > :lastSunday and b.removed = false order by b.pinned, b.id desc")
+    " (b.posttime > :lastSunday or b.pinned = true) and b.removed = false order by b.pinned, b.id desc")
 @NamedQuery(name = "BoardMessage.recent", query = "SELECT b FROM BoardMessage b WHERE b.board = :board order by b" +
     ".pinned desc, b.id desc")
 public class BoardMessage implements Serializable
