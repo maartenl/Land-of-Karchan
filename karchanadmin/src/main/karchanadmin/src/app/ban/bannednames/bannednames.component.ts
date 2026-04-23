@@ -6,9 +6,10 @@ import {Bannedname} from '../bannednames.model';
 import {BanRestService} from 'src/app/ban-rest.service';
 
 @Component({
-  selector: 'app-bannednames',
-  templateUrl: './bannednames.component.html',
-  styleUrls: ['./bannednames.component.css']
+    selector: 'app-bannednames',
+    templateUrl: './bannednames.component.html',
+    styleUrls: ['./bannednames.component.css'],
+    standalone: false
 })
 export class BannednamesComponent implements OnInit {
   items: Bannedname[] = new Array<Bannedname>(0);

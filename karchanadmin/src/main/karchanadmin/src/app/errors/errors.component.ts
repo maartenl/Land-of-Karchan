@@ -4,9 +4,10 @@ import { ErrorsService} from '../errors.service';
 import { ErrorMessage } from './errormessage.model';
 
 @Component({
-  selector: 'app-errors',
-  templateUrl: './errors.component.html',
-  styleUrls: ['./errors.component.css']
+    selector: 'app-errors',
+    templateUrl: './errors.component.html',
+    styleUrls: ['./errors.component.css'],
+    standalone: false
 })
 export class ErrorsComponent implements OnInit {
   errors: ErrorMessage[] = [] = new Array<ErrorMessage>(0);

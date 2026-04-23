@@ -8,9 +8,10 @@ import {AdminComponent} from '../admin/admin.component';
 import {ToastService} from '../toast.service';
 
 @Component({
-  selector: 'app-commands',
-  templateUrl: './commands.component.html',
-  styleUrls: ['./commands.component.css']
+    selector: 'app-commands',
+    templateUrl: './commands.component.html',
+    styleUrls: ['./commands.component.css'],
+    standalone: false
 })
 export class CommandsComponent extends AdminComponent<Command, number> implements OnInit {
 

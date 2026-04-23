@@ -7,9 +7,10 @@ import {Attribute} from '../attribute.model';
 import {AttributesRestService} from '../attributes-rest.service';
 
 @Component({
-  selector: 'app-attributes',
-  templateUrl: './attributes.component.html',
-  styleUrls: ['./attributes.component.css']
+    selector: 'app-attributes',
+    templateUrl: './attributes.component.html',
+    styleUrls: ['./attributes.component.css'],
+    standalone: false
 })
 export class AttributesComponent implements OnInit {
 

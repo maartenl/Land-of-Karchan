@@ -9,9 +9,10 @@ import {ToastService} from '../toast.service';
 import {AdminRestService} from '../admin/admin-rest.service';
 
 @Component({
-  selector: 'app-areas',
-  templateUrl: './areas.component.html',
-  styleUrls: ['./areas.component.css']
+    selector: 'app-areas',
+    templateUrl: './areas.component.html',
+    styleUrls: ['./areas.component.css'],
+    standalone: false
 })
 export class AreasComponent extends AdminComponent<Area, string> implements OnInit {
   form: FormGroup;

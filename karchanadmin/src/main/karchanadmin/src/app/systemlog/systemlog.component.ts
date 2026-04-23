@@ -7,9 +7,10 @@ import {ToastService} from '../toast.service';
 import {Logger} from "../consolelog.service";
 
 @Component({
-  selector: 'app-systemlog',
-  templateUrl: './systemlog.component.html',
-  styleUrls: ['./systemlog.component.css']
+    selector: 'app-systemlog',
+    templateUrl: './systemlog.component.html',
+    styleUrls: ['./systemlog.component.css'],
+    standalone: false
 })
 export class SystemlogComponent implements OnInit {
 

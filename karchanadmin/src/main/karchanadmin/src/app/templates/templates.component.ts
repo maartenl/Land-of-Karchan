@@ -6,9 +6,10 @@ import {TemplateService} from '../template.service';
 import {ToastService} from "../toast.service";
 
 @Component({
-  selector: 'app-templates',
-  templateUrl: './templates.component.html',
-  styleUrls: ['./templates.component.css']
+    selector: 'app-templates',
+    templateUrl: './templates.component.html',
+    styleUrls: ['./templates.component.css'],
+    standalone: false
 })
 export class TemplatesComponent implements OnInit {
 

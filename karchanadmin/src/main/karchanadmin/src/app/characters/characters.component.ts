@@ -12,9 +12,10 @@ import {AttributesRestService} from '../attributes-rest.service';
 import {Item} from "../items/item.model";
 
 @Component({
-  selector: 'app-characters',
-  templateUrl: './characters.component.html',
-  styleUrls: ['./characters.component.css']
+    selector: 'app-characters',
+    templateUrl: './characters.component.html',
+    styleUrls: ['./characters.component.css'],
+    standalone: false
 })
 export class CharactersComponent extends AdminComponent<MudCharacter, string> implements OnInit {
   iteminstances: Item[] = [] = new Array<Item>(0);

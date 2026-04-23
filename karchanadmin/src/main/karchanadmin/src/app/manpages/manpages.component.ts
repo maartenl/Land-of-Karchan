@@ -8,9 +8,10 @@ import { ToastService } from '../toast.service';
 import { AdminRestService } from '../admin/admin-rest.service';
 
 @Component({
-  selector: 'app-manpages',
-  templateUrl: './manpages.component.html',
-  styleUrls: ['./manpages.component.css']
+    selector: 'app-manpages',
+    templateUrl: './manpages.component.html',
+    styleUrls: ['./manpages.component.css'],
+    standalone: false
 })
 export class ManpagesComponent extends AdminComponent<Manpage, string> implements OnInit {
   form: FormGroup;

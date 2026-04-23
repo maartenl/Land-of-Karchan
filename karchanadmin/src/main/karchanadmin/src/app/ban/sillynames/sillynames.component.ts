@@ -6,9 +6,10 @@ import {BanRestService} from 'src/app/ban-rest.service';
 import {Sillyname} from '../sillynames.model';
 
 @Component({
-  selector: 'app-sillynames',
-  templateUrl: './sillynames.component.html',
-  styleUrls: ['./sillynames.component.css']
+    selector: 'app-sillynames',
+    templateUrl: './sillynames.component.html',
+    styleUrls: ['./sillynames.component.css'],
+    standalone: false
 })
 export class SillynamesComponent implements OnInit {
   items: Sillyname[] = new Array<Sillyname>(0);

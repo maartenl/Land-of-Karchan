@@ -8,9 +8,10 @@ import { GuildsRestService } from '../guilds-rest.service';
 import {Guild, Guildmember} from './guild.model';
 
 @Component({
-  selector: 'app-guilds',
-  templateUrl: './guilds.component.html',
-  styleUrls: ['./guilds.component.css']
+    selector: 'app-guilds',
+    templateUrl: './guilds.component.html',
+    styleUrls: ['./guilds.component.css'],
+    standalone: false
 })
 export class GuildsComponent extends AdminComponent<Guild, string> implements OnInit {
   form: FormGroup;

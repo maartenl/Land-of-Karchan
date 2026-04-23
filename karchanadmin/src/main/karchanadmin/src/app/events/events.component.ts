@@ -8,9 +8,10 @@ import { ToastService } from '../toast.service';
 import { AdminRestService } from '../admin/admin-rest.service';
 
 @Component({
-  selector: 'app-events',
-  templateUrl: './events.component.html',
-  styleUrls: ['./events.component.css']
+    selector: 'app-events',
+    templateUrl: './events.component.html',
+    styleUrls: ['./events.component.css'],
+    standalone: false
 })
 export class EventsComponent extends AdminComponent<MudEvent, number> implements OnInit {
   form: FormGroup;

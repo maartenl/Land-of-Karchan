@@ -12,9 +12,10 @@ import { Attribute } from '../attribute.model';
 import { AttributesRestService } from '../attributes-rest.service';
 
 @Component({
-  selector: 'app-rooms',
-  templateUrl: './rooms.component.html',
-  styleUrls: ['./rooms.component.css']
+    selector: 'app-rooms',
+    templateUrl: './rooms.component.html',
+    styleUrls: ['./rooms.component.css'],
+    standalone: false
 })
 export class RoomsComponent extends AdminComponent<Room, number> implements OnInit {
   iteminstances: Item[] = [] = new Array<Item>(0);

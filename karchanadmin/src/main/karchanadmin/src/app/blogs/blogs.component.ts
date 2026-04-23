@@ -5,9 +5,10 @@ import {Blog} from './blog.model';
 import {BlogService} from '../blog.service';
 
 @Component({
-  selector: 'app-blogs',
-  templateUrl: './blogs.component.html',
-  styleUrls: ['./blogs.component.css']
+    selector: 'app-blogs',
+    templateUrl: './blogs.component.html',
+    styleUrls: ['./blogs.component.css'],
+    standalone: false
 })
 export class BlogsComponent implements OnInit {
 

@@ -5,9 +5,10 @@ import {Administrator} from './administrator.model';
 import {ToastService} from '../toast.service';
 
 @Component({
-  selector: 'app-administrator',
-  templateUrl: './administrator.component.html',
-  styleUrls: ['./administrator.component.css']
+    selector: 'app-administrator',
+    templateUrl: './administrator.component.html',
+    styleUrls: ['./administrator.component.css'],
+    standalone: false
 })
 export class AdministratorComponent implements OnInit {
 

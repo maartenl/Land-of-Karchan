@@ -9,9 +9,10 @@ import {AdminComponent} from '../admin/admin.component';
 import {ToastService} from '../toast.service';
 
 @Component({
-  selector: 'app-methods',
-  templateUrl: './methods.component.html',
-  styleUrls: ['./methods.component.css']
+    selector: 'app-methods',
+    templateUrl: './methods.component.html',
+    styleUrls: ['./methods.component.css'],
+    standalone: false
 })
 export class MethodsComponent extends AdminComponent<Method, string> implements OnInit {
 

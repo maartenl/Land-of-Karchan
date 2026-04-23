@@ -8,9 +8,10 @@ import { ToastService } from '../toast.service';
 import { AdminRestService } from '../admin/admin-rest.service';
 
 @Component({
-  selector: 'app-worldattributes',
-  templateUrl: './worldattributes.component.html',
-  styleUrls: ['./worldattributes.component.css']
+    selector: 'app-worldattributes',
+    templateUrl: './worldattributes.component.html',
+    styleUrls: ['./worldattributes.component.css'],
+    standalone: false
 })
 export class WorldattributesComponent extends AdminComponent<Worldattribute, string> implements OnInit {
 

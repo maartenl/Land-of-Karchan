@@ -8,9 +8,10 @@ import {Logger} from "../consolelog.service";
 import {ItemdefinitionsRestService} from "../itemdefinitions-rest.service";
 
 @Component({
-  selector: 'app-items',
-  templateUrl: './items.component.html',
-  styleUrls: ['./items.component.css']
+    selector: 'app-items',
+    templateUrl: './items.component.html',
+    styleUrls: ['./items.component.css'],
+    standalone: false
 })
 export class ItemsComponent extends AdminComponent<ItemDefinition, number> implements OnInit {
   iteminstances: Item[] = [] = new Array<Item>(0);

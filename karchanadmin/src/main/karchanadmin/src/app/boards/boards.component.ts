@@ -8,9 +8,10 @@ import { AdminRestService } from '../admin/admin-rest.service';
 import { BoardsRestService } from '../boards-rest.service';
 
 @Component({
-  selector: 'app-boards',
-  templateUrl: './boards.component.html',
-  styleUrls: ['./boards.component.css']
+    selector: 'app-boards',
+    templateUrl: './boards.component.html',
+    styleUrls: ['./boards.component.css'],
+    standalone: false
 })
 export class BoardsComponent extends AdminComponent<Board, number> implements OnInit {
   form: FormGroup;

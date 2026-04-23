@@ -6,9 +6,10 @@ import {BanRestService} from 'src/app/ban-rest.service';
 import {Unbannedname} from '../unbanned.model';
 
 @Component({
-  selector: 'app-unbanned',
-  templateUrl: './unbanned.component.html',
-  styleUrls: ['./unbanned.component.css']
+    selector: 'app-unbanned',
+    templateUrl: './unbanned.component.html',
+    styleUrls: ['./unbanned.component.css'],
+    standalone: false
 })
 export class UnbannedComponent implements OnInit {
 
