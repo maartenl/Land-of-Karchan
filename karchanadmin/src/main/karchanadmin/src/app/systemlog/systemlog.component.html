@@ -5,14 +5,14 @@
         <fieldset class="form-group">
           <legend>Search terms</legend>
           <input type="text" class="form-control" id="nameSearch" name="nameSearch" placeholder="Name"
-                 formControlName="nameSearch"
-                 #searchname>
+            formControlName="nameSearch"
+            #searchname>
           <input type="text" class="form-control" id="fromSearch" name="fromSearch" placeholder="From date (yyyy-mm-dd)"
-                 formControlName="fromSearch"
-                 #searchcreation>
+            formControlName="fromSearch"
+            #searchcreation>
           <input type="text" class="form-control" id="toSearch" name="toSearch" placeholder="To date (yyyy-mm-dd)"
-                 formControlName="toSearch"
-                 #searchcreation>
+            formControlName="toSearch"
+            #searchcreation>
         </fieldset>
         <button type="button" class="mx-1 btn btn-primary" (click)="search()">Search</button>
       </form>
@@ -22,35 +22,53 @@
 <div class="container-fluid">
   <div class="row row-content">
     <div class="col-xs-12 col-xl-6">
-      <div class="card sticky-top" *ngIf="log !== undefined">
-        <div class="card-body">
-          <h5 class="card-title" *ngIf="log?.id !== undefined">Id {{ log?.id }}</h5>
-          <h5 class="card-title" *ngIf="log?.name !== undefined">Name {{ log?.name }}</h5>
-          <p class="card-text" *ngIf="log?.message !== undefined">Message {{ log?.message }}</p>
-          <p class="card-text" *ngIf="log?.addendum !== undefined">Addendum {{ log?.addendum }}</p>
-          <p class="card-text" *ngIf="log?.deputy !== undefined">Is Deputy: {{ log?.deputy }}</p>
-          <p class="card-text" *ngIf="log?.creation !== undefined">Created: {{ log?.creation }}</p>
+      @if (log !== undefined) {
+        <div class="card sticky-top">
+          <div class="card-body">
+            @if (log?.id !== undefined) {
+              <h5 class="card-title">Id {{ log?.id }}</h5>
+            }
+            @if (log?.name !== undefined) {
+              <h5 class="card-title">Name {{ log?.name }}</h5>
+            }
+            @if (log?.message !== undefined) {
+              <p class="card-text">Message {{ log?.message }}</p>
+            }
+            @if (log?.addendum !== undefined) {
+              <p class="card-text">Addendum {{ log?.addendum }}</p>
+            }
+            @if (log?.deputy !== undefined) {
+              <p class="card-text">Is Deputy: {{ log?.deputy }}</p>
+            }
+            @if (log?.creation !== undefined) {
+              <p class="card-text">Created: {{ log?.creation }}</p>
+            }
+          </div>
         </div>
-      </div>
+      }
     </div>
     <div class="col-xs-12 col-xl-6">
       <table class="table table-sm table-striped table-bordered">
         <caption>System log messages</caption>
         <thead class="thead-inverse">
-        <tr>
-          <th>#</th>
-          <th>Name</th>
-          <th>Message</th>
-          <th>Creation</th>
-        </tr>
+          <tr>
+            <th>#</th>
+            <th>Name</th>
+            <th>Message</th>
+            <th>Creation</th>
+          </tr>
         </thead>
         <tbody>
-        <tr *ngFor="let log of logs">
-          <td (click)="setLog(log)">{{ log?.id }}</td>
-          <td (click)="setLog(log)">{{ log?.name }}</td>
-          <td (click)="setLog(log)" *ngIf="log.message !== undefined">{{ log.message?.substring(0, 40) }}</td>
-          <td (click)="setLog(log)">{{ log?.creation }}</td>
-        </tr>
+          @for (log of logs; track log) {
+            <tr>
+              <td (click)="setLog(log)">{{ log?.id }}</td>
+              <td (click)="setLog(log)">{{ log?.name }}</td>
+              @if (log.message !== undefined) {
+                <td (click)="setLog(log)">{{ log.message?.substring(0, 40) }}</td>
+              }
+              <td (click)="setLog(log)">{{ log?.creation }}</td>
+            </tr>
+          }
         </tbody>
       </table>
     </div>
