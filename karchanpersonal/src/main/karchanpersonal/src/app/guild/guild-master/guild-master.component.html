@@ -16,7 +16,7 @@
         </fieldset>
         <fieldset class="form-group">
           <label for="guildurl">Homepage - <a href="{{guildForm.get('guildurl')?.value }}"
-                                              target="_blank">{{guildForm.get('guildurl')?.value }}</a></label>
+          target="_blank">{{guildForm.get('guildurl')?.value }}</a></label>
           <input type="text" class="form-control" id="guildurl" name="guildurl" formControlName="guildurl">
         </fieldset>
         <div class="card" style="width: 100%;">
@@ -116,12 +116,12 @@
         <fieldset class="form-group">
           <label for="creation">Created</label>
           <input type="text" class="form-control" id="creation" name="creation"
-                 value="{{guild?.creation | date:'medium'}}" readonly>
+            value="{{guild?.creation | date:'medium'}}" readonly>
         </fieldset>
         <div class="col-xs-12 col-sm-12 text-right">
           <button type="submit" [disabled]="guildForm.pristine" class="btn btn-primary">Save</button>
           <button type="reset" [disabled]="guildForm.pristine" class="btn btn-primary"
-                  (click)="cancel()">Cancel
+            (click)="cancel()">Cancel
           </button>
         </div>
       </form>
@@ -137,104 +137,117 @@
           <div class="card-header" role="tab" id="headingOne">
             <h5 class="mb-0">
               <a data-toggle="collapse" data-parent="#accordion" href="#collapseMembers" aria-expanded="true"
-                 aria-controls="collapseMembers" (click)="checkMembers()">
+                aria-controls="collapseMembers" (click)="checkMembers()">
                 Members
               </a>
             </h5>
           </div>
 
           <div id="collapseMembers" role="tabpanel" aria-labelledby="headingOne">
-            <div class="card-text" *ngIf="guildMembers !== undefined">
-              <ul class="list-group">
-                <li class="list-group-item justify-content-between" *ngFor="let member of guildMembers.members"
-                    (click)="selectMember(member)">
-                  {{member.name}}{{ member.guildrank === undefined ? "" : ", " + member.guildrank?.title }}
-                  <button type="button" class="close" aria-label="Close" (click)="deleteMember(member)">
-                    <i class="material-icons" aria-hidden="true">delete</i>
-                  </button>
-                </li>
-              </ul>
-              <div class="col-xs-12 col-sm-12">
-                <form [formGroup]="memberForm" (ngSubmit)="saveMember()" novalidate>
-                  <fieldset class="form-group">
-                    <label for="name">Name</label>
-                    <input type="text" class="form-control" id="name" name="name" formControlName="name" readonly>
-                  </fieldset>
-                  <fieldset class="form-group">
-                    <label for="rank">Rank</label>
-                    <select class="form-control" id="rank" name="rank" formControlName="rank">
-                      <option [ngValue]="-1">no rank</option>
-                      <option [ngValue]="rank.guildlevel" *ngFor="let rank of guildRanks.ranks">{{ rank.title }}
-                      </option>
-                    </select>
-                  </fieldset>
-                  <div class="col-xs-12 col-sm-12 text-right">
-                    <button type="submit" [disabled]="memberForm.pristine" class="btn btn-primary">Save</button>
-                  </div>
-                </form>
+            @if (guildMembers !== undefined) {
+              <div class="card-text">
+                <ul class="list-group">
+                  @for (member of guildMembers.members; track member) {
+                    <li class="list-group-item justify-content-between"
+                      (click)="selectMember(member)">
+                      {{member.name}}{{ member.guildrank === undefined ? "" : ", " + member.guildrank?.title }}
+                      <button type="button" class="close" aria-label="Close" (click)="deleteMember(member)">
+                        <i class="material-icons" aria-hidden="true">delete</i>
+                      </button>
+                    </li>
+                  }
+                </ul>
+                <div class="col-xs-12 col-sm-12">
+                  <form [formGroup]="memberForm" (ngSubmit)="saveMember()" novalidate>
+                    <fieldset class="form-group">
+                      <label for="name">Name</label>
+                      <input type="text" class="form-control" id="name" name="name" formControlName="name" readonly>
+                    </fieldset>
+                    <fieldset class="form-group">
+                      <label for="rank">Rank</label>
+                      <select class="form-control" id="rank" name="rank" formControlName="rank">
+                        <option [ngValue]="-1">no rank</option>
+                        @for (rank of guildRanks.ranks; track rank) {
+                          <option [ngValue]="rank.guildlevel">{{ rank.title }}
+                          </option>
+                        }
+                      </select>
+                    </fieldset>
+                    <div class="col-xs-12 col-sm-12 text-right">
+                      <button type="submit" [disabled]="memberForm.pristine" class="btn btn-primary">Save</button>
+                    </div>
+                  </form>
+                </div>
               </div>
-
-            </div>
+            }
           </div>
         </div>
         <div class="card">
           <div class="card-header" role="tab" id="headingTwo">
             <h5 class="mb-0">
               <a class="collapsed" data-toggle="collapse" data-parent="#accordion" href="#collapseRanks"
-                 aria-expanded="false" aria-controls="collapseRanks" (click)="checkRanks()">
+                aria-expanded="false" aria-controls="collapseRanks" (click)="checkRanks()">
                 Ranks
               </a>
             </h5>
           </div>
           <div id="collapseRanks" role="tabpanel" aria-labelledby="headingTwo">
-            <div class="card-text" *ngIf="guildRanks !== undefined">
-              <ul class="list-group">
-                <li class="list-group-item justify-content-between" *ngFor="let rank of guildRanks.ranks"
-                    (click)="selectRank(rank)">
-                  {{rank.guildlevel}} - {{rank.title}}
-                  <button type="button" class="close" aria-label="Close" (click)="deleteRank(rank)">
-                    <i class="material-icons" aria-hidden="true">delete</i>
-                  </button>
-                </li>
-              </ul>
-              <div class="col-xs-12 col-sm-12">
-                <form [formGroup]="rankForm" (ngSubmit)="saveRank()" novalidate>
-                  <fieldset class="form-group">
-                    <label for="guildlevel">Level</label>
-                    <input type="text" class="form-control" id="guildlevel" name="guildlevel"
-                           formControlName="guildlevel">
-                  </fieldset>
-                  <fieldset class="form-group">
-                    <label for="title">Title</label>
-                    <input type="text" class="form-control" id="title" name="title" formControlName="title">
-                  </fieldset>
-                  <div class="col-xs-12 col-sm-12 text-right">
-                    <button type="submit" [disabled]="rankForm.pristine" class="btn btn-primary">Save</button>
-                  </div>
-                </form>
+            @if (guildRanks !== undefined) {
+              <div class="card-text">
+                <ul class="list-group">
+                  @for (rank of guildRanks.ranks; track rank) {
+                    <li class="list-group-item justify-content-between"
+                      (click)="selectRank(rank)">
+                      {{rank.guildlevel}} - {{rank.title}}
+                      <button type="button" class="close" aria-label="Close" (click)="deleteRank(rank)">
+                        <i class="material-icons" aria-hidden="true">delete</i>
+                      </button>
+                    </li>
+                  }
+                </ul>
+                <div class="col-xs-12 col-sm-12">
+                  <form [formGroup]="rankForm" (ngSubmit)="saveRank()" novalidate>
+                    <fieldset class="form-group">
+                      <label for="guildlevel">Level</label>
+                      <input type="text" class="form-control" id="guildlevel" name="guildlevel"
+                        formControlName="guildlevel">
+                    </fieldset>
+                    <fieldset class="form-group">
+                      <label for="title">Title</label>
+                      <input type="text" class="form-control" id="title" name="title" formControlName="title">
+                    </fieldset>
+                    <div class="col-xs-12 col-sm-12 text-right">
+                      <button type="submit" [disabled]="rankForm.pristine" class="btn btn-primary">Save</button>
+                    </div>
+                  </form>
+                </div>
               </div>
-            </div>
+            }
           </div>
         </div>
         <div class="card">
           <div class="card-header" role="tab" id="headingThree">
             <h5 class="mb-0">
               <a class="collapsed" data-toggle="collapse" data-parent="#accordion" href="#collapseHopefuls"
-                 aria-expanded="false" aria-controls="collapseHopefuls" (click)="checkHopefuls()">
+                aria-expanded="false" aria-controls="collapseHopefuls" (click)="checkHopefuls()">
                 Hopefuls
               </a>
             </h5>
           </div>
           <div id="collapseHopefuls" role="tabpanel" aria-labelledby="headingThree">
             <div class="card-text">
-              <ul class="list-group" *ngIf="guildHopefuls !== undefined">
-                <li class="list-group-item justify-content-between" *ngFor="let hopeful of guildHopefuls.hopefuls">
-                  {{hopeful.name}}, {{hopeful.guildrank}}, {{hopeful.guild}}
-                  <button type="button" class="close" aria-label="Close" (click)="deleteHopeful(hopeful)">
-                    <i class="material-icons" aria-hidden="true">delete</i>
-                  </button>
-                </li>
-              </ul>
+              @if (guildHopefuls !== undefined) {
+                <ul class="list-group">
+                  @for (hopeful of guildHopefuls.hopefuls; track hopeful) {
+                    <li class="list-group-item justify-content-between">
+                      {{hopeful.name}}, {{hopeful.guildrank}}, {{hopeful.guild}}
+                      <button type="button" class="close" aria-label="Close" (click)="deleteHopeful(hopeful)">
+                        <i class="material-icons" aria-hidden="true">delete</i>
+                      </button>
+                    </li>
+                  }
+                </ul>
+              }
             </div>
           </div>
         </div>

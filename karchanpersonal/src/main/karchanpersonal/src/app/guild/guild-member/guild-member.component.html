@@ -9,21 +9,21 @@
         <dt>Created</dt>
         <dd>{{guild?.creation | date:'medium'}}</dd>
       </dl>
-        <div class="card" style="width: 100%;">
-          <div class="card-header">
-            Logonmessage
-          </div>
-          <div class="card-block" [innerHTML]="guild?.logonmessage">
-          </div>
+      <div class="card" style="width: 100%;">
+        <div class="card-header">
+          Logonmessage
         </div>
-        <hr/>
-        <div class="card" style="width: 100%;">
-          <div class="card-header">
-            Description
-          </div>
-          <div class="card-block" [innerHTML]="guild?.guilddescription">
-          </div>
+        <div class="card-block" [innerHTML]="guild?.logonmessage">
         </div>
+      </div>
+      <hr/>
+      <div class="card" style="width: 100%;">
+        <div class="card-header">
+          Description
+        </div>
+        <div class="card-block" [innerHTML]="guild?.guilddescription">
+        </div>
+      </div>
     </div>
   </div>
 </div>
@@ -37,18 +37,22 @@
             <h5 class="mb-0">
               <a data-toggle="collapse" data-parent="#accordion" href="#collapseMembers" aria-expanded="true" aria-controls="collapseMembers"
                 (click)="checkMembers()">
-          Members
-        </a>
+                Members
+              </a>
             </h5>
           </div>
 
           <div id="collapseMembers" class="collapse" role="tabpanel" aria-labelledby="headingOne">
             <div class="card-block">
-              <ul class="list-group" *ngIf="guildMembers !== undefined">
-                <li class="list-group-item justify-content-between" *ngFor="let member of guildMembers.members">
-                  {{member.name}}{{ member.guildrank === undefined ? "" : ", " + member.guildrank?.title }}
-                </li>
-              </ul>
+              @if (guildMembers !== undefined) {
+                <ul class="list-group">
+                  @for (member of guildMembers.members; track member) {
+                    <li class="list-group-item justify-content-between">
+                      {{member.name}}{{ member.guildrank === undefined ? "" : ", " + member.guildrank?.title }}
+                    </li>
+                  }
+                </ul>
+              }
             </div>
           </div>
         </div>
@@ -57,17 +61,21 @@
             <h5 class="mb-0">
               <a class="collapsed" data-toggle="collapse" data-parent="#accordion" href="#collapseRanks" aria-expanded="false" aria-controls="collapseRanks"
                 (click)="checkRanks()">
-          Ranks
-        </a>
+                Ranks
+              </a>
             </h5>
           </div>
           <div id="collapseRanks" class="collapse" role="tabpanel" aria-labelledby="headingTwo">
             <div class="card-block">
-              <ul class="list-group" *ngIf="guildRanks !== undefined">
-                <li class="list-group-item justify-content-between" *ngFor="let rank of guildRanks.ranks">
-                  {{rank.guildlevel}} - {{rank.title}}
-                </li>
-              </ul>
+              @if (guildRanks !== undefined) {
+                <ul class="list-group">
+                  @for (rank of guildRanks.ranks; track rank) {
+                    <li class="list-group-item justify-content-between">
+                      {{rank.guildlevel}} - {{rank.title}}
+                    </li>
+                  }
+                </ul>
+              }
             </div>
           </div>
         </div>
@@ -76,17 +84,21 @@
             <h5 class="mb-0">
               <a class="collapsed" data-toggle="collapse" data-parent="#accordion" href="#collapseHopefuls" aria-expanded="false" aria-controls="collapseHopefuls"
                 (click)="checkHopefuls()">
-          Hopefuls
-        </a>
+                Hopefuls
+              </a>
             </h5>
           </div>
           <div id="collapseHopefuls" class="collapse" role="tabpanel" aria-labelledby="headingThree">
             <div class="card-block">
-              <ul class="list-group" *ngIf="guildHopefuls !== undefined">
-                <li class="list-group-item justify-content-between" *ngFor="let hopeful of guildHopefuls.hopefuls">
-                  {{hopeful.name}}, {{hopeful.guildrank}}, {{hopeful.guild}}
-                </li>
-              </ul>
+              @if (guildHopefuls !== undefined) {
+                <ul class="list-group">
+                  @for (hopeful of guildHopefuls.hopefuls; track hopeful) {
+                    <li class="list-group-item justify-content-between">
+                      {{hopeful.name}}, {{hopeful.guildrank}}, {{hopeful.guild}}
+                    </li>
+                  }
+                </ul>
+              }
             </div>
           </div>
         </div>

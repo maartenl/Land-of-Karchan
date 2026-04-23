@@ -1,57 +1,61 @@
 <div class="container">
-    <div class="row row-content">
-      <div class="col-xs-12 col-sm-12">
-        <div class="card" *ngIf="picture !== undefined">
+  <div class="row row-content">
+    <div class="col-xs-12 col-sm-12">
+      @if (picture !== undefined) {
+        <div class="card">
           <img src="/images/player/{{ player }}{{ picture?.url }}" class="card-img-top" alt="{{ picture?.url }}">
           <div class="card-body">
             <h4 class="card-title">{{ picture?.url }}</h4>
             <p class="card-text"><strong>Id:</strong> {{ picture?.id }}</p>
             <p class="card-text"><strong>Full url:</strong> <a target="_blank" href="/images/player/{{ player }}{{ picture?.url }}">{{ getWebsite() }}/images/player/{{ player }}{{ picture?.url }}</a></p>
             <p class="card-text"><strong>MimeType:</strong> {{ picture?.mimeType }}</p>
-            <p class="card-text"><strong>On:</strong> {{ picture?.createDate | date:'medium' }}</p>          
+            <p class="card-text"><strong>On:</strong> {{ picture?.createDate | date:'medium' }}</p>
           </div>
         </div>
-        <table class="table table-sm table-striped table-bordered">
-          <thead class="thead-inverse">
+      }
+      <table class="table table-sm table-striped table-bordered">
+        <thead class="thead-inverse">
+          <tr>
+            <th>#</th>
+            <th>Url</th>
+            <th>mimeType</th>
+            <th>On</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (picture of pictures; track picture) {
             <tr>
-              <th>#</th>
-              <th>Url</th>
-              <th>mimeType</th>
-              <th>On</th>
-              <th></th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr *ngFor="let picture of pictures">
               <td (click)="setPicture(picture)">{{ picture?.id }}</td>
               <td (click)="setPicture(picture)">{{ picture?.url }}</td>
               <td (click)="setPicture(picture)">{{ picture?.mimeType }}</td>
               <td (click)="setPicture(picture)">{{ picture?.createDate | date:'medium' }}</td>
               <td>
-              <button type="button" class="close" aria-label="Close" (click)="deletePicture(picture)">
-                <i class="material-icons" aria-hidden="true">delete</i>
-              </button>            
+                <button type="button" class="close" aria-label="Close" (click)="deletePicture(picture)">
+                  <i class="material-icons" aria-hidden="true">delete</i>
+                </button>
               </td>
             </tr>
-          </tbody>
-        </table>
-      </div>
-      <div class="col-xs-12 col-sm-12">
-        <h3>Compose Picture</h3>
-      </div>
-      <div class="col-xs-12 col-sm-12">
-        <form [formGroup]="form" (ngSubmit)="save()" novalidate>
-          <fieldset class="form-group">
-            <label for="url">Url</label>
-            <input type="text" class="form-control" id="url" name="url" formControlName="url">
-            <small id="contents" class="form-text text-muted">Url <strong>must</strong> start with a "/", for example "/area51/lake/lake01.jpg".</small>
-          </fieldset>
-          <input type="file" (change)="onFileChange($event)"/>
-          <div class="col-xs-12 col-sm-12 text-right">
-            <button type="submit" [disabled]="form.pristine" class="btn btn-primary">Save</button>
-            <button type="reset" [disabled]="form.pristine" class="btn btn-primary" (click)="cancel()">Cancel</button>
-          </div>
-        </form>
-      </div>
+          }
+        </tbody>
+      </table>
+    </div>
+    <div class="col-xs-12 col-sm-12">
+      <h3>Compose Picture</h3>
+    </div>
+    <div class="col-xs-12 col-sm-12">
+      <form [formGroup]="form" (ngSubmit)="save()" novalidate>
+        <fieldset class="form-group">
+          <label for="url">Url</label>
+          <input type="text" class="form-control" id="url" name="url" formControlName="url">
+          <small id="contents" class="form-text text-muted">Url <strong>must</strong> start with a "/", for example "/area51/lake/lake01.jpg".</small>
+        </fieldset>
+        <input type="file" (change)="onFileChange($event)"/>
+        <div class="col-xs-12 col-sm-12 text-right">
+          <button type="submit" [disabled]="form.pristine" class="btn btn-primary">Save</button>
+          <button type="reset" [disabled]="form.pristine" class="btn btn-primary" (click)="cancel()">Cancel</button>
+        </div>
+      </form>
     </div>
   </div>
+</div>

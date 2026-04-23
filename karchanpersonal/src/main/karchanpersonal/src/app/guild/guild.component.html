@@ -1,15 +1,23 @@
 <div class="container">
   <div class="row row-content">
-    <div *ngIf="!hasGuild" class="alert alert-danger" role="alert">
-      You are not a member of a guild.
-    </div>
+    @if (!hasGuild) {
+      <div class="alert alert-danger" role="alert">
+        You are not a member of a guild.
+      </div>
+    }
   </div>
-  <div class="row row-content" *ngIf="hasGuild">
-    <div class="col-xs-12 col-sm-12">
-      <h3>{{guild?.title}}</h3>
+  @if (hasGuild) {
+    <div class="row row-content">
+      <div class="col-xs-12 col-sm-12">
+        <h3>{{guild?.title}}</h3>
+      </div>
     </div>
-  </div>
+  }
 </div>
-<app-guild-member *ngIf="hasGuild && !isGuildMaster()" [guild]="guild"></app-guild-member>
-<app-guild-master *ngIf="hasGuild && isGuildMaster()" [guild]="guild"></app-guild-master>
+@if (hasGuild && !isGuildMaster()) {
+  <app-guild-member [guild]="guild"></app-guild-member>
+}
+@if (hasGuild && isGuildMaster()) {
+  <app-guild-master [guild]="guild"></app-guild-master>
+}
 
