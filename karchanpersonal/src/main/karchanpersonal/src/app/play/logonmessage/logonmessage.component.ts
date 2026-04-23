@@ -6,9 +6,10 @@ import {Logonmessage} from "./logonmessage.model";
 import {Logger} from "../../consolelog.service";
 
 @Component({
-  selector: 'app-logonmessage',
-  templateUrl: './logonmessage.component.html',
-  styleUrls: ['./logonmessage.component.css']
+    selector: 'app-logonmessage',
+    templateUrl: './logonmessage.component.html',
+    styleUrls: ['./logonmessage.component.css'],
+    standalone: false
 })
 export class LogonmessageComponent implements OnInit {
 

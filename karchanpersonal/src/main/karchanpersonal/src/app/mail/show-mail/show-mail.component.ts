@@ -5,9 +5,10 @@ import {PlayerService} from 'src/app/player.service';
 import {ToastService} from 'src/app/toast.service';
 
 @Component({
-  selector: 'app-show-mail',
-  templateUrl: './show-mail.component.html',
-  styleUrls: ['./show-mail.component.css']
+    selector: 'app-show-mail',
+    templateUrl: './show-mail.component.html',
+    styleUrls: ['./show-mail.component.css'],
+    standalone: false
 })
 export class ShowMailComponent implements OnInit {
 

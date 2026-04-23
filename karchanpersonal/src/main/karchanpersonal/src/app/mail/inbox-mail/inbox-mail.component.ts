@@ -5,9 +5,10 @@ import {PlayerService} from '../../player.service';
 import {ToastService} from '../../toast.service';
 
 @Component({
-  selector: 'app-inbox-mail',
-  templateUrl: './inbox-mail.component.html',
-  styleUrls: ['./inbox-mail.component.css']
+    selector: 'app-inbox-mail',
+    templateUrl: './inbox-mail.component.html',
+    styleUrls: ['./inbox-mail.component.css'],
+    standalone: false
 })
 export class InboxMailComponent implements OnInit {
   mails: MailList;

@@ -5,9 +5,10 @@ import {Log} from "../log.model";
 import {GameService} from "../../game.service";
 
 @Component({
-  selector: 'app-chatlog',
-  templateUrl: './chatlog.component.html',
-  styleUrls: ['./chatlog.component.css']
+    selector: 'app-chatlog',
+    templateUrl: './chatlog.component.html',
+    styleUrls: ['./chatlog.component.css'],
+    standalone: false
 })
 export class ChatlogComponent {
 

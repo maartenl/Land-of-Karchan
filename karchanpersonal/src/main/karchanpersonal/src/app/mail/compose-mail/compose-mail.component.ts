@@ -5,9 +5,10 @@ import {FormBuilder, FormGroup} from '@angular/forms';
 import {Mail} from '../mail.model';
 
 @Component({
-  selector: 'app-compose-mail',
-  templateUrl: './compose-mail.component.html',
-  styleUrls: ['./compose-mail.component.css']
+    selector: 'app-compose-mail',
+    templateUrl: './compose-mail.component.html',
+    styleUrls: ['./compose-mail.component.css'],
+    standalone: false
 })
 export class ComposeMailComponent implements OnInit {
 

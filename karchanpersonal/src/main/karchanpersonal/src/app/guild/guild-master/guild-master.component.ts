@@ -6,9 +6,10 @@ import {PlayerService} from '../../player.service';
 import {ToastService} from 'src/app/toast.service';
 
 @Component({
-  selector: 'app-guild-master',
-  templateUrl: './guild-master.component.html',
-  styleUrls: ['./guild-master.component.css']
+    selector: 'app-guild-master',
+    templateUrl: './guild-master.component.html',
+    styleUrls: ['./guild-master.component.css'],
+    standalone: false
 })
 export class GuildMasterComponent implements OnInit {
 

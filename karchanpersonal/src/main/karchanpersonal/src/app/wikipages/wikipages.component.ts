@@ -8,9 +8,10 @@ import {environment} from 'src/environments/environment';
 import {ToastService} from "../toast.service";
 
 @Component({
-  selector: 'app-wikipages',
-  templateUrl: './wikipages.component.html',
-  styleUrls: ['./wikipages.component.css']
+    selector: 'app-wikipages',
+    templateUrl: './wikipages.component.html',
+    styleUrls: ['./wikipages.component.css'],
+    standalone: false
 })
 export class WikipagesComponent implements OnInit {
 

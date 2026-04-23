@@ -10,9 +10,10 @@ import {Logger, LogLevel} from "../consolelog.service";
 import {ThemeService} from "../theme.service";
 
 @Component({
-  selector: 'app-player-settings',
-  templateUrl: './player-settings.component.html',
-  styleUrls: ['./player-settings.component.css']
+    selector: 'app-player-settings',
+    templateUrl: './player-settings.component.html',
+    styleUrls: ['./player-settings.component.css'],
+    standalone: false
 })
 export class PlayerSettingsComponent implements OnInit {
   /**

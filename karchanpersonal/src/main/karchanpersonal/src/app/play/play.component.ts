@@ -18,9 +18,10 @@ import {Logger, LogLevel} from "../consolelog.service";
  * Actually plays teh game, instead of administration of your player character/settings/mail.
  */
 @Component({
-  selector: 'app-play',
-  templateUrl: './play.component.html',
-  styleUrls: ['./play.component.css']
+    selector: 'app-play',
+    templateUrl: './play.component.html',
+    styleUrls: ['./play.component.css'],
+    standalone: false
 })
 export class PlayComponent implements OnInit {
 

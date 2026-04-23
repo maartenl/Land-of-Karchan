@@ -5,9 +5,10 @@ import {PlayerService} from '../../player.service';
 import {ToastService} from '../../toast.service';
 
 @Component({
-  selector: 'app-sent-mail',
-  templateUrl: './sent-mail.component.html',
-  styleUrls: ['./sent-mail.component.css']
+    selector: 'app-sent-mail',
+    templateUrl: './sent-mail.component.html',
+    styleUrls: ['./sent-mail.component.css'],
+    standalone: false
 })
 export class SentMailComponent implements OnInit {
   mails: MailList;

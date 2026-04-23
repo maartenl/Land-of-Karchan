@@ -4,9 +4,10 @@ import { Guild, GuildHopefuls, GuildRanks, GuildMembers, GuildMember, GuildRank,
 import { PlayerService } from '../../player.service';
 
 @Component({
-  selector: 'app-guild-member',
-  templateUrl: './guild-member.component.html',
-  styleUrls: ['./guild-member.component.css']
+    selector: 'app-guild-member',
+    templateUrl: './guild-member.component.html',
+    styleUrls: ['./guild-member.component.css'],
+    standalone: false
 })
 export class GuildMemberComponent implements OnInit {
   @Input() guild: Guild | null = null;

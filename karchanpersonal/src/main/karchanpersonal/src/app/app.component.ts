@@ -4,9 +4,10 @@ import {ChristmasUtils} from './christmas.utils';
 import {ThemeService} from "./theme.service";
 
 @Component({
-  selector: 'app-root',
-  templateUrl: './app.component.html',
-  styleUrls: ['./app.component.css']
+    selector: 'app-root',
+    templateUrl: './app.component.html',
+    styleUrls: ['./app.component.css'],
+    standalone: false
 })
 export class AppComponent implements OnInit {
   production: boolean = true;

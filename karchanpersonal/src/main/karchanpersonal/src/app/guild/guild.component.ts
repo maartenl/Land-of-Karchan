@@ -5,9 +5,10 @@ import {Guild} from './guild.model';
 import {PlayerService} from '../player.service';
 
 @Component({
-  selector: 'app-guild',
-  templateUrl: './guild.component.html',
-  styleUrls: ['./guild.component.css']
+    selector: 'app-guild',
+    templateUrl: './guild.component.html',
+    styleUrls: ['./guild.component.css'],
+    standalone: false
 })
 export class GuildComponent implements OnInit {
   guild: Guild | null = null;

@@ -6,9 +6,10 @@ import {environment} from 'src/environments/environment';
 import {ToastService} from '../toast.service';
 
 @Component({
-  selector: 'app-pictures',
-  templateUrl: './pictures.component.html',
-  styleUrls: ['./pictures.component.css']
+    selector: 'app-pictures',
+    templateUrl: './pictures.component.html',
+    styleUrls: ['./pictures.component.css'],
+    standalone: false
 })
 export class PicturesComponent implements OnInit {
 
