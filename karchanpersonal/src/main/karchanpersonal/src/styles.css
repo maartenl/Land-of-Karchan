@@ -4,8 +4,8 @@
 
 @font-face {
   font-family: 'GabrielleRegular';
-  src: url('assets/fonts/gabrielle-webfont.eot');
-  src: local('â˜º'), url('assets/fonts/gabrielle-webfont.woff') format('woff'), url('assets/fonts/gabrielle-webfont.ttf') format('truetype'), url('assets/fonts/gabrielle-webfont.svg#webfontY3fz51hm') format('svg');
+  src: url('../public/assets/fonts/gabrielle-webfont.eot');
+  src: local('â˜º'), url('../public/assets/fonts/gabrielle-webfont.woff') format('woff'), url('../public/assets/fonts/gabrielle-webfont.ttf') format('truetype'), url('../public/assets/fonts/gabrielle-webfont.svg#webfontY3fz51hm') format('svg');
   font-weight: normal;
   font-style: normal;
 }
@@ -65,7 +65,7 @@ h4 {
 }
 
 .navbar-toggler {
-  background-image: url('assets/images/dragon.gif');
+  background-image: url('../public/assets/images/dragon.gif');
   background-color: grey;
   background-position: center;
   background-size: contain;

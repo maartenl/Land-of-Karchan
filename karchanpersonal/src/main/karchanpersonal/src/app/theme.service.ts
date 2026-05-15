@@ -1,4 +1,4 @@
-import {effect, Injectable} from "@angular/core";
+import { effect, Injectable } from '@angular/core';
 import {CookieService} from "ngx-cookie-service";
 
 /**
@@ -7,9 +7,10 @@ import {CookieService} from "ngx-cookie-service";
  * https://medium.com/@davdifr/theme-switcher-in-angular-from-dark-to-light-and-back-again-f42fc3f9fab0
  */
 @Injectable({
-  providedIn: "root",
+  providedIn: 'root',
 })
 export class ThemeService {
+
   #path: string = "assets/css";
   #stylesheet: HTMLLinkElement | null = document.getElementById(
     "pagestyle"

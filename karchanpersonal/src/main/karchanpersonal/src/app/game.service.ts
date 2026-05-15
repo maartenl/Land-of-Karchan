@@ -1,20 +1,22 @@
-import {Observable} from 'rxjs';
-import {Injectable} from '@angular/core';
-import { HttpClient, HttpErrorResponse } from '@angular/common/http';
+import {inject, Injectable} from '@angular/core';
+import {HttpClient, HttpErrorResponse} from '@angular/common/http';
 import {CookieService} from 'ngx-cookie-service';
-
-import {environment} from '../environments/environment';
-
 import {ErrorsService} from './errors.service';
-import {PlayerService} from './player.service';
+import {environment} from './environment';
+import {Log} from './play/log.model';
+import {Observable} from 'rxjs';
 import {Display} from './play/display.model';
-import { Log } from './play/log.model';
-import {Logonmessage} from "./play/logonmessage/logonmessage.model";
+import {PlayerService} from './player.service';
+import {Logonmessage} from './play/logonmessages/logonmessage.model';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class GameService {
+  private http = inject(HttpClient);
+  private cookieService = inject(CookieService)
+  private errorsService= inject(ErrorsService)
+  private playerService= inject(PlayerService)
 
   gameUrl: string;
 
@@ -24,15 +26,12 @@ export class GameService {
 
   isGaming: boolean;
 
-  constructor(
-    private cookieService: CookieService,
-    private playerService: PlayerService,
-    private http: HttpClient,
-    private errorsService: ErrorsService) {
+  constructor() {
     this.gameUrl = environment.GAME_URL;
     this.whoList = environment.WHO_URL;
     this.isGaming = false;
   }
+
 
   private getGameUrl(): string {
     return this.gameUrl.replace('[player]', this.playerService.getName());

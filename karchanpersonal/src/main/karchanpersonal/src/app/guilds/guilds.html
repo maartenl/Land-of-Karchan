@@ -1,0 +1,19 @@
+<div class="container">
+  <div class="row row-content">
+    @if (!hasGuild()) {
+      <div class="alert alert-danger" role="alert">
+        You are not a member of a guild.
+      </div>
+    }
+  </div>
+  @if (hasGuild()) {
+    <div class="row row-content">
+      <div class="col-xs-12 col-sm-12">
+        <h3>{{title()}}</h3>
+      </div>
+    </div>
+  }
+</div>
+  <app-guild-member></app-guild-member>
+  <app-guild-master></app-guild-master>
+

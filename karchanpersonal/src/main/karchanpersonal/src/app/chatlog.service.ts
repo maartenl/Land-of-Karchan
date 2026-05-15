@@ -1,8 +1,8 @@
-import {Injectable} from '@angular/core';
+import {inject, Injectable} from '@angular/core';
+import {Logger, LogLevel} from './consolelog.service';
 import {webSocket, WebSocketSubject} from 'rxjs/webSocket';
 import {ToastService} from './toast.service';
 import {Log} from './play/log.model';
-import {Logger, LogLevel} from "./consolelog.service";
 
 export class Message {
   fileLength: number | null = null;
@@ -54,11 +54,7 @@ class WebsocketChatlogService implements ChatlogServiceInterface {
   open(username: string) {
     Logger.log("open websocket", LogLevel.INFO);
     this.internalopen(username);
-    this.toastService.show('Opening connection...', {
-      delay: 5000,
-      autohide: true,
-      headertext: 'Opening...'
-    });
+    this.toastService.showMessage('Opening connection...');
   }
 
   private internalopen(username: string) {
@@ -98,7 +94,7 @@ class WebsocketChatlogService implements ChatlogServiceInterface {
     const message = new Message();
     message.content = "ping";
     message.from = this.username;
-    message.type = "ping";
+    message.type = "PING";
     this.send(message);
   }
 
@@ -144,16 +140,10 @@ class WebsocketChatlogService implements ChatlogServiceInterface {
       this.messages.push(data);
     }
     if (data.type === "INFO") {
-      this.toastService.show(data.content, {
-        delay: 5000,
-        autohide: true
-      });
+      this.toastService.showMessage(data.content);
     }
     if (data.type === "PONG") {
-      this.toastService.show("Pong!", {
-        delay: 5000,
-        autohide: true
-      });
+      this.toastService.showMessage("Pong!");
     }
     if (data.type === "INTERNALPONG") {
       Logger.log((this.counter++) + ": received internal pong");
@@ -189,11 +179,7 @@ class WebsocketChatlogService implements ChatlogServiceInterface {
   closingConnection() {
     Logger.log("closingConnection websocket", LogLevel.INFO);
     this.connectionOpen = false;
-    this.toastService.show('Closing connection...', {
-      delay: 5000,
-      autohide: true,
-      headertext: 'Closing...'
-    });
+    this.toastService.showMessage("Closing connection...");
   }
 
   /**
@@ -201,12 +187,7 @@ class WebsocketChatlogService implements ChatlogServiceInterface {
    */
   error(error: any) {
     Logger.logError("error in websocket com", error);
-    this.toastService.show('An error occurred using a websocket...', {
-      delay: 0,
-      autohide: false,
-      headertext: 'Network error',
-      classname: 'bg-danger text-light'
-    });
+    this.toastService.showError("An error occurred using a websocket...", "Network error");
   }
 
   isConnectionOpen(): boolean {
@@ -245,21 +226,17 @@ class NoWebsocketChatlogService implements ChatlogServiceInterface {
 }
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class ChatlogService {
 
-  private chatlogService: ChatlogServiceInterface;
+  private chatlogService: ChatlogServiceInterface = new NoWebsocketChatlogService();
 
   private log: Log = new Log();
 
   private enabled: boolean = true;
 
-  constructor(
-    private toastService: ToastService
-  ) {
-    this.chatlogService = new WebsocketChatlogService(toastService)
-  }
+  private toastService: ToastService = inject(ToastService)
 
   public isWebsocketsEnabled(): boolean {
     Logger.log("chatlogService: websockets enabled=" + this.enabled, LogLevel.DEBUG);

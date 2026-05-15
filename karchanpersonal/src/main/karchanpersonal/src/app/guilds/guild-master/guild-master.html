@@ -1,0 +1,246 @@
+@if (hasGuild()) {
+<div class="container">
+  <div class="row row-content">
+    <div class="col-xs-12 col-sm-12">
+      <form (submit)="save($event)" novalidate>
+        <fieldset class="form-group">
+          <label for="name">Name</label>
+          <input type="text" class="form-control" id="name" value="{{guildModel().name}}" readonly>
+        </fieldset>
+        <fieldset class="form-group">
+          <label for="title">Title</label>
+          <input type="text" class="form-control" id="title" [formField]="guildForm.title">
+        </fieldset>
+        <fieldset class="form-group">
+          <label for="bossname">Current boss</label>
+          <input type="text" class="form-control" id="bossname" value="{{guildModel().bossname}}" readonly>
+        </fieldset>
+        <fieldset class="form-group">
+          <label for="guildurl">Homepage - <a href="{{guildModel().guildurl }}"
+                                              target="_blank">{{guildModel().guildurl }}</a></label>
+          <input type="text" class="form-control" id="guildurl" [formField]="guildForm.guildurl">
+        </fieldset>
+        <div class="card" style="width: 100%;">
+          <div class="card-header">
+            Logonmessage
+          </div>
+          <div class="card-text" [innerHTML]="guildModel().logonmessage">
+          </div>
+        </div>
+        <fieldset class="form-group">
+          <label for="logonmessage">Logonmessage</label>
+          <textarea class="form-control" id="logonmessage" rows="13" [formField]="guildForm.logonmessage"></textarea>
+        </fieldset>
+        <fieldset class="form-group">
+          <label for="colour" [ngClass]="getCssColourClass()">Colour</label>
+          <!-- created using Colours.getColoursAsInputfield() -->
+          <select class="form-control" id="colour" [formField]="guildForm.colour">
+            <option selected="selected" value="black">black</option>
+            <option value="airred">airred</option>
+            <option value="ajax">ajax</option>
+            <option value="amerrose">amerrose</option>
+            <option value="asparagus">asparagus</option>
+            <option value="auburn">auburn</option>
+            <option value="avocado">avocado</option>
+            <option value="byzantine">byzantine</option>
+            <option value="carlsberg">carlsberg</option>
+            <option value="carmine">carmine</option>
+            <option value="cerise">cerise</option>
+            <option value="chili">chili</option>
+            <option value="chocolate">chocolate</option>
+            <option value="cinnabar">cinnabar</option>
+            <option value="cornflowerblue">cornflowerblue</option>
+            <option value="cyanblue">cyanblue</option>
+            <option value="darkcyan">darkcyan</option>
+            <option value="darkgoldenrod">darkgoldenrod</option>
+            <option value="darkorange">darkorange</option>
+            <option value="darkorchid">darkorchid</option>
+            <option value="darkpastelgreen">darkpastelgreen</option>
+            <option value="deeppink">deeppink</option>
+            <option value="deepskyblue">deepskyblue</option>
+            <option value="dodgerblue">dodgerblue</option>
+            <option value="forestgreen">forestgreen</option>
+            <option value="fuchsia">fuchsia</option>
+            <option value="gamboge">gamboge</option>
+            <option value="glaucous">glaucous</option>
+            <option value="gold">gold</option>
+            <option value="goldenrod">goldenrod</option>
+            <option value="green">green</option>
+            <option value="hotpink">hotpink</option>
+            <option value="indianred">indianred</option>
+            <option value="iris">iris</option>
+            <option value="jungle">jungle</option>
+            <option value="kelly">kelly</option>
+            <option value="lightcoral">lightcoral</option>
+            <option value="lightseagreen">lightseagreen</option>
+            <option value="lime">lime</option>
+            <option value="limegreen">limegreen</option>
+            <option value="madrid">madrid</option>
+            <option value="mediumorchid">mediumorchid</option>
+            <option value="mediumpurple">mediumpurple</option>
+            <option value="mediumslateblue">mediumslateblue</option>
+            <option value="mediumvioletred">mediumvioletred</option>
+            <option value="myrtle">myrtle</option>
+            <option value="neonorange">neonorange</option>
+            <option value="olive">olive</option>
+            <option value="olivedrab">olivedrab</option>
+            <option value="orangered">orangered</option>
+            <option value="orchid">orchid</option>
+            <option value="palevioletred">palevioletred</option>
+            <option value="peru">peru</option>
+            <option value="pistachio">pistachio</option>
+            <option value="red">red</option>
+            <option value="royalblue">royalblue</option>
+            <option value="ruby">ruby</option>
+            <option value="russet">russet</option>
+            <option value="sanguine">sanguine</option>
+            <option value="seagreen">seagreen</option>
+            <option value="secret">secret</option>
+            <option value="sienna">sienna</option>
+            <option value="steelblue">steelblue</option>
+            <option value="teal">teal</option>
+            <option value="tearose">tearose</option>
+            <option value="watermelon">watermelon</option>
+          </select>
+        </fieldset>
+        <div class="card" style="width: 100%;">
+          <div class="card-header">
+            Description
+          </div>
+          <div class="card-text" [innerHTML]="guildModel().guilddescription">
+          </div>
+        </div>
+        <fieldset class="form-group">
+          <label for="guilddescription">Description</label>
+          <textarea class="form-control" id="guilddescription" rows="13" [formField]="guildForm.guilddescription"></textarea>
+        </fieldset>
+        <fieldset class="form-group">
+          <label for="creation">Created</label>
+          <input type="text" class="form-control" id="creation"
+                 value="{{guildModel().creation | date:'medium'}}" readonly>
+        </fieldset>
+        <div class="col-xs-12 col-sm-12 text-right">
+          <button type="submit" [disabled]="!this.guildForm().dirty()" class="btn btn-primary">Save</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+<div class="container">
+  <div class="row row-content">
+    <div class="col-xs-12 col-sm-12">
+      <hr/>
+      <div id="accordion" role="tablist" aria-multiselectable="true">
+        <div class="card">
+          <div class="card-header" role="tab" id="headingOne">
+            <h5 class="mb-0">
+              <a (click)="isCollapsedMembers = !isCollapsedMembers">
+                Members
+              </a>
+            </h5>
+          </div>
+
+          <div #collapse="ngbCollapse" [(ngbCollapse)]="isCollapsedMembers">
+            <div class="card-text">
+              <ul class="list-group">
+                @for (member of guildMembers(); track member) {
+                  <li class="list-group-item justify-content-between"
+                      (click)="selectMember(member)">
+                    {{member.name}}{{ member.guildrank === undefined ? "" : ", " + member.guildrank?.title }}
+                    <button type="button" class="close" aria-label="Close" (click)="deleteMember(member)">
+                      <i class="material-icons" aria-hidden="true">delete</i>
+                    </button>
+                  </li>
+                }
+              </ul>
+            </div>
+          </div>
+          <div class="col-xs-12 col-sm-12">
+            <form (submit)="saveMember($event)" novalidate>
+              <fieldset class="form-group">
+                <label for="name">Name</label>
+                <input type="text" class="form-control" id="name" [value]="memberModel().name" readonly>
+              </fieldset>
+              <fieldset class="form-group">
+                <label for="rank">Rank</label>
+                <select class="form-control" id="rank" [formField]="memberForm.rank">
+                  <option [value]="-1">no rank</option>
+                  @for (rank of guildRanks(); track rank) {
+                    <option [value]="rank.guildlevel">{{ rank.title }}
+                    </option>
+                  }
+                </select>
+              </fieldset>
+              <div class="col-xs-12 col-sm-12 text-right">
+                <button type="submit" [disabled]="!this.memberForm().dirty()" class="btn btn-primary">Save</button>
+              </div>
+            </form>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-header" role="tab" id="headingTwo">
+            <h5 class="mb-0">
+              <a (click)="isCollapsedRanks = !isCollapsedRanks">
+                Ranks
+              </a>
+            </h5>
+          </div>
+          <div #collapse="ngbCollapse" [(ngbCollapse)]="isCollapsedRanks">
+            <div class="card-text">
+              <ul class="list-group">
+                @for (rank of guildRanks(); track rank) {
+                  <li class="list-group-item justify-content-between"
+                      (click)="selectRank(rank)">
+                    {{rank.guildlevel}} - {{rank.title}}
+                    <button type="button" class="close" aria-label="Close" (click)="deleteRank(rank)">
+                      <i class="material-icons" aria-hidden="true">delete</i>
+                    </button>
+                  </li>
+                }
+              </ul>
+            </div>
+          </div>
+          <div class="col-xs-12 col-sm-12">
+            <form (submit)="saveRank($event)" novalidate>
+              <fieldset class="form-group">
+                <label for="guildlevel">Level</label>
+                <input type="number" class="form-control" id="guildlevel" [formField]="rankForm.guildlevel">
+              </fieldset>
+              <fieldset class="form-group">
+                <label for="title">Title</label>
+                <input type="text" class="form-control" id="title" [formField]="rankForm.title">
+              </fieldset>
+              <div class="col-xs-12 col-sm-12 text-right">
+                <button type="submit" [disabled]="!this.rankForm().dirty()" class="btn btn-primary">Save</button>
+              </div>
+            </form>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-header" role="tab" id="headingThree">
+            <h5 class="mb-0">
+              <a (click)="isCollapsedHopefuls = !isCollapsedHopefuls">
+                Hopefuls
+              </a>
+            </h5>
+          </div>
+          <div #collapse="ngbCollapse" [(ngbCollapse)]="isCollapsedHopefuls">
+            <div class="card-text">
+              <ul class="list-group">
+                @for (hopeful of guildHopefuls(); track hopeful) {
+                  <li class="list-group-item justify-content-between">
+                    {{hopeful.name}}, {{hopeful.guildrank}}, {{hopeful.guild}}
+                    <button type="button" class="close" aria-label="Close" (click)="deleteHopeful(hopeful)">
+                      <i class="material-icons" aria-hidden="true">delete</i>
+                    </button>
+                  </li>
+                }
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+}

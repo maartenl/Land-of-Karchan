@@ -1,29 +1,23 @@
-import { Injectable } from '@angular/core';
+import {inject, Injectable} from '@angular/core';
 import { HttpErrorResponse } from '@angular/common/http';
 
-import { ToastService } from './toast.service';
 import { ErrorMessage } from './errors/errormessage.model';
+import { ToastService } from './toast.service';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class ErrorsService {
-  private listener: (error: ErrorMessage) => void = x => {};
+  private toastService = inject(ToastService);
 
-  constructor(private toastService: ToastService) { }
+  private listener: (error: ErrorMessage) => void = x => {};
 
   public setListener(listener: (error: ErrorMessage) => void): void {
     this.listener = listener;
   }
 
   public addError(error: ErrorMessage): void {
-    this.toastService.show(error.message, {
-      delay: 0,
-      autohide: false,
-      headertext: error.type,
-      classname: 'bg-danger text-light'
-    });
-
+    this.toastService.showError(error.message, error.type);
   }
 
   /**
@@ -32,9 +26,12 @@ export class ErrorsService {
    * @param ignore which states can we choose to ignore?
    */
   public addHttpError(error: HttpErrorResponse, ignore?: string[]) {
+    if (window.console) {
+      console.log(error);
+    }
     if (error.error instanceof ErrorEvent) {
       // A client-side or network error occurred. Handle it accordingly.
-      console.error('An error occurred:', error.error.message);
+      // console.error('An error occurred:', error.error.message);
       const errormessage = new ErrorMessage();
       errormessage.message = error.error.message;
       errormessage.type = 'Network Error';
@@ -48,7 +45,7 @@ export class ErrorsService {
       const errormessage = new ErrorMessage();
       errormessage.message = error.error.errormessage;
       if (error.error.errormessage === undefined) {
-        errormessage.message = error.statusText;
+        errormessage.message = error.status.toString();
       }
       errormessage.type = error.status.toString();
       this.addError(errormessage);

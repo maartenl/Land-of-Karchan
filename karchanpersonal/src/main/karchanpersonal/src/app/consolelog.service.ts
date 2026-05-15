@@ -13,7 +13,10 @@ export enum LogLevel {
  * Wrapper around the whole "if (window.console) console.log(stuff)".
  */
 export class Logger {
-  private static logLevel: LogLevel = LogLevel.NONE;
+  // TODO MLE: fix this
+  private static defaultLogLevel: LogLevel = LogLevel.DEBUG; //NONE;
+
+  private static logLevel: LogLevel = Logger.defaultLogLevel;
 
   public static setLogLevel(logLevel: LogLevel) {
     if (logLevel === null) {
@@ -107,6 +110,11 @@ export class Logger {
   }
 
   static logEntering(message: string) {
-    this.log(message, LogLevel.DEBUG);
+    this.log("entering " + message, LogLevel.DEBUG);
+  }
+
+
+  static logExiting(message: string) {
+    this.log("exiting " + message, LogLevel.DEBUG);
   }
 }

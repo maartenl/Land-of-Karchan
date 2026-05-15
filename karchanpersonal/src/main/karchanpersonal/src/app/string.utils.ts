@@ -9,7 +9,7 @@ export class StringUtils {
         '.gif\" style=\"float: left;\">';
     }
 
-    public static getCapitalized(content: string): string {
+    public static getCapitalized(content: string | null): string | null {
         if (content === undefined || content === null) {
             return content;
         }

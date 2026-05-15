@@ -1,0 +1,21 @@
+<div class="container">
+  <div class="row row-content">
+    <div class="col-xs-12 col-sm-12">
+      <ul ngbNav #nav="ngbNav" class="nav nav-tabs">
+        <li [ngbNavItem]="1">
+          <button ngbNavLink>Inbox</button>
+          <ng-template ngbNavContent>
+            <app-inbox-mail></app-inbox-mail>
+          </ng-template>
+        </li>
+        <li [ngbNavItem]="2">
+          <button ngbNavLink>Sent</button>
+          <ng-template ngbNavContent>
+            <app-sent-mail></app-sent-mail>
+          </ng-template>
+        </li>
+      </ul>
+    </div>
+  </div>
+</div>
+<div [ngbNavOutlet]="nav" class="mt-2"></div>

@@ -1,26 +1,26 @@
-import {Observable} from 'rxjs';
-import {Injectable} from '@angular/core';
+import {inject, Injectable} from '@angular/core';
 import {HttpClient, HttpErrorResponse, HttpHeaders} from '@angular/common/http';
 import {CookieService} from 'ngx-cookie-service';
-
-import {environment} from '../environments/environment';
-
 import {ErrorsService} from './errors.service';
+import {environment} from './environment';
+import {ErrorMessage} from './errors/errormessage.model';
+import {catchError, Observable} from 'rxjs';
 import {PasswordReset, Player} from './player-settings/player.model';
-import {Mail} from './mail/mail.model';
-import {Guild, GuildHopeful, GuildMember, GuildRank} from './guild/guild.model';
+import {Mail} from './mails/mail.model';
+import {HasNewMail} from './game/newmail.model';
+import {Guild, GuildHopeful, GuildMember, GuildRank} from './guilds/guild.model';
+import {Guilds} from './guilds/guilds';
 import {Family} from './player-settings/family.model';
 import {Wikipage} from './wikipages/wikipage.model';
 import {Picture} from './pictures/picture.model';
-import {HasNewMail} from './game/newmail.model';
-import {ErrorMessage} from './errors/errormessage.model';
-
-import {catchError} from 'rxjs/operators';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class PlayerService {
+  private http = inject(HttpClient);
+  private cookieService = inject(CookieService)
+  private errorsService= inject(ErrorsService)
 
   name: string | null = null;
 
@@ -50,10 +50,7 @@ export class PlayerService {
 
   wikipagesPreviewUrl: string;
 
-  constructor(
-    private cookieService: CookieService,
-    private http: HttpClient,
-    private errorsService: ErrorsService) {
+  constructor() {
     this.charactersheetUrl = environment.CHARACTERSHEET_URL;
     this.familyUrl = environment.FAMILY_URL;
     this.mailUrl = environment.MAIL_URL;
@@ -68,6 +65,7 @@ export class PlayerService {
     this.privateUrl = environment.PRIVATE_URL;
     this.wikipagesPreviewUrl = environment.WIKIPAGES_PREVIEW_URL;
   }
+
 
   /**
    * Retrieves the name of the player from the karchanname cookie.
@@ -86,6 +84,7 @@ export class PlayerService {
     this.errorsService.addError(error);
     return 'unknown';
   }
+
 
   public isLoggedIn(): boolean {
     if (this.name != null && this.name !== '') {
@@ -283,36 +282,6 @@ export class PlayerService {
       .pipe(
         catchError(err => {
           console.log(err);
-          this.handleError(err);
-          return [];
-        })
-      );
-  }
-
-  public getGuildmembers(): Observable<any> {
-    return this.http.get<GuildMember[]>(this.getGuildmembersUrl())
-      .pipe(
-        catchError(err => {
-          this.handleError(err);
-          return [];
-        })
-      );
-  }
-
-  public getGuildranks(): Observable<any> {
-    return this.http.get<GuildRank[]>(this.getGuildranksUrl())
-      .pipe(
-        catchError(err => {
-          this.handleError(err);
-          return [];
-        })
-      );
-  }
-
-  public getGuildhopefuls(): Observable<any> {
-    return this.http.get<GuildHopeful[]>(this.getGuildhopefulsUrl())
-      .pipe(
-        catchError(err => {
           this.handleError(err);
           return [];
         })

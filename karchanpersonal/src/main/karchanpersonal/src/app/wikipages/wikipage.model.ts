@@ -6,7 +6,7 @@ export interface Wikipage {
   version: string;
   content: string;
   summary: string;
-  parentTitle: string;
+  parentTitle: string | null;
   administration: boolean;
   comment: string;
   ordering: number;

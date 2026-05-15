@@ -1,0 +1,28 @@
+<div class="container-fluid">
+  <div class="row row-content">
+    <div class="col-xs-12 col-sm-12">
+      @if (isLoggedIn()) {
+        <div class="alert alert-primary" role="alert">
+          @if (isChristmas()) {
+            <img class="mr-3" src="assets/images/sclaus.gif" alt="Santa claus">
+          }
+          Welcome to Karchan, {{ getPlayer() }}!
+          <span class="float-end d-none d-sm-block">
+            [<a href="/?logout=true">Log out</a>]
+          </span>
+          <span class="float-end" routerLinkActive="d-none">
+            [<a routerLink="/play" >Play</a>]
+          </span>
+        </div>
+      }
+      @if (!isLoggedIn()) {
+        <div class="alert alert-danger" role="alert">
+          @if (isChristmas()) {
+            <img class="mr-3" src="assets/images/sclaus.gif" alt="Santa claus">
+          }
+          You are not logged in! Please click <a target="_parent" href="/">here</a> to log in.
+        </div>
+      }
+    </div>
+  </div>
+</div>
