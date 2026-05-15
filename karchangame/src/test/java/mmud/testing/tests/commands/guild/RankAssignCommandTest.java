@@ -206,7 +206,7 @@ public class RankAssignCommandTest extends MudTest
     minionRankPK.setGuildname("deputy");
     minion.setGuildrankPK(minionRankPK);
     guildranks.add(minion);
-    deputy.setGuildrankCollection(guildranks);
+    deputy.setGuildranks(guildranks);
 
     final SortedSet<User> members = new TreeSet<>(new Comparator<User>()
     {

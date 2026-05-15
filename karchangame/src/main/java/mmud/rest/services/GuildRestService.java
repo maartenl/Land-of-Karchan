@@ -16,43 +16,23 @@
  */
 package mmud.rest.services;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import java.util.stream.Collectors;
-
 import com.google.common.annotations.VisibleForTesting;
 import jakarta.annotation.security.DeclareRoles;
 import jakarta.annotation.security.RolesAllowed;
 import jakarta.inject.Inject;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
-import jakarta.persistence.TypedQuery;
 import jakarta.transaction.Transactional;
-import jakarta.ws.rs.Consumes;
-import jakarta.ws.rs.DELETE;
-import jakarta.ws.rs.GET;
-import jakarta.ws.rs.POST;
-import jakarta.ws.rs.PUT;
-import jakarta.ws.rs.Path;
-import jakarta.ws.rs.PathParam;
-import jakarta.ws.rs.WebApplicationException;
+import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.Context;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.core.SecurityContext;
 import mmud.database.Attributes;
-import mmud.database.entities.characters.Person;
 import mmud.database.entities.characters.User;
 import mmud.database.entities.game.Guild;
 import mmud.database.entities.game.Guildrank;
 import mmud.database.entities.game.GuildrankPK;
-import mmud.exceptions.MudException;
 import mmud.exceptions.MudWebException;
 import mmud.rest.webentities.PrivateGuild;
 import mmud.rest.webentities.PrivatePerson;
@@ -60,6 +40,10 @@ import mmud.rest.webentities.PrivateRank;
 import mmud.services.GuildService;
 import mmud.services.PersonService;
 import mmud.services.PlayerAuthenticationService;
+
+import java.util.*;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * Takes care of the guilds. All the REST services in this bean, can be
@@ -78,8 +62,7 @@ import mmud.services.PlayerAuthenticationService;
 @RolesAllowed("player")
 @Path("/private/{name}/guild")
 @Transactional
-public class GuildRestService
-{
+public class GuildRestService {
 
   @PersistenceContext(unitName = "karchangamePU")
   private EntityManager em;
@@ -102,32 +85,11 @@ public class GuildRestService
    *
    * @return EntityManager
    */
-  protected EntityManager getEntityManager()
-  {
+  protected EntityManager getEntityManager() {
     return em;
   }
 
   private static final Logger LOGGER = Logger.getLogger(GuildRestService.class.getName());
-
-  /**
-   * returns a list of persons that wish to become a member of a guild.
-   *
-   * @param aGuild the guild
-   * @return list of guild hopefuls.
-   * @throws MudException if something goes wrong.
-   */
-  public List<User> getGuildHopefuls(Guild aGuild)
-  {
-    TypedQuery<Person> query = getEntityManager().createNamedQuery("Guild.findGuildHopefuls", Person.class);
-    query.setParameter("guildname", aGuild.getName());
-    query.setParameter("attributename", Attributes.GUILDWISH);
-    query.setParameter("valuetype", "string");
-
-    return query.getResultList().stream()
-      .filter(Person::isUser)
-      .map(person -> (User) person)
-      .collect(Collectors.toList());
-  }
 
   /**
    * Get the guild of the user.
@@ -141,8 +103,7 @@ public class GuildRestService
     {
       MediaType.APPLICATION_JSON
     })
-  public PrivateGuild getGuildInfo(@PathParam("name") String name)
-  {
+  public PrivateGuild getGuildInfo(@PathParam("name") String name) {
     LOGGER.finer("entering getGuild");
     Guild guild = authenticateMember(name);
     PrivateGuild privateGuild = new PrivateGuild();
@@ -152,15 +113,16 @@ public class GuildRestService
     privateGuild.name = guild.getName();
     privateGuild.colour = guild.getColour();
     privateGuild.logonmessage = guild.getLogonmessage();
-    if (guild.getBoss() == null)
-    {
+    if (guild.getBoss() == null) {
       LOGGER.log(Level.INFO, "guilds: no boss found for guild {0}", guild.getName());
-    } else
-    {
+    } else {
       privateGuild.bossname = guild.getBoss().getName();
     }
     privateGuild.guilddescription = guild.getDescription();
     privateGuild.creation = guild.getCreation();
+    privateGuild.guildMembers = getMembers(name);
+    privateGuild.guildRanks = getGuildRanks(name);
+    privateGuild.guildHopefuls = getGuildHopefuls(name);
     return privateGuild;
   }
 
@@ -179,16 +141,13 @@ public class GuildRestService
     {
       MediaType.APPLICATION_JSON
     })
-  public Response updateGuild(@PathParam("name") String name, PrivateGuild cinfo)
-  {
+  public Response updateGuild(@PathParam("name") String name, PrivateGuild cinfo) {
     LOGGER.finer("entering updateGuild");
     User person = authenticateGuildMaster(name);
     Guild guild = person.getGuild();
-    if (cinfo.bossname == null || !cinfo.bossname.equals(person.getName()))
-    {
+    if (cinfo.bossname == null || !cinfo.bossname.equals(person.getName())) {
       User newGuildMaster = personService.getUser(cinfo.bossname);
-      if (newGuildMaster == null)
-      {
+      if (newGuildMaster == null) {
         throw new MudWebException(name, "New boss " + cinfo.bossname + " not found.", Response.Status.NOT_FOUND);
       }
       guild.setBoss(newGuildMaster);
@@ -202,20 +161,17 @@ public class GuildRestService
     return Response.ok().build();
   }
 
-  private User authenticateUser(String name)
-  {
+  private User authenticateUser(String name) {
     return playerAuthenticationService.authenticate(name, context);
   }
 
-  private Guild authenticateMember(String name)
-  {
+  private Guild authenticateMember(String name) {
     User person = playerAuthenticationService.authenticate(name, context);
     final Guild guild = person.getGuild();
-    if (guild == null)
-    {
+    if (guild == null) {
       throw new MudWebException(name,
-        "User is not a member of a guild.",
-        "User is not a member of a guild (" + name + ")",
+        "No guild found for player",
+        "No guild found for player " + name,
         Response.Status.NOT_FOUND);
     }
     return guild;
@@ -236,12 +192,10 @@ public class GuildRestService
     {
       MediaType.APPLICATION_JSON
     })
-  public Response createGuild(@PathParam("name") String name, PrivateGuild cinfo)
-  {
+  public Response createGuild(@PathParam("name") String name, PrivateGuild cinfo) {
     LOGGER.finer("entering createGuild");
     User person = authenticateUser(name);
-    if (person.getGuild() != null)
-    {
+    if (person.getGuild() != null) {
       throw new MudWebException(name, "You are already a member of a guild and therefore cannot start a guild.", Response.Status.UNAUTHORIZED);
     }
     Guild guild = new Guild();
@@ -277,8 +231,7 @@ public class GuildRestService
     {
       MediaType.APPLICATION_JSON
     })
-  public Response deleteGuildRest(@PathParam("name") String name)
-  {
+  public Response deleteGuildRest(@PathParam("name") String name) {
     User person = authenticateGuildMaster(name);
     guildService.deleteGuild(person);
     return Response.ok().build();
@@ -290,25 +243,15 @@ public class GuildRestService
    * @param name the name of the user
    * @return list of guild members
    */
-  @GET
-  @Path("members")
-  @RolesAllowed("guildmember")
-  @Consumes(
-    {
-      MediaType.APPLICATION_JSON
-    })
-  public List<PrivatePerson> getMembers(@PathParam("name") String name)
-  {
+  private List<PrivatePerson> getMembers(String name) {
     LOGGER.finer("entering getGuildMembers");
     Guild guild = authenticateMember(name);
     Collection<User> members = guild.getMembers();
     List<PrivatePerson> result = new ArrayList<>();
-    for (User person : members)
-    {
+    for (User person : members) {
       PrivatePerson privatePerson = new PrivatePerson();
       privatePerson.name = person.getName();
-      if (person.getGuildrank() != null)
-      {
+      if (person.getGuildrank() != null) {
         privatePerson.guildrank = PrivateRank.createRank(person.getGuildrank());
       }
       result.add(privatePerson);
@@ -327,24 +270,21 @@ public class GuildRestService
   @GET
   @Path("members/{membername}")
   @RolesAllowed("guildmember")
-  @Consumes(
+  @Produces(
     {
       MediaType.APPLICATION_JSON
     })
   public PrivatePerson getMember(@PathParam("name") String name,
-                                 @PathParam("membername") String membername)
-  {
+                                 @PathParam("membername") String membername) {
     LOGGER.finer("entering getMember");
     Guild guild = authenticateMember(name);
     User member = guild.getMember(membername);
-    if (member == null)
-    {
+    if (member == null) {
       throw new MudWebException(name, membername + " is either not a user or not a member of this guild.", Response.Status.NOT_FOUND);
     }
     PrivatePerson privatePerson = new PrivatePerson();
     privatePerson.name = member.getName();
-    if (member.getGuildrank() != null)
-    {
+    if (member.getGuildrank() != null) {
       privatePerson.guildrank = PrivateRank.createRank(member.getGuildrank());
     }
     return privatePerson;
@@ -360,23 +300,16 @@ public class GuildRestService
   @DELETE
   @Path("members/{membername}")
   @RolesAllowed("guildmaster")
-  @Consumes(
-    {
-      MediaType.APPLICATION_JSON
-    })
   public Response deleteMember(@PathParam("name") String name,
-                               @PathParam("membername") String membername)
-  {
+                               @PathParam("membername") String membername) {
     LOGGER.finer("entering deleteMember");
     User person = authenticateGuildMaster(name);
     Guild guild = person.getGuild();
-    if (membername != null && membername.equals(person.getName()))
-    {
+    if (membername != null && membername.equals(person.getName())) {
       throw new MudWebException(name, "Cannot remove the guildmaster of guild " + guild.getName(), Response.Status.BAD_REQUEST);
     }
     User member = guild.getMember(membername);
-    if (member == null)
-    {
+    if (member == null) {
       throw new MudWebException(name, membername + " is either not a user or not a member of this guild.", Response.Status.NOT_FOUND);
     }
     member.setGuild(null);
@@ -403,23 +336,19 @@ public class GuildRestService
     {
       MediaType.APPLICATION_JSON
     })
-  public Response createMember(@PathParam("name") String name, PrivatePerson member)
-  {
+  public Response createMember(@PathParam("name") String name, PrivatePerson member) {
     LOGGER.finer("entering createMember");
     User person = authenticateGuildMaster(name);
     Guild guild = person.getGuild();
     String membername = member.name;
     User possibleMember = personService.getUser(membername);
-    if (possibleMember == null)
-    {
+    if (possibleMember == null) {
       throw new MudWebException(name, membername + " is not a user.", Response.Status.NOT_FOUND);
     }
-    if (possibleMember.getGuild() != null)
-    {
+    if (possibleMember.getGuild() != null) {
       throw new MudWebException(name, membername + " is already part of a guild.", Response.Status.NOT_FOUND);
     }
-    if (!possibleMember.verifyAttribute(Attributes.GUILDWISH, guild.getName()))
-    {
+    if (!possibleMember.verifyAttribute(Attributes.GUILDWISH, guild.getName())) {
       throw new MudWebException(name, membername + " has no appropriate guildwish.", Response.Status.NOT_FOUND);
     }
     possibleMember.setGuild(guild);
@@ -432,36 +361,30 @@ public class GuildRestService
    *
    * @param name       the name of the user
    * @param membername the name of the guild member, to set the guild rank for
-   * @param member     the member object that contains the changes
+//   * @param member     the member object that contains the changes
    * @return Response.ok() if everything's okay.
    */
   @PUT
   @Path("members/{membername}")
   @RolesAllowed("guildmaster")
-  @Consumes(
-    {
-      MediaType.APPLICATION_JSON
-    })
+  @Consumes(MediaType.APPLICATION_JSON)
   public Response updateMember(@PathParam("name") String name,
-                               @PathParam("membername") String membername, PrivatePerson member)
-  {
+                               @PathParam("membername") String membername, String body) {
     LOGGER.finer("entering updateMember");
+    PrivatePerson member = PrivatePerson.fromJson(body);
     User person = authenticateGuildMaster(name);
     Guild guild = person.getGuild();
     User user = guild.getMember(membername);
-    if (user == null)
-    {
+    if (user == null) {
       throw new MudWebException(name, membername + " is either not a user or not a member of this guild.", Response.Status.NOT_FOUND);
     }
-    if (member.guildrank == null)
-    {
+    if (member.guildrank == null) {
       user.setGuildrank(null);
       LOGGER.finer("updateMember cleared rank");
       return Response.ok().build();
     }
     Guildrank rank = guild.getRank(member.guildrank.guildlevel);
-    if (rank == null)
-    {
+    if (rank == null) {
       throw new MudWebException(name, "Rank " + member.guildrank.guildlevel + " does not exist in this guild.", Response.Status.NOT_FOUND);
     }
     user.setGuildrank(rank);
@@ -474,42 +397,23 @@ public class GuildRestService
    * @param name the name of the user
    * @return list of hopefuls, i.e. people who wish to join the guild
    */
-  @GET
-  @Path("hopefuls")
-  @RolesAllowed("guildmember")
-  @Consumes(
-    {
-      MediaType.APPLICATION_JSON
-    })
-  public List<PrivatePerson> getGuildHopefuls(@PathParam("name") String name)
-  {
+  private List<PrivatePerson> getGuildHopefuls(String name) {
     LOGGER.finer("entering getGuildHopefuls");
     Guild guild = authenticateMember(name);
-    Collection<User> hopefuls = getGuildHopefuls(guild);
+    Collection<User> hopefuls = guildService.getGuildHopefuls(guild);
     List<PrivatePerson> result = new ArrayList<>();
-    for (User person : hopefuls)
-    {
+    for (User person : hopefuls) {
       PrivatePerson privatePerson = new PrivatePerson();
       privatePerson.name = person.getName();
-      if (person.getGuild() != null)
-      {
+      if (person.getGuild() != null) {
         privatePerson.guild = person.getGuild().getTitle();
       }
-      if (person.getGuildrank() != null)
-      {
+      if (person.getGuildrank() != null) {
         privatePerson.guildrank = PrivateRank.createRank(person.getGuildrank());
       }
       result.add(privatePerson);
     }
-    Collections.sort(result, new Comparator<PrivatePerson>()
-    {
-
-      @Override
-      public int compare(PrivatePerson o1, PrivatePerson o2)
-      {
-        return o1.name.compareTo(o2.name);
-      }
-    });
+    result.sort(Comparator.comparing(o -> o.name));
     return result;
   }
 
@@ -528,14 +432,11 @@ public class GuildRestService
       MediaType.APPLICATION_JSON
     })
   public Response deleteGuildHopeful(@PathParam("name") String name,
-                                     @PathParam("hopefulname") String hopefulname)
-  {
+                                     @PathParam("hopefulname") String hopefulname) {
     LOGGER.finer("entering getGuildHopefuls");
     User person = authenticateGuildMaster(name);
-    Guild guild = person.getGuild();
     User possibleMember = personService.getUser(hopefulname);
-    if (possibleMember == null)
-    {
+    if (possibleMember == null) {
       throw new MudWebException(name, hopefulname + " is not a user.", Response.Status.NOT_FOUND);
     }
     possibleMember.removeAttribute(Attributes.GUILDWISH);
@@ -546,44 +447,18 @@ public class GuildRestService
    * Get the ranks of the guild of the user.
    *
    * @param name the name of the user
-   * @return list of hopefuls
+   * @return list of ranks
    */
-  @GET
-  @Path("ranks")
-  @RolesAllowed("guildmember")
-  @Consumes(
-    {
-      MediaType.APPLICATION_JSON
-    })
-  public List<PrivateRank> getGuildRanks(@PathParam("name") String name)
-  {
+  private List<PrivateRank> getGuildRanks(String name) {
     LOGGER.finer("entering getGuildRanks");
     Guild guild = authenticateMember(name);
-    Guildrank[] ranks = guild.getGuildrankCollection().toArray(new Guildrank[0]);
-    Arrays.sort(ranks, new Comparator<Guildrank>()
-    {
-
-      @Override
-      public int compare(Guildrank o1, Guildrank o2
-      )
-      {
-        return Integer.valueOf(o1.getGuildrankPK().getGuildlevel()).compareTo(Integer.valueOf(o2.getGuildrankPK().getGuildlevel()));
-      }
-    });
+    Guildrank[] ranks = guild.getGuildranks().toArray(new Guildrank[0]);
+    Arrays.sort(ranks, Comparator.comparing(o -> o.getGuildrankPK().getGuildlevel()));
     List<PrivateRank> result = new ArrayList<>();
-    for (Guildrank rank : ranks)
-    {
+    for (Guildrank rank : ranks) {
       result.add(PrivateRank.createRank(rank));
     }
-    Collections.sort(result, new Comparator<PrivateRank>()
-    {
-
-      @Override
-      public int compare(PrivateRank o1, PrivateRank o2)
-      {
-        return o1.guildlevel.compareTo(o2.guildlevel);
-      }
-    });
+    result.sort(Comparator.comparing(o -> o.guildlevel));
     return result;
   }
 
@@ -601,19 +476,16 @@ public class GuildRestService
     {
       MediaType.APPLICATION_JSON
     })
-  public PrivateRank getGuildRank(@PathParam("name") String name, @PathParam("guildlevel") Integer guildlevel)
-  {
+  public PrivateRank getGuildRank(@PathParam("name") String name, @PathParam("guildlevel") Integer guildlevel) {
     LOGGER.finer("entering getGuildRank");
     User person = authenticateGuildMaster(name);
     Guild guild = person.getGuild();
 
-    if (guildlevel == null)
-    {
+    if (guildlevel == null) {
       throw new MudWebException(name, "Rank was not received.", "guildlevel was null, never found.", Response.Status.NOT_FOUND);
     }
     Guildrank rank = guild.getRank(guildlevel);
-    if (rank == null)
-    {
+    if (rank == null) {
       throw new MudWebException(name, "Rank " + guildlevel + " of guild " + guild.getName() + " not found.", Response.Status.NOT_FOUND);
     }
     return PrivateRank.createRank(rank);
@@ -633,8 +505,7 @@ public class GuildRestService
     {
       MediaType.APPLICATION_JSON
     })
-  public Response createGuildRank(@PathParam("name") String name, PrivateRank rank)
-  {
+  public Response createGuildRank(@PathParam("name") String name, PrivateRank rank) {
     LOGGER.finer("entering createGuildRank");
     User person = authenticateGuildMaster(name);
     Guild guild = person.getGuild();
@@ -649,7 +520,7 @@ public class GuildRestService
     pk.setGuildlevel(rank.guildlevel);
     pk.setGuildname(guild.getName());
     newRank.setGuildrankPK(pk);
-      getEntityManager().persist(newRank);
+    getEntityManager().persist(newRank);
 
     return Response.ok().build();
   }
@@ -669,19 +540,16 @@ public class GuildRestService
     {
       MediaType.APPLICATION_JSON
     })
-  public Response updateGuildRank(@PathParam("name") String name, @PathParam("guildlevel") Integer guildlevel, PrivateRank rank)
-  {
+  public Response updateGuildRank(@PathParam("name") String name, @PathParam("guildlevel") Integer guildlevel, PrivateRank rank) {
     LOGGER.finer("entering updateGuildRank");
     User person = authenticateGuildMaster(name);
     Guild guild = person.getGuild();
 
-    if (guildlevel == null)
-    {
+    if (guildlevel == null) {
       throw new MudWebException(name, "Rank was not received.", "guildlevel was null, never found.", Response.Status.NOT_FOUND);
     }
     Guildrank guildrank = guild.getRank(guildlevel);
-    if (guildrank == null)
-    {
+    if (guildrank == null) {
       throw new MudWebException(name, "Rank " + guildlevel + " of guild " + guild.getName() + " not found.", Response.Status.NOT_FOUND);
     }
     guildrank.setAcceptAccess(rank.accept_access);
@@ -706,19 +574,16 @@ public class GuildRestService
     {
       MediaType.APPLICATION_JSON
     })
-  public Response deleteGuildRank(@PathParam("name") String name, @PathParam("guildlevel") Integer guildlevel)
-  {
+  public Response deleteGuildRank(@PathParam("name") String name, @PathParam("guildlevel") Integer guildlevel) {
     LOGGER.finer("entering deleteGuildRank");
     User person = authenticateGuildMaster(name);
     Guild guild = person.getGuild();
 
-    if (guildlevel == null)
-    {
+    if (guildlevel == null) {
       throw new MudWebException(name, "Rank was not received.", "guildlevel was null, never found.", Response.Status.NOT_FOUND);
     }
     Guildrank guildrank = guild.getRank(guildlevel);
-    if (guildrank == null)
-    {
+    if (guildrank == null) {
       throw new MudWebException(name, "Rank " + guildlevel + " of guild " + guild.getName() + " not found.", Response.Status.NOT_FOUND);
     }
     getEntityManager().remove(guildrank);
@@ -726,14 +591,18 @@ public class GuildRestService
   }
 
   @VisibleForTesting
-  protected User authenticateGuildMaster(String name)
-  {
+  protected User authenticateGuildMaster(String name) {
     return playerAuthenticationService.authenticateGuildMaster(name, context);
   }
 
   @VisibleForTesting
-  public void setPlayerAuthenticationService(PlayerAuthenticationService playerAuthenticationService)
-  {
+  public void setPlayerAuthenticationService(PlayerAuthenticationService playerAuthenticationService) {
     this.playerAuthenticationService = playerAuthenticationService;
   }
+
+  @VisibleForTesting
+  public void setGuildService(GuildService guildService) {
+    this.guildService = guildService;
+  }
+
 }

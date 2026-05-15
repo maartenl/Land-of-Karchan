@@ -79,7 +79,7 @@ public class RankChangeCommandTest extends MudTest
     assertThat(karnLog).isEqualTo("New rank created.<br />\r\n");
     // the important bit
     assertThat(karn.getGuild()).isEqualTo(deputy);
-    assertThat(karn.getGuild().getGuildrankCollection()).hasSize(3);
+    assertThat(karn.getGuild().getGuildranks()).hasSize(3);
     Guildrank rank = karn.getGuild().getRank(1);
     assertThat(rank.getTitle()).isEqualTo("Senior Deputy");
     assertThat(rank.getGuild()).isEqualTo(karn.getGuild());
@@ -106,7 +106,7 @@ public class RankChangeCommandTest extends MudTest
     assertThat(karnLog).isEqualTo("Existing rank updated.<br />\r\n");
     // the important bit
     assertThat(karn.getGuild()).isEqualTo(deputy);
-    assertThat(karn.getGuild().getGuildrankCollection()).hasSize(2);
+    assertThat(karn.getGuild().getGuildranks()).hasSize(2);
     Guildrank rank = karn.getGuild().getRank(0);
     assertThat(rank.getTitle()).isEqualTo("Deputy");
     assertThat(rank.getGuild()).isEqualTo(karn.getGuild());
@@ -168,7 +168,7 @@ public class RankChangeCommandTest extends MudTest
     minionRankPK.setGuildname("deputy");
     minion.setGuildrankPK(minionRankPK);
     guildranks.add(minion);
-    deputy.setGuildrankCollection(guildranks);
+    deputy.setGuildranks(guildranks);
 
     final SortedSet<User> members = new TreeSet<>((arg0, arg1) -> arg0.getName().compareTo(arg1.getName()));
     members.add(karn);

@@ -17,8 +17,8 @@
 package mmud.database.entities.game;
 
 import org.eclipse.persistence.annotations.Customizer;
-import org.eclipse.persistence.config.DescriptorCustomizer;
 import org.eclipse.persistence.descriptors.ClassDescriptor;
+import org.eclipse.persistence.descriptors.DescriptorCustomizer;
 import org.eclipse.persistence.expressions.Expression;
 import org.eclipse.persistence.expressions.ExpressionBuilder;
 import org.eclipse.persistence.mappings.OneToManyMapping;
@@ -36,7 +36,7 @@ public abstract class PersonsFilter implements DescriptorCustomizer
 {
 
   /**
-   * @return the name of the field in the entity that is the collection of Persons.
+   * @return the name of the field in the entity that is the collection of Persons.import org.eclipse.persistence.descriptors.DescriptorCustomizer;
    */
   protected abstract String getCollectionName();
 

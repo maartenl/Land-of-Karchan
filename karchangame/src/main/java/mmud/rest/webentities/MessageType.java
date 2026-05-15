@@ -7,6 +7,10 @@ public enum MessageType
    */
   INFO,
   /**
+   * User generated ping request. For fun.
+   */
+  PING,
+  /**
    * User generated ping response. For fun.
    */
   PONG,

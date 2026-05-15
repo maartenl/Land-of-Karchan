@@ -79,7 +79,7 @@ public class RankDeleteCommandTest extends MudTest
     assertThat(karnLog).isEqualTo("Rank removed.<br />\r\n");
     // the important bit
     assertThat(karn.getGuild()).isEqualTo(deputy);
-    assertThat(karn.getGuild().getGuildrankCollection()).hasSize(1);
+    assertThat(karn.getGuild().getGuildranks()).hasSize(1);
     Guildrank rank = karn.getGuild().getRank(100);
     assertThat(rank).isNull();
   }
@@ -101,7 +101,7 @@ public class RankDeleteCommandTest extends MudTest
     assertThat(karnLog).isEqualTo("Rank not found.<br />\r\n");
     // the important bit
     assertThat(karn.getGuild()).isEqualTo(deputy);
-    assertThat(karn.getGuild().getGuildrankCollection()).hasSize(2);
+    assertThat(karn.getGuild().getGuildranks()).hasSize(2);
     Guildrank rank = karn.getGuild().getRank(50);
     assertThat(rank).isNull();
   }
@@ -160,7 +160,7 @@ public class RankDeleteCommandTest extends MudTest
     minionRankPK.setGuildname("deputy");
     minion.setGuildrankPK(minionRankPK);
     guildranks.add(minion);
-    deputy.setGuildrankCollection(guildranks);
+    deputy.setGuildranks(guildranks);
 
     final SortedSet<User> members = new TreeSet<>((arg0, arg1) -> arg0.getName().compareTo(arg1.getName()));
     members.add(karn);

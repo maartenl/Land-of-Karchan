@@ -18,11 +18,7 @@ package mmud.database.entities.game;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
-import java.util.Set;
-import java.util.SortedSet;
+import java.util.*;
 
 import jakarta.persistence.Basic;
 import jakarta.persistence.CascadeType;
@@ -120,10 +116,10 @@ public class Guild implements Serializable, DisplayInterface, Ownage
   private String logonmessage;
   @OneToMany(mappedBy = "guild")
   @OrderBy("name")
-  private Set<User> activeMembers;
+  private Set<User> activeMembers = new HashSet<>();
   @OneToMany(mappedBy = "guild")
   @OrderBy("name")
-  private Set<User> members;
+  private Set<User> members = new HashSet<>();
   @JoinColumn(name = "owner", referencedColumnName = "name")
   @ManyToOne
   private Admin owner;
@@ -132,7 +128,7 @@ public class Guild implements Serializable, DisplayInterface, Ownage
   private User boss;
   @OneToMany(cascade = CascadeType.ALL, mappedBy = "guild", orphanRemoval = true)
   @OrderBy("guildrankPK.guildlevel")
-  private Set<Guildrank> guildrankCollection;
+  private Set<Guildrank> guildrankCollection = new HashSet<>();
 
   public Guild()
   {
@@ -287,12 +283,12 @@ public class Guild implements Serializable, DisplayInterface, Ownage
     return activeMembers;
   }
 
-  public void setMembers(SortedSet<User> personCollection)
+  public void setMembers(Set<User> personCollection)
   {
     this.members = personCollection;
   }
 
-  public void setActiveMembers(SortedSet<User> personCollection)
+  public void setActiveMembers(Set<User> personCollection)
   {
     this.activeMembers = personCollection;
   }
@@ -341,12 +337,12 @@ public class Guild implements Serializable, DisplayInterface, Ownage
     this.boss = boss;
   }
 
-  public Collection<Guildrank> getGuildrankCollection()
+  public Set<Guildrank> getGuildranks()
   {
     return guildrankCollection;
   }
 
-  public void setGuildrankCollection(SortedSet<Guildrank> guildrankCollection)
+  public void setGuildranks(Set<Guildrank> guildrankCollection)
   {
     this.guildrankCollection = guildrankCollection;
   }

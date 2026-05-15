@@ -65,6 +65,12 @@
       <artifactId>commons-lang3</artifactId>
       <version>${commons-lang3.version}</version>
     </dependency>
+    <dependency>
+      <groupId>com.google.code.findbugs</groupId>
+      <artifactId>jsr305</artifactId>
+      <version>${findbugs.version}</version>
+      <scope>compile</scope>
+    </dependency>
   </dependencies>
 
   <build>
@@ -83,7 +89,7 @@
           </tagletArtifact>
           <!--                Configuration below should be removed, once the generation of
                           JavaDFoc files no longer generates a failed build.-->
-          <source>23</source>
+          <source>25</source>
           <doclint>none</doclint>
           <additionalOptions>-Xdoclint:none</additionalOptions>
           <additionalJOption>-Xdoclint:none</additionalJOption>
@@ -106,7 +112,7 @@
           <artifactId>maven-compiler-plugin</artifactId>
           <version>3.8.1</version>
           <configuration>
-            <release>23</release>
+            <release>25</release>
           </configuration>
         </plugin>
         <plugin>

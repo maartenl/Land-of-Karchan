@@ -18,6 +18,7 @@ package mmud.testing;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.Set;
 
 import mmud.database.entities.characters.Administrator;
 import mmud.database.entities.characters.User;
@@ -146,11 +147,13 @@ public class TestingConstants
     return admin;
   }
 
-  public static Guild getGuild()
+  public static Guild getGuild(User boss)
   {
     Guild guild = new Guild();
     guild.setDescription("Disaster Area");
     guild.setHomepage("http://www.disasterarea.com");
+    guild.setBoss(boss);
+    guild.setMembers(Set.of(boss));
     return guild;
   }
 

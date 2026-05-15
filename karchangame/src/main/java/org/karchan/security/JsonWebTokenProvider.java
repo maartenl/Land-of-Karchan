@@ -32,9 +32,12 @@ import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
+import io.jsonwebtoken.security.SecureDigestAlgorithm;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import org.eclipse.microprofile.config.inject.ConfigProperty;
+
+import javax.crypto.SecretKey;
 
 /**
  *
@@ -58,30 +61,30 @@ public class JsonWebTokenProvider
   /**
    * Validity of token in the REMEMBER_ME cookie is 24 hours.
    */
+  @SuppressWarnings("FieldCanBeLocal")
   private final long TOKEN_VALIDITY_HOURS = 24;
 
   public String createToken(String username, Set<String> authorities)
   {
     long now = Instant.now().toEpochMilli();
-
     byte[] keyBytes = getSecretKey();
     Key key = Keys.hmacShaKeyFor(keyBytes);
 
     return Jwts.builder()
-      .setSubject(username)
+      .subject(username)
       .claim(AUTHORITIES_KEY, String.join(",", authorities))
-      .signWith(key, SignatureAlgorithm.HS512)
-      .setExpiration(Date.from(Instant.now().plus(TOKEN_VALIDITY_HOURS, ChronoUnit.HOURS)))
+      .signWith(key)
+      .expiration(Date.from(Instant.now().plus(TOKEN_VALIDITY_HOURS, ChronoUnit.HOURS)))
       .compact();
   }
 
   public JsonWebTokenCredential getCredential(String token)
   {
     byte[] keyBytes = getSecretKey();
-
-    Claims claims = Jwts.parserBuilder().setSigningKey(keyBytes).build()
-      .parseClaimsJws(token)
-      .getBody();
+    SecretKey key = Keys.hmacShaKeyFor(keyBytes);
+    Claims claims = Jwts.parser().verifyWith(key).build()
+      .parseSignedClaims(token)
+      .getPayload();
 
     Set<String> authorities
       = new HashSet<>(Arrays.asList(claims.get(AUTHORITIES_KEY).toString().split(",")));
@@ -94,7 +97,8 @@ public class JsonWebTokenProvider
     try
     {
       byte[] keyBytes = getSecretKey();
-      Jwts.parserBuilder().setSigningKey(keyBytes).build().parseClaimsJws(authToken);
+      SecretKey key = Keys.hmacShaKeyFor(keyBytes);
+      Jwts.parser().verifyWith(key).build().parseSignedClaims(authToken);
       return true;
     } catch (JwtException e)
     {

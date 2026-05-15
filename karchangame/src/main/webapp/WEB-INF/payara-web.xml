@@ -1,0 +1,10 @@
+<!DOCTYPE payara-web-app PUBLIC "-//Payara.fish//DTD Payara Server 7 Servlet 6.1//EN" "https://raw.githubusercontent.com/payara/Payara-Documentation/main-7/docs/modules/ROOT/pages/Appendix/Schemas/payara-web-app_6_1-0.dtd">
+<payara-web-app error-url="">
+  <context-root>/karchangame</context-root>
+  <class-loader delegate="true"/>
+  <jsp-config>
+    <property name="keepgenerated" value="true">
+      <description>Keep a copy of the generated servlet class' java code.</description>
+    </property>
+  </jsp-config>
+</payara-web-app>

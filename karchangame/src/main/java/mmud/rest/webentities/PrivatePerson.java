@@ -17,6 +17,7 @@
 package mmud.rest.webentities;
 
 import jakarta.xml.bind.annotation.XmlRootElement;
+import mmud.JsonUtils;
 import mmud.database.entities.characters.Person;
 
 import java.util.ArrayList;
@@ -78,4 +79,15 @@ public class PrivatePerson
     pp.familyname = person.getFamilyname();
     return pp;
   }
+
+  public String toJson()
+  {
+    return JsonUtils.toJson(this);
+  }
+
+  public static PrivatePerson fromJson(String json)
+  {
+    return JsonUtils.fromJson(json, PrivatePerson.class);
+  }
+
 }

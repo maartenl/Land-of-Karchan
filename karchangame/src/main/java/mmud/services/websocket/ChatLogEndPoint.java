@@ -58,12 +58,12 @@ public class ChatLogEndPoint
   {
     // Handle new messages
     message.from = users.get(session.getId());
-    if ("ping".equals(message.type))
+    if (MessageType.PING.equals(message.type))
     {
       send(message.from, new Message(message.from, "pong", MessageType.PONG));
       return;
     }
-    if ("internalping".equals(message.type))
+    if (MessageType.INTERNALPING.equals(message.type))
     {
       if (internalpong)
       {

@@ -35,6 +35,7 @@ public class ErrorDetails
 
   public LocalDateTime timestamp;
   public String errormessage;
+  public String extraInfo;
   public String user;
 
   public ErrorDetails()
@@ -53,6 +54,15 @@ public class ErrorDetails
     this(errormessage);
     this.user = user;
   }
+
+
+  ErrorDetails(String user, String errormessage, String extraInfo)
+  {
+    this(errormessage);
+    this.user = user;
+    this.extraInfo = extraInfo;
+  }
+
 
   ErrorDetails(Throwable t)
   {

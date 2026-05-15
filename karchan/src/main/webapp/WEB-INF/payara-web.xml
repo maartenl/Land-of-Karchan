@@ -1,6 +1,5 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE glassfish-web-app PUBLIC "-//GlassFish.org//DTD GlassFish Application Server 3.1 Servlet 3.0//EN" "http://glassfish.org/dtds/glassfish-web-app_3_0-1.dtd">
-<glassfish-web-app error-url="">
+<!DOCTYPE payara-web-app PUBLIC "-//Payara.fish//DTD Payara Server 7 Servlet 6.1//EN" "https://raw.githubusercontent.com/payara/Payara-Documentation/main-7/docs/modules/ROOT/pages/Appendix/Schemas/payara-web-app_6_1-0.dtd">
+<payara-web-app error-url="">
   <context-root>/</context-root>
   <property name="alternatedocroot_1" value="from=/images/* dir=${MPCONFIG=karchan.alternative.docroot}/"/>
   <property name="alternatedocroot_2" value="from=/sound/* dir=${MPCONFIG=karchan.alternative.docroot}/"/>
@@ -8,4 +7,4 @@
   <property name="alternatedocroot_4" value="from=/karchandocs/* dir=${MPCONFIG=karchan.alternative.docroot}/"/>
   <property name="alternatedocroot_5" value="from=/javascripts/* dir=${MPCONFIG=karchan.alternative.docroot}/"/>
   <property name="alternatedocroot_6" value="from=/.well-known/* dir=${MPCONFIG=karchan.alternative.docroot}/"/>
-</glassfish-web-app>
+</payara-web-app>

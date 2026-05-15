@@ -1,5 +1,7 @@
 package org.karchan.security;
 
+import java.io.IOException;
+import java.io.Reader;
 import java.nio.charset.StandardCharsets;
 
 import io.jsonwebtoken.io.DeserializationException;
@@ -50,9 +52,24 @@ public class JsonbDeserializer<T> implements Deserializer<T>
     }
   }
 
+  @Override
+  public T deserialize(Reader reader) throws DeserializationException {
+    try
+    {
+      return readValue(reader);
+    } catch (JsonbException | IOException jsonbException)
+    {
+      String msg = "Unable to deserialize bytes into a " + returnType.getName() + " instance: " + jsonbException.getMessage();
+      throw new DeserializationException(msg, jsonbException);
+    }
+  }
+
   protected T readValue(byte[] bytes)
   {
     return jsonb.fromJson(new String(bytes, StandardCharsets.UTF_8), returnType);
   }
 
+  protected T readValue(Reader reader) throws IOException {
+    return jsonb.fromJson(reader.readAllAsString(), returnType);
+  }
 }

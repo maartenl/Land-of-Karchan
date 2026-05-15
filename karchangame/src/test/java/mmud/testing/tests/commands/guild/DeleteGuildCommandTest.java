@@ -100,7 +100,7 @@ public class DeleteGuildCommandTest extends MudTest
     karn.getGuild().setMembers(users);
     karn.getGuild().setActiveMembers(users);
     SortedSet<Guildrank> ranks = new TreeSet<>();
-    karn.getGuild().setGuildrankCollection(ranks);
+    karn.getGuild().setGuildranks(ranks);
 
     DeleteGuildCommand deleteguildCommand = new DeleteGuildCommand("deleteguild");
     deleteguildCommand.setCallback(commandRunner);

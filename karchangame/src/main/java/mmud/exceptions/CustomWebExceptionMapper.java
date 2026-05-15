@@ -37,7 +37,7 @@ public class CustomWebExceptionMapper implements ExceptionMapper<MudWebException
   {
     LOGGER.throwing("CustomWebExceptionMapper", "toResponse", arg0);
     return Response.status(arg0.getStatus()).entity(
-      new ErrorDetails(arg0.getName(), arg0.getFriendlyMessage())
+      new ErrorDetails(arg0.getName(), arg0.getFriendlyMessage(), arg0.getMessage())
     ).type(MediaType.APPLICATION_JSON).build();
   }
 

@@ -19,7 +19,7 @@ package mmud.database.entities.game;
 import java.time.LocalDateTime;
 
 import mmud.database.entities.DateTimeUtilities;
-import org.eclipse.persistence.config.DescriptorCustomizer;
+import org.eclipse.persistence.descriptors.DescriptorCustomizer;
 import org.eclipse.persistence.descriptors.ClassDescriptor;
 import org.eclipse.persistence.expressions.Expression;
 import org.eclipse.persistence.expressions.ExpressionBuilder;
