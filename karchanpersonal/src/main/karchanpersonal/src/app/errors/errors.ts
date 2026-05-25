@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import {Component, inject, signal} from '@angular/core';
 import { ErrorsService} from '../errors.service';
 import { ErrorMessage } from './errormessage.model';
 
@@ -11,27 +11,28 @@ import { ErrorMessage } from './errormessage.model';
 export class Errors {
   private errorsService = inject(ErrorsService);
 
-  errors: ErrorMessage[] = [];
+  errors = signal<ErrorMessage[]>([]);
 
   constructor() {
-    this.errorsService.setListener((error: ErrorMessage) => this.addError(error));
   }
 
   public ifError(): boolean {
-    return this.errors.length !== 0;
+    return this.errors().length !== 0;
   }
 
   public removeError(error: ErrorMessage): void {
-    const index = this.errors.indexOf(error);
+    const index = this.errors().indexOf(error);
     if (index === -1) {
       // not found. do nothing.
       return;
     }
-    this.errors.splice(index, 1);
+    this.errors.update(errors => errors.splice(index, 1));
   }
 
   public addError(error: ErrorMessage): void {
-    this.errors.push(error);
+    this.errors.update(errors => {
+      errors.push(error);
+      return errors;
+    });
   }
-
 }

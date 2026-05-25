@@ -2,7 +2,7 @@ import {inject, Injectable} from '@angular/core';
 import {HttpClient, HttpErrorResponse} from '@angular/common/http';
 import {CookieService} from 'ngx-cookie-service';
 import {ErrorsService} from './errors.service';
-import {environment} from './environment';
+import {environment} from '../environments/environment';
 import {Log} from './play/log.model';
 import {Observable} from 'rxjs';
 import {Display} from './play/display.model';

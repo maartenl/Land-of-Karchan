@@ -18,8 +18,8 @@ import {MailService} from '../../mail.service';
 })
 export class InboxMail implements OnInit {
 
-  composeMail = viewChild(ComposeMail);
-  showMail = viewChild(ShowMail);
+  composeMail = viewChild.required(ComposeMail);
+  showMail = viewChild.required(ShowMail);
 
   private playerService: PlayerService = inject(PlayerService)
   private toastService: ToastService = inject(ToastService)
@@ -58,20 +58,20 @@ export class InboxMail implements OnInit {
   }
 
   replyMail(mail: Mail) {
-    this.composeMail()?.setOriginalMail(mail);
+    this.composeMail().setOriginalMail(mail);
     return false;
   }
 
   replyAllMail(mail: Mail) {
     const newmail = new Mail(mail);
     newmail.name = newmail.name + ', ' + newmail.toname;
-    this.composeMail()?.setOriginalMail(newmail);
+    this.composeMail().setOriginalMail(newmail);
     return false;
   }
 
   public setMail(mail: Mail): void {
     this.mail.set(mail);
-    this.showMail()?.setMail(mail);
+    this.showMail().setMail(mail);
   }
 
   public deleteMail(mail: Mail): boolean {

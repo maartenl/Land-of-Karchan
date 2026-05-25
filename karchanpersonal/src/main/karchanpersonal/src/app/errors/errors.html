@@ -1,4 +1,4 @@
-@for (error of errors; track error) {
+@for (error of errors(); track error) {
 <div class="alert alert-danger alert-dismissible fade show" role="alert">
   <i class="material-icons align-middle" aria-hidden="true">warning</i>
   <button type="button" class="close" data-dismiss="alert" aria-label="Close" (click)="removeError(error)">

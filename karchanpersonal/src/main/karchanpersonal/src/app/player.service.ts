@@ -2,7 +2,7 @@ import {inject, Injectable} from '@angular/core';
 import {HttpClient, HttpErrorResponse, HttpHeaders} from '@angular/common/http';
 import {CookieService} from 'ngx-cookie-service';
 import {ErrorsService} from './errors.service';
-import {environment} from './environment';
+import {environment} from '../environments/environment';
 import {ErrorMessage} from './errors/errormessage.model';
 import {catchError, Observable} from 'rxjs';
 import {PasswordReset, Player} from './player-settings/player.model';

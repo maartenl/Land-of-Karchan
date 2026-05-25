@@ -13,8 +13,7 @@ export enum LogLevel {
  * Wrapper around the whole "if (window.console) console.log(stuff)".
  */
 export class Logger {
-  // TODO MLE: fix this
-  private static defaultLogLevel: LogLevel = LogLevel.DEBUG; //NONE;
+  private static defaultLogLevel: LogLevel = LogLevel.NONE;
 
   private static logLevel: LogLevel = Logger.defaultLogLevel;
 

@@ -51,7 +51,7 @@ export class Play implements OnInit {
     toolbarPosition: 'top',
   };
 
-  logonmessageComponent = viewChild(Logonmessages);
+  logonmessageComponent = viewChild.required(Logonmessages);
 
   display = signal(new Display());
 
