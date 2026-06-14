@@ -1,33 +1,29 @@
-import {Injectable} from '@angular/core';
-import {AdminRestService} from "./admin/admin-rest.service";
-import {Item, ItemDefinition} from "./items/item.model";
-import {Observable, ReplaySubject, share} from "rxjs";
-import {HttpClient, HttpErrorResponse} from "@angular/common/http";
-import {ErrorsService} from "./errors.service";
-import {ToastService} from "./toast.service";
-import {environment} from "../environments/environment";
-import {catchError, map} from "rxjs/operators";
+import {inject, Injectable} from '@angular/core';
+import {catchError, map, Observable, ReplaySubject, share} from 'rxjs';
+import {Item, ItemDefinition} from './items/item.model';
+import {environment} from '../environments/environment';
+import {HttpClient, HttpErrorResponse} from '@angular/common/http';
+import {ErrorsService} from './errors.service';
+import {ToastService} from './toast.service';
+import {MudCharacter} from './characters/character.model';
+import {AdminRestService} from './admin/admin-rest.service';
+import {urls} from './urls';
 
-/**
- * Anything regarding Rest calls for changing and retrieving and deleteing Item Definitions.
- */
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
-export class ItemdefinitionsRestService implements AdminRestService<ItemDefinition, number> {
+export class ItemdefinitionsRestService extends AdminRestService<ItemDefinition, number> {
+
+  url: string = urls.ITEMDEFINITIONS_URL;
+
+  http = inject(HttpClient);
+  errorsService = inject(ErrorsService);
+  toastService = inject(ToastService);
 
   cache$: Observable<ItemDefinition[]> | null = null;
 
-  private definitionsUrl: string;
-
-  constructor(private http: HttpClient,
-              private errorsService: ErrorsService,
-              private toastService: ToastService) {
-    this.definitionsUrl = environment.ITEMDEFINITIONS_URL;
-  }
-
   public get(id: number): Observable<ItemDefinition> {
-    return this.http.get<ItemDefinition>(this.definitionsUrl + '/' + id)
+    return this.http.get<ItemDefinition>(this.url + '/' + id + environment.postfix)
       .pipe(
         map(item => new ItemDefinition(item)),
         catchError(err => {
@@ -41,12 +37,8 @@ export class ItemdefinitionsRestService implements AdminRestService<ItemDefiniti
     if (this.cache$) {
       return this.cache$;
     }
-    this.toastService.show('Retrieving all items.', {
-      delay: 5000,
-      autohide: true,
-      headertext: 'Loading...'
-    });
-    this.cache$ = this.http.get<ItemDefinition[]>(this.definitionsUrl)
+    this.toastService.showRetrieving("Retrieving all items.", "Loading...");
+    this.cache$ = this.http.get<ItemDefinition[]>(this.url + environment.postfix)
       .pipe(
         map(items => {
           const newItems = new Array<ItemDefinition>();
@@ -67,36 +59,12 @@ export class ItemdefinitionsRestService implements AdminRestService<ItemDefiniti
     return this.cache$;
   }
 
-  /**
-   * Retrieves all items with this itemdefinition.
-   */
-  public getAllItems(itemdefinitionid: number): Observable<Item[]> {
-    return this.http.get<Item[]>(this.definitionsUrl + '/' + itemdefinitionid + '/items')
-      .pipe(
-        map(items => {
-          const newItems = new Array<Item>();
-          items.forEach(item => newItems.push(new Item(item)));
-          return newItems;
-        }),
-        share({
-          connector: () => new ReplaySubject(1),
-          resetOnError: false,
-          resetOnComplete: false,
-          resetOnRefCountZero: false
-        }),
-        catchError(err => {
-          this.handleError(err);
-          return [];
-        })
-      );
-  }
-
   public clearCache() {
     this.cache$ = null;
   }
 
   public delete(item: ItemDefinition): Observable<any> {
-    return this.http.delete(this.definitionsUrl + '/' + item.id)
+    return this.http.delete(this.url + '/' + item.id)
       .pipe(
         catchError(err => {
           this.handleError(err);
@@ -108,7 +76,7 @@ export class ItemdefinitionsRestService implements AdminRestService<ItemDefiniti
 
   public update(item: ItemDefinition): any {
     // update
-    return this.http.put<ItemDefinition[]>(this.definitionsUrl + '/' + item.id, item)
+    return this.http.put<ItemDefinition[]>(this.url + '/' + item.id, item)
       .pipe(
         catchError(err => {
           this.handleError(err);
@@ -119,7 +87,7 @@ export class ItemdefinitionsRestService implements AdminRestService<ItemDefiniti
 
   public create(item: ItemDefinition): any {
     // new
-    return this.http.post(this.definitionsUrl, item)
+    return this.http.post(this.url, item)
       .pipe(
         catchError(err => {
           this.handleError(err);
@@ -128,12 +96,4 @@ export class ItemdefinitionsRestService implements AdminRestService<ItemDefiniti
       );
   }
 
-  /**
-   * Handles error, delivers them to the errorService.
-   * @param error the error message received from the HTTP call
-   * @param ignore which states can we choose to ignore?
-   */
-  private handleError(error: HttpErrorResponse, ignore?: string[]) {
-    this.errorsService.addHttpError(error, ignore);
-  }
 }

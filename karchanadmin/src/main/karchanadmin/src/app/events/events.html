@@ -1,0 +1,69 @@
+<div class="container-fluid">
+  <div class="row row-content">
+    <div class="col-xs-12 col-xl-6">
+      <h1>Event {{ item().eventid }}</h1>
+      <form novalidate>
+        <fieldset class="form-group">
+          <label for="eventid">Event id</label>
+          <input type="number" class="form-control" id="eventid" [formField]="form.eventid">
+        </fieldset>
+        <fieldset class="form-group">
+          <label for="name">Name</label>
+          <input type="text" class="form-control" id="name" [formField]="form.name">
+        </fieldset>
+        <fieldset class="form-group">
+          <label for="month">Month</label>
+          <input type="number" class="form-control" id="month" [formField]="form.month">
+        </fieldset>
+        <fieldset class="form-group">
+          <label for="dayofmonth">Day of month</label>
+          <input type="number" class="form-control" id="dayofmonth" [formField]="form.dayofmonth">
+        </fieldset>
+        <fieldset class="form-group">
+          <label for="hour">Hour</label>
+          <input type="number" class="form-control" id="hour" [formField]="form.hour">
+        </fieldset>
+        <fieldset class="form-group">
+          <label for="minute">Minute</label>
+          <input type="number" class="form-control" id="minute" [formField]="form.minute">
+        </fieldset>
+        <fieldset class="form-group">
+          <label for="dayofweek">Day of week</label>
+          <input type="number" class="form-control" id="dayofweek" [formField]="form.dayofweek">
+        </fieldset>
+        <fieldset class="form-group">
+          <label for="methodname">Methodname</label>
+          <input type="text" class="form-control" id="methodname" [formField]="form.methodname">
+        </fieldset>
+        <fieldset class="form-group">
+          <label for="room">Room</label>
+          <input type="number" class="form-control" id="room" [formField]="form.room">
+        </fieldset>
+        <fieldset class="form-group">
+          <label for="owner">Owner</label>
+          <input type="text" class="form-control" id="owner" [formField]="form.owner">
+        </fieldset>
+        <div class="col-xs-12 col-sm-12 text-right">
+          <button type="submit" class="mx-1 btn btn-primary"
+                  (click)="updateItem($event)">Update</button>
+          <button type="submit" class="mx-1 btn btn-primary"
+                  (click)="createItem($event)">Create</button>
+          <button type="button" class="mx-1 btn btn-secondary" (click)="deleteItem()">Delete</button>
+          <button type="reset" class="mx-1 btn btn-secondary" (click)="cancel($event)">Cancel</button>
+        </div>
+      </form>
+    </div>
+    <div class="col-xs-12 col-xl-6">
+      <button type="button" class="mx-1 btn btn-secondary" (click)="refresh()">Refresh</button>
+      <ag-grid-angular
+        style="width: 100%; height: 550px;"
+        [rowData]="rowData"
+        [columnDefs]="colDefs"
+        (gridReady)="onGridReady($event)"
+        [theme]="themeBalham"
+        (selectionChanged)="onSelectionChanged($event)"
+        [rowSelection]="rowSelection"
+      />
+    </div>
+  </div>
+</div>

@@ -4,6 +4,7 @@ import { ChristmasUtils } from './christmas.utils';
 import { Toasts } from './toasts/toasts';
 import { Errors } from './errors/errors';
 import { Game } from './game/game';
+import {environment} from '../environments/environment';
 
 @Component({
   selector: 'app-root',
@@ -12,7 +13,8 @@ import { Game } from './game/game';
   styleUrl: './app.css'
 })
 export class App {
-  protected readonly title = signal('karchanpersonal');
+
+  protected readonly title = signal('Land of Karchan' + (environment.production ? "" : " (DEV)"));
 
   collapsed = true;
 

@@ -1,21 +1,35 @@
 import { Observable } from 'rxjs';
+import {HttpErrorResponse} from '@angular/common/http';
+import {ErrorsService} from '../errors.service';
 
 /**
  * @param T the object
  * @param U the primary key for the object, usually number or string.
  */
-export interface AdminRestService<T, U> {
+export abstract class AdminRestService<T, U> {
 
-  get(id: U): Observable<T>;
+  abstract cache$: Observable<T[]> | null;
 
-  getAll(descriptionSearch: string): Observable<T[]>;
+  abstract errorsService: ErrorsService;
 
-  clearCache(): void;
+  abstract get(id: U): Observable<T>;
 
-  delete(item: T): Observable<any>;
+  abstract getAll(): Observable<T[]>;
 
-  update(item: T): any;
+  abstract clearCache(): void;
 
-  create(item: T): any;
+  abstract delete(item: T): Observable<any>;
 
+  abstract update(item: T): any;
+
+  abstract create(item: T): any;
+
+  /**
+   * Handles error, delivers them to the errorService.
+   * @param error the error message received from the HTTP call
+   * @param ignore which states can we choose to ignore?
+   */
+  protected handleError(error: HttpErrorResponse, ignore?: string[]) {
+  this.errorsService.addHttpError(error, ignore);
+}
 }

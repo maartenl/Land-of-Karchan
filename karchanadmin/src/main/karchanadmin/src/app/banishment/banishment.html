@@ -1,0 +1,29 @@
+<div class="container-fluid">
+  <ul ngbNav #nav="ngbNav" [(activeId)]="active" class="nav nav-tabs">
+    <li [ngbNavItem]="1">
+      <a ngbNavLink class="sub-nav-link">Banned addresses</a>
+      <ng-template ngbNavContent>
+        <app-banned></app-banned>
+      </ng-template>
+    </li>
+    <li [ngbNavItem]="2" class="nav-item">
+      <a ngbNavLink class="sub-nav-link">Banned names</a>
+      <ng-template ngbNavContent>
+       <app-bannednames></app-bannednames>
+      </ng-template>
+    </li>
+    <li [ngbNavItem]="3">
+      <a ngbNavLink class="sub-nav-link">Silly names</a>
+      <ng-template ngbNavContent>
+        <app-sillynames></app-sillynames>
+      </ng-template>
+    </li>
+    <li [ngbNavItem]="4">
+      <a ngbNavLink class="sub-nav-link">Unbanned names</a>
+      <ng-template ngbNavContent>
+        <app-unbanned></app-unbanned>
+      </ng-template>
+    </li>
+  </ul>
+  <div [ngbNavOutlet]="nav" class="mt-2"></div>
+</div>

@@ -83,6 +83,7 @@ public class AttributesRestService
     })
   public void edit(@PathParam("type") String type, @PathParam("objectid") String objectid, String json)
   {
+    LOGGER.finer("entering edit");
     AdminAttribute adminAttribute = AdminAttribute.fromJson(json);
     final String name = sc.getUserPrincipal().getName();
     Admin admin = getEntityManager().find(Admin.class, name);
@@ -328,7 +329,7 @@ public class AttributesRestService
         throw new MudWebException(name, "Type of attribute not supported.", Response.Status.BAD_REQUEST);
     }
     return "[" + list.stream()
-      .map(x -> new AdminAttribute(x, adminMudType))
+      .map(x -> new AdminAttribute(x, adminMudType, objectid))
       .map(AdminAttribute::toJson)
       .collect(Collectors.joining(",")) + "]";
   }

@@ -3,7 +3,7 @@ import { AdminObject } from '../admin/admin-object.model';
 export class Area implements AdminObject<string> {
     area: string | null = null;
     description: string | null = null;
-    shortdesc: number | null = null;
+    shortdesc: string | null = null;
     creation: string | null = null;
     owner: string | null = null;
 

@@ -19,6 +19,7 @@ package mmud.rest.webentities.admin;
 
 
 import java.time.LocalDateTime;
+import java.util.Objects;
 
 import mmud.JsonUtils;
 import mmud.database.entities.characters.Person;
@@ -192,7 +193,7 @@ public class AdminCharacter
     this.leg = item.getLeg();
     this.copper = item.getCopper();
     this.room = item.getRoom() == null ? null : item.getRoom().getId();
-    this.whimpy = item.getWimpy().toString();
+    this.whimpy = Objects.toString(item.getWimpy(), null);
     this.experience = item.getExperience();
     this.fightingwho = item.getFightingwho();
     this.sleep = item.getSleep();

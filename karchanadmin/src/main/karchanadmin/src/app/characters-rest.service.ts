@@ -1,34 +1,29 @@
-import {Injectable} from '@angular/core';
-import {MudCharacter} from './characters/character.model';
-import {Observable, ReplaySubject, share} from 'rxjs';
-import {catchError, map} from 'rxjs/operators';
-import {HttpClient, HttpErrorResponse} from '@angular/common/http';
-
-import {environment} from '../environments/environment';
-
-import {ErrorsService} from './errors.service';
+import {inject, Injectable} from '@angular/core';
 import {AdminRestService} from './admin/admin-rest.service';
+import {MudCharacter} from './characters/character.model';
+import {catchError, map, Observable, ReplaySubject, share} from "rxjs";
+import {environment} from '../environments/environment';
+import {HttpClient, HttpErrorResponse} from '@angular/common/http';
+import {ErrorsService} from './errors.service';
 import {ToastService} from './toast.service';
-import {Item} from "./items/item.model";
+import {Item} from './items/item.model';
+import {urls} from './urls';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
-export class CharactersRestService implements AdminRestService<MudCharacter, string> {
+export class CharactersRestService extends AdminRestService<MudCharacter, string> {
 
-  url: string;
+  url: string = urls.CHARACTERS_URL;
+
+  http = inject(HttpClient);
+  errorsService = inject(ErrorsService);
+  toastService = inject(ToastService);
 
   cache$: Observable<MudCharacter[]> | null = null;
 
-  constructor(
-    private http: HttpClient,
-    private errorsService: ErrorsService,
-    private toastService: ToastService) {
-    this.url = environment.CHARACTERS_URL;
-  }
-
   get(name: string): Observable<MudCharacter> {
-    return this.http.get<MudCharacter>(this.url + '/' + name)
+    return this.http.get<MudCharacter>(this.url + '/' + name + environment.postfix)
       .pipe(
         map(item => new MudCharacter(item)),
         catchError(err => {
@@ -42,16 +37,13 @@ export class CharactersRestService implements AdminRestService<MudCharacter, str
     if (this.cache$) {
       return this.cache$;
     }
-    this.toastService.show('Retrieving all characters.', {
-      delay: 5000,
-      autohide: true,
-      headertext: 'Loading...'
-    });
-    this.cache$ = this.http.get<MudCharacter[]>(this.url)
+    this.toastService.showRetrieving("Retrieving all characters.", "Loading...");
+    this.cache$ = this.http.get<MudCharacter[]>(this.url + environment.postfix)
       .pipe(
         map(items => {
           const newItems = new Array<MudCharacter>();
           items.forEach(item => newItems.push(new MudCharacter(item)));
+          this.toastService.showMessage("All characters retrieved.", "Done...");
           return newItems;
         }),
         share({
@@ -68,12 +60,12 @@ export class CharactersRestService implements AdminRestService<MudCharacter, str
     return this.cache$;
   }
 
-  clearCache() {
+  clearCache(): void {
     this.cache$ = null;
   }
 
-  delete(character: MudCharacter): Observable<any> {
-    return this.http.delete(this.url + '/' + character.name)
+  delete(item: MudCharacter): Observable<any> {
+    return this.http.delete(this.url + '/' + item.name)
       .pipe(
         catchError(err => {
           this.handleError(err);
@@ -82,9 +74,9 @@ export class CharactersRestService implements AdminRestService<MudCharacter, str
       );
   }
 
-  update(character: MudCharacter) {
+  update(item: MudCharacter) {
     // update
-    return this.http.put<MudCharacter[]>(this.url + '/' + character.name, character)
+    return this.http.put<MudCharacter[]>(this.url + '/' + item.name, item)
       .pipe(
         catchError(err => {
           this.handleError(err);
@@ -93,48 +85,15 @@ export class CharactersRestService implements AdminRestService<MudCharacter, str
       );
   }
 
-  create(character: MudCharacter) {
+  create(item: MudCharacter) {
     // new
-    return this.http.post(this.url, character)
+    return this.http.post(this.url, item)
       .pipe(
         catchError(err => {
           this.handleError(err);
           return [];
         })
       );
-  }
-
-  /**
-   * Retrieves all items in the inventory of this character.
-   */
-  public getAllItems(name: String): Observable<Item[]> {
-    return this.http.get<Item[]>(this.url + '/' + name + '/items')
-      .pipe(
-        map(items => {
-          const newItems = new Array<Item>();
-          items.forEach(item => newItems.push(new Item(item)));
-          return newItems;
-        }),
-        share({
-          connector: () => new ReplaySubject(1),
-          resetOnError: false,
-          resetOnComplete: false,
-          resetOnRefCountZero: false
-        }),
-        catchError(err => {
-          this.handleError(err);
-          return [];
-        })
-      );
-  }
-
-  /**
-   * Handles error, delivers them to the errorService.
-   * @param error the error message received from the HTTP call
-   * @param ignore which states can we choose to ignore?
-   */
-  private handleError(error: HttpErrorResponse, ignore?: string[]) {
-    this.errorsService.addHttpError(error, ignore);
   }
 
 }

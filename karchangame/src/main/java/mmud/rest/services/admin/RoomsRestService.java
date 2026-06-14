@@ -42,11 +42,13 @@ import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.core.SecurityContext;
 import jakarta.ws.rs.core.UriInfo;
+import mmud.database.entities.characters.Person;
 import mmud.database.entities.game.Admin;
 import mmud.database.entities.game.Area;
 import mmud.database.entities.game.Room;
 import mmud.database.entities.game.UserCommand;
 import mmud.exceptions.MudWebException;
+import mmud.rest.webentities.admin.AdminCharacter;
 import mmud.rest.webentities.admin.AdminItem;
 import mmud.rest.webentities.admin.AdminRoom;
 import mmud.rest.webentities.admin.AdminUserCommand;
@@ -64,8 +66,7 @@ import org.eclipse.persistence.queries.ScrollableCursor;
 @RolesAllowed("deputy")
 @Transactional
 @Path("/administration/rooms")
-public class RoomsRestService
-{
+public class RoomsRestService {
 
   private static final Logger LOGGER = Logger.getLogger(RoomsRestService.class.getName());
   public static final String DESCRIPTION = "description";
@@ -85,64 +86,51 @@ public class RoomsRestService
       MediaType.APPLICATION_JSON
     })
 
-  public Long create(String json)
-  {
+  public Long create(String json) {
     AdminRoom adminRoom = AdminRoom.fromJson(json);
     final String name = sc.getUserPrincipal().getName();
     Admin admin = getEntityManager().find(Admin.class, name);
 
     Room room = new Room();
-    if (adminRoom.id == null)
-    {
+    if (adminRoom.id == null) {
       room.setId(getEntityManager().createNamedQuery("Room.findMaxId", Long.class).getSingleResult() + 1);
-    } else
-    {
-      if (getEntityManager().find(Room.class, adminRoom.id) != null)
-      {
+    } else {
+      if (getEntityManager().find(Room.class, adminRoom.id) != null) {
         throw new MudWebException(name, "Room " + adminRoom.id + " already exists.", Response.Status.FOUND);
       }
       room.setId(adminRoom.id);
     }
     room.setContents(adminRoom.contents);
-    if (adminRoom.area != null)
-    {
+    if (adminRoom.area != null) {
       Area area = getEntityManager().find(Area.class, adminRoom.area);
-      if (area == null)
-      {
+      if (area == null) {
         throw new MudWebException(name, "Area " + adminRoom.area + " not found.", Response.Status.NOT_FOUND);
       }
       room.setArea(area);
-    } else
-    {
+    } else {
       throw new MudWebException(name, "Area cannot be null.", Response.Status.BAD_REQUEST);
     }
-    if (adminRoom.down != null)
-    {
+    if (adminRoom.down != null) {
       Room down = getEntityManager().find(Room.class, adminRoom.down);
       room.setDown(down);
     }
-    if (adminRoom.up != null)
-    {
+    if (adminRoom.up != null) {
       Room up = getEntityManager().find(Room.class, adminRoom.up);
       room.setUp(up);
     }
-    if (adminRoom.east != null)
-    {
+    if (adminRoom.east != null) {
       Room east = getEntityManager().find(Room.class, adminRoom.east);
       room.setEast(east);
     }
-    if (adminRoom.west != null)
-    {
+    if (adminRoom.west != null) {
       Room west = getEntityManager().find(Room.class, adminRoom.west);
       room.setWest(west);
     }
-    if (adminRoom.south != null)
-    {
+    if (adminRoom.south != null) {
       Room south = getEntityManager().find(Room.class, adminRoom.south);
       room.setSouth(south);
     }
-    if (adminRoom.north != null)
-    {
+    if (adminRoom.north != null) {
       Room north = getEntityManager().find(Room.class, adminRoom.north);
       room.setNorth(north);
     }
@@ -162,76 +150,59 @@ public class RoomsRestService
       MediaType.APPLICATION_JSON
     })
 
-  public void edit(@PathParam("id") Long id, String json)
-  {
+  public void edit(@PathParam("id") Long id, String json) {
     AdminRoom adminRoom = AdminRoom.fromJson(json);
     final String name = sc.getUserPrincipal().getName();
-    if (!id.equals(adminRoom.id))
-    {
+    if (!id.equals(adminRoom.id)) {
       throw new MudWebException(name, "Room ids do not match.", Response.Status.BAD_REQUEST);
     }
     Room room = getEntityManager().find(Room.class, adminRoom.id);
 
-    if (room == null)
-    {
+    if (room == null) {
       throw new MudWebException(name, "Room " + id + " not found.", Response.Status.NOT_FOUND);
     }
     Admin admin = (new OwnerHelper(getEntityManager())).authorize(name, room);
     room.setContents(adminRoom.contents);
-    if (adminRoom.area != null)
-    {
+    if (adminRoom.area != null) {
       Area area = getEntityManager().find(Area.class, adminRoom.area);
       room.setArea(area);
-    } else
-    {
+    } else {
       room.setArea(null);
     }
-    if (adminRoom.down != null)
-    {
+    if (adminRoom.down != null) {
       Room down = getEntityManager().find(Room.class, adminRoom.down);
       room.setDown(down);
-    } else
-    {
+    } else {
       room.setDown(null);
     }
-    if (adminRoom.up != null)
-    {
+    if (adminRoom.up != null) {
       Room up = getEntityManager().find(Room.class, adminRoom.up);
       room.setUp(up);
-    } else
-    {
+    } else {
       room.setUp(null);
     }
-    if (adminRoom.east != null)
-    {
+    if (adminRoom.east != null) {
       Room east = getEntityManager().find(Room.class, adminRoom.east);
       room.setEast(east);
-    } else
-    {
+    } else {
       room.setEast(null);
     }
-    if (adminRoom.west != null)
-    {
+    if (adminRoom.west != null) {
       Room west = getEntityManager().find(Room.class, adminRoom.west);
       room.setWest(west);
-    } else
-    {
+    } else {
       room.setWest(null);
     }
-    if (adminRoom.south != null)
-    {
+    if (adminRoom.south != null) {
       Room south = getEntityManager().find(Room.class, adminRoom.south);
       room.setSouth(south);
-    } else
-    {
+    } else {
       room.setSouth(null);
     }
-    if (adminRoom.north != null)
-    {
+    if (adminRoom.north != null) {
       Room north = getEntityManager().find(Room.class, adminRoom.north);
       room.setNorth(north);
-    } else
-    {
+    } else {
       room.setNorth(null);
     }
     room.setPicture(adminRoom.picture);
@@ -243,12 +214,10 @@ public class RoomsRestService
   @DELETE
   @Path("{id}")
 
-  public void remove(@PathParam("id") Long id)
-  {
+  public void remove(@PathParam("id") Long id) {
     final String name = sc.getUserPrincipal().getName();
     Room room = getEntityManager().find(Room.class, id);
-    if (room == null)
-    {
+    if (room == null) {
       throw new MudWebException(name, "Room " + id + " not found.", Response.Status.NOT_FOUND);
     }
     Admin admin = (new OwnerHelper(getEntityManager())).authorize(name, room);
@@ -261,12 +230,10 @@ public class RoomsRestService
     {
       MediaType.APPLICATION_JSON
     })
-  public String find(@PathParam("id") Long id)
-  {
+  public String find(@PathParam("id") Long id) {
     final String name = sc.getUserPrincipal().getName();
     Room room = roomsService.find(id);
-    if (room == null)
-    {
+    if (room == null) {
       throw new MudWebException(name, "Room " + id + " not found.", Response.Status.NOT_FOUND);
     }
     return new AdminRoom(room).toJson();
@@ -279,12 +246,39 @@ public class RoomsRestService
       MediaType.APPLICATION_JSON
     })
 
-  public String getCommands(@PathParam("id") Long id)
-  {
+  public String getCommands(@PathParam("id") Long id) {
     final String name = sc.getUserPrincipal().getName();
-    final List<UserCommand> userCommands = getEntityManager().createNamedQuery("UserCommand.findByRoom").setParameter("room", id).getResultList();
-    List<AdminUserCommand> adminCommands = userCommands.stream().map(command -> new AdminUserCommand(command)).collect(Collectors.toList());
-    return JsonbBuilder.create().toJson(adminCommands);
+    final List<UserCommand> userCommands =
+      getEntityManager().createNamedQuery("UserCommand.findByRoom", UserCommand.class)
+        .setParameter("room", id)
+        .getResultList();
+    List<AdminUserCommand> adminCommands = userCommands.stream().map(AdminUserCommand::new).collect(Collectors.toList());
+    try (var builder = JsonbBuilder.create()) {
+      return builder.toJson(adminCommands);
+    } catch (Exception e) {
+      throw new MudWebException(e, Response.Status.INTERNAL_SERVER_ERROR);
+    }
+  }
+
+  @GET
+  @Path("{id}/characters")
+  @Produces(
+    {
+      MediaType.APPLICATION_JSON
+    })
+
+  public String getCharacters(@PathParam("id") Long id) {
+    final String name = sc.getUserPrincipal().getName();
+    final List<Person> userCommands =
+      getEntityManager().createNamedQuery("Person.findByRoom", Person.class)
+        .setParameter("room", id)
+        .getResultList();
+    List<AdminCharacter> adminCharacters = userCommands.stream().map(AdminCharacter::new).collect(Collectors.toList());
+    try (var builder = JsonbBuilder.create()) {
+      return builder.toJson(adminCharacters);
+    } catch (Exception e) {
+      throw new MudWebException(e, Response.Status.INTERNAL_SERVER_ERROR);
+    }
   }
 
   @GET
@@ -293,16 +287,13 @@ public class RoomsRestService
       MediaType.APPLICATION_JSON
     })
 
-  public Response findAll(@Context UriInfo info)
-  {
+  public Response findAll(@Context UriInfo info) {
     LOGGER.info("findAll");
     String description = info.getQueryParameters().getFirst(DESCRIPTION);
-    if ("null".equals(description))
-    {
+    if ("null".equals(description)) {
       description = null;
     }
-    if (description == null)
-    {
+    if (description == null) {
       return Response.ok(StreamerHelper.getStream(getEntityManager(), AdminRoom.GET_QUERY)).build();
     }
     Query query = getEntityManager().createNativeQuery(AdminRoom.GET_SEARCH_QUERY);
@@ -326,22 +317,18 @@ public class RoomsRestService
 
   public String findRange(@Context UriInfo info, @PathParam("offset") Integer offset,
                           @PathParam("pageSize") Integer pageSize
-  )
-  {
+  ) {
     String description = info.getQueryParameters().getFirst(DESCRIPTION);
-    if ("null".equals(description))
-    {
+    if ("null".equals(description)) {
       description = null;
     }
     final List<String> rooms;
-    if (description == null)
-    {
+    if (description == null) {
       rooms = getEntityManager().createNativeQuery(AdminRoom.GET_QUERY)
         .setMaxResults(pageSize)
         .setFirstResult(offset)
         .getResultList();
-    } else
-    {
+    } else {
       rooms = getEntityManager().createNativeQuery(AdminRoom.GET_SEARCH_QUERY)
         .setParameter(1, "%" + description + "%")
         .setMaxResults(pageSize)
@@ -355,15 +342,12 @@ public class RoomsRestService
   @Path("count")
   @Produces("text/plain")
 
-  public String count(@Context UriInfo info)
-  {
+  public String count(@Context UriInfo info) {
     String description = info.getQueryParameters().getFirst(DESCRIPTION);
-    if ("null".equals(description))
-    {
+    if ("null".equals(description)) {
       description = null;
     }
-    if (description == null)
-    {
+    if (description == null) {
       return String.valueOf(getEntityManager().createNamedQuery("Room.countAll").getSingleResult());
     }
     return String.valueOf(getEntityManager().createNamedQuery("Room.countAllByDescription").setParameter(DESCRIPTION, "%" + description + "%").getSingleResult());
@@ -372,20 +356,18 @@ public class RoomsRestService
   @GET
   @Path("{id}/items")
   @Produces(
-      {
-          MediaType.APPLICATION_JSON
-      })
-  public String getItemInstances(@PathParam("id") Long id)
-  {
+    {
+      MediaType.APPLICATION_JSON
+    })
+  public String getItemInstances(@PathParam("id") Long id) {
     final List<String> items =
-        getEntityManager().createNativeQuery(AdminItem.GET_ROOMS_QUERY)
-            .setParameter(1, id)
-            .getResultList();
+      getEntityManager().createNativeQuery(AdminItem.GET_ROOMS_QUERY)
+        .setParameter(1, id)
+        .getResultList();
     return "[" + String.join(",", items) + "]";
   }
 
-  private EntityManager getEntityManager()
-  {
+  private EntityManager getEntityManager() {
     return em;
   }
 

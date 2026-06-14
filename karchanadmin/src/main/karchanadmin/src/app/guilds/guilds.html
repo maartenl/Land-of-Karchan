@@ -1,0 +1,75 @@
+<div class="container-fluid">
+  <div class="row row-content">
+    <div class="col-xs-12 col-xl-6">
+      <h1>Guild {{ item().name }}</h1>
+      <form novalidate>
+        <fieldset class="form-group">
+          <label for="name">Name</label>
+          <input type="text" class="form-control" id="name" [formField]="form.name">
+        </fieldset>
+        <fieldset class="form-group">
+          <label for="title">Title</label>
+          <input type="text" class="form-control" id="title" [formField]="form.title">
+        </fieldset>
+        <fieldset class="form-group">
+          <label for="guilddescription">Description</label>
+          <textarea class="form-control" id="guilddescription" rows="13"
+                    [formField]="form.guilddescription"></textarea>
+        </fieldset>
+        <fieldset class="form-group">
+          <label for="guildurl">Url</label>
+          <input type="text" class="form-control" id="guildurl" [formField]="form.guildurl">
+        </fieldset>
+        <fieldset class="form-group">
+          <label for="bossname">Guildmaster</label>
+          <input type="text" class="form-control" id="bossname" [formField]="form.bossname">
+        </fieldset>
+        <fieldset class="form-group">
+          <label for="logonmessage">Logonmessage</label>
+          <textarea class="form-control" id="logonmessage" rows="13"
+                    [formField]="form.logonmessage"></textarea>
+        </fieldset>
+        <fieldset class="form-group">
+          <label for="colour">Colour</label>
+          <input type="text" class="form-control" id="colour" [formField]="form.colour">
+        </fieldset>
+        <fieldset class="form-group">
+          <label for="imageurl">Image url</label>
+          <input type="text" class="form-control" id="imageurl" [formField]="form.imageurl">
+        </fieldset>
+        <fieldset class="form-group">
+          <label for="owner">Owner</label>
+          <input type="text" class="form-control" id="owner" [formField]="form.owner">
+        </fieldset>
+        <div class="col-xs-12 col-sm-12 text-right">
+          <button type="submit" class="mx-1 btn btn-primary"
+                  (click)="updateItem($event)">Update</button>
+          <button type="submit" class="mx-1 btn btn-primary"
+                  (click)="createItem($event)">Create</button>
+          <button type="button" class="mx-1 btn btn-secondary" (click)="deleteItem()">Delete</button>
+          <button type="reset" class="mx-1 btn btn-secondary" (click)="cancel($event)">Cancel</button>
+        </div>
+      </form>
+      <h2>Guildmembers</h2>
+      <ag-grid-angular
+        style="width: 100%; height: 220px;"
+        [rowData]="guildmembers()"
+        [columnDefs]="guildmembersColDef"
+        [theme]="themeBalham"
+        [rowSelection]="rowSelection"
+      />
+    </div>
+    <div class="col-xs-12 col-xl-6">
+      <button type="button" class="mx-1 btn btn-secondary" (click)="refresh()">Refresh</button>
+      <ag-grid-angular
+        style="width: 100%; height: 550px;"
+        [rowData]="rowData"
+        [columnDefs]="colDefs"
+        (gridReady)="onGridReady($event)"
+        [theme]="themeBalham"
+        (selectionChanged)="onSelectionChanged($event)"
+        [rowSelection]="rowSelection"
+      />
+    </div>
+  </div>
+</div>

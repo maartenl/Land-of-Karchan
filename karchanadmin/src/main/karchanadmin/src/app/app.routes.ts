@@ -1,0 +1,43 @@
+import {Routes} from '@angular/router';
+import {Characters} from './characters/characters';
+import {Rooms} from './rooms/rooms';
+import {Items} from './items/items';
+import {Areas} from './areas/areas';
+import {Guilds} from './guilds/guilds';
+import {Manpages} from './manpages/manpages';
+import {Methods} from './methods/methods';
+import {Commands} from './commands/commands';
+import {Events} from './events/events';
+import {Attributes} from './attributes/attributes';
+import {Worldattributes} from './worldattributes/worldattributes';
+import {Banishment} from './banishment/banishment';
+import {Boards} from './boards/boards';
+import {Blogs} from './blogs/blogs';
+import Templates from './templates/templates';
+import {Systemlogs} from './systemlogs/systemlogs';
+
+export const routes: Routes = [
+  {path: 'blogs', component: Blogs},
+  {path: 'templates', component: Templates},
+  {path: 'systemlog', component: Systemlogs},
+  {path: 'rooms/:id', component: Rooms},
+  {path: 'rooms', component: Rooms},
+  {path: 'areas/:id', component: Areas},
+  {path: 'areas', component: Areas},
+  {path: 'methods/:name', component: Methods},
+  {path: 'methods', component: Methods},
+  {path: 'commands/:id', component: Commands},
+  {path: 'commands', component: Commands},
+  {path: 'items/:id', component: Items},
+  {path: 'items', component: Items},
+  {path: 'ban', component: Banishment},
+  {path: 'manpages', component: Manpages},
+  {path: 'events', component: Events},
+  {path: 'attributes/:name', component: Attributes},
+  {path: 'attributes', component: Attributes},
+  {path: 'worldattributes', component: Worldattributes},
+  {path: 'characters/:name', component: Characters},
+  {path: 'characters', component: Characters},
+  {path: 'boards', component: Boards},
+  {path: 'guilds', component: Guilds}
+];

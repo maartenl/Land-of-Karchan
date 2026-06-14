@@ -1,28 +1,18 @@
-import { Injectable } from '@angular/core';
-import { HttpErrorResponse } from '@angular/common/http';
-
-import { ErrorMessage } from './errors/errormessage.model';
-import { ToastService } from './toast.service';
+import {inject, Injectable} from '@angular/core';
+import {ToastService} from './toast.service';
+import {ErrorMessage} from './errors/errormessage.model';
+import {HttpErrorResponse} from '@angular/common/http';
+import {Logger} from './consolelog.service';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class ErrorsService {
-  private listener: (error: ErrorMessage) => void = x => {};
 
-  constructor(private toastService: ToastService) { }
-
-  public setListener(listener: (error: ErrorMessage) => void): void {
-    this.listener = listener;
-  }
+  toastService = inject(ToastService);
 
   public addError(error: ErrorMessage): void {
-    this.toastService.show(error.message === null ? 'Unknown message.' : error.message, {
-      delay: 0,
-      autohide: false,
-      headertext: error.type,
-      classname: 'bg-danger text-light'
-    });
+    this.toastService.showError(error.message === null ? 'Unknown message.' : error.message, error.type);
   }
 
   /**
@@ -33,13 +23,13 @@ export class ErrorsService {
   public addHttpError(error: HttpErrorResponse, ignore?: string[]) {
     if (error.error instanceof ErrorEvent) {
       // A client-side or network error occurred. Handle it accordingly.
-      console.error('An error occurred:', error.error.message);
+      Logger.logError('An error occurred:', error.error.message);
       const errormessage = new ErrorMessage();
       errormessage.message = error.error.message;
       errormessage.type = 'Network Error';
       this.addError(errormessage);
     } else {
-      console.error('An unknown error occurred:', error);
+      Logger.logError('An unknown error occurred:', error);
       // The backend returned an unsuccessful response code.
       // The response body may contain clues as to what went wrong,
       if (ignore !== undefined && ignore.includes(error.status.toString())) {
@@ -56,5 +46,4 @@ export class ErrorsService {
       this.addError(errormessage);
     }
   }
-
 }

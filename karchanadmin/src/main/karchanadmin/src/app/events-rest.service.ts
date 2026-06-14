@@ -1,33 +1,28 @@
-import {Observable, ReplaySubject, share} from 'rxjs';
-import {catchError, map} from 'rxjs/operators';
-import {Injectable} from '@angular/core';
-import {HttpClient, HttpErrorResponse} from '@angular/common/http';
-
+import {inject, Injectable} from '@angular/core';
+import {urls} from './urls';
+import {HttpClient} from '@angular/common/http';
+import {ErrorsService} from './errors.service';
+import {ToastService} from './toast.service';
+import {catchError, map, Observable, ReplaySubject, share} from 'rxjs';
+import {Command} from './commands/command.model';
+import {AdminRestService} from './admin/admin-rest.service';
+import {MudEvent} from './events/event.model';
 import {environment} from '../environments/environment';
 
-import {ErrorsService} from './errors.service';
-import {AdminRestService} from './admin/admin-rest.service';
-import {ToastService} from './toast.service';
-import {MudEvent} from './events/event.model';
-
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
-export class EventsRestService implements AdminRestService<MudEvent, number> {
+export class EventsRestService extends AdminRestService<MudEvent, number> {
+  url: string = urls.EVENTS_URL;
 
-  url: string;
+  http = inject(HttpClient);
+  errorsService = inject(ErrorsService);
+  toastService = inject(ToastService);
 
   cache$: Observable<MudEvent[]> | null = null;
 
-  constructor(
-    private http: HttpClient,
-    private errorsService: ErrorsService,
-    private toastService: ToastService) {
-    this.url = environment.EVENTS_URL;
-  }
-
   get(eventid: number): Observable<MudEvent> {
-    return this.http.get<MudEvent>(this.url + '/' + eventid)
+    return this.http.get<MudEvent>(this.url + '/' + eventid + environment.postfix)
       .pipe(
         map(item => new MudEvent(item)),
         catchError(err => {
@@ -41,12 +36,8 @@ export class EventsRestService implements AdminRestService<MudEvent, number> {
     if (this.cache$) {
       return this.cache$;
     }
-    this.toastService.show('Retrieving all events.', {
-      delay: 5000,
-      autohide: true,
-      headertext: 'Loading...'
-    });
-    this.cache$ = this.http.get<MudEvent[]>(this.url)
+    this.toastService.showRetrieving("Retrieving all events.", "Loading...");
+    this.cache$ = this.http.get<MudEvent[]>(this.url + environment.postfix)
       .pipe(
         map(items => {
           const newItems = new Array<MudEvent>();
@@ -102,14 +93,4 @@ export class EventsRestService implements AdminRestService<MudEvent, number> {
         })
       );
   }
-
-  /**
-   * Handles error, delivers them to the errorService.
-   * @param error the error message received from the HTTP call
-   * @param ignore which states can we choose to ignore?
-   */
-  private handleError(error: HttpErrorResponse, ignore?: string[]) {
-    this.errorsService.addHttpError(error, ignore);
-  }
-
 }

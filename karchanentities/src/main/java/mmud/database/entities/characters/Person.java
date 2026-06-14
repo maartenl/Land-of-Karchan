@@ -88,6 +88,7 @@ import java.util.logging.Logger;
 @NamedQuery(name = "Person.findAll", query = "SELECT p FROM Person p")
 @NamedQuery(name = "Person.findByName", query = "SELECT p FROM Person p WHERE lower(p.name) = lower(:name)")
 @NamedQuery(name = "Person.countAll", query = "SELECT count(p) FROM Person p")
+@NamedQuery(name = "Person.findByRoom", query = "SELECT p FROM Person p where p.room.id = :room")
 public abstract class Person implements Serializable, AttributeWrangler, DisplayInterface, ItemWrangler, Ownage
 {
 

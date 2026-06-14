@@ -1,8 +1,10 @@
+import {AdminObject} from './admin/admin-object.model';
+
 /**
  * A model for attributes.
  * Attributes are special characteristics of most of the mud objects in the mud.
  */
-export class Attribute {
+export class Attribute implements AdminObject<number> {
   /**
    * Id of the attribute, assigned automatically.
    */
@@ -33,11 +35,23 @@ export class Attribute {
     if (object === undefined) {
       return;
     }
-    this.name = object.name;
-    this.id = object.id;
-    this.value = object.value;
-    this.valueType = object.valueType;
-    this.objecttype = object.objecttype;
-    this.objectid = object.objectid;
+    this.name = object.name ?? null;
+    this.id = object.id ?? null;
+    this.value = object.value ?? null;
+    this.valueType = object.valueType ?? null;
+    this.objecttype = object.objecttype ?? null;
+    this.objectid = object.objectid ?? null;
+  }
+
+  getIdentifier(): number | null {
+    return this.id;
+  }
+
+  setIdentifier(id: number): void {
+    this.id = id;
+  }
+
+  getType(): string {
+    return 'Attribute';
   }
 }

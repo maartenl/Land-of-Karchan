@@ -1,3 +1,5 @@
+import {environment} from '../environments/environment';
+
 export enum LogLevel {
   NONE = 'NONE',
   SEVERE = 'SEVERE',
@@ -13,7 +15,7 @@ export enum LogLevel {
  * Wrapper around the whole "if (window.console) console.log(stuff)".
  */
 export class Logger {
-  private static defaultLogLevel: LogLevel = LogLevel.NONE;
+  private static defaultLogLevel: LogLevel = environment.production ? LogLevel.NONE : LogLevel.DEBUG;
 
   private static logLevel: LogLevel = Logger.defaultLogLevel;
 

@@ -1,31 +1,30 @@
-import {Observable} from 'rxjs';
-import {catchError, map} from 'rxjs/operators';
-import {Injectable} from '@angular/core';
-import { HttpClient, HttpErrorResponse } from '@angular/common/http';
-
-import {MudCharacter} from './characters/character.model';
-
+import {inject, Injectable} from '@angular/core';
 import {environment} from '../environments/environment';
-
+import {HttpClient} from '@angular/common/http';
 import {ErrorsService} from './errors.service';
+import {ToastService} from './toast.service';
+import {catchError, map, Observable, ReplaySubject, share} from 'rxjs';
 import {Attribute} from './attribute.model';
-import { Room } from './rooms/room.model';
-import { Item } from './items/item.model';
+import {Item} from './items/item.model';
+import {urls} from './urls';
+import {AdminRestService} from './admin/admin-rest.service';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
-export class AttributesRestService {
-  url: string;
+export class AttributesRestService extends AdminRestService<Attribute, number> {
 
-  constructor(
-    private http: HttpClient,
-    private errorsService: ErrorsService) {
-    this.url = environment.ATTRIBUTES_URL;
-  }
+  url: string = urls.ATTRIBUTES_URL;
 
-  public getFromCharacter(character: MudCharacter): Observable<Attribute[]> {
-    return this.http.get<Attribute[]>(this.url + '/byType/PERSON/' + character.name)
+  http = inject(HttpClient);
+  errorsService = inject(ErrorsService);
+  toastService = inject(ToastService);
+
+  cache$: Observable<Attribute[]> | null = null;
+
+  public getFromCharacter(name: string): Observable<Attribute[]> {
+    this.toastService.showRetrieving("Retrieving all attributes.", "Loading...");
+    return this.http.get<Attribute[]>(this.url + '/byType/PERSON/' + name + environment.postfix)
       .pipe(
         map(items => {
           const newItems = new Array<Attribute>();
@@ -40,7 +39,8 @@ export class AttributesRestService {
   }
 
   public getFromRoom(roomid: number): Observable<Attribute[]> {
-    return this.http.get<Attribute[]>(this.url + '/byType/ROOM/' + roomid)
+    this.toastService.showRetrieving("Retrieving all attributes.", "Loading...");
+    return this.http.get<Attribute[]>(this.url + '/byType/ROOM/' + roomid + environment.postfix)
       .pipe(
         map(items => {
           const newItems = new Array<Attribute>();
@@ -55,7 +55,8 @@ export class AttributesRestService {
   }
 
   public getFromItem(item: Item): Observable<Attribute[]> {
-    return this.http.get<Attribute[]>(this.url + '/byType/ITEM/' + item.id)
+    this.toastService.showRetrieving("Retrieving all attributes.", "Loading...");
+    return this.http.get<Attribute[]>(this.url + '/byType/ITEM/' + item.id + environment.postfix)
       .pipe(
         map(items => {
           const newItems = new Array<Attribute>();
@@ -69,23 +70,35 @@ export class AttributesRestService {
       );
   }
 
-  public getAll(name: string): Observable<Attribute[]> {
-    return this.http.get<Attribute[]>(this.url + '/byName/' + name)
+  public override getAll(): Observable<Attribute[]> {
+    // method not used in this case, see getAllWithName()
+    throw new Error("Method not implemented.");
+  }
+
+  public getAllWithName(name: string): Observable<Attribute[]> {
+    this.toastService.showRetrieving("Retrieving all attributes.", "Loading...");
+    this.cache$ = this.http.get<Attribute[]>(this.url + '/byName/' + name + environment.postfix)
       .pipe(
         map(items => {
           const newItems = new Array<Attribute>();
           items.forEach(item => newItems.push(new Attribute(item)));
           return newItems;
         }),
+        share({
+          connector: () => new ReplaySubject(1),
+          resetOnError: false,
+          resetOnComplete: false,
+          resetOnRefCountZero: false
+        }),
         catchError(err => {
           this.handleError(err);
           return [];
         })
       );
+    return this.cache$;
   }
 
-
-  delete(attribute: Attribute): Observable<any> {
+  override delete(attribute: Attribute): Observable<any> {
     return this.http.delete(this.url + '/byId/' + attribute.objecttype + '/' + attribute.id)
       .pipe(
         catchError(err => {
@@ -100,7 +113,7 @@ export class AttributesRestService {
    * @param attribute the new/updated attribute
    * @returns some stuff
    */
-  update(attribute: Attribute): Observable<any> {
+  override update(attribute: Attribute): any {
     // update
     return this.http.put<Attribute>(this.url + '/byType/' + attribute.objecttype + '/' + attribute.objectid, attribute)
       .pipe(
@@ -111,12 +124,19 @@ export class AttributesRestService {
       );
   }
 
-  /**
-   * Handles error, delivers them to the errorService.
-   * @param error the error message received from the HTTP call
-   * @param ignore which states can we choose to ignore?
-   */
-  private handleError(error: HttpErrorResponse, ignore?: string[]) {
-    this.errorsService.addHttpError(error, ignore);
+  override create(item: Attribute): any {
+    return this.update(item);
   }
+
+  override clearCache() {
+    this.cache$ = null;
+  }
+
+  override get(id: number): Observable<Attribute> {
+    return this.cache$?.pipe(map(items => items.filter(item => item.id == id)[0]))
+      ?? new Observable<Attribute>(() => {
+        new Attribute();
+      });
+  }
+
 }

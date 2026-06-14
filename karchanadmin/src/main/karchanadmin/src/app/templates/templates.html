@@ -1,0 +1,59 @@
+<div class="container-fluid">
+  <div class="row row-content">
+    <div class="col-xs-12 col-xl-6">
+      <h3>Compose Template</h3>
+      <form novalidate>
+        <fieldset class="form-group">
+          <label for="name">Name</label>
+          <input type="text" class="form-control" id="name" [formField]="form.name">
+          <small id="nameTooltip" class="form-text text-muted">Kindly do not change it, unless you really need
+            to.</small>
+        </fieldset>
+        <fieldset class="form-group">
+          <label for="comment">Comment</label>
+          <input type="text" class="form-control" id="comment" [formField]="form.comment">
+        </fieldset>
+        <fieldset class="form-group">
+          <label for="content">Contents</label>
+          <textarea class="form-control" id="content" rows="33" [formField]="form.content"></textarea>
+        </fieldset>
+        <div class="col-xs-12 col-sm-12 text-right">
+          <button type="submit" class="mx-1 btn btn-primary"
+                  (click)="updateItem($event)">Update
+          </button>
+          <button type="submit" class="mx-1 btn btn-primary"
+                  (click)="createItem($event)">Create
+          </button>
+          <button type="button" class="mx-1 btn btn-secondary" (click)="deleteItem()">Delete</button>
+          <button type="reset" class="mx-1 btn btn-secondary" (click)="cancel($event)">Cancel</button>
+          <button type="button" class="btn btn-primary" (click)="getHistory()">Get history</button>
+        </div>
+      </form>
+      <ag-grid-angular
+        style="width: 100%; height: 220px;"
+        [rowData]="history()"
+        [columnDefs]="colDefs"
+        [theme]="themeBalham"
+        (selectionChanged)="onHistorySelectionChanged($event)"
+        [rowSelection]="rowSelection"
+      />
+      <button type="button" class="btn btn-primary btn-sm" (click)="compareCurrent()">Current
+      </button>
+      <button type="button" class="btn btn-primary btn-sm" (click)="comparePrevious()">Previous
+      </button>
+      <ngx-unified-diff class="ngx-diff-light-theme" style="width: 100%" [before]="oldDocumentContents()"
+                        [after]="newDocumentContents()" [lineContextSize]="4"/>
+    </div>
+    <div class="col-xs-12 col-xl-6">
+      <ag-grid-angular
+        style="width: 100%; height: 500px;"
+        [rowData]="rowData"
+        [columnDefs]="colDefs"
+        (gridReady)="onGridReady($event)"
+        [theme]="themeBalham"
+        (selectionChanged)="onSelectionChanged($event)"
+        [rowSelection]="rowSelection"
+      />
+    </div>
+  </div>
+</div>

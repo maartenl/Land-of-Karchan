@@ -1,0 +1,164 @@
+<div class="container-fluid">
+  <div class="row row-content">
+    <div class="col-xs-12 col-xl-6">
+      <h1>Character {{ item().name??'' }}</h1>
+      <form novalidate>
+        <fieldset class="form-group">
+          <label for="name">Name</label>
+          <input type="text" class="form-control" id="name" [formField]="form.name">
+        </fieldset>
+        <fieldset class="form-group">
+          <label for="image">Image</label>
+          <input type="text" class="form-control" id="image" [formField]="form.image">
+        </fieldset>
+        <fieldset class="form-group">
+          <label for="familyname">Family name</label>
+          <input type="text" class="form-control" id="familyname" [formField]="form.familyname">
+        </fieldset>
+        <fieldset class="form-group">
+          @if (item().title) {
+            <div class="card">
+              <div class="card-text" [innerHTML]="item().title">
+              </div>
+            </div>
+          }
+          <label for="title">Title</label>
+          <input type="text" class="form-control" id="title" [formField]="form.title">
+        </fieldset>
+        <fieldset class="form-group">
+          <label for="room">Room <a [routerLink]="['/rooms', item().room]">{{ item().room }}</a>
+          </label>
+          <input type="number" class="form-control" id="room" [formField]="form.room">
+        </fieldset>
+        <fieldset class="form-group">
+          <label for="active">Active</label>
+          <input class="form-control form-check-input" type="checkbox" id="active" [formField]="form.active">
+          <div id="activeHelp" class="form-text">Indicates wether or not the player is actively playing.
+          </div>
+        </fieldset>
+        @if (item().name !== "") {
+          <fieldset class="form-group">
+            <label for="god">God</label>
+            <input readonly type="text" class="form-control" id="godreadonly" [value]="item().god">
+          </fieldset>
+        }
+        @if (item().name === "") {
+          <fieldset class="form-group">
+            <label for="god">God</label>
+            <select class="form-control" id="god" [formField]="form.god">
+              <option>GOD</option>
+              <option>BOT</option>
+              <option>MOB</option>
+              <option>SHOPKEEPER</option>
+              <option>DEFAULT_USER</option>
+            </select>
+          </fieldset>
+        }
+        <fieldset class="form-group">
+          <label for="race">Race</label>
+          <input type="text" class="form-control" id="race" [formField]="form.race">
+        </fieldset>
+        <fieldset class="form-group">
+          <label for="sex">Sex</label>
+          <input type="text" class="form-control" id="sex" [formField]="form.sex">
+        </fieldset>
+        <fieldset class="form-group">
+          <label for="age">Age</label>
+          <input type="text" class="form-control" id="age" [formField]="form.age">
+        </fieldset>
+        <fieldset class="form-group">
+          <label for="height">Height</label>
+          <input type="text" class="form-control" id="height" [formField]="form.height">
+        </fieldset>
+        <fieldset class="form-group">
+          <label for="width">Width</label>
+          <input type="text" class="form-control" id="width" [formField]="form.width">
+        </fieldset>
+        <fieldset class="form-group">
+          <label for="complexion">Complexion</label>
+          <input type="text" class="form-control" id="complexion" [formField]="form.complexion">
+        </fieldset>
+        <fieldset class="form-group">
+          <label for="eyes">Eyes</label>
+          <input type="text" class="form-control" id="eyes" [formField]="form.eyes">
+        </fieldset>
+        <fieldset class="form-group">
+          <label for="face">Face</label>
+          <input type="text" class="form-control" id="face" [formField]="form.face">
+        </fieldset>
+        <fieldset class="form-group">
+          <label for="hair">Hair</label>
+          <input type="text" class="form-control" id="hair" [formField]="form.hair">
+        </fieldset>
+        <fieldset class="form-group">
+          <label for="beard">Beard</label>
+          <input type="text" class="form-control" id="beard" [formField]="form.beard">
+        </fieldset>
+        <fieldset class="form-group">
+          <label for="arm">Arm</label>
+          <input type="text" class="form-control" id="arm" [formField]="form.arm">
+        </fieldset>
+        <fieldset class="form-group">
+          <label for="leg">Leg</label>
+          <input type="text" class="form-control" id="leg" [formField]="form.leg">
+        </fieldset>
+        <fieldset class="form-group">
+          <label for="birth">Birthdate</label>
+          <input type="text" readonly class="form-control" id="birth" [value]="item().birth">
+        </fieldset>
+        <fieldset class="form-group">
+          <label for="lastlogin">Last time logged in</label>
+          <input type="datetime-local" readonly class="form-control" id="lastlogin" value="item().lastlogin">
+        </fieldset>
+        <fieldset class="form-group">
+          <label for="copper">Copper</label>
+          <input readonly type="number" class="form-control" id="copper" [value]="item().copper">
+        </fieldset>
+        <fieldset class="form-group">
+          <label for="address">Address</label>
+          <input readonly type="text" class="form-control" id="address" [value]="item().address??''">
+        </fieldset>
+        <fieldset class="form-group">
+          <label for="realname">Real name</label>
+          <input type="text" class="form-control" id="realname" [formField]="form.realname">
+        </fieldset>
+        <fieldset class="form-group">
+          <label for="newpassword">New password</label>
+          <input type="text" class="form-control" id="newpassword" [formField]="form.newpassword">
+        </fieldset>
+        <fieldset class="form-group">
+          <label for="notes">Notes</label>
+          <textarea class="form-control" id="notes" rows="13" [formField]="form.notes"></textarea>
+        </fieldset>
+        <fieldset class="form-group">
+          <label for="owner">Owner</label>
+          <input type="text" class="form-control" id="owner" [formField]="form.owner">
+        </fieldset>
+        <div class="col-xs-12 col-sm-12 text-right">
+          <button type="submit"
+                  class="mx-1 btn btn-primary" (click)="updateItem($event)">Update
+          </button>
+          <button type="submit"
+                  class="mx-1 btn btn-primary" (click)="createItem($event)">Create
+          </button>
+          <button type="button" class="mx-1 btn btn-secondary" (click)="deleteItem()">Delete</button>
+          <button type="reset" class="mx-1 btn btn-secondary" (click)="cancel($event)">Cancel</button>
+        </div>
+      </form>
+      <app-item-sub [mudType]="AdminMudType.PERSON"></app-item-sub>
+      <app-attributes-sub [mudType]="AdminMudType.PERSON"></app-attributes-sub>
+    </div>
+    <div class="col-xs-12 col-xl-6">
+      <button type="button" class="mx-1 btn btn-secondary" (click)="refresh()">Refresh</button>
+      <ag-grid-angular
+        style="width: 100%; height: 550px;"
+        [rowData]="rowData"
+        [columnDefs]="colDefs"
+        (gridReady)="onGridReady($event)"
+        [theme]="themeBalham"
+        (selectionChanged)="onSelectionChanged($event)"
+        [rowSelection]="rowSelection"
+      />
+    </div>
+  </div>
+</div>

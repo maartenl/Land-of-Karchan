@@ -1,0 +1,47 @@
+<div class="container-fluid">
+  <div class="row row-content">
+    <div class="col-xs-12">
+      <form novalidate>
+        <fieldset class="form-group">
+          <legend>Search terms</legend>
+          <input type="text" class="form-control" id="nameSearch" placeholder="Name"
+                 [formField]="form.name"
+                 #searchname>
+          <input type="text" class="form-control" id="fromSearch" placeholder="From date (yyyy-mm-dd)"
+                 [formField]="form.from"
+                 #searchcreation>
+          <input type="text" class="form-control" id="toSearch" placeholder="To date (yyyy-mm-dd)"
+                 [formField]="form.to"
+                 #searchcreation>
+        </fieldset>
+        <button type="button" class="mx-1 btn btn-primary" (click)="search()">Search</button>
+      </form>
+    </div>
+  </div>
+</div>
+<div class="container-fluid">
+  <div class="row row-content">
+    <div class="col-xs-12 col-xl-6">
+        <div class="card sticky-top">
+          <div class="card-body">
+              <h5 class="card-title">Id {{ log().id }}</h5>
+              <h5 class="card-title">Name {{ log().name }}</h5>
+              <p class="card-text">Message {{ log().message }}</p>
+              <p class="card-text">Addendum {{ log().addendum }}</p>
+              <p class="card-text">Is Deputy: {{ log().deputy }}</p>
+              <p class="card-text">Created: {{ log().creation }}</p>
+          </div>
+        </div>
+    </div>
+    <div class="col-xs-12 col-xl-6">
+      <ag-grid-angular
+        style="width: 100%; height: 500px;"
+        [rowData]="rowData()"
+        [columnDefs]="colDefs"
+        [theme]="themeBalham"
+        (selectionChanged)="onSelectionChanged($event)"
+        [rowSelection]="rowSelection"
+      />
+    </div>
+  </div>
+</div>

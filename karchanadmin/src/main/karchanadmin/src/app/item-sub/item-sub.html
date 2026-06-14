@@ -1,0 +1,61 @@
+<h2>Item instances</h2>
+<ag-grid-angular
+  style="width: 100%; height: 220px;"
+  [rowData]="iteminstances()"
+  [columnDefs]="colDefs"
+  [theme]="themeBalham"
+  (selectionChanged)="onSelectionChanged($event)"
+  [rowSelection]="rowSelection"
+/>
+<form novalidate>
+  <div class="row">
+    <div class="col">
+      <fieldset class="form-group">
+        <label for="id">Id</label>
+        <input type="number" class="form-control" id="id" [formField]="itemForm.id">
+      </fieldset>
+    </div>
+    <div class="col">
+      <fieldset class="form-group">
+        <label for="itemid">Item definition id</label>
+        <input type="number" class="form-control" id="itemid" [formField]="itemForm.itemid">
+      </fieldset>
+    </div>
+    <div class="col">
+      <fieldset class="form-group">
+        <label for="belongsto">Belongs to</label>
+        <input type="text" class="form-control" id="belongsto" [formField]="itemForm.belongsto">
+      </fieldset>
+    </div>
+    <div class="col">
+      <fieldset class="form-group">
+        <label for="containerid">Container id</label>
+        <input type="number" class="form-control" id="containerid" [formField]="itemForm.containerid">
+      </fieldset>
+    </div>
+    <div class="col">
+      <fieldset class="form-group">
+        <label for="room">Room</label>
+        <input type="number" class="form-control" id="room" [formField]="itemForm.room">
+      </fieldset>
+    </div>
+    <div class="col">
+      <fieldset class="form-group">
+        <label for="discriminator">Discriminator</label>
+        <input type="number" class="form-control" id="discriminator" [formField]="itemForm.discriminator">
+      </fieldset>
+    </div>
+    <div class="col">
+      <fieldset class="form-group">
+        <label for="shopkeeper">Shopkeeper</label>
+        <input type="text" class="form-control" id="shopkeeper" [formField]="itemForm.shopkeeper">
+      </fieldset>
+    </div>
+  </div>
+  <div class="col-xs-12 col-sm-12 text-right">
+    <button type="submit" class="mx-1 btn btn-primary"
+            (click)="createIteminstance($event)">Create</button>
+    <button type="button" class="mx-1 btn btn-secondary" (click)="deleteItemInstance()">Delete</button>
+  </div>
+</form>
+

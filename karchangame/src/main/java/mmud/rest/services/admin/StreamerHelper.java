@@ -97,4 +97,6 @@ public class StreamerHelper
   {
     return getStream(getScrollableCursor(entityManager, getQuery));
   }
+
+
 }

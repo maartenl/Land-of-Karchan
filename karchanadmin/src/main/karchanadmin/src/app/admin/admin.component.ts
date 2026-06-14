@@ -1,6 +1,9 @@
 import {AdminObject} from './admin-object.model';
 import {AdminRestService} from './admin-rest.service';
 import {ToastService} from '../toast.service';
+import {ColDef, GridReadyEvent, RowSelectionOptions, SelectionChangedEvent, themeBalham} from 'ag-grid-community';
+import {signal} from '@angular/core';
+import {Logger} from '../consolelog.service';
 
 /**
  * The idea here is to contain common functionality in this class,
@@ -9,23 +12,43 @@ import {ToastService} from '../toast.service';
  */
 export abstract class AdminComponent<T extends AdminObject<U>, U> {
 
-  item: T | null = null;
+  item = signal<T>(this.makeItem());
 
-  items: T[] = new Array<T>(0);
+  rowData: T[] = [];
 
-  abstract getRestService(): AdminRestService<T, U>;
+  protected readonly themeBalham = themeBalham;
 
-  abstract setForm(item?: T): void;
+  // abstract ngOnInit(): void;
+
+  onGridReady(params: GridReadyEvent): void {
+    Logger.logEntering("onGridReady");
+    this.getItems();
+  }
+
+  abstract colDefs: ColDef[];
+
+  abstract restService: AdminRestService<T, U>;
+
+  abstract setForm(): void;
 
   abstract makeItem(): T;
 
-  abstract getItems(): void;
+  getItems(): void {
+    this.restService.getAll()
+      .subscribe({
+        next: data => {
+          this.rowData = data;
+        }
+      });
+  }
 
-  abstract getToastService(): ToastService;
+  abstract toastService: ToastService;
 
-  public cancel(): void {
+  abstract onSelectionChanged(event: SelectionChangedEvent): void;
+
+  public cancel(event: Event): void {
+    event.preventDefault();
     this.setForm();
-    this.item = null;
   }
 
   public isSelected() {
@@ -39,11 +62,11 @@ export abstract class AdminComponent<T extends AdminObject<U>, U> {
     if (!this.isSelected()) {
       return '';
     }
-    return (this.item?.getIdentifier() === item?.getIdentifier()) ? 'table-active' : '';
+    return (this.item().getIdentifier() === item?.getIdentifier()) ? 'table-active' : '';
   }
 
   refresh() {
-    this.getRestService().clearCache();
+    this.restService.clearCache();
     this.getItems();
   }
 
@@ -51,20 +74,14 @@ export abstract class AdminComponent<T extends AdminObject<U>, U> {
     if (this.item === null) {
       return;
     }
-    if (window.console) {
-      console.log('delete item ' + this.item.getIdentifier());
-    }
-    this.getRestService().delete(this.item).subscribe({
+    Logger.log("delete item " + this.item().getIdentifier());
+    this.restService.delete(this.item()).subscribe({
         next: (result: any) => { // on success
-          this.items = this.items
+          this.rowData = this.rowData
             .filter((bl) => bl === undefined ||
-              bl.getIdentifier() !== this.item?.getIdentifier());
-          this.items = [...this.items];
-          this.getToastService().show(this.item?.getType() + ' ' + this.item?.getIdentifier() + ' successfully deleted.', {
-            delay: 3000,
-            autohide: true,
-            headertext: 'Deleted...'
-          });
+              bl.getIdentifier() !== this.item().getIdentifier());
+          this.rowData = [...this.rowData];
+          this.toastService.showMessage(this.item().getType() + " " + this.item().getIdentifier() + " successfully deleted.", "Deleted...");
         },
         error: (err: any) => { // error
           // console.log('error', err);
@@ -80,19 +97,17 @@ export abstract class AdminComponent<T extends AdminObject<U>, U> {
 
   abstract setItemById(id: U | undefined | null): boolean;
 
-  public createItem(): void {
+  public createItem(event: Event): void {
+    event.preventDefault();
     const itemFromForm = this.getForm();
-    this.getRestService().create(itemFromForm).subscribe(
+    this.restService.create(itemFromForm).subscribe(
       (result: U) => { // on success
         itemFromForm.setIdentifier(result);
-        this.items.push(itemFromForm);
-        this.items = [...this.items];
+        this.rowData.push(itemFromForm);
+        this.rowData = [...this.rowData];
         this.setItemById(result);
-        this.getToastService().show(itemFromForm.getType() + ' ' + itemFromForm.getIdentifier() + ' successfully created.', {
-          delay: 3000,
-          autohide: true,
-          headertext: 'Created...'
-        });
+        this.toastService.showMessage(itemFromForm.getType() + " " + itemFromForm.getIdentifier() + " successfully created.",
+          "Created...");
       },
       (err: any) => { // error
         // console.log('error', err);
@@ -103,18 +118,16 @@ export abstract class AdminComponent<T extends AdminObject<U>, U> {
     return;
   }
 
-  public updateItem(): void {
+  public updateItem(event: Event): void {
+    event.preventDefault();
     const itemFromForm = this.getForm();
-    const index = this.items.findIndex(rm => rm !== null && rm.getIdentifier() === itemFromForm.getIdentifier());
-    this.getRestService().update(itemFromForm).subscribe(
+    const index = this.rowData.findIndex(rm => rm !== null && rm.getIdentifier() === itemFromForm.getIdentifier());
+    this.restService.update(itemFromForm).subscribe(
       (result: any) => { // on success
-        this.items[index] = itemFromForm;
-        this.items = [...this.items];
-        this.getToastService().show(itemFromForm.getType() + ' ' + itemFromForm.getIdentifier() + ' successfully updated.', {
-          delay: 3000,
-          autohide: true,
-          headertext: 'Updated...'
-        });
+        this.rowData[index] = itemFromForm;
+        this.rowData = [...this.rowData];
+        this.toastService.showMessage(itemFromForm.getType() + " " + itemFromForm.getIdentifier() + " successfully updated.",
+          "Updated...");
       },
       (err: any) => { // error
         // console.log('error', err);

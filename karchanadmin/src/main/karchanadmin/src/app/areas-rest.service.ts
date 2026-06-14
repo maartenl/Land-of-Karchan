@@ -1,32 +1,28 @@
-import {Observable, ReplaySubject, share} from 'rxjs';
-import {catchError, map} from 'rxjs/operators';
-import {Injectable} from '@angular/core';
-import {HttpClient, HttpErrorResponse} from '@angular/common/http';
-
-import {environment} from '../environments/environment';
-
-import {ErrorsService} from './errors.service';
-import {Area} from './areas/area.model';
+import {inject, Injectable} from '@angular/core';
 import {AdminRestService} from './admin/admin-rest.service';
+import {Area} from './areas/area.model';
+import {environment} from '../environments/environment';
+import {HttpClient, HttpErrorResponse} from '@angular/common/http';
+import {ErrorsService} from './errors.service';
 import {ToastService} from './toast.service';
+import {catchError, map, Observable, ReplaySubject, share} from 'rxjs';
+import {urls} from './urls';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
-export class AreasRestService implements AdminRestService<Area, string> {
-  url: string;
+export class AreasRestService extends AdminRestService<Area, string> {
+  url: string = urls.AREAS_URL;
+
+  http = inject(HttpClient);
+  errorsService = inject(ErrorsService);
+  toastService = inject(ToastService);
 
   cache$: Observable<Area[]> | null = null;
 
-  constructor(
-    private http: HttpClient,
-    private errorsService: ErrorsService,
-    private toastService: ToastService) {
-    this.url = environment.AREAS_URL;
-  }
 
   get(area: string): Observable<Area> {
-    return this.http.get<Area>(this.url + '/' + area)
+    return this.http.get<Area>(this.url + '/' + area + environment.postfix)
       .pipe(
         map(item => new Area(item)),
         catchError(err => {
@@ -40,12 +36,8 @@ export class AreasRestService implements AdminRestService<Area, string> {
     if (this.cache$) {
       return this.cache$;
     }
-    this.toastService.show('Retrieving all areas.', {
-      delay: 5000,
-      autohide: true,
-      headertext: 'Loading...'
-    });
-    this.cache$ = this.http.get<Area[]>(this.url)
+    this.toastService.showRetrieving("Retrieving all areas.", "Loading...");
+    this.cache$ = this.http.get<Area[]>(this.url + environment.postfix)
       .pipe(
         map(items => {
           const newItems = new Array<Area>();
@@ -102,12 +94,4 @@ export class AreasRestService implements AdminRestService<Area, string> {
       );
   }
 
-  /**
-   * Handles error, delivers them to the errorService.
-   * @param error the error message received from the HTTP call
-   * @param ignore which states can we choose to ignore?
-   */
-  private handleError(error: HttpErrorResponse, ignore?: string[]) {
-    this.errorsService.addHttpError(error, ignore);
-  }
 }

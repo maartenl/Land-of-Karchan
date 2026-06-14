@@ -1,33 +1,30 @@
-import {Observable, ReplaySubject, share} from 'rxjs';
-import {catchError, map} from 'rxjs/operators';
-import {Injectable} from '@angular/core';
-import {HttpClient, HttpErrorResponse} from '@angular/common/http';
-
-import {environment} from '../environments/environment';
-
-import {ErrorsService} from './errors.service';
-import {Method} from './methods/method.model';
-import {Command} from './commands/command.model';
+import {inject, Injectable} from '@angular/core';
 import {AdminRestService} from './admin/admin-rest.service';
+import {Method} from './methods/method.model';
+import {urls} from './urls';
+import {HttpClient} from '@angular/common/http';
+import {ErrorsService} from './errors.service';
 import {ToastService} from './toast.service';
+import {catchError, map, Observable, ReplaySubject, share} from 'rxjs';
+import {Area} from './areas/area.model';
+import {environment} from '../environments/environment';
+import {Command} from './commands/command.model';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
-export class MethodsRestService implements AdminRestService<Method, string> {
-  url: string;
+export class MethodsRestService extends AdminRestService<Method, string> {
+  url: string = urls.METHODS_URL;
+
+  http = inject(HttpClient);
+  errorsService = inject(ErrorsService);
+  toastService = inject(ToastService);
 
   cache$: Observable<Method[]> | null = null;
 
-  constructor(
-    private http: HttpClient,
-    private errorsService: ErrorsService,
-    private toastService: ToastService) {
-    this.url = environment.METHODS_URL;
-  }
 
   public get(name: string): Observable<Method> {
-    return this.http.get<Method>(this.url + '/' + name)
+    return this.http.get<Method>(this.url + '/' + name + environment.postfix)
       .pipe(
         map(item => new Method(item)),
         catchError(err => {
@@ -38,7 +35,7 @@ export class MethodsRestService implements AdminRestService<Method, string> {
   }
 
   public getCommands(name: string): Observable<Command[]> {
-    return this.http.get<Command[]>(this.url + '/' + name + '/commands')
+    return this.http.get<Command[]>(this.url + '/' + name + '/commands' + environment.postfix)
       .pipe(
         catchError(err => {
           this.handleError(err);
@@ -55,12 +52,8 @@ export class MethodsRestService implements AdminRestService<Method, string> {
     if (this.cache$) {
       return this.cache$;
     }
-    this.toastService.show('Retrieving all methods.', {
-      delay: 5000,
-      autohide: true,
-      headertext: 'Loading...'
-    });
-    this.cache$ = this.http.get<Method[]>(this.url)
+    this.toastService.showRetrieving("Retrieving all methods.", "Loading...");
+    this.cache$ = this.http.get<Method[]>(this.url+ environment.postfix)
       .pipe(
         map(items => {
           const newItems = new Array<Method>();
@@ -115,12 +108,4 @@ export class MethodsRestService implements AdminRestService<Method, string> {
       );
   }
 
-  /**
-   * Handles error, delivers them to the errorService.
-   * @param error the error message received from the HTTP call
-   * @param ignore which states can we choose to ignore?
-   */
-  private handleError(error: HttpErrorResponse, ignore?: string[]) {
-    this.errorsService.addHttpError(error, ignore);
-  }
 }

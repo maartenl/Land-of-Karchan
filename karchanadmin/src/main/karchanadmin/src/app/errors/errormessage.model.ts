@@ -1,8 +1,7 @@
-
 export class ErrorMessage {
-  type: string | null = null;
-  message: string | null = null;
-  detailedmessage: string | null = null;
+  type: string = "";
+  message: string = "";
+  detailedmessage: string = "";
   showDetail = false;
 
   constructor() {

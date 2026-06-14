@@ -210,7 +210,7 @@ public class ItemDefinitionsRestService
 
   @DELETE
   @Path("{id}")
-  public void remove(@PathParam("id") String id)
+  public void remove(@PathParam("id") Long id)
   {
     final String name = sc.getUserPrincipal().getName();
     final ItemDefinition item = getEntityManager().find(ItemDefinition.class, id);
@@ -246,27 +246,9 @@ public class ItemDefinitionsRestService
       {
           MediaType.APPLICATION_JSON
       })
-  public Response findAll(@Context UriInfo info)
+  public Response findAll()
   {
     return Response.ok(StreamerHelper.getStream(getEntityManager(), AdminItemDefinition.GET_QUERY)).build();
-  }
-
-  @GET
-  @Path("{offset}/{pageSize}")
-  @Produces(
-      {
-          MediaType.APPLICATION_JSON
-      })
-
-  public String findRange(@Context UriInfo info, @PathParam("offset") Integer offset,
-                          @PathParam("pageSize") Integer pageSize
-  )
-  {
-    List<String> items = getEntityManager().createNativeQuery(AdminItemDefinition.GET_QUERY)
-        .setMaxResults(pageSize)
-        .setFirstResult(offset)
-        .getResultList();
-    return "[" + String.join(",", items) + "]";
   }
 
   @GET

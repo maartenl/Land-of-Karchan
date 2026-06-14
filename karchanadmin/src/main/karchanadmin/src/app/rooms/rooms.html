@@ -1,0 +1,140 @@
+<div class="container-fluid">
+  <div class="row row-content">
+    <div class="col-xs-12 col-xl-6">
+      <h1>Room {{ roomModel().id }}</h1>
+      <form novalidate>
+        <fieldset class="form-group">
+          <label for="id">Id</label>
+          <input type="number" class="form-control" id="id" [formField]="form.id">
+        </fieldset>
+        <fieldset class="form-group">
+          <label for="title">Title</label>
+          <input type="text" class="form-control" id="title" [formField]="form.title">
+        </fieldset>
+        <fieldset class="form-group">
+          <label for="picture">Picture</label>
+          <input type="text" class="form-control" id="picture" [formField]="form.picture">
+          <small id="picture_info" class="form-text text-muted">Only valid urls please. For example:
+            'https://www.pictures.org/gif/web.gif' or '/images/player/Karn/well.png'.</small>
+        </fieldset>
+        <fieldset class="form-group">
+          <label for="area">Area</label>
+          <input type="text" class="form-control" id="area" [formField]="form.area">
+        </fieldset>
+        <div class="form-row">
+          <div class="col">
+            <fieldset class="form-group">
+              <label for="north">North @if (roomModel().north != null) {
+                <a href="#"
+                   (click)="setItemById(roomModel().north)">{{ roomModel().north }}</a>
+              }</label>
+              <input type="number" class="form-control" id="north" [formField]="form.north">
+            </fieldset>
+          </div>
+          <div class="col">
+            <fieldset class="form-group">
+              <label for="south">South @if (roomModel().south != null) {
+                <a href="#"
+                   (click)="setItemById(roomModel().south)">{{ roomModel().south }}</a>
+              }</label>
+              <input type="number" class="form-control" id="south" [formField]="form.south">
+            </fieldset>
+          </div>
+          <div class="col">
+            <fieldset class="form-group">
+              <label for="west">West @if (roomModel().west != null) {
+                <a href="#"
+                   (click)="setItemById(roomModel().west)">{{ roomModel().west }}</a>
+              }</label>
+              <input type="number" class="form-control" id="west" [formField]="form.west">
+            </fieldset>
+          </div>
+          <div class="col">
+            <fieldset class="form-group">
+              <label for="east">East @if (roomModel().east != null) {
+                <a href="#"
+                   (click)="setItemById(roomModel().east)">{{ roomModel().east }}</a>
+              }</label>
+              <input type="number" class="form-control" id="east" [formField]="form.east">
+            </fieldset>
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="col">
+            <fieldset class="form-group">
+              <label for="up">Up @if (roomModel().up != null) {
+                <a href="#"
+                   (click)="setItemById(roomModel().up)">{{ roomModel().up }}</a>
+              }</label>
+              <input type="number" class="form-control" id="up" [formField]="form.up">
+            </fieldset>
+          </div>
+          <div class="col">
+            <fieldset class="form-group">
+              <label for="down">Down @if (roomModel().down != null) {
+                <a href="#"
+                   (click)="setItemById(roomModel().down)">{{ roomModel().down }}</a>
+              }</label>
+              <input type="number" class="form-control" id="down" [formField]="form.down">
+            </fieldset>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-header">
+            Contents
+          </div>
+          <div class="card-text" [innerHTML]="roomModel().contents">
+          </div>
+        </div>
+        <fieldset class="form-group">
+          <label for="owner">Owner</label>
+          <input type="text" class="form-control" id="owner" [formField]="form.owner">
+        </fieldset>
+        <fieldset class="form-group">
+          <label for="contents">Contents</label>
+          <textarea class="form-control" id="contents" rows="13" [formField]="form.contents"></textarea>
+          <small id="contents_info" class="form-text text-muted">First letter will automatically be turned into
+            a calligraphic picture.</small>
+        </fieldset>
+        <div class="col-xs-12 col-sm-12 text-right">
+          <button type="submit" class="mx-1 btn btn-primary"
+                  (click)="updateItem($event)">Update</button>
+          <button type="submit" class="mx-1 btn btn-primary"
+                  (click)="createItem($event)">Create</button>
+          <button type="button" class="mx-1 btn btn-secondary" (click)="deleteItem()">Delete</button>
+          <button type="reset" class="mx-1 btn btn-secondary" (click)="cancel($event)">Cancel</button>
+        </div>
+      </form>
+      <h2>Characters</h2>
+      <ag-grid-angular
+        style="width: 100%; height: 220px;"
+        [rowData]="characters()"
+        [columnDefs]="colDefsCharacters"
+        [theme]="themeBalham"
+        [rowSelection]="rowSelection"
+      />
+      <app-item-sub [mudType]="AdminMudType.ROOM"></app-item-sub>
+      <app-attributes-sub [mudType]="AdminMudType.ROOM"></app-attributes-sub>
+      <h2>Commands</h2>
+      <ag-grid-angular
+        style="width: 100%; height: 220px;"
+        [rowData]="commands()"
+        [columnDefs]="colDefsCommands"
+        [theme]="themeBalham"
+        [rowSelection]="rowSelection"
+      />
+    </div>
+    <div class="col-xs-12 col-xl-6">
+      <button type="button" class="mx-1 btn btn-secondary" (click)="refresh()">Refresh</button>
+      <ag-grid-angular
+        style="width: 100%; height: 500px;"
+        [rowData]="rowData"
+        [columnDefs]="colDefs"
+        (gridReady)="onGridReady($event)"
+        [theme]="themeBalham"
+        (selectionChanged)="onSelectionChanged($event)"
+        [rowSelection]="rowSelection"
+      />
+    </div>
+  </div>
+</div>

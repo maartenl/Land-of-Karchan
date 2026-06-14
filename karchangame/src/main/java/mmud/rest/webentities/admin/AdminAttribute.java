@@ -39,18 +39,13 @@ public class AdminAttribute
     // default constructor required for reconstruction from json.
   }
 
-  public AdminAttribute(Attribute attribute, AdminMudType objecttype)
+  public AdminAttribute(Attribute attribute, AdminMudType objecttype, String objectid)
   {
     name = attribute.getName();
     valueType = attribute.getValueType();
     value = attribute.getValue();
     id = attribute.getAttributeId();
     this.objecttype = objecttype;
-  }
-
-  public AdminAttribute(Attribute attribute, AdminMudType objecttype, String objectid)
-  {
-    this(attribute, objecttype);
     this.objectid = objectid;
   }
 

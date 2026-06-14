@@ -1,0 +1,96 @@
+<div class="container-fluid">
+  <div class="row row-content">
+    <div class="col-xs-12 col-xl-6">
+      <h1>{{ manpageModel().command }}</h1>
+      <div>
+        <p> </p>
+        <dl>
+          <dt><b>NAME</b></dt>
+          <dd><b>{{ manpageModel().command }}</b> - formatted output</dd>
+          <p></p>
+          <dt><b>SYNOPSIS</b></dt>
+          <dd>{{ manpageModel().synopsis }}</dd>
+          <p></p>
+          <dt><b>DESCRIPTION</b></dt>
+          <dd>{{ manpageModel().contents }}</dd>
+          <p></p>
+          <dt><b>EXAMPLES</b></dt>
+          <dd>"{{ manpageModel().example1 }}"<p></p>
+            You: <code>{{ manpageModel().example1a }}</code><br>
+            Anybody: <code>{{ manpageModel().example1b }}</code>
+            <p></p>"{{ manpageModel().example2}}"<p></p>
+            You: <code>{{ manpageModel().example2a }}</code><br>
+            Marvin: <code>{{ manpageModel().example2b }}</code><br>
+            Anybody: <code>{{ manpageModel().example2c }}</code>
+            <p></p>
+          </dd>
+          <dt><b>SEE ALSO</b></dt>
+          <dd>{{ manpageModel().seealso }}<p></p>
+          </dd>
+        </dl>
+        <p></p>
+      </div>
+      <form novalidate>
+        <fieldset class="form-group">
+          <label for="command">Command</label>
+          <input type="text" class="form-control" id="command" [formField]="form.command">
+        </fieldset>
+        <fieldset class="form-group">
+          <label for="synopsis">Synopsis</label>
+          <input type="text" class="form-control" id="synopsis" [formField]="form.synopsis">
+        </fieldset>
+        <fieldset class="form-group">
+          <label for="contents">Description</label>
+          <textarea class="form-control" id="contents" rows="13" [formField]="form.contents"></textarea>
+        </fieldset>
+        <fieldset class="form-group">
+          <label for="example1">Example 1</label>
+          <input type="text" class="form-control" id="example1" [formField]="form.example1">
+        </fieldset>
+        <fieldset class="form-group">
+          <input type="text" class="form-control" id="example1a" [formField]="form.example1a">
+        </fieldset>
+        <fieldset class="form-group">
+          <input type="text" class="form-control" id="example1b" [formField]="form.example1b">
+        </fieldset>
+        <fieldset class="form-group">
+          <label for="example2">Example 2</label>
+          <input type="text" class="form-control" id="example2" [formField]="form.example2">
+        </fieldset>
+        <fieldset class="form-group">
+          <input type="text" class="form-control" id="example2a" [formField]="form.example2a">
+        </fieldset>
+        <fieldset class="form-group">
+          <input type="text" class="form-control" id="example2b" [formField]="form.example2b">
+        </fieldset>
+        <fieldset class="form-group">
+          <input type="text" class="form-control" id="example2c" [formField]="form.example2c">
+        </fieldset>
+        <fieldset class="form-group">
+          <label for="seealso">See also</label>
+          <input type="text" class="form-control" id="seealso" [formField]="form.seealso">
+        </fieldset>
+        <div class="col-xs-12 col-sm-12 text-right">
+          <button type="submit"  class="mx-1 btn btn-primary"
+                  (click)="updateItem($event)">Update</button>
+          <button type="submit" class="mx-1 btn btn-primary"
+                  (click)="createItem($event)">Create</button>
+          <button type="button" class="mx-1 btn btn-secondary" (click)="deleteItem()">Delete</button>
+          <button type="reset" class="mx-1 btn btn-secondary" (click)="cancel($event)">Cancel</button>
+        </div>
+      </form>
+    </div>
+    <div class="col-xs-12 col-xl-6">
+      <button type="button" class="mx-1 btn btn-secondary" (click)="refresh()">Refresh</button>
+      <ag-grid-angular
+        style="width: 100%; height: 550px;"
+        [rowData]="rowData"
+        [columnDefs]="colDefs"
+        (gridReady)="onGridReady($event)"
+        [theme]="themeBalham"
+        (selectionChanged)="onSelectionChanged($event)"
+        [rowSelection]="rowSelection"
+      />
+    </div>
+  </div>
+</div>

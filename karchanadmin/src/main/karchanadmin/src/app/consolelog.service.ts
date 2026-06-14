@@ -1,3 +1,5 @@
+import {environment} from '../environments/environment';
+
 export enum LogLevel {
   NONE = 'NONE',
   SEVERE = 'SEVERE',
@@ -13,6 +15,35 @@ export enum LogLevel {
  * Wrapper around the whole "if (window.console) console.log(stuff)".
  */
 export class Logger {
+  private static defaultLogLevel: LogLevel = environment.production ? LogLevel.NONE : LogLevel.DEBUG;
+
+  private static logLevel: LogLevel = Logger.defaultLogLevel;
+
+  public static setLogLevel(logLevel: LogLevel) {
+    if (logLevel === null) {
+      if (window.console) {
+        console.log("Loglevel provided is empty!");
+      }
+      return;
+    }
+    if (logLevel === undefined) {
+      if (window.console) {
+        console.log("Loglevel provided is undefined!");
+      }
+      return;
+    }
+    if (window.console) {
+      console.log("Setting loglevel to " + logLevel);
+    }
+    this.logLevel = logLevel;
+  }
+
+  public static getLogLevel(): LogLevel {
+    if (window.console) {
+      console.log("Getting loglevel " + this.logLevel);
+    }
+    return this.logLevel;
+  }
 
   public static log(message: string, logLevel: LogLevel = LogLevel.DEBUG) {
     if (!this.isLogEnabled(logLevel)) {
@@ -48,7 +79,7 @@ export class Logger {
     return description;
   }
 
-  public static logObject(object: Object, logLevel: LogLevel = LogLevel.DEBUG) {
+  public static logObject(object: Object | undefined, logLevel: LogLevel = LogLevel.DEBUG) {
     if (!this.isLogEnabled(logLevel)) {
       return;
     }
@@ -56,8 +87,20 @@ export class Logger {
   }
 
   private static isLogEnabled(logLevel: LogLevel = LogLevel.DEBUG) {
+    if (this.logLevel === LogLevel.NONE) {
+      return false;
+    }
     if (!window.console) {
       return false;
+    }
+    if (this.logLevel === LogLevel.SEVERE) {
+      return logLevel === LogLevel.SEVERE;
+    }
+    if (this.logLevel === LogLevel.INFO) {
+      return logLevel === LogLevel.SEVERE || logLevel === LogLevel.INFO;
+    }
+    if (this.logLevel === LogLevel.WARNING) {
+      return logLevel === LogLevel.SEVERE || logLevel === LogLevel.INFO || logLevel === LogLevel.WARNING;
     }
     return true;
   }
@@ -65,5 +108,14 @@ export class Logger {
   static logError(errormessage: string, err: Object) {
     this.log(errormessage, LogLevel.SEVERE);
     this.logObject(err, LogLevel.SEVERE);
+  }
+
+  static logEntering(message: string) {
+    this.log("entering " + message, LogLevel.DEBUG);
+  }
+
+
+  static logExiting(message: string) {
+    this.log("exiting " + message, LogLevel.DEBUG);
   }
 }

@@ -13,14 +13,14 @@ export class ItemDefinition implements AdminObject<number> {
   eatable: string | null = null;
   drinkable: string | null = null;
   room: number | null = null;
-  lightable: number | null = null;
+  lightable: boolean | null = null;
   getable: boolean | null = null;
   dropable: boolean | null = null;
   visible: boolean | null = null;
-  wieldable: boolean | null = null;
+  wieldable: string | null = null;
   description: string | null = null;
   readdescr: string | null = null;
-  wearable: number | null = null;
+  wearable: string | null = null;
   copper: number | null = null;
   weight: number | null = null;
   container: boolean | null = null;

@@ -1,0 +1,151 @@
+<div class="container-fluid">
+  <div class="row row-content">
+    <div class="col-xs-12 col-xl-6">
+      <h1>Item {{ item().id }}</h1>
+      <form novalidate>
+        <fieldset class="form-group">
+          <label for="id">Id</label>
+          <input type="number" class="form-control" id="id" [formField]="form.id">
+        </fieldset>
+        <div class="row">
+          <div class="col">
+            <fieldset class="form-group">
+              <label for="adjectives">Adjectives</label>
+              <input type="text" class="form-control" id="adjectives" [formField]="form.adjectives">
+            </fieldset>
+          </div>
+          <div class="col">
+            <fieldset class="form-group">
+              <label for="name">Name</label>
+              <input type="text" class="form-control" id="name" [formField]="form.name">
+            </fieldset>
+          </div>
+        </div>
+        <fieldset class="form-group">
+          <label for="image">Image</label>
+          <input type="text" class="form-control" id="image" [formField]="form.image">
+        </fieldset>
+        <fieldset class="form-group">
+          <label for="title">Title</label>
+          <input type="text" class="form-control" id="title" [formField]="form.title">
+        </fieldset>
+        <fieldset class="form-group">
+          <label for="description">Description</label>
+          <textarea class="form-control" id="description" rows="13" [formField]="form.description"></textarea>
+        </fieldset>
+        <fieldset class="form-group">
+          <label for="readdescr">Readable description</label>
+          <textarea class="form-control" id="readdescr" rows="13" [formField]="form.readdescr"></textarea>
+        </fieldset>
+        <fieldset class="form-group">
+          <label for="discriminator">Discriminator</label>
+          <input type="number" class="form-control" id="discriminator" [formField]="form.discriminator">
+        </fieldset>
+        <fieldset class="form-group">
+          <label for="eatable">Eatable</label>
+          <textarea class="form-control" id="eatable" rows="13" [formField]="form.eatable"></textarea>
+        </fieldset>
+        <fieldset class="form-group">
+          <label for="drinkable">Drinkable</label>
+          <textarea class="form-control" id="drinkable" rows="13" [formField]="form.drinkable"></textarea>
+        </fieldset>
+        <fieldset class="form-group">
+          <label for="room">Room</label>
+          <input type="number" class="form-control" id="room" [formField]="form.room">
+        </fieldset>
+        <fieldset class="form-group">
+          <label for="wearable">Wearable</label>
+          <input type="text" class="form-control" id="wearable" [formField]="form.wearable">
+          <small id="contents" class="form-text text-muted">Possibilities are ON_HEAD, ON_NECK, ON_TORSO, ON_ARMS,
+            ON_LEFT_WRIST, ON_RIGHT_WRIST, ON_LEFT_FINGER, ON_RIGHT_FINGER, ON_FEET, ON_HANDS, FLOATING_NEARBY,
+            ON_WAIST, ON_LEGS, ON_EYES, ON_EARS, ABOUT_BODY.</small>
+        </fieldset>
+        <fieldset class="form-group">
+          <label for="wieldable">Wieldable</label>
+          <input type="text" class="form-control" id="wieldable" [formField]="form.wieldable">
+          <small id="contents" class="form-text text-muted">Possibilities are WIELD_LEFT, WIELD_RIGHT,
+            WIELD_BOTH.</small>
+        </fieldset>
+        <fieldset class="form-group">
+          <label for="copper">Copper</label>
+          <input type="number" class="form-control" id="copper" [formField]="form.copper">
+        </fieldset>
+        <fieldset class="form-group">
+          <label for="weight">Weight</label>
+          <input type="number" class="form-control" id="weight" [formField]="form.weight">
+        </fieldset>
+        <fieldset class="form-group">
+          <input type="checkbox" class="form-check-input" id="container" [formField]="form.container">
+          <label class="form-check-label" for="container">Container</label>
+        </fieldset>
+        <fieldset class="form-group">
+          <label for="keyid">Key id</label>
+          <input type="number" class="form-control" id="keyid" [formField]="form.keyid">
+        </fieldset>
+        <fieldset class="form-group">
+          <label for="containtype">Contain type</label>
+          <input type="number" class="form-control" id="containtype" [formField]="form.containtype">
+        </fieldset>
+        <fieldset class="form-group">
+          <label for="capacity">Capacity</label>
+          <input type="number" class="form-control" id="capacity" [formField]="form.capacity">
+        </fieldset>
+        <fieldset class="form-group form-check">
+          <input type="checkbox" class="form-check-input" id="getable" [formField]="form.getable">
+          <label class="form-check-label" for="getable">Getable</label>
+        </fieldset>
+        <fieldset class="form-group form-check">
+          <input type="checkbox" class="form-check-input" id="dropable" [formField]="form.dropable">
+          <label class="form-check-label" for="dropable">Dropable</label>
+        </fieldset>
+        <fieldset class="form-group form-check">
+          <input type="checkbox" class="form-check-input" id="bound" [formField]="form.bound">
+          <label class="form-check-label" for="bound">Bound</label>
+        </fieldset>
+        <fieldset class="form-group form-check">
+          <input type="checkbox" class="form-check-input" id="visible" [formField]="form.visible">
+          <label class="form-check-label" for="visible">Visible</label>
+        </fieldset>
+        <fieldset class="form-group form-check">
+          <input type="checkbox" class="form-check-input" id="lightable" [formField]="form.lightable">
+          <label class="form-check-label" for="lightable">Lightable</label>
+        </fieldset>
+        <fieldset class="form-group form-check">
+          <input type="checkbox" class="form-check-input" id="isopenable" [formField]="form.isopenable">
+          <label class="form-check-label" for="isopenable">Is openable</label>
+        </fieldset>
+        <fieldset class="form-group">
+          <label for="owner">Owner</label>
+          <input type="text" class="form-control" id="owner" [formField]="form.owner">
+        </fieldset>
+        <fieldset class="form-group">
+          <label for="notes">Notes</label>
+          <textarea class="form-control" id="notes" rows="13" [formField]="form.notes"></textarea>
+        </fieldset>
+        <div class="col-xs-12 col-sm-12 text-right">
+          <button type="submit" class="mx-1 btn btn-primary"
+                  (click)="updateItem($event)">Update
+          </button>
+          <button type="submit" class="mx-1 btn btn-primary"
+                  (click)="createItem($event)">Create
+          </button>
+          <button type="button" class="mx-1 btn btn-secondary" (click)="deleteItem()">Delete</button>
+          <button type="reset" class="mx-1 btn btn-secondary" (click)="cancel($event)">Cancel</button>
+        </div>
+      </form>
+      <app-item-sub [mudType]="AdminMudType.ITEM"></app-item-sub>
+    </div>
+    <div class="col-xs-12 col-xl-6">
+      <button type="button" class="mx-1 btn btn-secondary" (click)="refresh()">Refresh</button>
+      <ag-grid-angular
+        style="width: 100%; height: 550px;"
+        [rowData]="rowData"
+        [columnDefs]="colDefs"
+        (gridReady)="onGridReady($event)"
+        [theme]="themeBalham"
+        (selectionChanged)="onSelectionChanged($event)"
+        [rowSelection]="rowSelection"
+      />
+    </div>
+  </div>
+</div>

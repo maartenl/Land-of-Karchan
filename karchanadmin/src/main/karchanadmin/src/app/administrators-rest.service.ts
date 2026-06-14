@@ -1,28 +1,22 @@
-import { Observable } from 'rxjs';
-import { catchError, map } from 'rxjs/operators';
-import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
-import { HttpErrorResponse } from '@angular/common/http';
-
-import { environment } from '../environments/environment';
-
-import { ErrorsService } from './errors.service';
-import { Administrator } from './administrator/administrator.model';
+import {inject, Injectable} from '@angular/core';
+import {HttpClient, HttpErrorResponse} from '@angular/common/http';
+import {ErrorsService} from './errors.service';
+import {environment} from '../environments/environment';
+import {Administrator} from './currentadmin/administrator.model';
+import {catchError, map, Observable} from 'rxjs';
+import {urls} from './urls';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class AdministratorsRestService {
-  url: string;
+  url: string = urls.ADMINISTRATORS_URL;
 
-  constructor(
-    private http: HttpClient,
-    private errorsService: ErrorsService) {
-    this.url = environment.ADMINISTRATORS_URL;
-  }
+  http = inject(HttpClient);
+  errorsService = inject(ErrorsService);
 
   get(): Observable<Administrator> {
-    return this.http.get<Administrator>(this.url)
+    return this.http.get<Administrator>(this.url + environment.postfix)
       .pipe(
         map(item => new Administrator(item)),
         catchError(err => {
@@ -40,4 +34,5 @@ export class AdministratorsRestService {
   private handleError(error: HttpErrorResponse, ignore?: string[]) {
     this.errorsService.addHttpError(error, ignore);
   }
+
 }
