@@ -37,7 +37,7 @@ public class MeCommand extends NormalCommand
   @Override
   public DisplayInterface run(String command, User aUser) throws MudException
   {
-    CommunicationService.getCommunicationService(aUser.getRoom()).sendMessage(aUser, aUser.getName() + " " + command.substring(3)
+    CommunicationService.getCommunicationService(aUser.getRoom()).sendMessage(aUser, "<B>" + aUser.getName() + "</B> " + command.substring(3)
             + "<br/>\n");
     return aUser.getRoom();
   }
