@@ -13,6 +13,7 @@ import {form, FormField} from '@angular/forms/signals';
 import {LanguageUtils} from '../language.utils';
 import {StringUtils} from '../string.utils';
 import {Chatlog} from './chatlog/chatlog';
+import {RichTextEditor} from '../rich-text-editor/rich-text-editor';
 
 export interface CommandData {
   command: string,
@@ -28,7 +29,7 @@ export interface KarchanData {
 
 @Component({
   selector: 'app-play',
-  imports: [AngularEditorModule, FormField, Chatlog, Logonmessages],
+  imports: [AngularEditorModule, FormField, Chatlog, Logonmessages, RichTextEditor],
   templateUrl: './play.html',
   styleUrl: './play.css',
 })
