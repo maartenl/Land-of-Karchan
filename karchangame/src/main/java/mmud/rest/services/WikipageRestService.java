@@ -27,6 +27,7 @@ import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import jakarta.persistence.TypedQuery;
 import jakarta.security.enterprise.SecurityContext;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.transaction.Transactional;
 import jakarta.ws.rs.Consumes;
 import jakarta.ws.rs.DELETE;
@@ -51,6 +52,8 @@ import mmud.rest.webentities.PrivateWikipage;
 import mmud.services.LogService;
 import org.karchan.security.Roles;
 
+import static mmud.rest.services.GameRestService.X_FORWARDED_FOR;
+
 /**
  * Allows getting wikipages, creating new ones and editing them. You can find
  * them at /karchangame/resources/wikipages.
@@ -66,6 +69,9 @@ public class WikipageRestService
 
   @PersistenceContext(unitName = "karchangamePU")
   private EntityManager em;
+
+  @Inject
+  private GameRestService gameRestService;
 
   @Inject
   @Context
@@ -99,6 +105,27 @@ public class WikipageRestService
       throw new MudWebException(name, "User was not a user.", "User was not a user (" + name + ")", Response.Status.BAD_REQUEST);
     }
     return person;
+  }
+
+  private void checkBanned(String name, HttpServletRequest requestContext) {
+    String address = requestContext.getHeader(X_FORWARDED_FOR);
+    if ((address == null) || (address.trim().isEmpty()))
+    {
+      address = requestContext.getRemoteAddr();
+    }
+    if ((address == null) || (address.trim().isEmpty()))
+    {
+      throw new MudWebException(name,
+        "User has no address.",
+        "User has no address (" + name + ", " + address + ")",
+        Response.Status.BAD_REQUEST);
+    }
+    if (gameRestService.isBanned(name, address))
+    {
+      throw new MudWebException(name, "User was banned",
+        "User was banned (" + name + ", " + address + ")",
+        Response.Status.FORBIDDEN);
+    }
   }
 
   /**
@@ -159,7 +186,7 @@ public class WikipageRestService
     {
       MediaType.APPLICATION_JSON
     })
-  public Response createWikipage(String json)
+  public Response createWikipage(@Context HttpServletRequest requestContext, String json)
   {
     PrivateWikipage newWikipage = PrivateWikipage.fromJson(json);
     var queryCheckExistence = getEntityManager().createNamedQuery("Wikipage.checkExistenceOfWikipage", Wikipage.class);
@@ -167,7 +194,7 @@ public class WikipageRestService
 
     List<Wikipage> list = queryCheckExistence.getResultList();
     final String name = securityContext.getCallerPrincipal().getName();
-
+    checkBanned(name, requestContext);
     if (!list.isEmpty())
     {
       throw new MudWebException(name, "Wikipage already exists.", Response.Status.FORBIDDEN);
@@ -239,9 +266,11 @@ public class WikipageRestService
     {
       MediaType.APPLICATION_JSON
     })
-  public Response updateWikipage(@PathParam("title") String title, String json)
+  public Response updateWikipage(@Context HttpServletRequest requestContext, @PathParam("title") String title, String json)
   {
     String name = securityContext.getCallerPrincipal().getName();
+    checkBanned(name, requestContext);
+
     PrivateWikipage privateWikipage = JsonUtils.fromJson(json, PrivateWikipage.class);
     try
     {
