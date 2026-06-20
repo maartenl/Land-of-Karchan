@@ -74,17 +74,14 @@ import mmud.services.MailService;
 import mmud.services.PersonCommunicationService;
 import mmud.services.PlayerAuthenticationService;
 import org.apache.commons.lang3.StringUtils;
+import org.eclipse.microprofile.config.inject.ConfigProperty;
 
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Locale;
+import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import java.util.stream.Collectors;
 
 import static mmud.Constants.DATETIME_FORMAT;
 
@@ -141,11 +138,13 @@ public class GameRestService
   }
 
   /**
-   * The ip address of the karchan server (vps386.directvps.nl). This address
+   * The ip address of the karchan server. This address
    * means that the call to the game came from the server itself, and therefore
    * we require access to the {@link #X_FORWARDED_FOR} header.
    */
-  public static final String VPS386 = "194.145.201.161";
+  @Inject
+  @ConfigProperty(name = "karchan.localhost.ip")
+  private Optional<String> localhost;
 
   /**
    * If the call was forwarded from an Internet proxy, then the original ip is
@@ -154,6 +153,10 @@ public class GameRestService
   public static final String X_FORWARDED_FOR = "X-Forwarded-For";
 
   private static final Logger LOGGER = Logger.getLogger(GameRestService.class.getName());
+
+  private String getLocalhost() {
+    return localhost.orElse("194.145.201.161");
+  }
 
   /**
    * <p>
@@ -460,7 +463,7 @@ public class GameRestService
     if ((address == null) || (address.trim().isEmpty()))
     {
       address = requestContext.getRemoteAddr();
-      if (VPS386.equals(address))
+      if (getLocalhost().equals(address))
       {
         throw new MudWebException(name,
             "User has server address.",
@@ -615,7 +618,12 @@ public class GameRestService
       communicationService.writeMessage(hasNewMail);
       log.log = log.log + hasNewMail;
       // write log "entered game."
-      logService.writeLog(person, "entered game.");
+      String address = requestContext.getHeader(X_FORWARDED_FOR);
+      if ((address == null) || (address.trim().isEmpty()))
+      {
+        address = requestContext.getRemoteAddr();
+      }
+      logService.writeLog(person, "entered game. (" + address + ")");
     } catch (PersistenceException e)
     {
       ExceptionUtils.createMessage(e).ifPresent(message ->
