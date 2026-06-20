@@ -8,6 +8,7 @@ import {Observable} from 'rxjs';
 import {Display} from './play/display.model';
 import {PlayerService} from './player.service';
 import {Logonmessage} from './play/logonmessages/logonmessage.model';
+import {urls} from './urls';
 
 @Injectable({
   providedIn: 'root',
@@ -27,8 +28,8 @@ export class GameService {
   isGaming: boolean;
 
   constructor() {
-    this.gameUrl = environment.GAME_URL;
-    this.whoList = environment.WHO_URL;
+    this.gameUrl = urls.GAME_URL;
+    this.whoList = urls.WHO_URL;
     this.isGaming = false;
   }
 
@@ -40,18 +41,18 @@ export class GameService {
   // game calls
 
   public enterGame(): Observable<any> {
-    const url: string = this.getGameUrl() + 'enter';
+    const url: string = this.getGameUrl() + 'enter' + environment.postfix;
     return this.http.post(url, null);
   }
 
   getLogonmessage(): Observable<Logonmessage> {
-    const url: string = this.getGameUrl() + 'logonmessage';
+    const url: string = this.getGameUrl() + 'logonmessage' + environment.postfix;;
     return this.http.get<Logonmessage>(url);
   }
 
   getWho(): Observable<any> {
     const url: string = this.whoList;
-    return this.http.get(url);
+    return this.http.get(url + environment.postfix);
   }
 
   public setIsGaming(isGaming: boolean) {
@@ -71,7 +72,7 @@ export class GameService {
   }
 
   public quitGame(): Observable<any> {
-    const url: string = this.getGameUrl() + 'quit';
+    const url: string = this.getGameUrl() + 'quit' + environment.postfix;
     return this.http.get(url);
   }
 
@@ -84,12 +85,12 @@ export class GameService {
    */
   public processCommand(command: string, offset: number | null | undefined, log: boolean): Observable<Display> {
     const params = log ? ("?offset=" + offset + "&log=true") : "";
-    const url: string = this.getGameUrl() + 'play' + params;
+    const url: string = this.getGameUrl() + 'play' + environment.postfix + params;
     return this.http.post<Display>(url, command);
   }
 
   public getLog(): Observable<Log> {
-    const url: string = this.getGameUrl() + 'log';
+    const url: string = this.getGameUrl() + 'log' + environment.postfix;
     return this.http.get<Log>(url);
   }
 

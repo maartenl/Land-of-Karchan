@@ -9,10 +9,10 @@ import {PasswordReset, Player} from './player-settings/player.model';
 import {Mail} from './mails/mail.model';
 import {HasNewMail} from './game/newmail.model';
 import {Guild, GuildHopeful, GuildMember, GuildRank} from './guilds/guild.model';
-import {Guilds} from './guilds/guilds';
 import {Family} from './player-settings/family.model';
 import {Wikipage} from './wikipages/wikipage.model';
 import {Picture} from './pictures/picture.model';
+import {urls} from './urls';
 
 @Injectable({
   providedIn: 'root',
@@ -20,7 +20,7 @@ import {Picture} from './pictures/picture.model';
 export class PlayerService {
   private http = inject(HttpClient);
   private cookieService = inject(CookieService)
-  private errorsService= inject(ErrorsService)
+  private errorsService = inject(ErrorsService)
 
   name: string | null = null;
 
@@ -51,19 +51,19 @@ export class PlayerService {
   wikipagesPreviewUrl: string;
 
   constructor() {
-    this.charactersheetUrl = environment.CHARACTERSHEET_URL;
-    this.familyUrl = environment.FAMILY_URL;
-    this.mailUrl = environment.MAIL_URL;
-    this.sentmailUrl = environment.SENTMAIL_URL;
-    this.hasNewMailUrl = environment.HASNEWMAIL_URL;
-    this.guildUrl = environment.GUILD_URL;
-    this.guildhopefulsUrl = environment.GUILDHOPEFULS_URL;
-    this.guildmembersUrl = environment.GUILDMEMBERS_URL;
-    this.guildranksUrl = environment.GUILDRANKS_URL;
-    this.wikipagesUrl = environment.WIKIPAGES_URL;
-    this.picturesUrl = environment.PICTURES_URL;
-    this.privateUrl = environment.PRIVATE_URL;
-    this.wikipagesPreviewUrl = environment.WIKIPAGES_PREVIEW_URL;
+    this.charactersheetUrl = urls.CHARACTERSHEET_URL;
+    this.familyUrl = urls.FAMILY_URL;
+    this.mailUrl = urls.MAIL_URL;
+    this.sentmailUrl = urls.SENTMAIL_URL;
+    this.hasNewMailUrl = urls.HASNEWMAIL_URL;
+    this.guildUrl = urls.GUILD_URL;
+    this.guildhopefulsUrl = urls.GUILDHOPEFULS_URL;
+    this.guildmembersUrl = urls.GUILDMEMBERS_URL;
+    this.guildranksUrl = urls.GUILDRANKS_URL;
+    this.wikipagesUrl = urls.WIKIPAGES_URL;
+    this.picturesUrl = urls.PICTURES_URL;
+    this.privateUrl = urls.PRIVATE_URL;
+    this.wikipagesPreviewUrl = urls.WIKIPAGES_PREVIEW_URL;
   }
 
 
@@ -161,7 +161,7 @@ export class PlayerService {
         Accept: 'application/json'
       })
     };
-    return this.http.get<Player>(this.getCharactersheetUrl(), httpOptions)
+    return this.http.get<Player>(this.getCharactersheetUrl() + environment.postfix, httpOptions)
       .pipe(
         catchError(err => {
           this.handleError(err);
@@ -212,7 +212,7 @@ export class PlayerService {
   // mail calls
 
   public getMail(offset: number): Observable<any> {
-    return this.http.get<Mail[]>(this.getMailUrl() + '?offset=' + offset)
+    return this.http.get<Mail[]>(this.getMailUrl() + environment.postfix + '?offset=' + offset)
       .pipe(
         catchError(err => {
           this.handleError(err);
@@ -222,7 +222,7 @@ export class PlayerService {
   }
 
   public getSentMail(offset: number): Observable<any> {
-    return this.http.get<Mail[]>(this.getSentMailUrl() + '?offset=' + offset)
+    return this.http.get<Mail[]>(this.getSentMailUrl() + environment.postfix + '?offset=' + offset)
       .pipe(
         catchError(err => {
           this.handleError(err);
@@ -232,7 +232,7 @@ export class PlayerService {
   }
 
   public hasNewMail(): Observable<HasNewMail> {
-    return this.http.get<HasNewMail>(this.getHasNewMailUrl())
+    return this.http.get<HasNewMail>(this.getHasNewMailUrl() + environment.postfix)
       .pipe(
         catchError(err => {
           this.handleError(err);
@@ -266,7 +266,7 @@ export class PlayerService {
    * Url will be /karchangame/resources/private/[player]/mail/[id]/createMailItem/[item_id]")
    */
   public createItemFromMail(mail: Mail, item_id: number): Observable<any> {
-    return this.http.get(this.getMailUrl() + '/' + mail.id + '/createMailItem/' + item_id)
+    return this.http.get(this.getMailUrl() + '/' + mail.id + '/createMailItem/' + item_id + environment.postfix)
       .pipe(
         catchError(err => {
           this.handleError(err);
@@ -278,7 +278,7 @@ export class PlayerService {
   // guild calls
 
   public getGuild(): Observable<any> {
-    return this.http.get<Guild>(this.getGuildUrl())
+    return this.http.get<Guild>(this.getGuildUrl() + environment.postfix)
       .pipe(
         catchError(err => {
           console.log(err);
@@ -384,7 +384,7 @@ export class PlayerService {
   }
 
   public updateFamily(family: Family): Observable<any> {
-    const url: string = this.getFamilyUrl(family.toname) + '/' + this.getDescriptionAsInteger(family);
+    const url: string = this.getFamilyUrl(family.toname) + '/' + this.getDescriptionAsInteger(family) + environment.postfix;
     return this.http.put(url, null)
       .pipe(
         catchError(err => {
@@ -410,7 +410,7 @@ export class PlayerService {
   }
 
   public getWikipage(title: string): Observable<Wikipage> {
-    return this.http.get<Wikipage>(this.getWikipagesUrl(title))
+    return this.http.get<Wikipage>(this.getWikipagesUrl(title) + environment.postfix)
       .pipe(
         catchError(err => {
           this.handleError(err, ['404']);
@@ -442,7 +442,7 @@ export class PlayerService {
   // pictures
 
   public getPictures(): Observable<any> {
-    return this.http.get<Picture[]>(this.getPicturesUrl())
+    return this.http.get<Picture[]>(this.getPicturesUrl() + environment.postfix)
       .pipe(
         catchError(err => {
           this.handleError(err);
@@ -452,7 +452,7 @@ export class PlayerService {
   }
 
   public getPicture(id: number): Observable<any> {
-    return this.http.get<Picture>(this.getPicturesUrl() + '/' + id)
+    return this.http.get<Picture>(this.getPicturesUrl() + '/' + id + environment.postfix)
       .pipe(
         catchError(err => {
           this.handleError(err);

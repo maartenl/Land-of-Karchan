@@ -23,17 +23,6 @@
             },
             "browser": "src/main.ts",
             "tsConfig": "tsconfig.app.json",
-            "assets": [
-              {
-                "glob": "**/*",
-                "input": "public"
-              },
-              {
-                "glob": "**/*",
-                "input": "node_modules/@kolkov/angular-editor/assets/icons",
-                "output": "assets/ae-icons/"
-              }
-            ],
             "styles": [
               "node_modules/bootstrap/dist/css/bootstrap.min.css",
               "src/styles.css",
@@ -43,6 +32,17 @@
           },
           "configurations": {
             "production": {
+              "assets": [
+                {
+                  "glob": "**/*",
+                  "input": "public"
+                },
+                {
+                  "glob": "**/*",
+                  "input": "node_modules/@kolkov/angular-editor/assets/icons",
+                  "output": "assets/ae-icons/"
+                }
+              ],
               "budgets": [
                 {
                   "type": "initial",
@@ -58,6 +58,21 @@
               "outputHashing": "all"
             },
             "development": {
+              "assets": [
+                {
+                  "glob": "**/*",
+                  "input": "public"
+                },
+                {
+                  "glob": "**/*",
+                  "input": "node_modules/@kolkov/angular-editor/assets/icons",
+                  "output": "assets/ae-icons/"
+                },
+                {
+                  "glob": "**/*",
+                  "input": "jsonstubs"
+                }
+              ],
               "optimization": false,
               "extractLicenses": false,
               "sourceMap": true,
