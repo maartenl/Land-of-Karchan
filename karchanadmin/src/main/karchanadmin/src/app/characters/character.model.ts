@@ -22,6 +22,7 @@ export class MudCharacter implements AdminObject<string> {
   beard: string | null = null;
   arm: string | null = null;
   leg: string | null = null;
+  afk: string | null = null;
   copper: number | null = null;
   room: number | null = null;
   lok: string | null = null;
@@ -130,6 +131,7 @@ export class MudCharacter implements AdminObject<string> {
     this.beard = object.beard;
     this.arm = object.arm;
     this.leg = object.leg;
+    this.afk = object.afk;
     this.copper = object.copper;
     this.room = object.room;
     this.lok = object.lok;

@@ -14,6 +14,7 @@ import {AdminComponent} from '../admin/admin.component';
 import {LinkRenderer} from '../link-renderer/link-renderer';
 import {AdminMudType} from '../adminmudtype';
 import {rowSelection} from '../aggrid.utils';
+import {ConsoleLogger} from '@angular/compiler-cli';
 
 export interface MudCharacterData {
   name: string;
@@ -35,6 +36,7 @@ export interface MudCharacterData {
   beard: string;
   arm: string;
   leg: string;
+  afk: string;
   birth: Date;
   lastlogin: Date;
   address: string;
@@ -76,6 +78,7 @@ export class Characters extends AdminComponent<MudCharacter, string> implements 
     image: "",
     lastlogin: new Date(),
     leg: "",
+    afk: "",
     name: "",
     newpassword: "",
     notes: "",
@@ -134,6 +137,8 @@ export class Characters extends AdminComponent<MudCharacter, string> implements 
 
   override setForm() {
     const character = this.item();
+    Logger.log("Setting form for " + character.name);
+    Logger.logObject(character);
     this.characterModel.set({
       active: character.active ?? false,
       address: character.address ?? "",
@@ -151,6 +156,7 @@ export class Characters extends AdminComponent<MudCharacter, string> implements 
       image: character.image ?? "",
       lastlogin: character.lastlogin ?? new Date(),
       leg: character.leg ?? "",
+      afk: character.afk ?? "",
       name: character.name ?? "",
       newpassword: character.newpassword ?? "",
       notes: character.notes ?? "",
@@ -162,6 +168,7 @@ export class Characters extends AdminComponent<MudCharacter, string> implements 
       title: character.title ?? "",
       width: character.width ?? "",
     });
+    Logger.logObject(this.characterModel());
   }
 
   override makeItem(): MudCharacter {
@@ -187,6 +194,7 @@ export class Characters extends AdminComponent<MudCharacter, string> implements 
     character.image = formModel.image == "" ? null : formModel.image;
     character.lastlogin = formModel.lastlogin;
     character.leg = formModel.leg == "" ? null : formModel.leg;
+    character.afk = formModel.afk == "" ? null : formModel.afk;
     character.name = formModel.name == "" ? null : formModel.name;
     character.newpassword = formModel.newpassword == "" ? null : formModel.newpassword;
     character.notes = formModel.notes == "" ? null : formModel.notes;

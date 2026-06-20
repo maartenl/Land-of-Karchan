@@ -122,6 +122,7 @@ public class PersonsRestService
         throw new MudWebException(name, "Character has invalid god value (" + adminCharacter.god + ").", Response.Status.BAD_REQUEST);
     }
     character.setName(adminCharacter.name);
+    character.setAfk(adminCharacter.afk);
 //    character.setImage(adminCharacter.image);
     character.setTitle(StringUtils.trimToNull(adminCharacter.title));
     character.setFamilyname(StringUtils.trimToNull(adminCharacter.familyname));
@@ -220,11 +221,12 @@ public class PersonsRestService
       user.setRealname(adminCharacter.realname);
       user.setEmail(adminCharacter.email);
       user.setOoc(adminCharacter.ooc);
-      if (adminCharacter.newpassword != null && !adminCharacter.newpassword.trim().equals(""))
+      if (adminCharacter.newpassword != null && !adminCharacter.newpassword.trim().isEmpty())
       {
         user.setNewpassword(adminCharacter.newpassword);
       }
     }
+    character.setAfk(adminCharacter.afk);
     character.setActive(adminCharacter.active);
     character.setOwner(OwnerHelper.getNewOwner(adminCharacter.owner, admin, getEntityManager()));
     ValidationUtils.checkValidation(name, character);

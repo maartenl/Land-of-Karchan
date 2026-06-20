@@ -52,6 +52,7 @@ public class AdminCharacter
   public String beard;
   public String arm;
   public String leg;
+  public String afk;
   public Integer copper;
   public Long room;
   public String lok;
@@ -172,6 +173,7 @@ public class AdminCharacter
     this.lastlogin = item.getLastlogin();
     this.familyname = item.getFamilyname();
     this.ooc = item.getOoc();
+    this.afk = item.getAfk();
   }
 
   public AdminCharacter(Person item)
@@ -245,6 +247,7 @@ public class AdminCharacter
 //    this.   wearaboutbody;
 //    this.   guildlevel;
 //    this.   timeout;
+    this.afk = item.getAfk();
     this.visible = item.getVisible();
     this.familyname = item.getFamilyname();
 

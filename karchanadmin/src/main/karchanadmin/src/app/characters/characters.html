@@ -26,6 +26,10 @@
           <input type="text" class="form-control" id="title" [formField]="form.title">
         </fieldset>
         <fieldset class="form-group">
+          <label for="afk">Afk (shows up in the wholist)</label>
+          <input type="text" class="form-control" id="afk" [formField]="form.afk">
+        </fieldset>
+        <fieldset class="form-group">
           <label for="room">Room <a [routerLink]="['/rooms', item().room]">{{ item().room }}</a>
           </label>
           <input type="number" class="form-control" id="room" [formField]="form.room">
