@@ -14,7 +14,6 @@ import {AdminComponent} from '../admin/admin.component';
 import {LinkRenderer} from '../link-renderer/link-renderer';
 import {AdminMudType} from '../adminmudtype';
 import {rowSelection} from '../aggrid.utils';
-import {ConsoleLogger} from '@angular/compiler-cli';
 
 export interface MudCharacterData {
   name: string;
@@ -137,8 +136,6 @@ export class Characters extends AdminComponent<MudCharacter, string> implements 
 
   override setForm() {
     const character = this.item();
-    Logger.log("Setting form for " + character.name);
-    Logger.logObject(character);
     this.characterModel.set({
       active: character.active ?? false,
       address: character.address ?? "",
@@ -168,7 +165,6 @@ export class Characters extends AdminComponent<MudCharacter, string> implements 
       title: character.title ?? "",
       width: character.width ?? "",
     });
-    Logger.logObject(this.characterModel());
   }
 
   override makeItem(): MudCharacter {
