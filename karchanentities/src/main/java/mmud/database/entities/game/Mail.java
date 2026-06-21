@@ -122,7 +122,7 @@ public class Mail implements Serializable
   @Basic(optional = false)
   @NotNull
   @Lob
-  @Size(min = 1, max = 65535)
+  @Size(min = 0, max = 65535)
   @Column(name = "body")
   private String body;
 

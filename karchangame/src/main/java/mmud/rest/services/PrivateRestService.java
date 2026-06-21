@@ -34,6 +34,7 @@ import jakarta.persistence.PersistenceContext;
 import jakarta.persistence.TypedQuery;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.transaction.Transactional;
+import jakarta.validation.ConstraintViolationException;
 import jakarta.ws.rs.Consumes;
 import jakarta.ws.rs.DELETE;
 import jakarta.ws.rs.GET;
@@ -62,6 +63,7 @@ import mmud.database.entities.web.CharacterInfo;
 import mmud.database.entities.web.Family;
 import mmud.database.entities.web.FamilyPK;
 import mmud.database.entities.web.FamilyValue;
+import mmud.exceptions.ExceptionUtils;
 import mmud.exceptions.MudException;
 import mmud.exceptions.MudWebException;
 import mmud.rest.webentities.PrivateMail;
@@ -354,6 +356,10 @@ public class PrivateRestService
     {
       //ignore
       throw e;
+    } catch (ConstraintViolationException constraintViolationException)
+    {
+      LOGGER.throwing(getClass().getName(), "newMail", constraintViolationException);
+      throw new MudWebException(name, ExceptionUtils.createMessage(constraintViolationException), Status.BAD_REQUEST);
     } catch (Exception e)
     {
       throw new MudWebException(name, e, Status.BAD_REQUEST);
@@ -492,6 +498,7 @@ public class PrivateRestService
    * Creates an itemDefinitionId instance (and, if required, an
    * itemDefinitionId definition) representing an in-game version of a single
    * mail based by id.
+   *
    * @param name             the name of the user
    * @param id               the id of the mail to get
    * @param itemDefinitionId the kind of itemDefinitionId that is to be made.
@@ -500,8 +507,7 @@ public class PrivateRestService
    * @return Response.ok if everything is fine.
    * @throws WebApplicationException UNAUTHORIZED, if the authorisation
    *                                 failed. BAD_REQUEST if an unexpected exception crops up.
-   * @plantuml
-   * <!--
+   * @plantuml <!--
    * (*) --> "check params"
    * --> "getMail"
    * if "has Item Definition" then
