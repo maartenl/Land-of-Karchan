@@ -35,8 +35,8 @@ public class RegularExpressions
   public static final String COMMENTS_REGEXP = "^[a-zA-Z0-9- ]*$";
   public static final String COMMENTS_MESSAGE = "For comments only letters, digits, dash and spaces are allowed.";
 
-  public static final String WIKIPAGE_TITLE_REGEXP = "^[a-zA-Z0-9- ]*$";
-  public static final String WIKIPAGE_TITLE_MESSAGE = "For the title of a wikipage only letters, digits, dash and spaces are allowed.";
+  public static final String WIKIPAGE_TITLE_REGEXP = "^[a-zA-Z0-9- :]*$";
+  public static final String WIKIPAGE_TITLE_MESSAGE = "For the title of a wikipage only letters, digits, dash, colons and spaces are allowed.";
 
   private RegularExpressions()
   {
