@@ -23,12 +23,7 @@ import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import jakarta.persistence.TypedQuery;
 import jakarta.transaction.Transactional;
-import jakarta.ws.rs.Consumes;
-import jakarta.ws.rs.GET;
-import jakarta.ws.rs.PUT;
-import jakarta.ws.rs.Path;
-import jakarta.ws.rs.PathParam;
-import jakarta.ws.rs.Produces;
+import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.Context;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
@@ -71,9 +66,9 @@ public class TemplatesRestService
   @PUT
   @Path("{id}")
   @Consumes(
-      {
-          MediaType.APPLICATION_JSON
-      })
+    {
+      MediaType.APPLICATION_JSON
+    })
   public void edit(@PathParam("id") Long id, AdminTemplate template)
   {
     LOGGER.info("edit");
@@ -98,12 +93,38 @@ public class TemplatesRestService
     logService.writeDeputyLog(getAdmin(name), "Template " + id + " updated.");
   }
 
+  @POST
+  @Consumes(
+    {
+      MediaType.APPLICATION_JSON
+    })
+  public void create(AdminTemplate template)
+  {
+    LOGGER.info("create");
+    final String name = sc.getUserPrincipal().getName();
+
+    Long maxId = getEntityManager().createNamedQuery("HtmlTemplate.maxId", Long.class).getSingleResult();
+    var id = maxId + 1;
+
+    HtmlTemplate entity = new HtmlTemplate();
+    entity.setId(id);
+    entity.setName(template.name);
+    entity.setCreated(LocalDateTime.now());
+    entity.setModified(LocalDateTime.now());
+    entity.setContent(template.content);
+    entity.setEditor(name);
+    entity.setComment(template.comment);
+    ValidationUtils.checkValidation(name, entity);
+    getEntityManager().persist(entity);
+    logService.writeDeputyLog(getAdmin(name), "Template " + id + " created.");
+  }
+
   @GET
   @Path("{id}")
   @Produces(
-      {
-          MediaType.APPLICATION_JSON
-      })
+    {
+      MediaType.APPLICATION_JSON
+    })
   public String find(@PathParam("id") Long id)
   {
     final String name = sc.getUserPrincipal().getName();
@@ -118,9 +139,9 @@ public class TemplatesRestService
   @GET
   @Path("{id}/history")
   @Produces(
-      {
-          MediaType.APPLICATION_JSON
-      })
+    {
+      MediaType.APPLICATION_JSON
+    })
   public String findHistory(@PathParam("id") Long id)
   {
     final String name = sc.getUserPrincipal().getName();
@@ -131,20 +152,20 @@ public class TemplatesRestService
     }
 
     return "[" +
-        getEntityManager().createNamedQuery("HistoricTemplate.findByName", HistoricTemplate.class).setParameter("name"
-                , htmlTemplate.getName()).getResultList()
-            .stream()
-            .map(AdminHistoricTemplate::new)
-            .map(AdminHistoricTemplate::toJson)
-            .collect(Collectors.joining(","))
-        + "]";
+      getEntityManager().createNamedQuery("HistoricTemplate.findByName", HistoricTemplate.class).setParameter("name"
+          , htmlTemplate.getName()).getResultList()
+        .stream()
+        .map(AdminHistoricTemplate::new)
+        .map(AdminHistoricTemplate::toJson)
+        .collect(Collectors.joining(","))
+      + "]";
   }
 
   @GET
   @Produces(
-      {
-          MediaType.APPLICATION_JSON
-      })
+    {
+      MediaType.APPLICATION_JSON
+    })
   public String findAll()
   {
     final String name = sc.getUserPrincipal().getName();
@@ -154,11 +175,11 @@ public class TemplatesRestService
       throw new MudWebException(name, "Admin " + name + " not found.", Response.Status.NOT_FOUND);
     }
     TypedQuery<HtmlTemplate> templates = getEntityManager().createNamedQuery("HtmlTemplate.findAll",
-        HtmlTemplate.class);
+      HtmlTemplate.class);
     return "[" + templates.getResultList().stream()
-        .map(AdminTemplate::new)
-        .map(AdminTemplate::toJson)
-        .collect(Collectors.joining(",")) + "]";
+      .map(AdminTemplate::new)
+      .map(AdminTemplate::toJson)
+      .collect(Collectors.joining(",")) + "]";
   }
 
   protected EntityManager getEntityManager()
@@ -172,7 +193,7 @@ public class TemplatesRestService
     if (person == null)
     {
       throw new MudWebException(name, "Admin was not found.", "Admin was not found  (" + name + ")",
-          Response.Status.BAD_REQUEST);
+        Response.Status.BAD_REQUEST);
     }
     return person;
   }

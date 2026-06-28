@@ -49,7 +49,7 @@ import jakarta.validation.constraints.Size;
           @NamedQuery(name = "HtmlTemplate.findByName", query = "SELECT t FROM HtmlTemplate t WHERE t.name = :name"),
           @NamedQuery(name = "HtmlTemplate.findByCreated", query = "SELECT t FROM HtmlTemplate t WHERE t.created = :created"),
           @NamedQuery(name = "HtmlTemplate.findByModified", query = "SELECT t FROM HtmlTemplate t WHERE t.modified = :modified"),
-          @NamedQuery(name = "HtmlTemplate.findByVersion", query = "SELECT t FROM HtmlTemplate t WHERE t.version = :version")
+          @NamedQuery(name = "HtmlTemplate.maxId", query = "SELECT max(t.id) FROM HtmlTemplate t")
         })
 public class HtmlTemplate implements Serializable
 {
@@ -92,7 +92,7 @@ public class HtmlTemplate implements Serializable
   @Basic(optional = false)
   @NotNull
   @Column(name = "version")
-  private BigDecimal version;
+  private BigDecimal version = BigDecimal.ONE;
 
   @Basic(optional = false)
   @NotNull
