@@ -33,6 +33,6 @@ export class Template implements AdminObject<number> {
   }
 
   getType(): string {
-    return 'Blog';
+    return 'Template';
   }
 }
