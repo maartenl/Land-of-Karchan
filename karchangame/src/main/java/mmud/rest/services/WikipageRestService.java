@@ -50,9 +50,8 @@ import mmud.database.entities.web.WikipageHistory;
 import mmud.exceptions.MudWebException;
 import mmud.rest.webentities.PrivateWikipage;
 import mmud.services.LogService;
+import org.eclipse.microprofile.config.inject.ConfigProperty;
 import org.karchan.security.Roles;
-
-import static mmud.rest.services.GameRestService.X_FORWARDED_FOR;
 
 /**
  * Allows getting wikipages, creating new ones and editing them. You can find
@@ -66,6 +65,13 @@ import static mmud.rest.services.GameRestService.X_FORWARDED_FOR;
 @Path("/wikipages")
 public class WikipageRestService
 {
+
+  /**
+   * The ip address of the karchan server.
+   */
+  @Inject
+  @ConfigProperty(name = "karchan.localhost.ip", defaultValue = "194.145.201.161")
+  private String localhost;
 
   @PersistenceContext(unitName = "karchangamePU")
   private EntityManager em;
@@ -108,18 +114,7 @@ public class WikipageRestService
   }
 
   private void checkBanned(String name, HttpServletRequest requestContext) {
-    String address = requestContext.getHeader(X_FORWARDED_FOR);
-    if ((address == null) || (address.trim().isEmpty()))
-    {
-      address = requestContext.getRemoteAddr();
-    }
-    if ((address == null) || (address.trim().isEmpty()))
-    {
-      throw new MudWebException(name,
-        "User has no address.",
-        "User has no address (" + name + ", " + address + ")",
-        Response.Status.BAD_REQUEST);
-    }
+    String address = RestUtilities.getAddress(name, requestContext, localhost);
     if (gameRestService.isBanned(name, address))
     {
       throw new MudWebException(name, "User was banned",
@@ -161,7 +156,7 @@ public class WikipageRestService
         throw new MudWebException(null, "Wikipage was not found.", Response.Status.NOT_FOUND);
       }
 
-      return new PrivateWikipage(list.get(0)).toJson();
+      return new PrivateWikipage(list.getFirst()).toJson();
 
     } catch (MudWebException e)
     {
@@ -218,7 +213,7 @@ public class WikipageRestService
       {
         throw new MudWebException(name, "Parent wikipage not found.", Response.Status.NOT_FOUND);
       }
-      parent = parents.get(0);
+      parent = parents.getFirst();
 
       if (parent.getAdministration() != newWikipage.administration)
       {
@@ -286,7 +281,7 @@ public class WikipageRestService
       {
         throw new MudWebException(name, "Wikipage not found.", Response.Status.NOT_FOUND);
       }
-      Wikipage wikipage = list.get(0);
+      Wikipage wikipage = list.getFirst();
 
       if (!securityContext.isCallerInRole(Roles.DEPUTY) && wikipage.getAdministration())
       {
@@ -306,7 +301,7 @@ public class WikipageRestService
         {
           throw new MudWebException(name, "Parent wikipage not found.", Response.Status.NOT_FOUND);
         }
-        parent = parents.get(0);
+        parent = parents.getFirst();
         if (parent.getAdministration() != wikipage.getAdministration())
         {
           throw new MudWebException(null, "Parent wikipage does not have the same rights.", Response.Status.FORBIDDEN);

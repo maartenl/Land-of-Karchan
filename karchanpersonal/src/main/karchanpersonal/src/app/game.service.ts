@@ -4,7 +4,7 @@ import {CookieService} from 'ngx-cookie-service';
 import {ErrorsService} from './errors.service';
 import {environment} from '../environments/environment';
 import {Log} from './play/log.model';
-import {Observable} from 'rxjs';
+import {catchError, Observable} from 'rxjs';
 import {Display} from './play/display.model';
 import {PlayerService} from './player.service';
 import {Logonmessage} from './play/logonmessages/logonmessage.model';
@@ -42,12 +42,24 @@ export class GameService {
 
   public enterGame(): Observable<any> {
     const url: string = this.getGameUrl() + 'enter' + environment.postfix;
-    return this.http.post(url, null);
+    return this.http.post(url, null)
+      .pipe(
+        catchError(err => {
+          this.handleError(err);
+          return [];
+        })
+      );
   }
 
   getLogonmessage(): Observable<Logonmessage> {
     const url: string = this.getGameUrl() + 'logonmessage' + environment.postfix;;
-    return this.http.get<Logonmessage>(url);
+    return this.http.get<Logonmessage>(url)
+      .pipe(
+        catchError(err => {
+          this.handleError(err);
+          return [];
+        })
+      );
   }
 
   getWho(): Observable<any> {
@@ -91,7 +103,13 @@ export class GameService {
 
   public getLog(): Observable<Log> {
     const url: string = this.getGameUrl() + 'log' + environment.postfix;
-    return this.http.get<Log>(url);
+    return this.http.get<Log>(url)
+      .pipe(
+        catchError(err => {
+          this.handleError(err);
+          return [];
+        })
+      );
   }
 
   /**

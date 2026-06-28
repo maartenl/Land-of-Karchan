@@ -1,21 +1,26 @@
 package mmud.rest.services;
 
-import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.ws.rs.core.Response;
 import mmud.database.entities.characters.User;
 import mmud.database.entities.web.CharacterInfo;
 import mmud.database.entities.web.Family;
+import mmud.exceptions.MudWebException;
 import mmud.rest.webentities.PrivatePerson;
 import mmud.rest.webentities.PublicFamily;
 import mmud.rest.webentities.PublicPerson;
 
-/**
- * Primarily used for converting from entities to rest objects.
- */
+import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 public class RestUtilities
 {
+  /**
+   * If the call was forwarded from an Internet proxy, then the original ip is
+   * stored in this http header.
+   */
+  private static final String X_FORWARDED_FOR = "X-Forwarded-For";
 
   private RestUtilities()
   {
@@ -78,7 +83,6 @@ public class RestUtilities
     }
     for (Family fam : list)
     {
-      LOGGER.log(Level.FINER, "{0}", fam);
       PublicFamily pfam = new PublicFamily();
       pfam.description = fam.getDescription().getDescription();
       pfam.toname = fam.getFamilyPK().getToname();
@@ -87,4 +91,27 @@ public class RestUtilities
     return res;
   }
 
+  public static String getAddress(String name, HttpServletRequest requestContext, String localhost)
+  {
+    String address = requestContext.getHeader(X_FORWARDED_FOR);
+    if ((address == null) || (address.trim().isEmpty()))
+    {
+      address = requestContext.getRemoteAddr();
+      if (localhost.equals(address))
+      {
+        throw new MudWebException(name,
+          "User has server address.",
+          "User has server address (" + name + ", " + address + ")",
+          Response.Status.BAD_REQUEST);
+      }
+    }
+    if ((address == null) || (address.trim().isEmpty()))
+    {
+      throw new MudWebException(name,
+        "User has no address.",
+        "User has no address (" + name + ", " + address + ")",
+        Response.Status.BAD_REQUEST);
+    }
+    return address;
+  }
 }
