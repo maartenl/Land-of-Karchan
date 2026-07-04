@@ -224,10 +224,6 @@ public class GameRestService
    */
   protected User getPlayer(String name)
   {
-    if (Utils.isOffline())
-    {
-      throw new MudWebException(name, "Game is offline", Response.Status.NO_CONTENT);
-    }
     User person = em.find(User.class, name);
     if (person == null)
     {
@@ -236,6 +232,7 @@ public class GameRestService
         "User was not found (" + name + ")",
         Response.Status.NOT_FOUND);
     }
+    Utils.throwIfOffline(person);
     if (!person.isUser())
     {
       throw new MudWebException(name,
@@ -468,10 +465,6 @@ public class GameRestService
     LOGGER.log(Level.FINER, "entering logon {0}", name);
 
     String address = RestUtilities.getAddress(name, requestContext, localhost);
-    if (Utils.isOffline())
-    {
-      throw new MudWebException(name, "Game is offline", Response.Status.NO_CONTENT);
-    }
     if (isBanned(name, address))
     {
       throw new MudWebException(name, "User was banned",
@@ -479,7 +472,7 @@ public class GameRestService
         Response.Status.FORBIDDEN);
     }
     User person = getPlayer(name);
-
+    Utils.throwIfOffline(person);
     // nasty work-around for Catalina AuthenticatorBase to be able to
     // change/create the session cookie
     requestContext.getSession();
@@ -586,6 +579,8 @@ public class GameRestService
   {
     LOGGER.finer("entering enterGame");
     User person = authenticateToEnterGame(name, requestContext);
+    Utils.throwIfOffline(person);
+
     PrivateLog log;
     try
     {
@@ -654,6 +649,8 @@ public class GameRestService
     command = InputSanitizer.security(command);
     PrivateDisplay display;
     User person = authenticate(name);
+    Utils.throwIfOffline(person);
+
     idleUsersService.resetUser(person.getName());
     PersonCommunicationService communicationService = CommunicationService.getCommunicationService(person);
     if (log && offset > communicationService.getLogSize())

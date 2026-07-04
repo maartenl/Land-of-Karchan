@@ -16,6 +16,7 @@
  */
 package mmud.commands;
 
+import mmud.Utils;
 import mmud.database.entities.characters.Administrator;
 import mmud.database.entities.characters.Person;
 import mmud.database.entities.characters.User;
@@ -51,6 +52,7 @@ public class AdminCommand extends NormalCommand
   public static final String ADMIN_JACKASS = "admin jackass";
   public static final String ADMIN_KICK = "admin kick";
   public static final String ADMIN_HELP = "admin help";
+  public static final String ADMIN_OFFLINE = "admin offline";
 
   public AdminCommand(String aRegExpr)
   {
@@ -108,23 +110,23 @@ public class AdminCommand extends NormalCommand
     {
       final String chatline = command.substring(ADMIN_CHATLINE.length());
       getChatService().getChatline(chatline).ifPresent(chatline1 -> writeUsersOfChatline(chatline1,
-          communicationService));
+        communicationService));
     }
     if (command.toLowerCase().startsWith(ADMIN_CHATLINES))
     {
       String table =
-          "<table><tr><th>id</th><th>name</th><th>attribute</th><th>colour</th><th>last used</th><th>owner</th></tr>" +
-              getChatService().getChatlines().stream()
-                  .map(chat ->
-                      "<tr><td>" + chat.getId() +
-                          "</td><td>" + chat.getChatname() +
-                          "</td><td>" + chat.getAttributename() +
-                          "</td><td>" + chat.getColour() +
-                          "</td><td>" + chat.getLastchattime() +
-                          "</td><td>" + (chat.getOwner() != null ? chat.getOwner().getName() : null) +
-                          "</td></tr>")
-                  .collect(Collectors.joining()) +
-              "</table><br/>\r\n";
+        "<table><tr><th>id</th><th>name</th><th>attribute</th><th>colour</th><th>last used</th><th>owner</th></tr>" +
+          getChatService().getChatlines().stream()
+            .map(chat ->
+              "<tr><td>" + chat.getId() +
+                "</td><td>" + chat.getChatname() +
+                "</td><td>" + chat.getAttributename() +
+                "</td><td>" + chat.getColour() +
+                "</td><td>" + chat.getLastchattime() +
+                "</td><td>" + (chat.getOwner() != null ? chat.getOwner().getName() : null) +
+                "</td></tr>")
+            .collect(Collectors.joining()) +
+          "</table><br/>\r\n";
       communicationService.writeMessage(table);
     }
     if (command.toLowerCase().startsWith(ADMIN_FROG))
@@ -154,7 +156,7 @@ public class AdminCommand extends NormalCommand
       }
       communicationService.writeMessage("Changed " + person.getName() + " into frog (" + amount + ").<br/>\r\n");
       CommunicationService.getCommunicationService(person.getRoom()).sendMessage(person, "%SNAME %SISARE suddenly " +
-          "changed into a frog!<br/>\r\n");
+        "changed into a frog!<br/>\r\n");
       getLogService().writeLog(person, " was changed into a frog by " + aUser.getName() + " for " + amount + ".");
     }
     if (command.toLowerCase().startsWith(ADMIN_JACKASS))
@@ -184,8 +186,25 @@ public class AdminCommand extends NormalCommand
       }
       communicationService.writeMessage("Changed " + person.getName() + " into jackass (" + amount + ").<br/>\r\n");
       CommunicationService.getCommunicationService(person.getRoom()).sendMessage(person, "%SNAME %SISARE suddenly " +
-          "changed into a jackass!<br/>\r\n");
+        "changed into a jackass!<br/>\r\n");
       getLogService().writeLog(person, " was changed into a jackass by " + aUser.getName() + " for " + amount + ".");
+    }
+    if (command.toLowerCase().startsWith(ADMIN_OFFLINE))
+    {
+      String[] commands = command.split(" ");
+      if (commands.length > 3)
+      {
+        throw new MudException("Expected admin offline command in the shape of 'admin offline [true/false]'.");
+      }
+      if (commands.length == 2)
+      {
+        communicationService.writeMessage("Game is currently " + (Utils.isOffline() ? "" : " not ") + "offline.<br/>\r\n");
+      } else
+      {
+        Utils.setOffline(commands[2].equalsIgnoreCase("true"));
+        communicationService.writeMessage("Game is now set to " + (Utils.isOffline() ? "" : " not ") + "offline.<br/>\r\n");
+        getLogService().writeLog(aUser, " turned game offline to " + Utils.isOffline() + ".");
+      }
     }
     if (command.toLowerCase().startsWith(ADMIN_KICK))
     {
@@ -195,7 +214,7 @@ public class AdminCommand extends NormalCommand
       {
         throw new MudException("Expected admin kick command in the shape of 'admin kick personname minutes'.");
       }
-      Integer minutes = 0;
+      int minutes = 0;
       User person = personService.getActiveUser(commands[2]);
       if (person == null)
       {
@@ -205,7 +224,7 @@ public class AdminCommand extends NormalCommand
       {
         try
         {
-          minutes = Integer.valueOf(commands[3]);
+          minutes = Integer.parseInt(commands[3]);
           if (minutes <= 0)
           {
             throw new NumberFormatException("Expected number bigger than zero.");
@@ -219,27 +238,28 @@ public class AdminCommand extends NormalCommand
       person.deactivate();
       personService.sendWall(administrator.getName() + " causes " + person.getName() + " to cease to exist for " + minutes + " minutes.<br/>\n");
       getLogService().writeLog(person,
-          " has been kicked out of the game by " + aUser.getName() + " for " + minutes + " minutes.");
+        " has been kicked out of the game by " + aUser.getName() + " for " + minutes + " minutes.");
     }
     if (command.equalsIgnoreCase(ADMIN_HELP))
     {
       communicationService.writeMessage("Possible commands are:<ul>"
-          + "<li>admin help - this help text</li>"
-          + "<li>admin wall &lt;message&gt; - pages all users with the message entered</li>"
-          + "<li>admin chatline &lt;chatline&gt; - shows all users on a chatline</li>"
-          + "<li>admin chatlines - shows all available chatlines, with info</li>"
-          + "<li>admin kick &lt;playername&gt; [&lt;minutes&gt;] - kicks a user off the game. When the minutes are " +
-          "provided,"
-          + "said user will not be able to logon for that many minutes.</li>"
-          + "<li>admin frog &lt;playername&gt; [&lt;amount&gt;] - turns the user into a frog, automatically turns " +
-          "back after [amount] ribbits."
-          + "<li>admin jackass &lt;playername&gt; [&lt;amount&gt;] - turns the user into a jackass, automatically " +
-          "turns back after [amount] heehaws."
-          + "<li>admin visible [on | off] - makes an administrator not show up in the wholist or in a room.</li>"
-          + "<li>admin runevent &lt;eventid&gt; - runs an event, in order to see if it works.</li>"
-          + "<li>admin reset commands - reset the cached <i>special</i> commands."
-          + "Necessary if a command has been deleted, added or changed.</li>"
-          + "</ul>\r\n");
+        + "<li>admin help - this help text</li>"
+        + "<li>admin wall &lt;message&gt; - pages all users with the message entered</li>"
+        + "<li>admin chatline &lt;chatline&gt; - shows all users on a chatline</li>"
+        + "<li>admin chatlines - shows all available chatlines, with info</li>"
+        + "<li>admin kick &lt;playername&gt; [&lt;minutes&gt;] - kicks a user off the game. When the minutes are " +
+        "provided,"
+        + "said user will not be able to logon for that many minutes.</li>"
+        + "<li>admin frog &lt;playername&gt; [&lt;amount&gt;] - turns the user into a frog, automatically turns " +
+        "back after [amount] ribbits."
+        + "<li>admin jackass &lt;playername&gt; [&lt;amount&gt;] - turns the user into a jackass, automatically " +
+        "turns back after [amount] heehaws."
+        + "<li>admin visible [on | off] - makes an administrator not show up in the wholist or in a room.</li>"
+        + "<li>admin offline <true | false> - shows if the game is offline/online and sets the game offline/online.</li>"
+        + "<li>admin runevent &lt;eventid&gt; - runs an event, in order to see if it works.</li>"
+        + "<li>admin reset commands - reset the cached <i>special</i> commands."
+        + "Necessary if a command has been deleted, added or changed.</li>"
+        + "</ul>\r\n");
     }
     return aUser.getRoom();
   }
@@ -247,16 +267,16 @@ public class AdminCommand extends NormalCommand
   private void writeUsersOfChatline(Chatline chatline, PersonCommunicationService communicationService)
   {
     String table =
-        "<table><tr><th>Names</th></tr>" +
-            chatline.getUsers().stream()
-                .map(Chatlineusers::getUser)
-                .map(Person::getName)
-                .sorted()
-                .map(username ->
-                    "<tr><td>" + username +
-                        "</td></tr>")
-                .collect(Collectors.joining()) +
-            "</table><br/>\r\n";
+      "<table><tr><th>Names</th></tr>" +
+        chatline.getUsers().stream()
+          .map(Chatlineusers::getUser)
+          .map(Person::getName)
+          .sorted()
+          .map(username ->
+            "<tr><td>" + username +
+              "</td></tr>")
+          .collect(Collectors.joining()) +
+        "</table><br/>\r\n";
     communicationService.writeMessage(table);
   }
 

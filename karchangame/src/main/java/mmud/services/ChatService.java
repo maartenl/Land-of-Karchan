@@ -56,7 +56,7 @@ public class ChatService
   {
     LOGGER.fine(MessageFormat.format("hasRights: {0} has rights to chatline {1} ({2}{3}).", aUser.getName(),
         chatline.getChatname(), aUser.getGod(), chatline.getOwner() != null ? chatline.getOwner().getName() : null));
-    return !(aUser.getGod() == God.GOD || aUser.equals(chatline.getOwner()));
+    return !(aUser.isGod() || aUser.equals(chatline.getOwner()));
   }
 
   public Optional<Chatline> getChatline(@Nonnull String chatlinename)

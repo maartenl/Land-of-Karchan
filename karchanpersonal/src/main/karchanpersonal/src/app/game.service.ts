@@ -98,7 +98,13 @@ export class GameService {
   public processCommand(command: string, offset: number | null | undefined, log: boolean): Observable<Display> {
     const params = log ? ("?offset=" + offset + "&log=true") : "";
     const url: string = this.getGameUrl() + 'play' + environment.postfix + params;
-    return this.http.post<Display>(url, command);
+    return this.http.post<Display>(url, command)
+      .pipe(
+        catchError(err => {
+          this.handleError(err);
+          return [];
+        })
+      );
   }
 
   public getLog(): Observable<Log> {

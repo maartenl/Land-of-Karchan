@@ -16,12 +16,18 @@
  */
 package mmud;
 
+import jakarta.ws.rs.core.Response;
+import mmud.database.entities.characters.Person;
+import mmud.exceptions.MudWebException;
+
 public class Utils
 {
 
   private Utils()
   {
   }
+
+  private static boolean offline = false;
 
   /**
    * Indicates the game is offline for maintenance.
@@ -30,8 +36,19 @@ public class Utils
    */
   public static boolean isOffline()
   {
-    // TODO: put some env var here.
-    return false;
+    return Utils.offline;
+  }
+
+  public static void setOffline(boolean offline)
+  {
+    Utils.offline = offline;
+  }
+
+  public static void throwIfOffline(Person person) {
+    if (Utils.isOffline() && !person.isGod())
+    {
+      throw new MudWebException(person.getName(), "Game is offline", Response.Status.BAD_REQUEST);
+    }
   }
 
   /**
