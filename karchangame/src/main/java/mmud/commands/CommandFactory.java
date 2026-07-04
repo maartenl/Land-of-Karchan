@@ -131,6 +131,7 @@ public class CommandFactory
     theCommandStructure.put("go", () -> new GoCommand(
             "go (up|down|north|south|east|west)?"));
     theCommandStructure.put("help", () -> new HelpCommand("help( (\\w)+)?"));
+    theCommandStructure.put("man", () -> new HelpCommand("man( (\\w)+)?"));
     theCommandStructure.put("show ignoring", () -> new IgnoringCommand(
             "show ignoring"));
     theCommandStructure.put("fully", () -> new IgnoreCommand(
