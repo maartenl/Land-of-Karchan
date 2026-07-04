@@ -115,6 +115,8 @@ public class AdminCharacter
   public String wieldleft;
   public String wieldright;
   public String wieldboth;
+  public String leading;
+  public String riding;
   public String wearhead;
   public String wearneck;
   public String weartorso;

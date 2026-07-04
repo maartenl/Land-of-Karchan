@@ -40,6 +40,7 @@
         <fieldset class="form-group">
           <label for="discriminator">Discriminator</label>
           <input type="number" class="form-control" id="discriminator" [formField]="form.discriminator">
+          <small id="contents" class="form-text text-muted">Possibilities are 0 (normal), 1 (shopkeeper list), 2 (board).</small>
         </fieldset>
         <fieldset class="form-group">
           <label for="eatable">Eatable</label>
@@ -64,7 +65,7 @@
           <label for="wieldable">Wieldable</label>
           <input type="text" class="form-control" id="wieldable" [formField]="form.wieldable">
           <small id="contents" class="form-text text-muted">Possibilities are WIELD_LEFT, WIELD_RIGHT,
-            WIELD_BOTH.</small>
+            WIELD_BOTH, RIDING, LEADING.</small>
         </fieldset>
         <fieldset class="form-group">
           <label for="copper">Copper</label>

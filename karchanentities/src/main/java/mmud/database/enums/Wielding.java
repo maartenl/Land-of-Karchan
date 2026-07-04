@@ -23,23 +23,24 @@ import java.util.Set;
 
 /**
  * @author maartenl
+ * @see Wearing
  */
 public enum Wielding
 {
 
   WIELD_LEFT(1, "with %SHISHER left hand"),
   WIELD_RIGHT(2, "with %SHISHER right hand"),
-  WIELD_BOTH(4, "with both %SHISHER hands");
+  WIELD_BOTH(4, "with both %SHISHER hands"),
+  RIDING(8, "riding"),
+  LEADING(16, "leading");
   private final int bitmask;
   private final String description;
 
   /**
    * Constructor for the enum.
    *
-   * @param aVal  the integer value (database)
-   * @param str   the description of use in communication
-   * @param parse for parsing commands, contains one word indicating the
-   *              lefthand,righthand or bothhands.
+   * @param bitmask     the integer value (database), can be a combination of.
+   * @param description the description of use in communication
    */
   private Wielding(int bitmask, String description)
   {
@@ -185,6 +186,10 @@ public enum Wielding
       case "right":
       case "righthand":
         return Wielding.WIELD_RIGHT;
+      case "riding":
+        return Wielding.RIDING;
+      case "leading":
+        return Wielding.LEADING;
       default:
         return null;
     }

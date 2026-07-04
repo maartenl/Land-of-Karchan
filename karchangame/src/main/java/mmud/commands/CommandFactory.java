@@ -22,6 +22,7 @@ import java.util.function.BiConsumer;
 import java.util.logging.Logger;
 import java.util.regex.PatternSyntaxException;
 
+import mmud.commands.items.*;
 import mmud.constants.Emotions;
 import mmud.commands.communication.*;
 import mmud.commands.guild.AcceptCommand;
@@ -38,30 +39,6 @@ import mmud.commands.guild.RankChangeCommand;
 import mmud.commands.guild.RankDeleteCommand;
 import mmud.commands.guild.RejectCommand;
 import mmud.commands.guild.RemoveCommand;
-import mmud.commands.items.BuyCommand;
-import mmud.commands.items.CloseCommand;
-import mmud.commands.items.DestroyCommand;
-import mmud.commands.items.DisarmCommand;
-import mmud.commands.items.DrinkCommand;
-import mmud.commands.items.DropCommand;
-import mmud.commands.items.EatCommand;
-import mmud.commands.items.GetCommand;
-import mmud.commands.items.GiveCommand;
-import mmud.commands.items.InventoryCommand;
-import mmud.commands.items.LockCommand;
-import mmud.commands.items.LookAtCommand;
-import mmud.commands.items.LookInCommand;
-import mmud.commands.items.OpenCommand;
-import mmud.commands.items.PutCommand;
-import mmud.commands.items.ReadCommand;
-import mmud.commands.items.RetrieveCommand;
-import mmud.commands.items.SellCommand;
-import mmud.commands.items.UndressCommand;
-import mmud.commands.items.UnlockCommand;
-import mmud.commands.items.UnwearCommand;
-import mmud.commands.items.UnwieldCommand;
-import mmud.commands.items.WearCommand;
-import mmud.commands.items.WieldCommand;
 import mmud.commands.movement.DownCommand;
 import mmud.commands.movement.EastCommand;
 import mmud.commands.movement.GoCommand;
@@ -184,6 +161,14 @@ public class CommandFactory
       "disarm"));
     theCommandStructure.put("wield", () -> new WieldCommand(
       "wield( (\\w|-)+){1,} with (\\w)+"));
+    theCommandStructure.put("ride", () -> new RidingCommand(
+      "ride( (\\w|-)+){1,}"));
+    theCommandStructure.put("lead", () -> new LeadingCommand(
+      "lead( (\\w|-)+){1,}"));
+    theCommandStructure.put("stop riding", () -> new StopRidingCommand(
+      "stop riding"));
+    theCommandStructure.put("stop leading", () -> new StopLeadingCommand(
+      "stop leading"));
     theCommandStructure.put("unwield", () -> new UnwieldCommand(
       "unwield from (\\w)+"));
     theCommandStructure.put("drop", () -> new DropCommand("drop( (\\w|-)+){1,}"));

@@ -26,9 +26,12 @@ import mmud.database.entities.game.Admin;
 import mmud.database.entities.game.Area;
 import mmud.database.entities.game.Guild;
 import mmud.database.entities.game.Room;
+import mmud.database.entities.items.ItemDefinition;
 import mmud.database.enums.Sex;
 import mmud.exceptions.MudException;
 import mmud.services.CommunicationService;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * Generates constants for use in testcases.
@@ -190,4 +193,58 @@ public class TestingConstants
     return person;
   }
 
+  public static ItemDefinition getPick()
+  {
+    ItemDefinition itemDefinition = new ItemDefinition();
+    itemDefinition.setId(2L);
+    itemDefinition.setAdjectives("strong, sharp, iron");
+    itemDefinition.setName("pick");
+    itemDefinition.setCopper(1);
+    itemDefinition.setWeight(35);
+    itemDefinition.setNotes("Some notes");
+    itemDefinition.setWieldable("WIELD_BOTH");
+    itemDefinition.setTitle("Pick");
+    itemDefinition.setGetable(true);
+    itemDefinition.setDropable(true);
+    itemDefinition.setVisible(true);
+    itemDefinition.setDescription("<p>A pick</p>");
+    itemDefinition.setReaddescription("<p>A pick</p>");
+    return itemDefinition;
+  }
+
+  public static ItemDefinition getDog()
+  {
+    ItemDefinition itemDefinition = new ItemDefinition();
+    itemDefinition.setId(3L);
+    itemDefinition.setAdjectives("brown, scruffy");
+    itemDefinition.setName("dog");
+    itemDefinition.setCopper(1);
+    itemDefinition.setWeight(35);
+    itemDefinition.setNotes("Some notes");
+    itemDefinition.setWieldable("LEADING");
+    itemDefinition.setTitle("Dog");
+    itemDefinition.setGetable(true);
+    itemDefinition.setDropable(true);
+    itemDefinition.setVisible(true);
+    itemDefinition.setDescription("<p>A dog</p>");
+    return itemDefinition;
+  }
+
+  public static ItemDefinition getHorse()
+  {
+    ItemDefinition itemDefinition = new ItemDefinition();
+    itemDefinition.setId(4L);
+    itemDefinition.setAdjectives("imposing, black");
+    itemDefinition.setName("horse");
+    itemDefinition.setCopper(111);
+    itemDefinition.setWeight(135);
+    itemDefinition.setNotes("Some notes");
+    itemDefinition.setWieldable("RIDING");
+    itemDefinition.setTitle("An imposing black Stallion");
+    itemDefinition.setGetable(true);
+    itemDefinition.setDropable(true);
+    itemDefinition.setVisible(true);
+    itemDefinition.setDescription("<p>A horse</p>");
+    return itemDefinition;
+  }
 }

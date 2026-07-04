@@ -770,9 +770,10 @@ public class ItemDefinition implements Serializable, Ownage
   }
 
   /**
-   * Indicates the type of item. Two values are currently available
-   * 0, which is normal, and 1 which is a shop.
-   *
+   * Indicates what kind of item it is. Current values are used:
+   * <ul><li>0, a normal item</li>
+   * <li>1, a shopkeeper list</li>
+   * <li>2, a writable item like a board</li></ul>
    * @return number indicating the discriminator.
    */
   public Integer getDiscriminator()

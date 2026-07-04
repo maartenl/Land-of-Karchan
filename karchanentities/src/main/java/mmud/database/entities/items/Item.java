@@ -107,10 +107,7 @@ abstract public class Item implements Serializable, DisplayInterface, AttributeW
   private LocalDateTime creation;
 
   /**
-   * Indicates what kind of item it is. Current values are used:
-   * <ul><li>0, a normal item</li>
-   * <li>1, a shopkeeper list</li>
-   * <li>2, a writable item like a board</li></ul>
+   * @see ItemDefinition#getDiscriminator()
    */
   @Basic(optional = false)
   @NotNull
