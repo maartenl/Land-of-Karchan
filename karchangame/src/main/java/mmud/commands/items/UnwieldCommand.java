@@ -24,6 +24,7 @@ import mmud.commands.*;
 import mmud.database.entities.characters.User;
 import mmud.database.entities.game.DisplayInterface;
 import mmud.database.entities.items.Item;
+import mmud.database.enums.Wearing;
 import mmud.database.enums.Wielding;
 import mmud.exceptions.MudException;
 import mmud.services.CommunicationService;
@@ -35,7 +36,7 @@ import mmud.services.CommunicationService;
  * @author maartenl
  * @see WieldCommand
  */
-public class UnwieldCommand extends NormalCommand
+public class UnwieldCommand extends NormalCommand implements ItemCommand
 {
 
   public UnwieldCommand(String aRegExpr)

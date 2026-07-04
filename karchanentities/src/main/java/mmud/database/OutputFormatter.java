@@ -43,7 +43,7 @@ public class OutputFormatter
     {
       return null;
     }
-    if (string.equals(""))
+    if (string.isEmpty())
     {
       return "";
     }

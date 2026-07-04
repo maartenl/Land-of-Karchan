@@ -37,145 +37,145 @@ import mmud.services.PersonCommunicationService;
  * Sells an item to a shopkeeper. Syntax : sell [&lt;amount&gt;] &lt;item&gt; to &lt;character&gt;.
  * For example "sell bucket to Karcas".
  *
- * @see BuyCommand
  * @author maartenl
+ * @see BuyCommand
  */
-public class SellCommand extends NormalCommand
+public class SellCommand extends NormalCommand implements ItemCommand
 {
 
-    public SellCommand(String aRegExpr)
+  public SellCommand(String aRegExpr)
+  {
+    super(aRegExpr);
+  }
+
+  /**
+   * Tries out the sell command. There are a couple of requirements that need
+   * to be met, before a successful sale takes place.
+   * <ol>
+   * <li>command struct. should be "<I>sell [&lt;amount&gt;] &lt;item&gt; to
+   * &lt;character&gt;</I>", for example: "<I>sell gold ring to Karcas</I>".</li>
+   * <li>keeper buying the item should</li>
+   * <ol>
+   * <li>exist,</li>
+   * <li>be in the same room and</li>
+   * <li>
+   * have a god==4 to indicate a "keeper" and</li>
+   * <li>has enough money</li>
+   * </ol>
+   * <li>the customer should have the item</li>
+   * <li>the item is not being wielded</li>
+   * <li>the item is not being worn</li>
+   * <li>the item itself should <I>NOT</I> have a attribute called
+   * "notsellable".</li>
+   * <li>the item should not contain any items</li>
+   * </ol>
+   * A best effort is tried, this means the following sequence of events:
+   * <ol>
+   * <li>the item is transferred into the inventory of the keeper</li>
+   * <li>money is transferred into the inventory of the customer</li>
+   * <li>continue with next item</li>
+   * </ol>
+   *
+   * @param command the command entered.
+   * @param aUser   the character doing the selling.
+   * @return a simple displayinterface, in our case the room.
+   */
+  @Override
+  public DisplayInterface run(String command, User aUser) throws MudException
+  {
+    PersonCommunicationService communicationService = CommunicationService.getCommunicationService(aUser);
+    List<String> parsed = new ArrayList<>(Arrays.asList(parseCommand(command)));
+    parsed.remove(0); // remove "sell"
+    String shopkeeperName = parsed.get(parsed.size() - 1);
+    parsed.remove(parsed.size() - 1); // remove shopkeeper
+    parsed.remove(parsed.size() - 1); // remove "to"
+    int amount = 1;
+    try
     {
-        super(aRegExpr);
+      amount = Integer.parseInt(parsed.get(0));
+      parsed.remove(0);
+    } catch (NumberFormatException e)
+    {// do nothing here, we assume we need to drop only one item.
     }
-
-    /**
-     * Tries out the sell command. There are a couple of requirements that need
-     * to be met, before a successful sale takes place.
-     * <ol>
-     * <li>command struct. should be "<I>sell [&lt;amount&gt;] &lt;item&gt; to
-     * &lt;character&gt;</I>", for example: "<I>sell gold ring to Karcas</I>".</li>
-     * <li>keeper buying the item should</li>
-     * <ol>
-     * <li>exist,</li>
-     * <li>be in the same room and</li>
-     * <li>
-     * have a god==4 to indicate a "keeper" and</li>
-     * <li>has enough money</li>
-     * </ol>
-     * <li>the customer should have the item</li>
-     * <li>the item is not being wielded</li>
-     * <li>the item is not being worn</li>
-     * <li>the item itself should <I>NOT</I> have a attribute called
-     * "notsellable".</li>
-     * <li>the item should not contain any items</li>
-     * </ol>
-     * A best effort is tried, this means the following sequence of events:
-     * <ol>
-     * <li>the item is transferred into the inventory of the keeper</li>
-     * <li>money is transferred into the inventory of the customer</li>
-     * <li>continue with next item</li>
-     * </ol>
-     *
-     * @param command the command entered.
-     * @param aUser the character doing the selling.
-     * @return a simple displayinterface, in our case the room.
-     */
-    @Override
-    public DisplayInterface run(String command, User aUser) throws MudException
+    if (amount <= 0)
     {
-      PersonCommunicationService communicationService = CommunicationService.getCommunicationService(aUser);
-        List<String> parsed = new ArrayList<>(Arrays.asList(parseCommand(command)));
-        parsed.remove(0); // remove "sell"
-        String shopkeeperName = parsed.get(parsed.size() - 1);
-        parsed.remove(parsed.size() - 1); // remove shopkeeper
-        parsed.remove(parsed.size() - 1); // remove "to"
-        int amount = 1;
-        try
-        {
-            amount = Integer.parseInt(parsed.get(0));
-            parsed.remove(0);
-        } catch (NumberFormatException e)
-        {// do nothing here, we assume we need to drop only one item.
-        }
-        if (amount <= 0)
-        {
-            communicationService.writeMessage("That is an illegal amount.<br/>\n");
-            return aUser.getRoom();
-        }
-        // find the item on ourselves
-        List<Item> itemsFound = aUser.findItems(parsed);
-        if (itemsFound.isEmpty())
-        {
-            communicationService.writeMessage("You don't have that.<br/>\n");
-            return aUser.getRoom();
-        }
-        if (itemsFound.size() < amount)
-        {
-            communicationService.writeMessage("You do not have that many items in your inventory.<br/>\r\n");
-            return aUser.getRoom();
-        }
-        Person keeper = aUser.getRoom().getPerson(shopkeeperName);
-        if (keeper == null)
-        {
-            communicationService.writeMessage("Unable to locate shopkeeper.<br/>\r\n");
-            return aUser.getRoom();
-        }
-        if (keeper.getGod() != God.SHOPKEEPER)
-        {
-            communicationService.writeMessage("That's not a shopkeeper!<br/>\r\n");
-            return aUser.getRoom();
-        }
-        Shopkeeper shopkeeper = (Shopkeeper) keeper;
-      boolean sold = false;
-      ItemService itemService = getItemService();
-        for (Item item : itemsFound)
-        {
-            // item is not used.
-            if (item.getCopper() <= 1)
-            {
-                String message = "That item is not worth anything.";
-                CommunicationService.getCommunicationService(aUser.getRoom()).sendMessage(shopkeeper, aUser,
-                        "%SNAME say%VERB2 [to %TNAME] : " + message
-                        + "<br/>\r\n");
-                continue;
-            }
-            if (shopkeeper.getCopper() < item.getCopper())
-            {
-                communicationService.writeMessage(shopkeeper.getName()
-                        + " mutters something about not having enough money.<br/>\r\n");
-                break;
-            }
-            if (!aUser.unused(item))
-            {
-                communicationService.writeMessage("You are wearing or wielding this item.<BR>\r\n");
-                continue;
-            }
-            if (!item.isSellable())
-            {
-                communicationService.writeMessage("You cannot sell that item.<BR>\r\n");
-                continue;
-            }
-          Integer moneyPaid = itemService.sell(item, aUser, shopkeeper);
-            if (moneyPaid == null)
-            {
-                continue;
-            }
-            CommunicationService.getCommunicationService(aUser.getRoom()).sendMessage(aUser, "%SNAME sold%VERB2 " + item.getDescription() + " to " + shopkeeper.getName() + " for " + OutputFormatter.getDescriptionOfMoney(moneyPaid) + ".<br/>\r\n");
-            sold = true;
-            amount--;
-            if (amount == 0)
-            {
-                return aUser.getRoom();
-            }
-
-        }
-        if (!sold)
-        {
-            communicationService.writeMessage("You did not sell anything.<br/>\r\n");
-        } else
-        {
-            communicationService.writeMessage("You sold some of the items.<br/>\r\n");
-        }
+      communicationService.writeMessage("That is an illegal amount.<br/>\n");
+      return aUser.getRoom();
+    }
+    // find the item on ourselves
+    List<Item> itemsFound = aUser.findItems(parsed);
+    if (itemsFound.isEmpty())
+    {
+      communicationService.writeMessage("You don't have that.<br/>\n");
+      return aUser.getRoom();
+    }
+    if (itemsFound.size() < amount)
+    {
+      communicationService.writeMessage("You do not have that many items in your inventory.<br/>\r\n");
+      return aUser.getRoom();
+    }
+    Person keeper = aUser.getRoom().getPerson(shopkeeperName);
+    if (keeper == null)
+    {
+      communicationService.writeMessage("Unable to locate shopkeeper.<br/>\r\n");
+      return aUser.getRoom();
+    }
+    if (keeper.getGod() != God.SHOPKEEPER)
+    {
+      communicationService.writeMessage("That's not a shopkeeper!<br/>\r\n");
+      return aUser.getRoom();
+    }
+    Shopkeeper shopkeeper = (Shopkeeper) keeper;
+    boolean sold = false;
+    ItemService itemService = getItemService();
+    for (Item item : itemsFound)
+    {
+      // item is not used.
+      if (item.getCopper() <= 1)
+      {
+        String message = "That item is not worth anything.";
+        CommunicationService.getCommunicationService(aUser.getRoom()).sendMessage(shopkeeper, aUser,
+          "%SNAME say%VERB2 [to %TNAME] : " + message
+            + "<br/>\r\n");
+        continue;
+      }
+      if (shopkeeper.getCopper() < item.getCopper())
+      {
+        communicationService.writeMessage(shopkeeper.getName()
+          + " mutters something about not having enough money.<br/>\r\n");
+        break;
+      }
+      if (!aUser.unused(item))
+      {
+        communicationService.writeMessage("You are wearing or wielding this item.<BR>\r\n");
+        continue;
+      }
+      if (!item.isSellable())
+      {
+        communicationService.writeMessage("You cannot sell that item.<BR>\r\n");
+        continue;
+      }
+      Integer moneyPaid = itemService.sell(item, aUser, shopkeeper);
+      if (moneyPaid == null)
+      {
+        continue;
+      }
+      CommunicationService.getCommunicationService(aUser.getRoom()).sendMessage(aUser, "%SNAME sold%VERB2 " + item.getDescription() + " to " + shopkeeper.getName() + " for " + OutputFormatter.getDescriptionOfMoney(moneyPaid) + ".<br/>\r\n");
+      sold = true;
+      amount--;
+      if (amount == 0)
+      {
         return aUser.getRoom();
+      }
+
     }
+    if (!sold)
+    {
+      communicationService.writeMessage("You did not sell anything.<br/>\r\n");
+    } else
+    {
+      communicationService.writeMessage("You sold some of the items.<br/>\r\n");
+    }
+    return aUser.getRoom();
+  }
 }

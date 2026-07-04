@@ -37,11 +37,10 @@ import mmud.services.PersonCommunicationService;
  * Buys an item from a shopkeeper. Syntax : buy [&lt;amount&gt;] &lt;item&gt;
  * from &lt;character&gt;. For example "buy bucket to Karcas".
  *
- *
- * @see SellCommand
  * @author maartenl
+ * @see SellCommand
  */
-public class BuyCommand extends NormalCommand
+public class BuyCommand extends NormalCommand implements ItemCommand
 {
 
   public BuyCommand(String aRegExpr)
@@ -75,7 +74,7 @@ public class BuyCommand extends NormalCommand
    * </ol>
    *
    * @param command the command entered.
-   * @param aUser the character doing the buying.
+   * @param aUser   the character doing the buying.
    * @return a simple displayinterface, in our case the room.
    */
   @Override
@@ -133,8 +132,8 @@ public class BuyCommand extends NormalCommand
       {
         String message = "That item is not worth anything.";
         CommunicationService.getCommunicationService(aUser.getRoom()).sendMessage(shopkeeper, aUser,
-                "%SNAME say%VERB2 [to %TNAME] : " + message
-                + "<br/>\r\n");
+          "%SNAME say%VERB2 [to %TNAME] : " + message
+            + "<br/>\r\n");
         continue;
       }
       if (!item.isBuyable())

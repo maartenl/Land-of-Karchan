@@ -40,7 +40,7 @@ import mmud.services.PersonCommunicationService;
  * @see GetCommand
  * @author maartenl
  */
-public class DropCommand extends NormalCommand
+public class DropCommand extends NormalCommand implements ItemCommand
 {
 
   public DropCommand(String aRegExpr)

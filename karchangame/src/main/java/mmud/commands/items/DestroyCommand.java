@@ -31,32 +31,33 @@ import mmud.services.CommunicationService;
  * Destroys an item from inventory. "destroy apple pie". Will nicely cleanup your inventory
  * without having to litter the floor with miscellaneous items. Very similar to the
  * drinking and eating of items.
+ *
  * @author maartenl
  */
-public class DestroyCommand extends NormalCommand
+public class DestroyCommand extends NormalCommand implements ItemCommand
 {
 
-    public DestroyCommand(String aRegExpr)
-    {
-        super(aRegExpr);
-    }
+  public DestroyCommand(String aRegExpr)
+  {
+    super(aRegExpr);
+  }
 
-    @Override
-    public DisplayInterface run(String command, User aUser) throws MudException
+  @Override
+  public DisplayInterface run(String command, User aUser) throws MudException
+  {
+    List<String> parsed = new ArrayList<>(Arrays.asList(parseCommand(command)));
+    parsed.remove(0); // remove "destroy"
+    // find the item on ourselves
+    List<Item> itemsFound = aUser.findItems(parsed);
+    if (itemsFound.isEmpty())
     {
-        List<String> parsed = new ArrayList<>(Arrays.asList(parseCommand(command)));
-        parsed.remove(0); // remove "destroy"
-        // find the item on ourselves
-        List<Item> itemsFound = aUser.findItems(parsed);
-        if (itemsFound.isEmpty())
-        {
-            CommunicationService.getCommunicationService(aUser).writeMessage("You don't have that.<br/>\n");
-            return aUser.getRoom();
-        }
-        final Item result = itemsFound.get(0);
-        CommunicationService.getCommunicationService(aUser.getRoom()).sendMessage(aUser, "%SNAME destroy%VERB2 "
-					+ result.getDescription() + ".<br/>\r\n");
-        aUser.destroyItem(result);
-        return aUser.getRoom();
+      CommunicationService.getCommunicationService(aUser).writeMessage("You don't have that.<br/>\n");
+      return aUser.getRoom();
     }
+    final Item result = itemsFound.get(0);
+    CommunicationService.getCommunicationService(aUser.getRoom()).sendMessage(aUser, "%SNAME destroy%VERB2 "
+      + result.getDescription() + ".<br/>\r\n");
+    aUser.destroyItem(result);
+    return aUser.getRoom();
+  }
 }

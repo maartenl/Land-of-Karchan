@@ -30,42 +30,43 @@ import mmud.services.CommunicationService;
 /**
  * Stop you wearing an item on you. Syntax: remove from &lt;body
  * position&gt;
- * @see WearCommand
+ *
  * @author maartenl
+ * @see WearCommand
  */
-public class UnwearCommand extends NormalCommand
+public class UnwearCommand extends NormalCommand implements ItemCommand
 {
 
-    public UnwearCommand(String aRegExpr)
-    {
-        super(aRegExpr);
-    }
+  public UnwearCommand(String aRegExpr)
+  {
+    super(aRegExpr);
+  }
 
-    @Override
-    public DisplayInterface run(String command, User aUser) throws MudException
+  @Override
+  public DisplayInterface run(String command, User aUser) throws MudException
+  {
+    List<String> parsed = new ArrayList<>(Arrays.asList(parseCommand(command)));
+    parsed.remove(0); // remove "remove"
+    parsed.remove(0); // remove "from"
+    // determine the appropriate body position entered by the
+    // user
+    String pos = parsed.get(0);
+    Wearing position = Wearing.parse(pos);
+    if (position == null)
     {
-        List<String> parsed = new ArrayList<>(Arrays.asList(parseCommand(command)));
-        parsed.remove(0); // remove "remove"
-        parsed.remove(0); // remove "from"
-        // determine the appropriate body position entered by the
-        // user
-        String pos = parsed.get(0);
-        Wearing position = Wearing.parse(pos);
-        if (position == null)
-        {
-            CommunicationService.getCommunicationService(aUser).writeMessage("Cannot wear something there.<br/>\r\n");
-            return aUser.getRoom();
-        }
-        Item item = aUser.wears(position);
-        if (item == null)
-        {
-            CommunicationService.getCommunicationService(aUser).writeMessage("You are not wearing anything there.<br/>\r\n");
-            return aUser.getRoom();
-        }
-        aUser.wear(null, position);
-        CommunicationService.getCommunicationService(aUser.getRoom()).sendMessage(aUser, "%SNAME remove%VERB2 "
-                + item.getDescription() + " from " + position.toString()
-                + ".<br/>\r\n");
-        return aUser.getRoom();
+      CommunicationService.getCommunicationService(aUser).writeMessage("Cannot wear something there.<br/>\r\n");
+      return aUser.getRoom();
     }
+    Item item = aUser.wears(position);
+    if (item == null)
+    {
+      CommunicationService.getCommunicationService(aUser).writeMessage("You are not wearing anything there.<br/>\r\n");
+      return aUser.getRoom();
+    }
+    aUser.wear(null, position);
+    CommunicationService.getCommunicationService(aUser.getRoom()).sendMessage(aUser, "%SNAME remove%VERB2 "
+      + item.getDescription() + " from " + position.toString()
+      + ".<br/>\r\n");
+    return aUser.getRoom();
+  }
 }

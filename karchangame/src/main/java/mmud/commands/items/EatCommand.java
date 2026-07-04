@@ -33,7 +33,7 @@ import mmud.services.PersonCommunicationService;
  *
  * @author maartenl
  */
-public class EatCommand extends NormalCommand
+public class EatCommand extends NormalCommand implements ItemCommand
 {
 
   public EatCommand(String aRegExpr)
@@ -66,7 +66,7 @@ public class EatCommand extends NormalCommand
       return aUser.getRoom();
     }
     CommunicationService.getCommunicationService(aUser.getRoom()).sendMessage(aUser, "%SNAME eat%VERB2 "
-            + item.getDescription() + ".<br/>\r\n");
+      + item.getDescription() + ".<br/>\r\n");
     //TODO increase eat stats
     aUser.destroyItem(item);
     return new DisplayInterface()

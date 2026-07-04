@@ -34,45 +34,46 @@ import mmud.services.PersonCommunicationService;
  * <li>read something in your inventory.
  * <li>read something in the room that you occupy
  * </ul>
+ *
  * @author maartenl
  */
-public class ReadCommand extends NormalCommand
+public class ReadCommand extends NormalCommand implements ItemCommand
 {
 
-    public ReadCommand(String aRegExpr)
-    {
-        super(aRegExpr);
-    }
+  public ReadCommand(String aRegExpr)
+  {
+    super(aRegExpr);
+  }
 
-    @Override
-    public DisplayInterface run(String command, User aUser) throws MudException
+  @Override
+  public DisplayInterface run(String command, User aUser) throws MudException
+  {
+    DisplayInterface result = null;
+    List<String> parsed = new ArrayList<>(Arrays.asList(parseCommand(command)));
+    parsed.remove(0); // remove "read"
+    // find the item on ourselves
+    List<Item> itemsFound = aUser.findItems(parsed);
+    if (itemsFound.isEmpty())
     {
-        DisplayInterface result = null;
-        List<String> parsed = new ArrayList<>(Arrays.asList(parseCommand(command)));
-        parsed.remove(0); // remove "read"
-        // find the item on ourselves
-        List<Item> itemsFound = aUser.findItems(parsed);
-        if (itemsFound.isEmpty())
-        {
-            // find the item in the room
-            itemsFound = aUser.getRoom().findItems(parsed);
-        }
-      final PersonCommunicationService communicationService = CommunicationService.getCommunicationService(aUser);
-        if (itemsFound.isEmpty())
-        {
-            communicationService.writeMessage("You don't know what to read.<br/>\n");
-            return aUser.getRoom();
-        }
-        for (Item item : itemsFound)
-        {
-            if (item.isReadable())
-            {
-                CommunicationService.getCommunicationService(aUser.getRoom()).sendMessage(aUser, "%SNAME read%VERB2 "
-                        + item.getDescription() + ".<br/>\r\n");
-                return item.getRead();
-            }
-        }
-        communicationService.writeMessage("You cannot read that.<br/>\n");
-        return aUser.getRoom();
+      // find the item in the room
+      itemsFound = aUser.getRoom().findItems(parsed);
     }
+    final PersonCommunicationService communicationService = CommunicationService.getCommunicationService(aUser);
+    if (itemsFound.isEmpty())
+    {
+      communicationService.writeMessage("You don't know what to read.<br/>\n");
+      return aUser.getRoom();
+    }
+    for (Item item : itemsFound)
+    {
+      if (item.isReadable())
+      {
+        CommunicationService.getCommunicationService(aUser.getRoom()).sendMessage(aUser, "%SNAME read%VERB2 "
+          + item.getDescription() + ".<br/>\r\n");
+        return item.getRead();
+      }
+    }
+    communicationService.writeMessage("You cannot read that.<br/>\n");
+    return aUser.getRoom();
+  }
 }

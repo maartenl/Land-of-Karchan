@@ -177,6 +177,8 @@ public class CommandFactory
       "put( (\\w|-)+){1,} in( (\\w|-)+){1,}"));
     theCommandStructure.put("retrieve", () -> new RetrieveCommand(
       "retrieve( (\\w|-)+){1,} from( (\\w|-)+){1,}"));
+    theCommandStructure.put("empty", () -> new EmptyCommand(
+      "empty( (\\w|-)+){1,}"));
     theCommandStructure.put("lock", () -> new LockCommand(
       "lock( (\\w|-)+){1,} with( (\\w|-)+){1,}"));
     theCommandStructure.put("unlock", () -> new UnlockCommand(

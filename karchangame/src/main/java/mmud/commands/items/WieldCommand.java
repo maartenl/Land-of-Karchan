@@ -36,7 +36,7 @@ import mmud.services.PersonCommunicationService;
  * @author maartenl
  * @see UnwieldCommand
  */
-public class WieldCommand extends NormalCommand
+public class WieldCommand extends NormalCommand implements ItemCommand
 {
 
   public WieldCommand(String aRegExpr)

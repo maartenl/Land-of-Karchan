@@ -26,26 +26,27 @@ import mmud.services.CommunicationService;
 /**
  * You start removing what you are carrying in either left hand, right hand
  * or both hands.
- * @see UndressCommand
+ *
  * @author maartenl
+ * @see UndressCommand
  */
-public class DisarmCommand extends NormalCommand
+public class DisarmCommand extends NormalCommand implements ItemCommand
 {
 
-    public DisarmCommand(String aRegExpr)
-    {
-        super(aRegExpr);
-    }
+  public DisarmCommand(String aRegExpr)
+  {
+    super(aRegExpr);
+  }
 
-    @Override
-    public DisplayInterface run(String command, User aUser) throws MudException
+  @Override
+  public DisplayInterface run(String command, User aUser) throws MudException
+  {
+    for (Wielding position : Wielding.values())
     {
-        for (Wielding position : Wielding.values())
-        {
-            aUser.wield(null, position);
-        }
-        CommunicationService.getCommunicationService(aUser.getRoom()).sendMessageExcl(aUser, "%SNAME disarms %SHIMHERself completely.<br/>\r\n");
-        CommunicationService.getCommunicationService(aUser).writeMessage("You disarm yourself completely.<br/>\r\n");
-        return aUser.getRoom();
+      aUser.wield(null, position);
     }
+    CommunicationService.getCommunicationService(aUser.getRoom()).sendMessageExcl(aUser, "%SNAME disarms %SHIMHERself completely.<br/>\r\n");
+    CommunicationService.getCommunicationService(aUser).writeMessage("You disarm yourself completely.<br/>\r\n");
+    return aUser.getRoom();
+  }
 }

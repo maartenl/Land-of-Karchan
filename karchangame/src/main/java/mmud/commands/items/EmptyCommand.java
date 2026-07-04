@@ -16,10 +16,6 @@
  */
 package mmud.commands.items;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-
 import mmud.commands.NormalCommand;
 import mmud.database.entities.characters.User;
 import mmud.database.entities.game.DisplayInterface;
@@ -30,24 +26,30 @@ import mmud.services.CommunicationService;
 import mmud.services.ItemService;
 import mmud.services.PersonCommunicationService;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Set;
+
+import static mmud.database.OutputFormatter.startWithCapital;
+
 /**
  * /**
- * Retrieve an item from a container: "retrieve ring from sack". Requirements
+ * Empty a container in your inventory: "empy sack". Requirements
  * for it to be successfull:
  * <ul>
- * <li>the item to retrieve must be in this container
- * <li>the container must be in your inventory or in the room
+ * <li>the container must be in your inventory
  * <li>the container must be a container
  * </ul>
- * The possible syntax can range from: "retrieve ring from sack" to
- * "retrieve 8 old gold shiny ring from new leather beaten sack".
+ * The possible syntax can range from: "empty sack" to
+ * "empty new leather beaten sack".
  *
- * @see PutCommand
+ * @see RetrieveCommand
  */
-public class RetrieveCommand extends NormalCommand implements ItemCommand
+public class EmptyCommand extends NormalCommand implements ItemCommand
 {
 
-  public RetrieveCommand(String aRegExpr)
+  public EmptyCommand(String aRegExpr)
   {
     super(aRegExpr);
   }
@@ -57,50 +59,16 @@ public class RetrieveCommand extends NormalCommand implements ItemCommand
   {
     // first is find the item
     List<String> parsed = new ArrayList<>(Arrays.asList(parseCommand(command)));
-    parsed.remove(0); // remove "retrieve"
-    int amount = 1;
-    try
-    {
-      amount = Integer.parseInt(parsed.get(0));
-      parsed.remove(0);
-    } catch (NumberFormatException e)
-    {// do nothing here, we assume we need to retrieve only one item.
-    }
+    parsed.removeFirst(); // remove "empty"
     final PersonCommunicationService communicationService = CommunicationService.getCommunicationService(aUser);
-    if (amount <= 0)
-    {
-      communicationService.writeMessage("That is an illegal amount.<br/>\n");
-      return aUser.getRoom();
-    }
-    int pos = 0;
-    for (String str : parsed)
-    {
-      if (str.equalsIgnoreCase("from"))
-      {
-        break;
-      }
-      pos++;
-    }
-    if (pos == parsed.size())
-    {
-      // no from found.
-      throw new ParseException();
-    }
-    List<String> itemDescription = parsed.subList(0, pos);
-    List<String> containerDescription = parsed.subList(pos + 1, parsed.size());
     // find the container on ourselves
-    List<Item> containerFound = aUser.findItems(containerDescription);
+    List<Item> containerFound = aUser.findItems(parsed);
     if (containerFound.isEmpty())
     {
-      // find the item in the room
-      containerFound = aUser.getRoom().findItems(containerDescription);
-    }
-    if (containerFound.isEmpty())
-    {
-      communicationService.writeMessage("No containers found that match that description.<br/>\n");
+      communicationService.writeMessage("No containers found in your inventory that match that description.<br/>\n");
       return aUser.getRoom();
     }
-    Item container = containerFound.get(0);
+    Item container = containerFound.getFirst();
     if (!container.isContainer())
     {
       communicationService.writeMessage(container.getDescription() + " is not a container.<br/>\n");
@@ -112,15 +80,10 @@ public class RetrieveCommand extends NormalCommand implements ItemCommand
       return aUser.getRoom();
     }
     // find the item on ourselves
-    List<Item> itemsFound = container.findItems(itemDescription);
+    Set<Item> itemsFound = container.getItems();
     if (itemsFound.isEmpty())
     {
-      communicationService.writeMessage("It doesn't contain that.<br/>\n");
-      return aUser.getRoom();
-    }
-    if (itemsFound.size() < amount)
-    {
-      communicationService.writeMessage("It doesn't contain enough requested items.<br/>\r\n");
+      communicationService.writeMessage("It is already empty.<br/>\n");
       return aUser.getRoom();
     }
     boolean retrieve = false;
@@ -134,13 +97,12 @@ public class RetrieveCommand extends NormalCommand implements ItemCommand
         {
           continue;
         }
-        CommunicationService.getCommunicationService(aUser.getRoom()).sendMessage(aUser, "%SNAME retrieve%VERB2 " + item.getDescription() + " from " + container.getDescription() + ".<br/>\r\n");
-        retrieve = true;
-        amount--;
-        if (amount == 0)
+        if (!retrieve)
         {
-          return aUser.getRoom();
+          CommunicationService.getCommunicationService(aUser.getRoom()).sendMessage(aUser, "%SNAME empty%VERB2 " + container.getDescription() + ".<br/>\r\n");
         }
+        retrieve = true;
+        CommunicationService.getCommunicationService(aUser.getRoom()).sendMessage(aUser, "%SNAME retrieve%VERB2 " + item.getDescription() + ".<br/>\r\n");
       }
     }
     if (!retrieve)
@@ -148,7 +110,7 @@ public class RetrieveCommand extends NormalCommand implements ItemCommand
       communicationService.writeMessage("You did not retrieve anything.<br/>");
     } else
     {
-      communicationService.writeMessage("You retrieved some items from the container.<br/>\r\n");
+      CommunicationService.getCommunicationService(aUser.getRoom()).sendMessage(aUser, startWithCapital(container.getDescription()) + " is now empty.<br/>\r\n");
     }
     return aUser.getRoom();
   }

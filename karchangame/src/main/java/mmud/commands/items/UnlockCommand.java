@@ -45,93 +45,93 @@ import mmud.services.PersonCommunicationService;
  *
  * @see LockCommand
  */
-public class UnlockCommand extends NormalCommand
+public class UnlockCommand extends NormalCommand implements ItemCommand
 {
 
-    public UnlockCommand(String aRegExpr)
+  public UnlockCommand(String aRegExpr)
+  {
+    super(aRegExpr);
+  }
+
+  @Override
+  public DisplayInterface run(String command, User aUser) throws MudException
+  {
+    // first is find the item
+    List<String> parsed = new ArrayList<>(Arrays.asList(parseCommand(command)));
+    parsed.remove(0); // remove "lock"
+    int pos = 0;
+    for (String str : parsed)
     {
-        super(aRegExpr);
+      if (str.equalsIgnoreCase("with"))
+      {
+        break;
+      }
+      pos++;
+    }
+    if (pos == parsed.size())
+    {
+      // no in found.
+      throw new ParseException();
     }
 
-    @Override
-    public DisplayInterface run(String command, User aUser) throws MudException
+    List<String> itemDescription = parsed.subList(pos + 1, parsed.size());
+    List<String> containerDescription = parsed.subList(0, pos);
+    // find the container on ourselves
+    List<Item> containerFound = aUser.findItems(containerDescription);
+    if (containerFound.isEmpty())
     {
-        // first is find the item
-        List<String> parsed = new ArrayList<>(Arrays.asList(parseCommand(command)));
-        parsed.remove(0); // remove "lock"
-        int pos = 0;
-        for (String str : parsed)
-        {
-            if (str.equalsIgnoreCase("with"))
-            {
-                break;
-            }
-            pos++;
-        }
-        if (pos == parsed.size())
-        {
-            // no in found.
-            throw new ParseException();
-        }
-
-        List<String> itemDescription = parsed.subList(pos + 1, parsed.size());
-        List<String> containerDescription = parsed.subList(0, pos);
-        // find the container on ourselves
-        List<Item> containerFound = aUser.findItems(containerDescription);
-        if (containerFound.isEmpty())
-        {
-            // find the item in the room
-            containerFound = aUser.getRoom().findItems(containerDescription);
-        }
-      final PersonCommunicationService communicationService = CommunicationService.getCommunicationService(aUser);
-        if (containerFound.isEmpty())
-        {
-            communicationService.writeMessage("No containers found that match that description.<br/>\n");
-            return aUser.getRoom();
-        }
-        Item container = containerFound.get(0);
-        if (!container.isContainer())
-        {
-            communicationService.writeMessage(container.getDescription() + " is not a container.<br/>\n");
-            return aUser.getRoom();
-        }
-        if (container.isOpen())
-        {
-            communicationService.writeMessage(container.getDescription() + " is open.<br/>\n");
-            return aUser.getRoom();
-        }
-        if (!container.hasLock())
-        {
-            communicationService.writeMessage(container.getDescription()
-                    + " does not have a lock.<br/>\r\n");
-            return aUser.getRoom();
-        }
-        if (!container.isLocked())
-        {
-            communicationService.writeMessage(container.getDescription()
-                    + " is already unlocked.<br/>\r\n");
-            return aUser.getRoom();
-        }
-        // find the item on ourselves
-        List<Item> itemsFound = aUser.findItems(itemDescription);
-        if (itemsFound.isEmpty())
-        {
-            communicationService.writeMessage("You don't have that.<br/>\n");
-            return aUser.getRoom();
-        }
-        for (Item key : itemsFound)
-        {
-            if (aUser.unused(key) && !key.isContainer() && container.isKey(key))
-            {
-                // item is not used.
-                container.unlock();
-                CommunicationService.getCommunicationService(aUser.getRoom()).sendMessage(aUser, "%SNAME unlock%VERB2 "
-                        + container.getDescription() + " with "
-                        + key.getDescription() + ".<br/>\r\n");
-                return aUser.getRoom();
-            }
-        }
-        communicationService.writeMessage("It doesn't fit in the lock.<br/>");
+      // find the item in the room
+      containerFound = aUser.getRoom().findItems(containerDescription);
+    }
+    final PersonCommunicationService communicationService = CommunicationService.getCommunicationService(aUser);
+    if (containerFound.isEmpty())
+    {
+      communicationService.writeMessage("No containers found that match that description.<br/>\n");
+      return aUser.getRoom();
+    }
+    Item container = containerFound.get(0);
+    if (!container.isContainer())
+    {
+      communicationService.writeMessage(container.getDescription() + " is not a container.<br/>\n");
+      return aUser.getRoom();
+    }
+    if (container.isOpen())
+    {
+      communicationService.writeMessage(container.getDescription() + " is open.<br/>\n");
+      return aUser.getRoom();
+    }
+    if (!container.hasLock())
+    {
+      communicationService.writeMessage(container.getDescription()
+        + " does not have a lock.<br/>\r\n");
+      return aUser.getRoom();
+    }
+    if (!container.isLocked())
+    {
+      communicationService.writeMessage(container.getDescription()
+        + " is already unlocked.<br/>\r\n");
+      return aUser.getRoom();
+    }
+    // find the item on ourselves
+    List<Item> itemsFound = aUser.findItems(itemDescription);
+    if (itemsFound.isEmpty())
+    {
+      communicationService.writeMessage("You don't have that.<br/>\n");
+      return aUser.getRoom();
+    }
+    for (Item key : itemsFound)
+    {
+      if (aUser.unused(key) && !key.isContainer() && container.isKey(key))
+      {
+        // item is not used.
+        container.unlock();
+        CommunicationService.getCommunicationService(aUser.getRoom()).sendMessage(aUser, "%SNAME unlock%VERB2 "
+          + container.getDescription() + " with "
+          + key.getDescription() + ".<br/>\r\n");
         return aUser.getRoom();
+      }
     }
+    communicationService.writeMessage("It doesn't fit in the lock.<br/>");
+    return aUser.getRoom();
+  }
 }

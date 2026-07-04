@@ -25,26 +25,27 @@ import mmud.services.CommunicationService;
 
 /**
  * You start stripping.
- * @see UnwearCommand
+ *
  * @author maartenl
+ * @see UnwearCommand
  */
-public class UndressCommand extends NormalCommand
+public class UndressCommand extends NormalCommand implements ItemCommand
 {
 
-    public UndressCommand(String aRegExpr)
-    {
-        super(aRegExpr);
-    }
+  public UndressCommand(String aRegExpr)
+  {
+    super(aRegExpr);
+  }
 
-    @Override
-    public DisplayInterface run(String command, User aUser) throws MudException
+  @Override
+  public DisplayInterface run(String command, User aUser) throws MudException
+  {
+    for (Wearing position : Wearing.values())
     {
-        for (Wearing position : Wearing.values())
-        {
-            aUser.wear(null, position);
-        }
-        CommunicationService.getCommunicationService(aUser.getRoom()).sendMessageExcl(aUser, "%SNAME undresses completely.<br/>\r\n");
-        CommunicationService.getCommunicationService(aUser).writeMessage("You undress completely.<br/>\r\n");
-        return aUser.getRoom();
+      aUser.wear(null, position);
     }
+    CommunicationService.getCommunicationService(aUser.getRoom()).sendMessageExcl(aUser, "%SNAME undresses completely.<br/>\r\n");
+    CommunicationService.getCommunicationService(aUser).writeMessage("You undress completely.<br/>\r\n");
+    return aUser.getRoom();
+  }
 }

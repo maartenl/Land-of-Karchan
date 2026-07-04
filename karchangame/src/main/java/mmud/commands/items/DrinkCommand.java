@@ -29,63 +29,64 @@ import mmud.services.CommunicationService;
 
 /**
  * Drink an item: "drink beer".
+ *
  * @author maartenl
  */
-public class DrinkCommand extends NormalCommand
+public class DrinkCommand extends NormalCommand implements ItemCommand
 {
 
-    public DrinkCommand(String aRegExpr)
+  public DrinkCommand(String aRegExpr)
+  {
+    super(aRegExpr);
+  }
+
+  @Override
+  public DisplayInterface run(String command, User aUser) throws MudException
+  {
+    List<String> parsed = new ArrayList<>(Arrays.asList(parseCommand(command)));
+    parsed.remove(0); // remove "drink"
+    // find the item on ourselves
+    List<Item> itemsFound = aUser.findItems(parsed);
+    if (itemsFound.isEmpty())
     {
-        super(aRegExpr);
+      CommunicationService.getCommunicationService(aUser).writeMessage("You don't have that.<br/>\n");
+      return aUser.getRoom();
     }
-
-    @Override
-    public DisplayInterface run(String command, User aUser) throws MudException
+    final Item result = itemsFound.get(0);
+    if (!result.isDrinkable())
     {
-        List<String> parsed = new ArrayList<>(Arrays.asList(parseCommand(command)));
-        parsed.remove(0); // remove "drink"
-        // find the item on ourselves
-        List<Item> itemsFound = aUser.findItems(parsed);
-        if (itemsFound.isEmpty())
-        {
-            CommunicationService.getCommunicationService(aUser).writeMessage("You don't have that.<br/>\n");
-            return aUser.getRoom();
-        }
-        final Item result = itemsFound.get(0);
-        if (!result.isDrinkable())
-        {
-            CommunicationService.getCommunicationService(aUser).writeMessage("You cannot drink that.<BR>\r\n");
-            return aUser.getRoom();
-        }
-        if (!aUser.unused(result))
-        {
-            CommunicationService.getCommunicationService(aUser).writeMessage("You are using that.<BR>\r\n");
-            return aUser.getRoom();
-        }
-        CommunicationService.getCommunicationService(aUser.getRoom()).sendMessage(aUser, "%SNAME drink%VERB2 "
-                + result.getDescription() + ".<br/>\r\n");
-        //TODO increase drink stats
-        aUser.destroyItem(result);
-        return new DisplayInterface()
-        {
-
-            @Override
-            public String getMainTitle() throws MudException
-            {
-               return result.getDescription();
-            }
-
-            @Override
-            public String getImage() throws MudException
-            {
-                return result.getImage();
-            }
-
-            @Override
-            public String getBody() throws MudException
-            {
-                return result.getDrinkable();
-            }
-        };
+      CommunicationService.getCommunicationService(aUser).writeMessage("You cannot drink that.<BR>\r\n");
+      return aUser.getRoom();
     }
+    if (!aUser.unused(result))
+    {
+      CommunicationService.getCommunicationService(aUser).writeMessage("You are using that.<BR>\r\n");
+      return aUser.getRoom();
+    }
+    CommunicationService.getCommunicationService(aUser.getRoom()).sendMessage(aUser, "%SNAME drink%VERB2 "
+      + result.getDescription() + ".<br/>\r\n");
+    //TODO increase drink stats
+    aUser.destroyItem(result);
+    return new DisplayInterface()
+    {
+
+      @Override
+      public String getMainTitle() throws MudException
+      {
+        return result.getDescription();
+      }
+
+      @Override
+      public String getImage() throws MudException
+      {
+        return result.getImage();
+      }
+
+      @Override
+      public String getBody() throws MudException
+      {
+        return result.getDrinkable();
+      }
+    };
+  }
 }

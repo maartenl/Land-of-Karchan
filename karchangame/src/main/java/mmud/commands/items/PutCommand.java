@@ -43,114 +43,114 @@ import mmud.services.PersonCommunicationService;
  *
  * @see RetrieveCommand
  */
-public class PutCommand extends NormalCommand
+public class PutCommand extends NormalCommand implements ItemCommand
 {
 
-    public PutCommand(String aRegExpr)
+  public PutCommand(String aRegExpr)
+  {
+    super(aRegExpr);
+  }
+
+  @Override
+  public DisplayInterface run(String command, User aUser) throws MudException
+  {
+    // first is find the item
+    List<String> parsed = new ArrayList<>(Arrays.asList(parseCommand(command)));
+    parsed.remove(0); // remove "put"
+    int amount = 1;
+    try
     {
-        super(aRegExpr);
+      amount = Integer.parseInt(parsed.get(0));
+      parsed.remove(0);
+    } catch (NumberFormatException e)
+    {// do nothing here, we assume we need to put only one item.
+    }
+    final PersonCommunicationService communicationService = CommunicationService.getCommunicationService(aUser);
+    if (amount <= 0)
+    {
+      communicationService.writeMessage("That is an illegal amount.<br/>\n");
+      return aUser.getRoom();
+    }
+    int pos = 0;
+    for (String str : parsed)
+    {
+      if (str.equalsIgnoreCase("in"))
+      {
+        break;
+      }
+      pos++;
+    }
+    if (pos == parsed.size())
+    {
+      // no in found.
+      throw new ParseException();
     }
 
-    @Override
-    public DisplayInterface run(String command, User aUser) throws MudException
+    List<String> itemDescription = parsed.subList(0, pos);
+    List<String> containerDescription = parsed.subList(pos + 1, parsed.size());
+    // find the container on ourselves
+    List<Item> containerFound = aUser.findItems(containerDescription);
+    if (containerFound.isEmpty())
     {
-        // first is find the item
-        List<String> parsed = new ArrayList<>(Arrays.asList(parseCommand(command)));
-        parsed.remove(0); // remove "put"
-        int amount = 1;
-        try
-        {
-            amount = Integer.parseInt(parsed.get(0));
-            parsed.remove(0);
-        } catch (NumberFormatException e)
-        {// do nothing here, we assume we need to put only one item.
-        }
-      final PersonCommunicationService communicationService = CommunicationService.getCommunicationService(aUser);
-        if (amount <= 0)
-        {
-            communicationService.writeMessage("That is an illegal amount.<br/>\n");
-            return aUser.getRoom();
-        }
-        int pos = 0;
-        for (String str : parsed)
-        {
-            if (str.equalsIgnoreCase("in"))
-            {
-                break;
-            }
-            pos++;
-        }
-        if (pos == parsed.size())
-        {
-            // no in found.
-            throw new ParseException();
-        }
-
-        List<String> itemDescription = parsed.subList(0, pos);
-        List<String> containerDescription = parsed.subList(pos + 1, parsed.size());
-        // find the container on ourselves
-        List<Item> containerFound = aUser.findItems(containerDescription);
-        if (containerFound.isEmpty())
-        {
-            // find the item in the room
-            containerFound = aUser.getRoom().findItems(containerDescription);
-        }
-        if (containerFound.isEmpty())
-        {
-            communicationService.writeMessage("No containers found that match that description.<br/>\n");
-            return aUser.getRoom();
-        }
-        Item container = containerFound.get(0);
-        if (!container.isContainer())
-        {
-            communicationService.writeMessage(container.getDescription() + " is not a container.<br/>\n");
-            return aUser.getRoom();
-        }
-        if (!container.isOpen())
-        {
-            communicationService.writeMessage(container.getDescription() + " is closed.<br/>\n");
-            return aUser.getRoom();
-        }
-        // find the item on ourselves
-        List<Item> itemsFound = aUser.findItems(itemDescription);
-        if (itemsFound.isEmpty())
-        {
-            communicationService.writeMessage("You don't have that.<br/>\n");
-            return aUser.getRoom();
-        }
-        if (itemsFound.size() < amount)
-        {
-            communicationService.writeMessage("You do not have that many items in your inventory.<br/>\r\n");
-            return aUser.getRoom();
-        }
-      boolean put = false;
-      ItemService itemService = getItemService();
-        for (Item item : itemsFound)
-        {
-            if (aUser.unused(item) && !item.isBound() && !item.isContainer())
-            {
-                // item is not used.
-              if (!itemService.put(item, container, aUser))
-              {
-                continue;
-              }
-                CommunicationService.getCommunicationService(aUser.getRoom()).sendMessage(aUser, "%SNAME put%VERB2 " + item.getDescription() + " in " + container.getDescription() + ".<br/>\r\n");
-                put = true;
-                amount--;
-                if (amount == 0)
-                {
-                    return aUser.getRoom();
-                }
-            }
-        }
-        if (!put)
-        {
-            communicationService.writeMessage("You did not put anything.<br/>");
-        } else
-        {
-            communicationService.writeMessage("You put some of your items.<br/>\r\n");
-        }
-
-        return aUser.getRoom();
+      // find the item in the room
+      containerFound = aUser.getRoom().findItems(containerDescription);
     }
+    if (containerFound.isEmpty())
+    {
+      communicationService.writeMessage("No containers found that match that description.<br/>\n");
+      return aUser.getRoom();
+    }
+    Item container = containerFound.get(0);
+    if (!container.isContainer())
+    {
+      communicationService.writeMessage(container.getDescription() + " is not a container.<br/>\n");
+      return aUser.getRoom();
+    }
+    if (!container.isOpen())
+    {
+      communicationService.writeMessage(container.getDescription() + " is closed.<br/>\n");
+      return aUser.getRoom();
+    }
+    // find the item on ourselves
+    List<Item> itemsFound = aUser.findItems(itemDescription);
+    if (itemsFound.isEmpty())
+    {
+      communicationService.writeMessage("You don't have that.<br/>\n");
+      return aUser.getRoom();
+    }
+    if (itemsFound.size() < amount)
+    {
+      communicationService.writeMessage("You do not have that many items in your inventory.<br/>\r\n");
+      return aUser.getRoom();
+    }
+    boolean put = false;
+    ItemService itemService = getItemService();
+    for (Item item : itemsFound)
+    {
+      if (aUser.unused(item) && !item.isBound() && !item.isContainer())
+      {
+        // item is not used.
+        if (!itemService.put(item, container, aUser))
+        {
+          continue;
+        }
+        CommunicationService.getCommunicationService(aUser.getRoom()).sendMessage(aUser, "%SNAME put%VERB2 " + item.getDescription() + " in " + container.getDescription() + ".<br/>\r\n");
+        put = true;
+        amount--;
+        if (amount == 0)
+        {
+          return aUser.getRoom();
+        }
+      }
+    }
+    if (!put)
+    {
+      communicationService.writeMessage("You did not put anything.<br/>");
+    } else
+    {
+      communicationService.writeMessage("You put some of your items.<br/>\r\n");
+    }
+
+    return aUser.getRoom();
+  }
 }

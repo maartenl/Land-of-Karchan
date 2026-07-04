@@ -31,67 +31,67 @@ import mmud.services.PersonCommunicationService;
 /**
  * Open a container: "open chest".
  *
+ * @author maartenl
  * @see CloseCommand
  * @see LockCommand
  * @see UnlockCommand
- * @author maartenl
  */
-public class OpenCommand extends NormalCommand
+public class OpenCommand extends NormalCommand implements ItemCommand
 {
 
-    public OpenCommand(String aRegExpr)
-    {
-        super(aRegExpr);
-    }
+  public OpenCommand(String aRegExpr)
+  {
+    super(aRegExpr);
+  }
 
-    @Override
-    public DisplayInterface run(String command, User aUser) throws MudException
+  @Override
+  public DisplayInterface run(String command, User aUser) throws MudException
+  {
+    PersonCommunicationService communicationService = CommunicationService.getCommunicationService(aUser);
+    // first is find the item
+    List<String> parsed = new ArrayList<>(Arrays.asList(parseCommand(command)));
+    parsed.remove(0); // remove "open"
+    // find the item on ourselves
+    List<Item> itemsFound = aUser.findItems(parsed);
+    if (itemsFound.isEmpty())
     {
-      PersonCommunicationService communicationService = CommunicationService.getCommunicationService(aUser);
-        // first is find the item
-        List<String> parsed = new ArrayList<>(Arrays.asList(parseCommand(command)));
-        parsed.remove(0); // remove "open"
-        // find the item on ourselves
-        List<Item> itemsFound = aUser.findItems(parsed);
-        if (itemsFound.isEmpty())
-        {
-            // find the item in the room
-            itemsFound = aUser.getRoom().findItems(parsed);
-        }
-        if (itemsFound.isEmpty())
-        {
-            communicationService.writeMessage("No items found that match that description.<br/>\n");
-            return aUser.getRoom();
-        }
-        for (Item item : itemsFound)
-        {
-            if (item.isContainer())
-            {
-                if (!item.isOpenable())
-                {
-                    communicationService.writeMessage(item.getDescription()
-                            + " cannot be opened.<BR>\r\n");
-                    return aUser.getRoom();
-                }
-                if (item.isOpen())
-                {
-                    communicationService.writeMessage(item.getDescription()
-                            + " is already open.<BR>\r\n");
-                    return aUser.getRoom();
-                }
-                if (item.isLocked())
-                {
-                    communicationService.writeMessage(item.getDescription()
-                            + " is locked.<BR>\r\n");
-                    return aUser.getRoom();
-                }
-                item.open();
-                CommunicationService.getCommunicationService(aUser.getRoom()).sendMessage(aUser, "%SNAME open%VERB2 "
-					+ item.getDescription() + ".<br/>\r\n");
-                return aUser.getRoom();
-            }
-        }
-        communicationService.writeMessage("You cannot open that.<br/>\n");
-        return aUser.getRoom();
+      // find the item in the room
+      itemsFound = aUser.getRoom().findItems(parsed);
     }
+    if (itemsFound.isEmpty())
+    {
+      communicationService.writeMessage("No items found that match that description.<br/>\n");
+      return aUser.getRoom();
+    }
+    for (Item item : itemsFound)
+    {
+      if (item.isContainer())
+      {
+        if (!item.isOpenable())
+        {
+          communicationService.writeMessage(item.getDescription()
+            + " cannot be opened.<BR>\r\n");
+          return aUser.getRoom();
+        }
+        if (item.isOpen())
+        {
+          communicationService.writeMessage(item.getDescription()
+            + " is already open.<BR>\r\n");
+          return aUser.getRoom();
+        }
+        if (item.isLocked())
+        {
+          communicationService.writeMessage(item.getDescription()
+            + " is locked.<BR>\r\n");
+          return aUser.getRoom();
+        }
+        item.open();
+        CommunicationService.getCommunicationService(aUser.getRoom()).sendMessage(aUser, "%SNAME open%VERB2 "
+          + item.getDescription() + ".<br/>\r\n");
+        return aUser.getRoom();
+      }
+    }
+    communicationService.writeMessage("You cannot open that.<br/>\n");
+    return aUser.getRoom();
+  }
 }
