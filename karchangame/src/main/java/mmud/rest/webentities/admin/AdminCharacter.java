@@ -24,6 +24,7 @@ import java.util.Objects;
 import mmud.JsonUtils;
 import mmud.database.entities.characters.Person;
 import mmud.database.entities.characters.User;
+import mmud.database.entities.web.CharacterInfo;
 
 /**
  * @author maartenl
@@ -137,15 +138,24 @@ public class AdminCharacter
   public Integer heehaws;
   public boolean ooc;
   public String familyname;
+  /**
+   * Comes from the character sheet (characterinfo table), if exists.
+   */
+  public String storyline;
+  /**
+   * This is the "condition" of the character.
+   */
+  public String state;
 
   public AdminCharacter()
   {
     // empty constructor, for creating a web entity from scratch.
+    // otherwise you get "Cannot create instance of a class: class mmud.rest.webentities.admin.AdminCharacter, No default constructor found."
   }
 
-  public AdminCharacter(User item)
+  public AdminCharacter(User item, CharacterInfo characterInfo)
   {
-    this((Person) item);
+    this(item);
     this.address = item.getAddress();
     this.realname = item.getRealname();
     this.email = item.getEmail();
@@ -174,6 +184,11 @@ public class AdminCharacter
     this.familyname = item.getFamilyname();
     this.ooc = item.getOoc();
     this.afk = item.getAfk();
+    if (characterInfo != null) {
+      this.storyline = characterInfo.getStoryline();
+    } else {
+      this.storyline = null;
+    }
   }
 
   public AdminCharacter(Person item)
@@ -250,6 +265,7 @@ public class AdminCharacter
     this.afk = item.getAfk();
     this.visible = item.getVisible();
     this.familyname = item.getFamilyname();
+    this.state = item.getState();
 
     this.creation = item.getCreation();
     this.owner = item.getOwner() == null ? null : item.getOwner().getName();

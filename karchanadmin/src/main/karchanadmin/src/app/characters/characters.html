@@ -131,6 +131,16 @@
           <input type="text" class="form-control" id="newpassword" [formField]="form.newpassword">
         </fieldset>
         <fieldset class="form-group">
+          <label for="state">Condition</label>
+          <textarea class="form-control" id="state" rows="13" [formField]="form.state"></textarea>
+        </fieldset>
+        <fieldset class="form-group">
+          <label for="storyline">Storyline</label>
+          <textarea class="form-control" id="storyline" rows="13" [formField]="form.storyline"></textarea>
+          <div id="storylineHelp" class="form-text">The storyline from the charactersheet, if available.
+          </div>
+        </fieldset>
+        <fieldset class="form-group">
           <label for="notes">Notes</label>
           <textarea class="form-control" id="notes" rows="13" [formField]="form.notes"></textarea>
         </fieldset>

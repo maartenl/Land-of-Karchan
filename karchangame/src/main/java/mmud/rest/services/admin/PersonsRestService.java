@@ -45,6 +45,7 @@ import mmud.database.entities.characters.Shopkeeper;
 import mmud.database.entities.characters.User;
 import mmud.database.entities.game.Admin;
 import mmud.database.entities.game.Room;
+import mmud.database.entities.web.CharacterInfo;
 import mmud.database.enums.God;
 import mmud.database.enums.Sex;
 import mmud.exceptions.MudException;
@@ -53,6 +54,7 @@ import mmud.rest.webentities.admin.AdminCharacter;
 import mmud.rest.webentities.admin.AdminItem;
 import mmud.services.LogService;
 import mmud.services.PersonService;
+import mmud.services.PrivateService;
 import org.apache.commons.lang3.StringUtils;
 
 /**
@@ -74,6 +76,9 @@ public class PersonsRestService
 
   @Inject
   private PersonService personService;
+
+  @Inject
+  private PrivateService privateService;
 
   @Context
   private SecurityContext sc;
@@ -116,6 +121,7 @@ public class PersonsRestService
         user.setRealname(adminCharacter.realname);
         user.setEmail(adminCharacter.email);
         user.setOoc(adminCharacter.ooc);
+        user.setState(adminCharacter.state);
         character = user;
         break;
       default:
@@ -214,8 +220,8 @@ public class PersonsRestService
     }
     character.setVisible(adminCharacter.visible);
     character.setNotes(adminCharacter.notes);
-//    character.setCurrentstate(adminCharacter.currentstate);
-    if (character.getGod() == God.DEFAULT_USER)
+    character.setState(adminCharacter.state);
+    if (character.getGod() == God.DEFAULT_USER || character.getGod() == God.GOD)
     {
       User user = (User) character;
       user.setRealname(adminCharacter.realname);
@@ -224,6 +230,10 @@ public class PersonsRestService
       if (adminCharacter.newpassword != null && !adminCharacter.newpassword.trim().isEmpty())
       {
         user.setNewpassword(adminCharacter.newpassword);
+      }
+      CharacterInfo characterInfo = privateService.getCharacterInfo(user);
+      if (characterInfo != null) {
+        characterInfo.setStoryline(adminCharacter.storyline);
       }
     }
     character.setAfk(adminCharacter.afk);
@@ -266,7 +276,8 @@ public class PersonsRestService
     }
     if (item.getGod() == God.DEFAULT_USER || item.getGod() == God.GOD)
     {
-      return new AdminCharacter((User) item).toJson();
+      CharacterInfo characterInfo = privateService.getCharacterInfo(item);
+      return new AdminCharacter((User) item, characterInfo).toJson();
     }
     return new AdminCharacter(item).toJson();
   }

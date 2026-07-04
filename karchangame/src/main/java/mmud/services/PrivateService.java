@@ -3,10 +3,12 @@ package mmud.services;
 import java.util.List;
 import java.util.logging.Logger;
 
+import jakarta.annotation.Nullable;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import jakarta.persistence.TypedQuery;
 import jakarta.ws.rs.core.Response;
+import mmud.database.entities.characters.Person;
 import mmud.database.entities.characters.User;
 import mmud.database.entities.web.CharacterInfo;
 import mmud.database.entities.web.Family;
@@ -42,14 +44,25 @@ public class PrivateService
       throw new MudWebException(name, "Charactersheet not found.", Response.Status.NOT_FOUND);
     }
 
+    CharacterInfo characterInfo = getCharacterInfo(person);
     TypedQuery<Family> query = getEntityManager().createNamedQuery("Family.findByName", Family.class);
     query.setParameter("name", person.getName());
     List<Family> family = query.getResultList();
-    CharacterInfo characterInfo = getEntityManager().find(CharacterInfo.class, person.getName());
     PrivatePerson res = RestUtilities.getPrivatePerson(person, family, characterInfo);
 
     LOGGER.finer("exiting charactersheet");
     return res;
+  }
+
+  @Nullable
+  public CharacterInfo getCharacterInfo(Person person)
+  {
+    LOGGER.finer("entering getCharacterInfo");
+
+    CharacterInfo characterInfo = getEntityManager().find(CharacterInfo.class, person.getName());
+
+    LOGGER.finer("exiting getCharacterInfo");
+    return characterInfo;
   }
 
 }

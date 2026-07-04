@@ -41,6 +41,8 @@ export interface MudCharacterData {
   address: string;
   realname: string;
   newpassword: string;
+  state: string;
+  storyline: string;
   notes: string;
   owner: string;
 }
@@ -87,7 +89,9 @@ export class Characters extends AdminComponent<MudCharacter, string> implements 
     room: null,
     sex: "undefined",
     title: "",
-    width: ""
+    width: "",
+    state: "",
+    storyline: "",
   });
 
   form = form(this.characterModel)
@@ -164,6 +168,8 @@ export class Characters extends AdminComponent<MudCharacter, string> implements 
       sex: character.sex ?? "",
       title: character.title ?? "",
       width: character.width ?? "",
+      state: character.state ?? "",
+      storyline: character.storyline ?? "",
     });
   }
 
@@ -218,6 +224,8 @@ export class Characters extends AdminComponent<MudCharacter, string> implements 
     }
     character.title = formModel.title;
     character.width = formModel.width;
+    character.state = formModel.state == "" ? null : formModel.state;
+    character.storyline = formModel.storyline == "" ? null : formModel.storyline;
     return character;
   }
 

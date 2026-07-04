@@ -107,6 +107,14 @@ export class MudCharacter implements AdminObject<string> {
   heehaws: number | null = null;
   ooc: boolean | null = null;
   newpassword: string | null = null;
+  /**
+   * Also known as the "condition" of the character.
+   */
+  state: string | null = null;
+  /**
+   * The storyline of the character from the charactersheet if available.
+   */
+  storyline: string | null = null;
 
   constructor(object?: any) {
     if (object === undefined) {
@@ -216,6 +224,8 @@ export class MudCharacter implements AdminObject<string> {
     this.heehaws = object.heehaws;
     this.ooc = object.ooc;
     this.newpassword = object.newpassword;
+    this.state = object.state;
+    this.storyline = object.storyline;
   }
 
   getIdentifier(): string | null {
