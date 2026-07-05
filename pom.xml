@@ -6,7 +6,7 @@
 
   <groupId>mmud</groupId>
   <artifactId>karchanparent</artifactId>
-  <version>1.0.12-SNAPSHOT</version>
+  <version>1.0.12</version>
   <packaging>pom</packaging>
 
   <name>karchanparent</name>
@@ -36,7 +36,7 @@
 
     <!-- for testing -->
     <jasson.version>3.0.4</jasson.version>
-    <karchanentities.version>1.0.12-SNAPSHOT</karchanentities.version>
+    <karchanentities.version>1.0.12</karchanentities.version>
     <mockito.version>5.23.0</mockito.version>
     <graaljs.version>25.0.3</graaljs.version>
   </properties>
