@@ -18,7 +18,7 @@ export class Blog implements AdminObject<number> {
     this.contents = object.contents;
     this.modification = object.modification;
     this.title = object.title;
-    this.urlTitle = object.titurlTitlele;
+    this.urlTitle = object.urlTitle;
     this.creation = object.creation;
   }
 
