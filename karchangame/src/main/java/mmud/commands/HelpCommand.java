@@ -17,7 +17,6 @@
 package mmud.commands;
 
 
-
 import mmud.database.entities.characters.User;
 import mmud.database.entities.game.DisplayInterface;
 import mmud.database.entities.game.Help;
@@ -26,33 +25,35 @@ import mmud.services.HelpService;
 
 /**
  * Show help regarding possible commands: "help".
+ *
  * @author maartenl
  */
 public class HelpCommand extends NormalCommand
 {
 
-    public HelpCommand(String aRegExpr)
-    {
-        super(aRegExpr);
-    }
+  public HelpCommand(String aRegExpr)
+  {
+    super(aRegExpr);
+  }
 
-    @Override
-    public DisplayInterface run(String command, User aUser) throws MudException
+  @Override
+  public DisplayInterface run(String command, User aUser) throws MudException
+  {
+    HelpService helpService = getHelpService();
+    Help help;
+    String[] myParsed = parseCommand(command, 3);
+    if (myParsed.length == 1)
     {
-      HelpService helpService = getHelpService();
-      Help help;
-      String[] myParsed = parseCommand(command, 3);
-      if (myParsed.length == 1)
-      {
-        help = helpService.getHelp(null);
-      } else if (myParsed.length == 2)
-      {
-        help = helpService.getHelp(myParsed[1]);
-      } else
-      {
-        help = helpService.getHelp("sorry");
-        }
-        return help;
+      help = helpService.getHelp(null);
+    } else
+    {
+      help = helpService.getHelp(command.substring(myParsed[0].length() + 1).toLowerCase().trim());
     }
+    if (help == null)
+    {
+      help = helpService.getHelp("sorry");
+    }
+    return help;
+  }
 
 }
