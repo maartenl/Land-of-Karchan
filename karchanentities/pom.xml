@@ -6,11 +6,11 @@
   <parent>
     <artifactId>karchanparent</artifactId>
     <groupId>mmud</groupId>
-    <version>1.0.13-SNAPSHOT</version>
+    <version>${karchan.library.version}</version>
   </parent>
 
   <artifactId>karchanentities</artifactId>
-  <version>1.0.13-SNAPSHOT</version>
+  <version>${karchan.library.version}</version>
   <packaging>jar</packaging>
 
   <name>karchanentities</name>

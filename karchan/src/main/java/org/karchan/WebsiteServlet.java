@@ -61,7 +61,13 @@ public class WebsiteServlet extends HttpServlet
 
   private static final String VERSION_COOKIENAME = "karchanversion";
 
-  private static final String CURRENT_VERSION = "2.0.17-SNAPSHOT";
+  /**
+   * For example, 2.0.17-SNAPSHOT. If it isn't configured, the server fails to start.
+   * It is used in URLs.
+   */
+  @Inject
+  @ConfigProperty(name = "karchan.version")
+  private String CURRENT_VERSION;
 
   /**
    * For example: https://www.karchan.org. If it isn't configured, then no redirect takes place.
