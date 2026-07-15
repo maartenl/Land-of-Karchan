@@ -208,6 +208,7 @@ public class PersonService implements PersonsInterface
     // remove the mudmail itself.
     var deleteMailsQuery = em.createNamedQuery("Mail.deleteByName");
     deleteMailsQuery.setParameter("person", person);
+    deleteMailsQuery.setParameter("personname", person.getName());
     LOGGER.log(Level.FINER, "deleting {0} mudmails", deleteMailsQuery.executeUpdate());
 
     em.remove(person);
