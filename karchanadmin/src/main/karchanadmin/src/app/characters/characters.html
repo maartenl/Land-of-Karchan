@@ -40,13 +40,13 @@
           <div id="activeHelp" class="form-text">Indicates wether or not the player is actively playing.
           </div>
         </fieldset>
-        @if (item().name !== "") {
+        @if (item().name !== "" && item().name != null && item().name != undefined) {
           <fieldset class="form-group">
             <label for="god">God</label>
             <input readonly type="text" class="form-control" id="godreadonly" [value]="item().god">
           </fieldset>
         }
-        @if (item().name === "") {
+        @if (item().name === "" || item().name == null || item().name == undefined) {
           <fieldset class="form-group">
             <label for="god">God</label>
             <select class="form-control" id="god" [formField]="form.god">
