@@ -112,7 +112,7 @@
         </fieldset>
         <fieldset class="form-group">
           <label for="lastlogin">Last time logged in</label>
-          <input type="datetime-local" readonly class="form-control" id="lastlogin" value="item().lastlogin">
+          <input type="text" readonly class="form-control" id="lastlogin" [value]="item().lastlogin">
         </fieldset>
         <fieldset class="form-group">
           <label for="copper">Copper</label>
