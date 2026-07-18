@@ -55,15 +55,6 @@ export class Areas extends AdminComponent<Area, string> implements OnInit {
     this.setItemById(id);
   }
 
-  override getItems() {
-    this.restService.getAll()
-      .subscribe({
-        next: data => {
-          this.rowData = data;
-        }
-      });
-  }
-
   override setItemById(id: string | undefined | null) {
     if (id === undefined || id === null) {
       return false;

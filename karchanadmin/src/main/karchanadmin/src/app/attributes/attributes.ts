@@ -5,7 +5,7 @@ import {ActivatedRoute} from '@angular/router';
 import {ToastService} from '../toast.service';
 import {AttributesRestService} from '../attributes-rest.service';
 import {Attribute} from '../attribute.model';
-import {ColDef, GridReadyEvent, SelectionChangedEvent} from 'ag-grid-community';
+import {ColDef, GridApi, GridReadyEvent, SelectionChangedEvent} from 'ag-grid-community';
 import {AgGridAngular} from 'ag-grid-angular';
 import {rowSelection} from '../aggrid.utils';
 import {Logger} from '../consolelog.service';
@@ -69,6 +69,7 @@ export class Attributes extends AdminComponent<Attribute, number> implements OnI
     this.restService.getAllWithName(this.name()).subscribe({
       next: (data: Attribute[]) => {
         this.rowData = data;
+        this.gridApi.refreshCells();
       }
     });
   }

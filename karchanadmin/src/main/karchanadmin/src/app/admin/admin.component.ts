@@ -1,7 +1,7 @@
 import {AdminObject} from './admin-object.model';
 import {AdminRestService} from './admin-rest.service';
 import {ToastService} from '../toast.service';
-import {ColDef, GridReadyEvent, RowSelectionOptions, SelectionChangedEvent, themeBalham} from 'ag-grid-community';
+import {ColDef, GridApi, GridReadyEvent, SelectionChangedEvent, themeBalham} from 'ag-grid-community';
 import {signal} from '@angular/core';
 import {Logger} from '../consolelog.service';
 
@@ -11,6 +11,8 @@ import {Logger} from '../consolelog.service';
  * this class.
  */
 export abstract class AdminComponent<T extends AdminObject<U>, U> {
+
+  protected gridApi!: GridApi;
 
   item = signal<T>(this.makeItem());
 
@@ -22,6 +24,7 @@ export abstract class AdminComponent<T extends AdminObject<U>, U> {
 
   onGridReady(params: GridReadyEvent): void {
     Logger.logEntering("onGridReady");
+    this.gridApi = params.api;
     this.getItems();
   }
 
@@ -38,6 +41,7 @@ export abstract class AdminComponent<T extends AdminObject<U>, U> {
       .subscribe({
         next: data => {
           this.rowData = data;
+          this.gridApi.refreshCells();
         }
       });
   }

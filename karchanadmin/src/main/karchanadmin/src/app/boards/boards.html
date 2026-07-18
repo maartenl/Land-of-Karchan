@@ -97,6 +97,7 @@
         style="width: 100%; height: 500px;"
         [rowData]="rowData"
         [columnDefs]="colDefs"
+        (gridReady)="onGridReady($event)"
         [theme]="themeBalham"
         (selectionChanged)="onSelectionChanged($event)"
         [rowSelection]="rowSelection"
