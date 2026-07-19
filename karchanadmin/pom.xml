@@ -5,11 +5,10 @@
   <parent>
     <artifactId>karchanparent</artifactId>
     <groupId>mmud</groupId>
-    <version>${karchan.library.version}</version>
+    <version>2.0.17-SNAPSHOT</version>
   </parent>
 
   <artifactId>karchanadmin</artifactId>
-  <version>${karchan.version}</version>
   <packaging>war</packaging>
 
   <name>karchanadmin</name>
