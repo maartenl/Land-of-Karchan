@@ -663,6 +663,7 @@ public class PrivateRestService
     User person = authenticate(name);
     if (!person.getName().equals(cinfo.name))
     {
+      logService.writeError(person, "User trying to update charactersheet of \"" + cinfo.name + "\"?");
       throw new MudWebException(name, "User trying to update somebody elses charactersheet?",
         person.getName() + " trying to update charactersheet of " + cinfo.name, Status.UNAUTHORIZED);
     }

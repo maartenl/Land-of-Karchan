@@ -266,6 +266,18 @@ public class LogService
   }
 
   /**
+   * write a log message of an error situation to the database (when there's no exception).
+   *
+   * @param person    the person to be inscribed in the log table. May be null.
+   */
+  @Transactional(Transactional.TxType.REQUIRES_NEW)
+  public void writeError(Person person, String message)
+  {
+    LOGGER.finer("writeLogException");
+    createLogWithPerson(person, message, "");
+  }
+
+  /**
    * write a log message of an exception to the database.
    *
    * @param throwable the exception or error to be written to the log table.

@@ -444,6 +444,8 @@ public class PrivateRestServiceTest
 
     };
     privateRestService.setPlayerAuthenticationService(playerAuthenticationService);
+    LogServiceStub logBean = new LogServiceStub();
+    privateRestService.setLogService(logBean);
     // Unit under test is exercised.
     final PrivatePerson person = new PrivatePerson();
     person.name = "Hotblack";

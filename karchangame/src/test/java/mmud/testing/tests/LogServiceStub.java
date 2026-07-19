@@ -25,27 +25,32 @@ import mmud.services.LogService;
 public class LogServiceStub extends LogService
 {
 
-    public LogServiceStub()
-    {
-    }
+  public LogServiceStub()
+  {
+  }
 
-    private final StringBuffer buffer = new StringBuffer();
+  private final StringBuffer buffer = new StringBuffer();
 
-    @Override
-    public void writeLog(Person person, String message)
-    {
-        buffer.append(person.getName()).append(":").append(message).append("\n");
-    }
+  @Override
+  public void writeLog(Person person, String message)
+  {
+    buffer.append(person.getName()).append(":").append(message).append("\n");
+  }
 
-    @Override
-    public void writeCommandLog(Person person, String command)
-    {
-        buffer.append(person.getName()).append(":").append(command).append("\n");
-    }
+  @Override
+  public void writeCommandLog(Person person, String command)
+  {
+    buffer.append(person.getName()).append(":").append(command).append("\n");
+  }
 
-    public String getLog()
-    {
-        return buffer.toString();
-    }
+  public String getLog()
+  {
+    return buffer.toString();
+  }
 
+  @Override
+  public void writeError(Person person, String message)
+  {
+    buffer.append(person.getName()).append(":").append(message).append("\n");
+  }
 }
