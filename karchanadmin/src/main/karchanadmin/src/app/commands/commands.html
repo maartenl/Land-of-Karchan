@@ -3,6 +3,10 @@
     <div class="col-xs-12 col-xl-6">
       <h1>Command {{ commandModel().command }}</h1>
       <form novalidate>
+        <fieldset class="form-group">
+          <label for="id">Id</label>
+          <input type="number" class="form-control" id="id" readonly [value]="item().id">
+        </fieldset>
         <fieldset class="form-group form-check">
           <input type="checkbox" class="form-check-input" id="callable" [formField]="form.callable">
           <label class="form-check-label" for="callable">Callable</label>

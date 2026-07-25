@@ -6,7 +6,6 @@ import {ActivatedRoute, RouterLink} from '@angular/router';
 import {AdminComponent} from '../admin/admin.component';
 import {Command} from './command.model';
 import {ColDef, SelectionChangedEvent} from "ag-grid-community";
-import {Logger} from '../consolelog.service';
 import {AgGridAngular} from 'ag-grid-angular';
 import {rowSelection} from '../aggrid.utils';
 
