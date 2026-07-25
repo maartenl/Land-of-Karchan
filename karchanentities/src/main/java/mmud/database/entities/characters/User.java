@@ -779,7 +779,7 @@ public class User extends Person
 
   public void setGuildrank(Guildrank guildrank)
   {
-    if (this.guild == null)
+    if (this.guild == null && this.guildrank != null)
     {
       throw new MudException("Unable to set guildrank for " + this.getName() + ". User is not part of a guild yet.");
     }

@@ -60,7 +60,7 @@ import org.eclipse.persistence.annotations.Customizer;
     @NamedQuery(name = "Guild.findByActive", query = "SELECT g FROM Guild g WHERE g.active = :active"),
     @NamedQuery(name = "Guild.findByCreation", query = "SELECT g FROM Guild g WHERE g.creation = :creation"),
     @NamedQuery(name = "Guild.findGuildHopefuls", query = "SELECT p from Person p, Charattribute c WHERE c.person = p and c.name = :attributename and c.value = :guildname and c.valueType = :valuetype"),
-    @NamedQuery(name = "Guild.countAll", query = "SELECT count(g) from Guild g")
+    @NamedQuery(name = "Guild.countAll", query = "SELECT count(g) from Guild g"),
   })
 @Customizer(PersonsFilterForGuild.class)
 public class Guild implements Serializable, DisplayInterface, Ownage

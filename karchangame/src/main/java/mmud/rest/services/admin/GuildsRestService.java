@@ -23,19 +23,13 @@ import jakarta.inject.Inject;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import jakarta.transaction.Transactional;
-import jakarta.ws.rs.Consumes;
-import jakarta.ws.rs.DELETE;
-import jakarta.ws.rs.GET;
-import jakarta.ws.rs.POST;
-import jakarta.ws.rs.PUT;
-import jakarta.ws.rs.Path;
-import jakarta.ws.rs.PathParam;
-import jakarta.ws.rs.Produces;
+import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.Context;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.core.SecurityContext;
 import jakarta.ws.rs.core.UriInfo;
+import mmud.Constants;
 import mmud.database.entities.characters.User;
 import mmud.database.entities.game.Admin;
 import mmud.database.entities.game.Guild;
@@ -43,9 +37,12 @@ import mmud.exceptions.MudWebException;
 import mmud.rest.webentities.admin.AdminGuild;
 import mmud.rest.webentities.admin.AdminGuildmember;
 import mmud.services.LogService;
+import org.apache.commons.lang3.StringUtils;
 
 import java.time.LocalDateTime;
+import java.util.Collections;
 import java.util.List;
+import java.util.Set;
 import java.util.logging.Logger;
 
 /**
@@ -71,9 +68,9 @@ public class GuildsRestService
 
   @POST
   @Consumes(
-      {
-          MediaType.APPLICATION_JSON
-      })
+    {
+      MediaType.APPLICATION_JSON
+    })
   public String create(String json)
   {
     AdminGuild adminGuild = AdminGuild.fromJson(json);
@@ -84,7 +81,7 @@ public class GuildsRestService
     if (guild != null)
     {
       throw new MudWebException(name, "Guild " + adminGuild.name + " already exists.",
-          Response.Status.PRECONDITION_FAILED);
+        Response.Status.PRECONDITION_FAILED);
     }
     guild = new Guild();
     guild.setName(adminGuild.name);
@@ -95,12 +92,12 @@ public class GuildsRestService
     if (guildmaster == null)
     {
       throw new MudWebException(name, "Guild " + adminGuild.name + " needs a guildmaster, guildmaster not found.",
-          Response.Status.NOT_FOUND);
+        Response.Status.NOT_FOUND);
     }
     if (guildmaster.getGuild() != null)
     {
       throw new MudWebException(name, adminGuild.bossname + " is already a guildmaster.",
-          Response.Status.PRECONDITION_FAILED);
+        Response.Status.PRECONDITION_FAILED);
     }
     guild.setBoss(guildmaster);
     guild.setActive(true);
@@ -117,9 +114,9 @@ public class GuildsRestService
   @PUT
   @Path("{name}")
   @Consumes(
-      {
-          MediaType.APPLICATION_JSON
-      })
+    {
+      MediaType.APPLICATION_JSON
+    })
   public void edit(@PathParam("name") String guildname, String json)
   {
     AdminGuild adminGuild = AdminGuild.fromJson(json);
@@ -145,8 +142,8 @@ public class GuildsRestService
     if (guildmaster.getGuild().getBoss() == guildmaster && guild != guildmaster.getGuild())
     {
       throw new MudWebException(name,
-          adminGuild.bossname + " is already a guildmaster of guild " + guildmaster.getGuild().getName() + ".",
-          Response.Status.PRECONDITION_FAILED);
+        adminGuild.bossname + " is already a guildmaster of guild " + guildmaster.getGuild().getName() + ".",
+        Response.Status.PRECONDITION_FAILED);
     }
     guild.setBoss(guildmaster);
     guild.setColour(adminGuild.colour);
@@ -168,6 +165,11 @@ public class GuildsRestService
       throw new MudWebException(name, "Guild " + guildname + " not found.", Response.Status.NOT_FOUND);
     }
     Admin admin = (new OwnerHelper(getEntityManager())).authorize(name, guild);
+    var result = getEntityManager().createNativeQuery("update mm_usertable set guild = null, guildlevel = null where guild = ?")
+      .setParameter(1, guild.getName())
+      .executeUpdate();
+    LOGGER.info("Removed " + result + " members from guild " + guild.getName());
+    guild.setMembers(Set.of());
     getEntityManager().remove(guild);
     logService.writeDeputyLog(admin, "Guild '" + guild.getName() + "' deleted.");
   }
@@ -175,9 +177,9 @@ public class GuildsRestService
   @GET
   @Path("{name}")
   @Produces(
-      {
-          MediaType.APPLICATION_JSON
-      })
+    {
+      MediaType.APPLICATION_JSON
+    })
   public String find(@PathParam("name") String guildname)
   {
     final String name = sc.getUserPrincipal().getName();
@@ -191,9 +193,9 @@ public class GuildsRestService
 
   @GET
   @Produces(
-      {
-          MediaType.APPLICATION_JSON
-      })
+    {
+      MediaType.APPLICATION_JSON
+    })
   public Response findAll(@Context UriInfo info)
   {
     return Response.ok(StreamerHelper.getStream(getEntityManager(), AdminGuild.GET_QUERY)).build();
@@ -202,30 +204,30 @@ public class GuildsRestService
   @GET
   @Path("{name}/guildmembers")
   @Produces(
-      {
-          MediaType.APPLICATION_JSON
-      })
+    {
+      MediaType.APPLICATION_JSON
+    })
   public String getGuildmembers(@PathParam("name") String guildname)
   {
     List<String> items = getEntityManager().createNativeQuery(AdminGuildmember.GET_QUERY)
-        .setParameter(1, guildname)
-        .getResultList();
+      .setParameter(1, guildname)
+      .getResultList();
     return "[" + String.join(",", items) + "]";
   }
 
   @GET
   @Path("{offset}/{pageSize}")
   @Produces(
-      {
-          MediaType.APPLICATION_JSON
-      })
+    {
+      MediaType.APPLICATION_JSON
+    })
   public String findRange(@Context UriInfo info, @PathParam("offset") Integer offset,
                           @PathParam("pageSize") Integer pageSize)
   {
     List<String> items = getEntityManager().createNativeQuery(AdminGuild.GET_QUERY)
-        .setMaxResults(pageSize)
-        .setFirstResult(offset)
-        .getResultList();
+      .setMaxResults(pageSize)
+      .setFirstResult(offset)
+      .getResultList();
     return "[" + String.join(",", items) + "]";
   }
 
