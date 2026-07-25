@@ -91,15 +91,16 @@ export class PlayerSettings implements OnInit {
   }
 
   resetForm(player: Player) {
+    Logger.logObject(player);
     this.playerModel.set({
-      title: player.title || '',
-      familyname: player.familyname || '',
-      homepageurl: player.homepageurl || '',
-      imageurl: player.imageurl || '',
-      dateofbirth: player.dateofbirth || '',
-      cityofbirth: player.cityofbirth || '',
-      storyline: player.storyline || '',
-      websockets: player.websockets || true,
+      title: player.title ?? '',
+      familyname: player.familyname ?? '',
+      homepageurl: player.homepageurl ?? '',
+      imageurl: player.imageurl ?? '',
+      dateofbirth: player.dateofbirth ?? '',
+      cityofbirth: player.cityofbirth ?? '',
+      storyline: player.storyline ?? '',
+      websockets: player.websockets ?? true,
       debuglog: Logger.getLogLevel() as LogLevel,
     });
   }
