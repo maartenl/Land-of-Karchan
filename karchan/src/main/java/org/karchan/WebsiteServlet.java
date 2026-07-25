@@ -62,7 +62,7 @@ public class WebsiteServlet extends HttpServlet
   private static final String VERSION_COOKIENAME = "karchanversion";
 
   /**
-   * For example, 2.0.17-SNAPSHOT. If it isn't configured, the server fails to start.
+   * For example, 2.0.17. If it isn't configured, the server fails to start.
    * It is used in URLs.
    */
   @Inject
