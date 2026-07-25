@@ -3,13 +3,13 @@
     <div class="col-xs-12 col-sm-12">
       <ul ngbNav #nav="ngbNav" class="nav nav-tabs">
         <li [ngbNavItem]="1">
-          <button ngbNavLink>Inbox</button>
+          <button ngbNavLink class="mail-nav-link">Inbox</button>
           <ng-template ngbNavContent>
             <app-inbox-mail></app-inbox-mail>
           </ng-template>
         </li>
         <li [ngbNavItem]="2">
-          <button ngbNavLink>Sent</button>
+          <button ngbNavLink class="mail-nav-link">Sent</button>
           <ng-template ngbNavContent>
             <app-sent-mail></app-sent-mail>
           </ng-template>

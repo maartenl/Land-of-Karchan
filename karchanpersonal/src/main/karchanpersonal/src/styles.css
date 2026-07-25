@@ -49,6 +49,11 @@ h4 {
   color: white;
 }
 
+.mail-nav-link {
+  background: white;
+  color: grey;
+}
+
 .form-required {
   color: red;
 }
