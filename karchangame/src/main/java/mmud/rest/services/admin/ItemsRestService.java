@@ -46,6 +46,7 @@ import mmud.rest.webentities.admin.AdminItem;
 import mmud.services.LogService;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.logging.Logger;
 
 /**
@@ -71,9 +72,9 @@ public class ItemsRestService
 
   @POST
   @Consumes(
-      {
-          MediaType.APPLICATION_JSON
-      })
+    {
+      MediaType.APPLICATION_JSON
+    })
   public void create(String json)
   {
     AdminItem adminItem = AdminItem.fromJson(json);
@@ -82,16 +83,16 @@ public class ItemsRestService
 
     Room room = adminItem.room() == null ? null : getEntityManager().find(Room.class, adminItem.room());
     Item container = adminItem.containerid() == null ? null : getEntityManager().find(Item.class,
-        adminItem.containerid());
+      adminItem.containerid());
     Person belongsto = adminItem.belongsto() == null ? null : getEntityManager().find(Person.class,
-        adminItem.belongsto());
+      adminItem.belongsto());
     Shopkeeper shopkeeper = adminItem.shopkeeper() == null ? null : getEntityManager().find(Shopkeeper.class,
-        adminItem.shopkeeper());
+      adminItem.shopkeeper());
     ItemDefinition itemDefinition = getEntityManager().find(ItemDefinition.class, adminItem.itemid());
     if (itemDefinition == null)
     {
       throw new MudWebException(name, "Item definition " + adminItem.itemid() + " not found.",
-          Response.Status.NOT_FOUND);
+        Response.Status.NOT_FOUND);
     }
     Item item;
     if (adminItem.discriminator().equals(0))
@@ -104,7 +105,7 @@ public class ItemsRestService
       if (shopkeeper == null)
       {
         throw new MudWebException(name, "Shopkeeper " + adminItem.shopkeeper() + " not found.",
-            Response.Status.NOT_FOUND);
+          Response.Status.NOT_FOUND);
       }
       item = shopkeeperItem;
     }
@@ -127,6 +128,29 @@ public class ItemsRestService
       throw new MudWebException(name, "Item " + id + " not found.", Response.Status.NOT_FOUND);
     }
     Admin admin = (new OwnerHelper(getEntityManager())).authorize(name, item);
+    List.of(
+        "Person.removewearaboutbody",
+        "Person.removewieldleft",
+        "Person.removeleading",
+        "Person.removeriding",
+        "Person.removewieldright",
+        "Person.removewieldboth",
+        "Person.removewearhead",
+        "Person.removewearneck",
+        "Person.removeweartorso",
+        "Person.removeweararms",
+        "Person.removewearleftwrist",
+        "Person.removewearrightwrist",
+        "Person.removewearleftfinger",
+        "Person.removewearrightfinger",
+        "Person.removewearfeet",
+        "Person.removewearhands",
+        "Person.removewearfloatingnearby",
+        "Person.removewearwaist",
+        "Person.removewearlegs",
+        "Person.removeweareyes",
+        "Person.removewearears")
+      .forEach(queryname -> getEntityManager().createNamedQuery(queryname).setParameter("item", item).executeUpdate());
     getEntityManager().remove(item);
     logService.writeDeputyLog(admin, "Item '" + item.getId() + "' deleted.");
   }
@@ -134,9 +158,9 @@ public class ItemsRestService
   @GET
   @Path("{id}")
   @Produces(
-      {
-          MediaType.APPLICATION_JSON
-      })
+    {
+      MediaType.APPLICATION_JSON
+    })
   public String find(@PathParam("id") Integer id)
   {
     final String name = sc.getUserPrincipal().getName();
