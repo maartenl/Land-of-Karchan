@@ -1,4 +1,4 @@
-import {Component, inject, signal} from '@angular/core';
+import {Component, inject, OnInit, signal} from '@angular/core';
 import {Router, RouterLink, RouterLinkActive, RouterOutlet} from '@angular/router';
 import {ChristmasUtils} from './christmas.utils';
 import {Toasts} from './toasts/toasts';
@@ -7,6 +7,7 @@ import {Currentadmin} from './currentadmin/currentadmin';
 
 import { AllCommunityModule, ModuleRegistry } from "ag-grid-community";
 import {environment} from '../environments/environment';
+import {ThemeService} from './theme.service';
 
 ModuleRegistry.registerModules([AllCommunityModule]);
 
@@ -16,13 +17,21 @@ ModuleRegistry.registerModules([AllCommunityModule]);
   templateUrl: './app.html',
   styleUrl: './app.css'
 })
-export class App {
+export class App implements OnInit {
 
   private router = inject(Router)
+
+  private themeService = inject(ThemeService);
 
   protected readonly title = signal('Land of Karchan' + (environment.production ? "" : " (DEV)"));
 
   collapsed = signal(true);
+
+  ngOnInit(): void {
+    if (window.console) {
+      console.log('Is darkmode active: ' + this.themeService.isDarkThemeActive());
+    }
+  }
 
   getFavicon(): string {
     if (ChristmasUtils.isChristmas()) {
