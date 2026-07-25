@@ -83,8 +83,6 @@
  * instances of item definitions.</TD></TR>
  * <TR valign=top><TD><A HREF="#mm_log">mm_log</A></TD><TD>Logging table, for describing important
  * events in thelife of characters and administrators.</TD></TR>
- * <TR valign=top><TD><A HREF="#mm_oldlog">mm_oldlog</A></TD><TD>Logging table backup, contains
- * everything older than a day.</TD></TR>
  * <TR valign=top><TD><A HREF="#mm_macro">mm_macro</A></TD><TD><A HREF="#important"><SUP>(Note)</SUP></A>Contains
  * macros created by players in the game.</TD></TR>
  * <TR valign=top><TD><A HREF="#mm_mailtable">mm_mailtable</A></TD><TD><A HREF="#important"><SUP>(Note)</SUP></A>Contains
@@ -551,11 +549,6 @@
  * -description
  * -owner
  * -creation
- * }
- * class mm_oldlog {
- * -creation
- * -name
- * -message
  * }
  * class mm_log {
  * -creation
