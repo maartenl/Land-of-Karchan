@@ -85,11 +85,10 @@ public class Person
    */
   public String getGuild()
   {
-    if (!(person instanceof User))
+    if (!(person instanceof User user))
     {
       return null;
     }
-    User user = (User) person;
     return user.getGuild() == null ? null : user.getGuild().getName();
   }
 

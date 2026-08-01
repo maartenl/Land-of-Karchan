@@ -16,14 +16,13 @@
  */
 package mmud.testing.tests.scripting;
 
-import java.lang.reflect.InvocationTargetException;
+import mmud.scripting.RunScript;
+import org.graalvm.polyglot.PolyglotException;
+import org.testng.annotations.Test;
+
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.script.ScriptException;
 
-import mmud.scripting.RunScript;
-import org.testng.annotations.Test;
-import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertTrue;
 import static org.testng.Assert.fail;
 
@@ -34,85 +33,73 @@ import static org.testng.Assert.fail;
 public class RoomEventRunScriptTest extends RunScriptTest
 {
 
-    public RoomEventRunScriptTest()
-    {
-    }
+  public RoomEventRunScriptTest()
+  {
+  }
 
-    @Test
-    public void runRoomEventEmptySource() throws IllegalAccessException, InstantiationException, InvocationTargetException
-    {
-        RunScript runScript = new RunScript(persons, rooms, items, world, null);
-      StringBuilder sourceCode = new StringBuilder();
-        try
-        {
-            Object result = runScript.run(room, sourceCode.toString());
-            fail("No event defined, so why no exception then?");
-        } catch (ScriptException ex)
-        {
-            Logger.getLogger(RoomEventRunScriptTest.class.getName()).log(Level.SEVERE, null, ex);
-            fail("No error message was expected.");
-        } catch (NoSuchMethodException ex)
-        {
-          assertEquals(ex.getMessage(), "event");
-        }
-    }
+  @Test(expectedExceptions = PolyglotException.class, expectedExceptionsMessageRegExp = "ReferenceError: event is not defined")
+  public void runRoomEventEmptySource()
+  {
+    RunScript runScript = new RunScript(persons, rooms, items, world, null);
+    runScript.run(room, "");
+  }
 
-    @Test
-    public void runRoomEvent() throws IllegalAccessException, InstantiationException, InvocationTargetException
+  @Test
+  public void runRoomEvent()
+  {
+    RunScript runScript = new RunScript(persons, rooms, items, world, null);
+    StringBuilder sourceCode = new StringBuilder();
+    sourceCode.append("function event(room) {");
+    sourceCode.append("return false;");
+    sourceCode.append("}");
+    try
     {
-      RunScript runScript = new RunScript(persons, rooms, items, world, null);
-      StringBuilder sourceCode = new StringBuilder();
-        sourceCode.append("function event(room) {");
-        sourceCode.append("return false;");
-        sourceCode.append("}");
-        try
-        {
-            Object result = runScript.run(room, sourceCode.toString());
-        } catch (ScriptException | NoSuchMethodException ex)
-        {
-            Logger.getLogger(RoomEventRunScriptTest.class.getName()).log(Level.SEVERE, null, ex);
-            fail("No error message was expected.");
-        }
+      Object result = runScript.run(room, sourceCode.toString());
+    } catch (PolyglotException ex)
+    {
+      Logger.getLogger(RoomEventRunScriptTest.class.getName()).log(Level.SEVERE, null, ex);
+      fail("No error message was expected.");
     }
+  }
 
-    @Test
-    public void runRoomEventCommunication() throws IllegalAccessException, InstantiationException, InvocationTargetException
+  @Test
+  public void runRoomEventCommunication()
+  {
+    RunScript runScript = new RunScript(persons, rooms, items, world, null);
+    StringBuilder sourceCode = new StringBuilder();
+    sourceCode.append("function event(room) {");
+    sourceCode.append("room.sendMessage('Birds chirp in the trees.');");
+    sourceCode.append("room.sendMessage('Hotblack','%SNAME say%VERB: Hello, everyone.');");
+    sourceCode.append("room.sendMessageExcl('Hotblack','%SNAME is whispering something.');");
+    sourceCode.append("return false;");
+    sourceCode.append("}");
+    try
     {
-      RunScript runScript = new RunScript(persons, rooms, items, world, null);
-      StringBuilder sourceCode = new StringBuilder();
-        sourceCode.append("function event(room) {");
-        sourceCode.append("room.sendMessage('Birds chirp in the trees.');");
-        sourceCode.append("room.sendMessage('Hotblack','%SNAME say%VERB: Hello, everyone.');");
-        sourceCode.append("room.sendMessageExcl('Hotblack','%SNAME is whispering something.');");
-        sourceCode.append("return false;");
-        sourceCode.append("}");
-        try
-        {
-            Object result = runScript.run(room, sourceCode.toString());
-        } catch (ScriptException | NoSuchMethodException ex)
-        {
-            Logger.getLogger(RoomEventRunScriptTest.class.getName()).log(Level.SEVERE, null, ex);
-            fail("No error message was expected.");
-        }
+      Object result = runScript.run(room, sourceCode.toString());
+    } catch (PolyglotException ex)
+    {
+      Logger.getLogger(RoomEventRunScriptTest.class.getName()).log(Level.SEVERE, null, ex);
+      fail("No error message was expected.");
     }
+  }
 
-    @Test
-    public void runRoomEventAttributes() throws IllegalAccessException, InstantiationException, InvocationTargetException
+  @Test
+  public void runRoomEventAttributes()
+  {
+    RunScript runScript = new RunScript(persons, rooms, items, world, null);
+    StringBuilder sourceCode = new StringBuilder();
+    sourceCode.append("function event(room) {");
+    sourceCode.append("room.setAttribute('scripting','true');");
+    sourceCode.append("return false;");
+    sourceCode.append("}");
+    try
     {
-      RunScript runScript = new RunScript(persons, rooms, items, world, null);
-      StringBuilder sourceCode = new StringBuilder();
-        sourceCode.append("function event(room) {");
-        sourceCode.append("room.setAttribute('scripting','true');");
-        sourceCode.append("return false;");
-        sourceCode.append("}");
-        try
-        {
-            Object result = runScript.run(room, sourceCode.toString());
-        } catch (ScriptException | NoSuchMethodException ex)
-        {
-            Logger.getLogger(RoomEventRunScriptTest.class.getName()).log(Level.SEVERE, null, ex);
-            fail("No error message was expected.");
-        }
-        assertTrue(room.verifyAttribute("scripting", "true"), "scripting atttribute of room should be true");
+      Object result = runScript.run(room, sourceCode.toString());
+    } catch (PolyglotException ex)
+    {
+      Logger.getLogger(RoomEventRunScriptTest.class.getName()).log(Level.SEVERE, null, ex);
+      fail("No error message was expected.");
     }
+    assertTrue(room.verifyAttribute("scripting", "true"), "scripting atttribute of room should be true");
+  }
 }

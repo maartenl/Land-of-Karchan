@@ -16,16 +16,13 @@
  */
 package mmud.testing.tests.scripting;
 
-import java.lang.reflect.InvocationTargetException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import javax.script.ScriptException;
-
 import mmud.scripting.RunScript;
+import org.graalvm.polyglot.PolyglotException;
 import org.testng.annotations.Test;
-import static org.testng.Assert.assertEquals;
+
+import java.lang.reflect.InvocationTargetException;
+
 import static org.testng.Assert.assertTrue;
-import static org.testng.Assert.fail;
 
 /**
  *
@@ -34,84 +31,51 @@ import static org.testng.Assert.fail;
 public class PersonEventRunScriptTest extends RunScriptTest
 {
 
-    public PersonEventRunScriptTest()
-    {
-    }
+  public PersonEventRunScriptTest()
+  {
+  }
 
-    @Test
-    public void runPersonEventEmptySource() throws IllegalAccessException, InstantiationException, InvocationTargetException
-    {
-        RunScript runScript = new RunScript(persons, rooms, items, world, null);
-      StringBuilder sourceCode = new StringBuilder();
-        try
-        {
-            Object result = runScript.run(hotblack, sourceCode.toString());
-            fail("No event defined, so why no exception then?");
-        } catch (ScriptException ex)
-        {
-            Logger.getLogger(PersonEventRunScriptTest.class.getName()).log(Level.SEVERE, null, ex);
-            fail("No error message was expected. But we got " + ex.getMessage());
-        } catch (NoSuchMethodException ex)
-        {
-          assertEquals(ex.getMessage(), "event");
-        }
-    }
+  @Test(expectedExceptions = PolyglotException.class, expectedExceptionsMessageRegExp = "ReferenceError: event is not defined")
+  public void runPersonEventEmptySource()
+  {
+    RunScript runScript = new RunScript(persons, rooms, items, world, null);
+    runScript.run(hotblack, "");
+  }
 
-    @Test
-    public void runPersonEvent() throws IllegalAccessException, InstantiationException, InvocationTargetException
-    {
-      RunScript runScript = new RunScript(persons, rooms, items, world, null);
-      StringBuilder sourceCode = new StringBuilder();
-        sourceCode.append("function event(person) {");
-        sourceCode.append("return false;");
-        sourceCode.append("}");
-        try
-        {
-            Object result = runScript.run(hotblack, sourceCode.toString());
-        } catch (ScriptException | NoSuchMethodException ex)
-        {
-            Logger.getLogger(PersonEventRunScriptTest.class.getName()).log(Level.SEVERE, null, ex);
-            fail("No error message was expected. But we got " + ex.getMessage());
-        }
-    }
+  @Test
+  public void runPersonEvent()
+  {
+    RunScript runScript = new RunScript(persons, rooms, items, world, null);
+    StringBuilder sourceCode = new StringBuilder();
+    sourceCode.append("function event(person) {");
+    sourceCode.append("return false;");
+    sourceCode.append("}");
+    Object result = runScript.run(hotblack, sourceCode.toString());
+  }
 
-    @Test
-    public void runPersonEventCommunication() throws IllegalAccessException, InstantiationException, InvocationTargetException
-    {
-      RunScript runScript = new RunScript(persons, rooms, items, world, null);
-      StringBuilder sourceCode = new StringBuilder();
-        sourceCode.append("function event(person) {");
-        sourceCode.append("person.personal('My name is ' + person.name + '.');");
-        sourceCode.append("person.sendMessage('%SNAME say%VERB: Hello, everyone.');");
-        sourceCode.append("return false;");
-        sourceCode.append("}");
-        try
-        {
-            Object result = runScript.run(hotblack, sourceCode.toString());
-        } catch (ScriptException | NoSuchMethodException ex)
-        {
-            Logger.getLogger(PersonEventRunScriptTest.class.getName()).log(Level.SEVERE, null, ex);
-            fail("No error message was expected. But we got " + ex.getMessage());
-        }
-    }
+  @Test
+  public void runPersonEventCommunication()
+  {
+    RunScript runScript = new RunScript(persons, rooms, items, world, null);
+    StringBuilder sourceCode = new StringBuilder();
+    sourceCode.append("function event(person) {");
+    sourceCode.append("person.personal('My name is ' + person.name + '.');");
+    sourceCode.append("person.sendMessage('%SNAME say%VERB: Hello, everyone.');");
+    sourceCode.append("return false;");
+    sourceCode.append("}");
+    Object result = runScript.run(hotblack, sourceCode.toString());
+  }
 
-    @Test
-    public void runPersonEventAttributes() throws IllegalAccessException, InstantiationException, InvocationTargetException
-    {
-      RunScript runScript = new RunScript(persons, rooms, items, world, null);
-      StringBuilder sourceCode = new StringBuilder();
-        sourceCode.append("function event(person) {");
-        sourceCode.append("person.setAttribute('scripting','true');");
-        sourceCode.append("return false;");
-        sourceCode.append("}");
-        try
-        {
-            Object result = runScript.run(hotblack, sourceCode.toString());
-        } catch (ScriptException | NoSuchMethodException ex)
-        {
-            Logger.getLogger(PersonEventRunScriptTest.class.getName()).log(Level.SEVERE, null, ex);
-            fail("No error message was expected. But we got " + ex.getMessage());
-        }
-        assertTrue(hotblack.verifyAttribute("scripting", "true"), "scripting atttribute of hotblack should be true");
-    }
+  @Test
+  public void runPersonEventAttributes()
+  {
+    RunScript runScript = new RunScript(persons, rooms, items, world, null);
+    StringBuilder sourceCode = new StringBuilder();
+    sourceCode.append("function event(person) {");
+    sourceCode.append("person.setAttribute('scripting','true');");
+    sourceCode.append("return false;");
+    sourceCode.append("}");
+    Object result = runScript.run(hotblack, sourceCode.toString());
+    assertTrue(hotblack.verifyAttribute("scripting", "true"), "scripting atttribute of hotblack should be true");
+  }
 }

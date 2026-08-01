@@ -85,16 +85,9 @@
     </dependency>
     <dependency>
       <groupId>org.graalvm.polyglot</groupId>
-      <artifactId>js-community</artifactId>
+      <artifactId>js</artifactId>
       <version>${graaljs.version}</version>
       <type>pom</type>
-    </dependency>
-    <!-- we prefer not to use the ScriptEngine. GraalVM only allows this due to backwards compatibility.
-    Needs to be removed sometime. -->
-    <dependency>
-      <groupId>org.graalvm.js</groupId>
-      <artifactId>js-scriptengine</artifactId>
-      <version>${graaljs.version}</version>
     </dependency>
     <!-- in order to go from json to Object and vice versa in unit tests. -->
     <dependency>

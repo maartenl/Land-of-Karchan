@@ -89,7 +89,7 @@ public class GuildRestServiceTest {
   }
 
   @Test(expectedExceptions= MudWebException.class, expectedExceptionsMessageRegExp = "No guild found for player Marvin")
-  public void testGetGuildNoGuild() throws NoSuchFieldException, IllegalArgumentException, IllegalAccessException {
+  public void testGetGuildNoGuild() throws IllegalArgumentException {
     LOGGER.fine("testGetGuild");
     EntityManager entityManager = mock(EntityManager.class);
     marvin.setGuild(null);
@@ -107,7 +107,7 @@ public class GuildRestServiceTest {
   }
 
   @Test
-  public void testGetGuild() throws NoSuchFieldException, IllegalArgumentException, IllegalAccessException {
+  public void testGetGuild() throws IllegalArgumentException {
     LOGGER.fine("testGetGuild");
     EntityManager entityManager = mock(EntityManager.class);
     final Guild guild = TestingConstants.getGuild(hotblack);

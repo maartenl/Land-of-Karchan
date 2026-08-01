@@ -16,15 +16,11 @@
  */
 package mmud.testing.tests.scripting;
 
-import java.lang.reflect.InvocationTargetException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import javax.script.ScriptException;
-
 import mmud.scripting.RunScript;
+import org.graalvm.polyglot.PolyglotException;
 import org.testng.annotations.Test;
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.fail;
+
+import java.lang.reflect.InvocationTargetException;
 
 /**
  *
@@ -33,46 +29,27 @@ import static org.testng.Assert.fail;
 public class CommandRunScriptTest extends RunScriptTest
 {
 
-    public CommandRunScriptTest()
-    {
-    }
+  public CommandRunScriptTest()
+  {
+  }
 
-    @Test
-    public void runCommandEmptySource() throws IllegalAccessException, InstantiationException, InvocationTargetException
-    {
-        RunScript runScript = new RunScript(persons, rooms, items, world, null);
-      StringBuilder sourceCode = new StringBuilder();
-        try
-        {
-            Object result = runScript.run(hotblack, "bow", sourceCode.toString());
-            fail("No event defined, so why no exception then?");
-        } catch (ScriptException ex)
-        {
-            Logger.getLogger(CommandRunScriptTest.class.getName()).log(Level.SEVERE, null, ex);
-            fail("No error message was expected.");
-        } catch (NoSuchMethodException ex)
-        {
-          assertEquals(ex.getMessage(), "command");
-        }
-    }
+  @Test(expectedExceptions = PolyglotException.class, expectedExceptionsMessageRegExp = "ReferenceError: command is not defined")
+  public void runCommandEmptySource()
+  {
+    RunScript runScript = new RunScript(persons, rooms, items, world, null);
+    Object result = runScript.run(hotblack, "bow", "");
+  }
 
-    @Test
-    public void runCommand() throws IllegalAccessException, InstantiationException, InvocationTargetException
-    {
-      String command = "bow";
-      RunScript runScript = new RunScript(persons, rooms, items, world, null);
-      StringBuilder sourceCode = new StringBuilder();
-        sourceCode.append("function command(person, command) {");
-        sourceCode.append("person.sendMessage('%SNAME bows, and almost falls down.');");
-        sourceCode.append("return;");
-        sourceCode.append("}");
-        try
-        {
-            Object result = runScript.run(hotblack, command, sourceCode.toString());
-        } catch (ScriptException | NoSuchMethodException ex)
-        {
-            Logger.getLogger(CommandRunScriptTest.class.getName()).log(Level.SEVERE, null, ex);
-            fail("No error message was expected.");
-        }
-    }
+  @Test
+  public void runCommand()
+  {
+    String command = "bow";
+    RunScript runScript = new RunScript(persons, rooms, items, world, null);
+    StringBuilder sourceCode = new StringBuilder();
+    sourceCode.append("function command(person, command) {");
+    sourceCode.append("person.sendMessage('%SNAME bows, and almost falls down.');");
+    sourceCode.append("return;");
+    sourceCode.append("}");
+    Object result = runScript.run(hotblack, command, sourceCode.toString());
+  }
 }

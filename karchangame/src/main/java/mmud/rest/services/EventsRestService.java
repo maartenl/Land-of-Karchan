@@ -16,14 +16,6 @@
  */
 package mmud.rest.services;
 
-import java.lang.reflect.InvocationTargetException;
-import java.time.LocalDateTime;
-import java.util.Calendar;
-import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import javax.script.ScriptException;
-
 import jakarta.inject.Inject;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
@@ -41,28 +33,21 @@ import mmud.database.entities.game.Method;
 import mmud.database.entities.game.Room;
 import mmud.database.entities.items.Item;
 import mmud.exceptions.MudWebException;
-import mmud.scripting.Items;
-import mmud.scripting.ItemsInterface;
-import mmud.scripting.Persons;
-import mmud.scripting.Rooms;
-import mmud.scripting.RoomsInterface;
-import mmud.scripting.RunScript;
-import mmud.scripting.World;
-import mmud.scripting.WorldInterface;
-import mmud.services.AttributeService;
-import mmud.services.CommunicationService;
-import mmud.services.EventsService;
-import mmud.services.IdleUsersService;
-import mmud.services.ItemService;
-import mmud.services.LogService;
-import mmud.services.PersonService;
-import mmud.services.RoomsService;
+import mmud.scripting.*;
+import mmud.services.*;
+import org.graalvm.polyglot.PolyglotException;
+
+import java.time.LocalDateTime;
+import java.util.Calendar;
+import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * Takes care of all the events.
+ *
  * @author maartenl
- * @plantuml
- * <!--
+ * @plantuml <!--
  * class EventsBean
  * EventsBean : +events()
  * -->
@@ -132,7 +117,7 @@ public class EventsRestService
    * @throws java.lang.reflect.InvocationTargetException an exception because of javascript
    */
   @GET
-  public Response events(@Context HttpServletRequest request) throws IllegalAccessException, InstantiationException, InvocationTargetException
+  public Response events(@Context HttpServletRequest request)
   {
     if (!request.getRequestURL().toString().contains(LOCALHOST))
     {
@@ -189,7 +174,7 @@ public class EventsRestService
         try
         {
           boolean result = runScript.run(event.getRoom(), method.getSrc());
-        } catch (ScriptException | NoSuchMethodException ex)
+        } catch (PolyglotException ex)
         {
           // Error occurred: turn this event off!
           // TODO: that's for debugging,...
@@ -204,7 +189,7 @@ public class EventsRestService
         try
         {
           boolean result = runScript.run(event.getPerson(), method.getSrc());
-        } catch (ScriptException | NoSuchMethodException ex)
+        } catch (PolyglotException ex)
         {
           // Error occurred: turn this event off!
           // TODO: that's for debugging,...
@@ -219,7 +204,7 @@ public class EventsRestService
         try
         {
           boolean result = runScript.run(method.getSrc());
-        } catch (ScriptException | NoSuchMethodException ex)
+        } catch (PolyglotException ex)
         {
           // Error occurred: turn this event off!
           // TODO: that's for debugging,...

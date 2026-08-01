@@ -1,9 +1,5 @@
 package mmud.services;
 
-import java.lang.reflect.InvocationTargetException;
-import java.util.logging.Logger;
-import javax.script.ScriptException;
-
 import jakarta.inject.Inject;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
@@ -15,14 +11,10 @@ import mmud.database.entities.game.Room;
 import mmud.database.entities.items.Item;
 import mmud.exceptions.MudWebException;
 import mmud.rest.services.EventsRestService;
-import mmud.scripting.Items;
-import mmud.scripting.ItemsInterface;
-import mmud.scripting.Persons;
-import mmud.scripting.Rooms;
-import mmud.scripting.RoomsInterface;
-import mmud.scripting.RunScript;
-import mmud.scripting.World;
-import mmud.scripting.WorldInterface;
+import mmud.scripting.*;
+import org.graalvm.polyglot.PolyglotException;
+
+import java.util.logging.Logger;
 
 public class EventsService
 {
@@ -114,8 +106,7 @@ public class EventsService
       {
         runScript.run(method.getSrc());
       }
-    } catch (InvocationTargetException | InstantiationException | IllegalAccessException | ScriptException |
-             NoSuchMethodException ex)
+    } catch (PolyglotException ex)
     {
       // Error occurred: turn this event off!
       // TODO: that's for debugging,...
