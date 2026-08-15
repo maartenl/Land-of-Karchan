@@ -14,6 +14,9 @@ export class ThemeService {
   #stylesheet: HTMLLinkElement | null = document.getElementById(
     "pagestyle"
   ) as HTMLLinkElement;
+  #body: HTMLBodyElement | null = document.getElementsByTagName(
+    "body"
+  ).item(0) as HTMLBodyElement;
   #darkmode: boolean = false;
 
   constructor(private cookieService: CookieService) {
@@ -66,6 +69,9 @@ export class ThemeService {
   private updateRenderedTheme(): void {
     if (this.#stylesheet) {
       this.#stylesheet.href = `${this.#path}/bootstrap${this.getCssLabel()}.min.css`;
+    }
+    if (this.#body && this.isDarkThemeActive()) {
+      this.#body.setAttribute("data-ag-theme-mode","dark-blue");
     }
   }
 }
