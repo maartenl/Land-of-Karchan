@@ -72,6 +72,8 @@ export class Play implements OnInit {
 
   commandForm = form(this.commandData);
 
+  previousCommandData: CommandData = {command: "", htmlContent: ""};
+
   createForms() {
     this.commandData.set({
       command: "",
@@ -260,6 +262,7 @@ export class Play implements OnInit {
         this.createForms();
         return false;
       }
+      this.previousCommandData = {command: command, htmlContent: htmlContent};
       this.processCall(totalcommand, true);
       return false;
     }
@@ -270,6 +273,7 @@ export class Play implements OnInit {
         this.createForms();
         return false;
       }
+      this.previousCommandData = {command: command, htmlContent: htmlContent};
       this.processCall(command, true);
     }
     return false;
@@ -405,6 +409,15 @@ export class Play implements OnInit {
       karchan.bigEntry = !karchan.bigEntry;
       return karchan;
     });
+    return false;
+  }
+
+  /**
+   * Restores the previous command.
+   */
+  public restore(): boolean {
+    Logger.log('restore');
+    this.commandData.set(this.previousCommandData);
     return false;
   }
 
