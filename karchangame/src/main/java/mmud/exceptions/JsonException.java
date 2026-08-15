@@ -28,7 +28,7 @@ public class JsonException extends MudWebException
 
   public JsonException(Exception ex)
   {
-    super(null, "Malformed data.", ex, Response.Status.BAD_REQUEST);
+    super(null, ex.getMessage(), ex, Response.Status.BAD_REQUEST);
   }
 
 }

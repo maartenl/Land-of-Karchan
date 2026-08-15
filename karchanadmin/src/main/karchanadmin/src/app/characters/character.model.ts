@@ -40,7 +40,7 @@ export class MudCharacter implements AdminObject<string> {
   active: boolean | null = null;
   lastlogin: Date | null = null;
   birth: Date | null = null;
-  god: boolean | null = null;
+  god: string | null = null;
   guild: string | null = null;
   strength: number | null = null;
   intelligence: number | null = null;

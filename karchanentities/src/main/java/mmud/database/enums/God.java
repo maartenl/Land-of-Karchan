@@ -32,7 +32,7 @@ public enum God
     GOD(1), BOT(2), MOB(3), SHOPKEEPER(4);
     private int value;
 
-    private God(int value)
+    God(int value)
     {
         this.value = value;
     }

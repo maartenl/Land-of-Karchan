@@ -120,7 +120,10 @@ public class PersonsRestService
         user.setAddress(adminCharacter.address);
         user.setRealname(adminCharacter.realname);
         user.setEmail(adminCharacter.email);
-        user.setOoc(adminCharacter.ooc);
+        if (adminCharacter.ooc != null)
+        {
+          user.setOoc(adminCharacter.ooc);
+        }
         user.setState(adminCharacter.state);
         character = user;
         break;
@@ -160,7 +163,10 @@ public class PersonsRestService
       }
       character.setRoom(room);
     }
-    character.setVisible(adminCharacter.visible);
+    if (adminCharacter.visible != null)
+    {
+      character.setVisible(adminCharacter.visible);
+    }
     character.setBirth(LocalDateTime.now());
     character.setNotes(adminCharacter.notes);
 //    character.setCurrentstate(adminCharacter.currentstate);
@@ -226,18 +232,25 @@ public class PersonsRestService
       User user = (User) character;
       user.setRealname(adminCharacter.realname);
       user.setEmail(adminCharacter.email);
-      user.setOoc(adminCharacter.ooc);
+      if (adminCharacter.ooc != null)
+      {
+        user.setOoc(adminCharacter.ooc);
+      }
       if (adminCharacter.newpassword != null && !adminCharacter.newpassword.trim().isEmpty())
       {
         user.setNewpassword(adminCharacter.newpassword);
       }
       CharacterInfo characterInfo = privateService.getCharacterInfo(user);
-      if (characterInfo != null) {
+      if (characterInfo != null)
+      {
         characterInfo.setStoryline(adminCharacter.storyline);
       }
     }
     character.setAfk(adminCharacter.afk);
-    character.setActive(adminCharacter.active);
+    if (adminCharacter.active != null)
+    {
+      character.setActive(adminCharacter.active);
+    }
     character.setOwner(OwnerHelper.getNewOwner(adminCharacter.owner, admin, getEntityManager()));
     ValidationUtils.checkValidation(name, character);
     logService.writeDeputyLog(admin, "Character '" + character.getName() + "' updated.");
@@ -322,16 +335,16 @@ public class PersonsRestService
   @GET
   @Path("{id}/items")
   @Produces(
-      {
-          MediaType.APPLICATION_JSON
-      })
+    {
+      MediaType.APPLICATION_JSON
+    })
   public String getItemInstances(@PathParam("id") String id)
   {
     final List<String> items =
-        getEntityManager().createNativeQuery(AdminItem.GET_PERSONS_QUERY)
-            .setParameter(1, id)
-            .setMaxResults(10000)
-            .getResultList();
+      getEntityManager().createNativeQuery(AdminItem.GET_PERSONS_QUERY)
+        .setParameter(1, id)
+        .setMaxResults(10000)
+        .getResultList();
     return "[" + String.join(",", items) + "]";
   }
 

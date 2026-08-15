@@ -5,7 +5,7 @@ import {ToastService} from '../toast.service';
 import {CharactersRestService} from '../characters-rest.service';
 
 import {AgGridAngular} from "ag-grid-angular";
-import {ColDef, GridReadyEvent, SelectionChangedEvent, RowSelectionOptions,} from "ag-grid-community";
+import {ColDef, SelectionChangedEvent} from "ag-grid-community";
 import {Logger} from '../consolelog.service';
 import {form, FormField} from '@angular/forms/signals';
 import {ItemSub} from '../item-sub/item-sub';
@@ -36,8 +36,6 @@ export interface MudCharacterData {
   arm: string;
   leg: string;
   afk: string;
-  birth: Date;
-  lastlogin: Date;
   address: string;
   realname: string;
   newpassword: string;
@@ -68,7 +66,6 @@ export class Characters extends AdminComponent<MudCharacter, string> implements 
     age: "",
     arm: "",
     beard: "",
-    birth: new Date(),
     complexion: "",
     eyes: "",
     face: "",
@@ -77,7 +74,6 @@ export class Characters extends AdminComponent<MudCharacter, string> implements 
     hair: "",
     height: "",
     image: "",
-    lastlogin: new Date(),
     leg: "",
     afk: "",
     name: "",
@@ -146,7 +142,6 @@ export class Characters extends AdminComponent<MudCharacter, string> implements 
       age: character.age ?? "",
       arm: character.arm ?? "",
       beard: character.beard ?? "",
-      birth: character.birth ?? new Date(),
       complexion: character.complexion ?? "",
       eyes: character.eyes ?? "",
       face: character.face ?? "",
@@ -155,7 +150,6 @@ export class Characters extends AdminComponent<MudCharacter, string> implements 
       hair: character.hair ?? "",
       height: character.height ?? "",
       image: character.image ?? "",
-      lastlogin: character.lastlogin ?? new Date(),
       leg: character.leg ?? "",
       afk: character.afk ?? "",
       name: character.name ?? "",
@@ -185,16 +179,14 @@ export class Characters extends AdminComponent<MudCharacter, string> implements 
     character.age = formModel.age == "" ? null : formModel.age;
     character.arm = formModel.arm == "" ? null : formModel.arm;
     character.beard = formModel.beard == "" ? null : formModel.beard;
-    character.birth = formModel.birth;
     character.complexion = formModel.complexion == "" ? null : formModel.complexion;
     character.eyes = formModel.eyes == "" ? null : formModel.eyes;
     character.face = formModel.face == "" ? null : formModel.face;
     character.familyname = formModel.familyname == "" ? null : formModel.familyname;
-    // character.god = "DEFAULT_USER";
+    character.god = formModel.god;
     character.hair = formModel.hair == "" ? null : formModel.hair;
     character.height = formModel.height == "" ? null : formModel.height;
     character.image = formModel.image == "" ? null : formModel.image;
-    character.lastlogin = formModel.lastlogin;
     character.leg = formModel.leg == "" ? null : formModel.leg;
     character.afk = formModel.afk == "" ? null : formModel.afk;
     character.name = formModel.name == "" ? null : formModel.name;

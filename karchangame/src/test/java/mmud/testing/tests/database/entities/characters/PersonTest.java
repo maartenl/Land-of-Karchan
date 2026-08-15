@@ -16,8 +16,6 @@
  */
 package mmud.testing.tests.database.entities.characters;
 
-import java.util.function.Consumer;
-
 import mmud.database.entities.characters.Person;
 import mmud.database.entities.characters.User;
 import mmud.database.entities.items.Item;
@@ -26,11 +24,9 @@ import mmud.database.enums.Wielding;
 import mmud.exceptions.ItemException;
 import mmud.services.CommunicationService;
 import mmud.testing.TestingConstants;
-import org.testng.annotations.AfterClass;
-import org.testng.annotations.AfterMethod;
-import org.testng.annotations.BeforeClass;
-import org.testng.annotations.BeforeMethod;
-import org.testng.annotations.Test;
+import org.testng.annotations.*;
+
+import java.util.function.Consumer;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
@@ -208,5 +204,44 @@ public class PersonTest
     person.wield(item, Wielding.LEADING);
     assertThat(person.isWielding(item)).isTrue();
     assertThat(person.isWielding(null)).isFalse();
+  }
+
+  @Test
+  public void testGetLevel()
+  {
+    Person person = new User();
+    person.setName("Marvin");
+    assertThat(person.getExperience()).isEqualTo(0L);
+    assertThat(person.getLevel()).isEqualTo(1);
+
+    person.addExperience(49);
+    assertThat(person.getExperience()).isEqualTo(49L);
+    assertThat(person.getLevel()).isEqualTo(1);
+
+    person.addExperience(1);
+    assertThat(person.getExperience()).isEqualTo(0L);
+    assertThat(person.getLevel()).isEqualTo(2);
+
+    person.addExperience(500);
+    assertThat(person.getExperience()).isEqualTo(117);
+    assertThat(person.getLevel()).isEqualTo(5);
+  }
+
+  @Test
+  public void testGetStatistics()
+  {
+    Person person = new User();
+    person.setName("Marvin");
+    person.setRace("human");
+    assertThat(person.getStatistics().split("\n")).contains(
+      "    A male human who calls himself Marvin.<br/>",
+      "    You seem to be feeling very well.<br/>",
+      "    You are fully exhausted.<br/>",
+      "    You are thirsty.<br/>",
+      "    You are hungry.<br/>",
+      "    You are neutral.<br/>",
+      "    You have accumulated 0 experience points.",
+      "    You are level 1 and 50 experience points away from levelling.<br/>",
+      "    You will flee when you are at death's door.<br/>");
   }
 }

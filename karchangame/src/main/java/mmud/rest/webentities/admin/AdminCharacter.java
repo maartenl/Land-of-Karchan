@@ -21,10 +21,13 @@ package mmud.rest.webentities.admin;
 import java.time.LocalDateTime;
 import java.util.Objects;
 
+import jakarta.json.bind.JsonbException;
+import jakarta.ws.rs.core.Response;
 import mmud.JsonUtils;
 import mmud.database.entities.characters.Person;
 import mmud.database.entities.characters.User;
 import mmud.database.entities.web.CharacterInfo;
+import mmud.exceptions.MudWebException;
 
 /**
  * @author maartenl
@@ -56,9 +59,8 @@ public class AdminCharacter
   public String afk;
   public Integer copper;
   public Long room;
-  public String lok;
   public String whimpy;
-  public int experience;
+  public Long experience;
   public String fightingwho;
   public Boolean sleep;
   public Integer punishment;
@@ -68,7 +70,7 @@ public class AdminCharacter
   public Integer mentally;
   public Integer drinkstats;
   public Integer eatstats;
-  public boolean active;
+  public Boolean active;
   public LocalDateTime lastlogin;
   public LocalDateTime birth;
   public String god;
@@ -135,10 +137,10 @@ public class AdminCharacter
   public String wearaboutbody;
   public String guildlevel;
   public String timeout;
-  public boolean visible;
+  public Boolean visible;
   public Integer rrribbits;
   public Integer heehaws;
-  public boolean ooc;
+  public Boolean ooc;
   public String familyname;
   /**
    * Comes from the character sheet (characterinfo table), if exists.
@@ -213,7 +215,7 @@ public class AdminCharacter
     this.copper = item.getCopper();
     this.room = item.getRoom() == null ? null : item.getRoom().getId();
     this.whimpy = Objects.toString(item.getWimpy(), null);
-    this.experience = item.getExperience();
+    this.experience = item.getTotalExperience();
     this.fightingwho = item.getFightingwho();
     this.sleep = item.getSleep();
     this.fightable = item.getFightable();
@@ -280,6 +282,6 @@ public class AdminCharacter
 
   public static AdminCharacter fromJson(String json)
   {
-    return JsonUtils.fromJson(json, AdminCharacter.class);
+      return JsonUtils.fromJson(json, AdminCharacter.class);
   }
 }

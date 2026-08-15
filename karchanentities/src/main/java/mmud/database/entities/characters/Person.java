@@ -17,46 +17,18 @@
 package mmud.database.entities.characters;
 
 import com.google.common.annotations.VisibleForTesting;
-import jakarta.persistence.Basic;
-import jakarta.persistence.CascadeType;
-import jakarta.persistence.Column;
-import jakarta.persistence.Convert;
-import jakarta.persistence.DiscriminatorColumn;
-import jakarta.persistence.DiscriminatorType;
-import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
-import jakarta.persistence.Id;
-import jakarta.persistence.Inheritance;
-import jakarta.persistence.InheritanceType;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.Lob;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.NamedQuery;
-import jakarta.persistence.OneToMany;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 import mmud.database.Attributes;
 import mmud.database.RegularExpressions;
+import mmud.database.entities.LevellingUtilities;
 import mmud.database.entities.Ownage;
-import mmud.database.entities.game.Admin;
-import mmud.database.entities.game.Attribute;
-import mmud.database.entities.game.AttributeWrangler;
-import mmud.database.entities.game.Charattribute;
-import mmud.database.entities.game.DisplayInterface;
-import mmud.database.entities.game.Room;
+import mmud.database.entities.game.*;
 import mmud.database.entities.items.Item;
 import mmud.database.entities.items.ItemWrangler;
-import mmud.database.enums.Alignment;
-import mmud.database.enums.Appetite;
-import mmud.database.enums.God;
-import mmud.database.enums.Health;
-import mmud.database.enums.Movement;
-import mmud.database.enums.Sex;
-import mmud.database.enums.Sobriety;
-import mmud.database.enums.Wearing;
-import mmud.database.enums.Wielding;
+import mmud.database.enums.*;
 import mmud.exceptions.ItemException;
 import mmud.exceptions.MoneyException;
 import mmud.exceptions.MudException;
@@ -89,27 +61,27 @@ import java.util.logging.Logger;
 @NamedQuery(name = "Person.findByName", query = "SELECT p FROM Person p WHERE lower(p.name) = lower(:name)")
 @NamedQuery(name = "Person.countAll", query = "SELECT count(p) FROM Person p")
 @NamedQuery(name = "Person.findByRoom", query = "SELECT p FROM Person p where p.room.id = :room")
-@NamedQuery(name = "Person.removewearaboutbody", query ="UPDATE Person p SET p.wearaboutbody = null WHERE p.wearaboutbody = :item")
-@NamedQuery(name = "Person.removewieldleft", query ="UPDATE Person p SET p.wieldleft = null WHERE p.wieldleft = :item")
-@NamedQuery(name = "Person.removeleading", query ="UPDATE Person p SET p.leading = null WHERE p.leading = :item")
-@NamedQuery(name = "Person.removeriding", query ="UPDATE Person p SET p.riding = null WHERE p.riding = :item")
-@NamedQuery(name = "Person.removewieldright", query ="UPDATE Person p SET p.wieldright = null WHERE p.wieldright = :item")
-@NamedQuery(name = "Person.removewieldboth", query ="UPDATE Person p SET p.wieldboth = null WHERE p.wieldboth = :item")
-@NamedQuery(name = "Person.removewearhead", query ="UPDATE Person p SET p.wearhead = null WHERE p.wearhead = :item")
-@NamedQuery(name = "Person.removewearneck", query ="UPDATE Person p SET p.wearneck = null WHERE p.wearneck = :item")
-@NamedQuery(name = "Person.removeweartorso", query ="UPDATE Person p SET p.weartorso = null WHERE p.weartorso = :item")
-@NamedQuery(name = "Person.removeweararms", query ="UPDATE Person p SET p.weararms = null WHERE p.weararms = :item")
-@NamedQuery(name = "Person.removewearleftwrist", query ="UPDATE Person p SET p.wearleftwrist = null WHERE p.wearleftwrist = :item")
-@NamedQuery(name = "Person.removewearrightwrist", query ="UPDATE Person p SET p.wearrightwrist = null WHERE p.wearrightwrist = :item")
-@NamedQuery(name = "Person.removewearleftfinger", query ="UPDATE Person p SET p.wearleftfinger = null WHERE p.wearleftfinger = :item")
-@NamedQuery(name = "Person.removewearrightfinger", query ="UPDATE Person p SET p.wearrightfinger = null WHERE p.wearrightfinger = :item")
-@NamedQuery(name = "Person.removewearfeet", query ="UPDATE Person p SET p.wearfeet = null WHERE p.wearfeet = :item")
-@NamedQuery(name = "Person.removewearhands", query ="UPDATE Person p SET p.wearhands = null WHERE p.wearhands = :item")
-@NamedQuery(name = "Person.removewearfloatingnearby", query ="UPDATE Person p SET p.wearfloatingnearby = null WHERE p.wearfloatingnearby = :item")
-@NamedQuery(name = "Person.removewearwaist", query ="UPDATE Person p SET p.wearwaist = null WHERE p.wearwaist = :item")
-@NamedQuery(name = "Person.removewearlegs", query ="UPDATE Person p SET p.wearlegs = null WHERE p.wearlegs = :item")
-@NamedQuery(name = "Person.removeweareyes", query ="UPDATE Person p SET p.weareyes = null WHERE p.weareyes = :item")
-@NamedQuery(name = "Person.removewearears", query ="UPDATE Person p SET p.wearears = null WHERE p.wearears = :item")
+@NamedQuery(name = "Person.removewearaboutbody", query = "UPDATE Person p SET p.wearaboutbody = null WHERE p.wearaboutbody = :item")
+@NamedQuery(name = "Person.removewieldleft", query = "UPDATE Person p SET p.wieldleft = null WHERE p.wieldleft = :item")
+@NamedQuery(name = "Person.removeleading", query = "UPDATE Person p SET p.leading = null WHERE p.leading = :item")
+@NamedQuery(name = "Person.removeriding", query = "UPDATE Person p SET p.riding = null WHERE p.riding = :item")
+@NamedQuery(name = "Person.removewieldright", query = "UPDATE Person p SET p.wieldright = null WHERE p.wieldright = :item")
+@NamedQuery(name = "Person.removewieldboth", query = "UPDATE Person p SET p.wieldboth = null WHERE p.wieldboth = :item")
+@NamedQuery(name = "Person.removewearhead", query = "UPDATE Person p SET p.wearhead = null WHERE p.wearhead = :item")
+@NamedQuery(name = "Person.removewearneck", query = "UPDATE Person p SET p.wearneck = null WHERE p.wearneck = :item")
+@NamedQuery(name = "Person.removeweartorso", query = "UPDATE Person p SET p.weartorso = null WHERE p.weartorso = :item")
+@NamedQuery(name = "Person.removeweararms", query = "UPDATE Person p SET p.weararms = null WHERE p.weararms = :item")
+@NamedQuery(name = "Person.removewearleftwrist", query = "UPDATE Person p SET p.wearleftwrist = null WHERE p.wearleftwrist = :item")
+@NamedQuery(name = "Person.removewearrightwrist", query = "UPDATE Person p SET p.wearrightwrist = null WHERE p.wearrightwrist = :item")
+@NamedQuery(name = "Person.removewearleftfinger", query = "UPDATE Person p SET p.wearleftfinger = null WHERE p.wearleftfinger = :item")
+@NamedQuery(name = "Person.removewearrightfinger", query = "UPDATE Person p SET p.wearrightfinger = null WHERE p.wearrightfinger = :item")
+@NamedQuery(name = "Person.removewearfeet", query = "UPDATE Person p SET p.wearfeet = null WHERE p.wearfeet = :item")
+@NamedQuery(name = "Person.removewearhands", query = "UPDATE Person p SET p.wearhands = null WHERE p.wearhands = :item")
+@NamedQuery(name = "Person.removewearfloatingnearby", query = "UPDATE Person p SET p.wearfloatingnearby = null WHERE p.wearfloatingnearby = :item")
+@NamedQuery(name = "Person.removewearwaist", query = "UPDATE Person p SET p.wearwaist = null WHERE p.wearwaist = :item")
+@NamedQuery(name = "Person.removewearlegs", query = "UPDATE Person p SET p.wearlegs = null WHERE p.wearlegs = :item")
+@NamedQuery(name = "Person.removeweareyes", query = "UPDATE Person p SET p.weareyes = null WHERE p.weareyes = :item")
+@NamedQuery(name = "Person.removewearears", query = "UPDATE Person p SET p.wearears = null WHERE p.wearears = :item")
 public abstract class Person implements Serializable, AttributeWrangler, DisplayInterface, ItemWrangler, Ownage
 {
 
@@ -200,7 +172,7 @@ public abstract class Person implements Serializable, AttributeWrangler, Display
   private Integer wimpy;
 
   @Column(name = "experience")
-  private Integer experience;
+  private Long experience;
 
   @Size(max = 20)
   // TODO recursion into the same table
@@ -429,7 +401,7 @@ public abstract class Person implements Serializable, AttributeWrangler, Display
 
     this.copper = 0; // no money
     this.wimpy = 0; // no coward, either
-    this.experience = 0; // no experience points to speak of
+    this.experience = 0L; // no experience points to speak of
     this.fightingwho = null; // not fighting anybody
     this.sleep = false;
     this.fightable = 0;
@@ -786,32 +758,42 @@ public abstract class Person implements Serializable, AttributeWrangler, Display
   }
 
   /**
-   * Returns the level of the character.
+   * Returns the level of the character based on Total Experience.
    *
    * @return integer.
+   * @see <a href="https://gamedev.stackexchange.com/questions/20934/how-to-create-adjustable-formula-for-rpg-level-up-requirements">How to create levels</a>
    */
   public int getLevel()
   {
     if (experience == null)
     {
-      experience = 0;
+      experience = 0L;
     }
-    return experience / 1000;
+    return LevellingUtilities.getLevel(experience);
+  }
+
+  /**
+   * Returns the total amount of experience of this character. It means basically all experience added up.
+   *
+   * @return total experience.
+   */
+  public Long getTotalExperience()
+  {
+    return experience;
   }
 
   /**
    * Returns the experience of the character.
    *
-   * @return integer between 0 and 1000. The closer to 1000 is the closer to the
-   * next level.
+   * @return the experience during the current level.
    */
-  public int getExperience()
+  public Long getExperience()
   {
     if (experience == null)
     {
-      experience = 0;
+      experience = 0L;
     }
-    return experience % 1000;
+    return LevellingUtilities.getExperience(experience);
   }
 
   public String getFightingwho()
@@ -1356,14 +1338,33 @@ public abstract class Person implements Serializable, AttributeWrangler, Display
     // TODO : get wearables
     // String stuff = ItemsDb.getWearablesFromChar(this);
     // stuff.replaceAll("%SHISHER", "your");
-    StringBuilder stuff = new StringBuilder();
-    String whimpy = (getWimpy() == null ? "You are not whimpy at all.<BR>"
-      : "You will flee when you are " + getWimpy().getDescription() + ".<BR>");
+    String whimpy = (getWimpy() == null ? "You are not whimpy at all.<br/>"
+      : "You will flee when you are " + getWimpy().getDescription() + ".<br/>");
     String state = getState() == null ? "" : "Your condition is \"" + getState() + "\"<br/>";
-    stuff.append("A ").append(getLongDescription()).append(".<BR>You seem to be ").append(Health.getHealth(getVitals()).getDescription()).append(".<BR>You are ").append(Movement.getMovement(getMovementstats()).getDescription()).append(".<BR>").append(Sobriety.getSobriety(getDrinkstats()).getDescription()).append("<br />").append(Appetite.getAppetite(getEatstats()).getDescription()).append("<br />" + "You are ").append(Alignment.getAlignment(alignment).getDescription()).append(".<BR>" + "You are level ").append(getLevel()).append(" and ").append(1000 - getExperience()).append(" experience points away from levelling.<BR>").append(whimpy);
-    stuff.append(state);
     // Skill
-    return stuff.toString();
+    return String.format("""
+            A %s<br/>
+            You seem to be %s.<br/>
+            You are %s.<br/>
+            %s<br/>
+            %s<br/>
+            You are %s.<br/>
+            You have accumulated %s experience points.
+            You are level %s and %s experience points away from levelling.<br/>
+            %s
+            %s
+        """, getLongDescription(),
+      Health.getHealth(getVitals()).getDescription(),
+      Movement.getMovement(getMovementstats()).getDescription(),
+      Sobriety.getSobriety(getDrinkstats()).getDescription(),
+      Appetite.getAppetite(getEatstats()).getDescription(),
+      Alignment.getAlignment(alignment).getDescription(),
+      getExperience(),
+      getLevel(),
+      LevellingUtilities.getExperienceLeftUntilFollowingLevel(getTotalExperience()),
+      whimpy,
+      state
+    );
   }
 
   private String getValueOrEmpty(String value)
@@ -2429,5 +2430,19 @@ public abstract class Person implements Serializable, AttributeWrangler, Display
     scalex = transform.scale().xScale();
     scaley = transform.scale().yScale();
     scalez = transform.scale().zScale();
+  }
+
+  /**
+   * Increase experience by an amount.
+   *
+   * @param i experience to add to the current experience.
+   * @return true if levelled up.
+   */
+  public boolean addExperience(int i)
+  {
+    int oldLevel = getLevel();
+    this.experience += i;
+    int newLevel = getLevel();
+    return oldLevel != newLevel;
   }
 }
