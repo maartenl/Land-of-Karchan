@@ -104,6 +104,10 @@ public abstract class Person implements Serializable, AttributeWrangler, Display
   @Column(name = "title")
   private String title;
 
+  @Size(max = 254)
+  @Column(name = "mugshot")
+  private String mugshot;
+
   @Size(max = 120)
   @Column(name = "familyname")
   private String familyname;
@@ -1505,7 +1509,17 @@ public abstract class Person implements Serializable, AttributeWrangler, Display
   @Override
   public String getImage() throws MudException
   {
-    return null;
+    return getMugshot();
+  }
+
+  public String getMugshot() throws MudException
+  {
+    return mugshot;
+  }
+
+  public void setMugshot(String image)
+  {
+    this.mugshot = image;
   }
 
   private String getWearables()

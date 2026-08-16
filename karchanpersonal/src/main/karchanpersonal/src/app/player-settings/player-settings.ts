@@ -11,6 +11,7 @@ import {ThemeService} from "../theme.service";
 
 export interface PlayerSettingsData {
   title: string
+  mugshot: string
   familyname: string
   homepageurl: string
   imageurl: string
@@ -52,6 +53,7 @@ export class PlayerSettings implements OnInit {
 
   playerModel = signal<PlayerSettingsData>({
     title: '',
+    mugshot: '',
     familyname: '',
     homepageurl: '',
     imageurl: '',
@@ -94,6 +96,7 @@ export class PlayerSettings implements OnInit {
     Logger.logObject(player);
     this.playerModel.set({
       title: player.title ?? '',
+      mugshot: player.mugshot ?? '',
       familyname: player.familyname ?? '',
       homepageurl: player.homepageurl ?? '',
       imageurl: player.imageurl ?? '',
@@ -141,6 +144,7 @@ export class PlayerSettings implements OnInit {
     // and deep copies of changed form model values
     const savePlayer: Player = {
       name: this.player().name,
+      mugshot: formModel.mugshot as string,
       title: formModel.title as string,
       familyname: formModel.familyname as string,
       sex: this.player().sex as string,

@@ -5,7 +5,7 @@ export enum Sex { Male = 'male', Female = 'female', Other = 'other' }
 export class MudCharacter implements AdminObject<string> {
   name: string | null = null;
   address: string | null = null;
-  image: string | null = null;
+  mugshot: string | null = null;
   familyname: string | null = null;
   title: string | null = null;
   realname: string | null = null;
@@ -122,7 +122,7 @@ export class MudCharacter implements AdminObject<string> {
     }
     this.name = object.name;
     this.address = object.address;
-    this.image = object.image;
+    this.mugshot = object.mugshot;
     this.title = object.title;
     this.familyname = object.familyname;
     this.realname = object.realname;

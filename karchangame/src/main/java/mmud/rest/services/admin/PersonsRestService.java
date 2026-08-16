@@ -132,7 +132,7 @@ public class PersonsRestService
     }
     character.setName(adminCharacter.name);
     character.setAfk(adminCharacter.afk);
-//    character.setImage(adminCharacter.image);
+    character.setMugshot(adminCharacter.mugshot);
     character.setTitle(StringUtils.trimToNull(adminCharacter.title));
     character.setFamilyname(StringUtils.trimToNull(adminCharacter.familyname));
     character.setRace(adminCharacter.race);
@@ -201,7 +201,7 @@ public class PersonsRestService
     Admin admin = (new OwnerHelper(getEntityManager())).authorize(name, character);
     character.setTitle(StringUtils.trimToNull(adminCharacter.title));
     character.setFamilyname(StringUtils.trimToNull(adminCharacter.familyname));
-//    character.setImage(adminCharacter.image);
+    character.setMugshot(adminCharacter.mugshot);
     character.setRace(adminCharacter.race);
     character.setSex(Sex.createFromString(adminCharacter.sex));
     character.setAge(adminCharacter.age);

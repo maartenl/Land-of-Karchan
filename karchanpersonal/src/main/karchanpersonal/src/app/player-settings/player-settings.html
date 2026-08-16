@@ -16,6 +16,12 @@
           </div>
         </fieldset>
         <fieldset class="form-group">
+          <label for="mugshot">Mug shot</label>
+          <input type="text" class="form-control" id="mugshot" [formField]="playerForm.mugshot">
+          <div id="mugshotHelp" class="form-text">A small image, visible next to your name when people look at you.
+          </div>
+        </fieldset>
+        <fieldset class="form-group">
           <label for="title">Title</label>
           <input type="text" class="form-control" id="title" [formField]="playerForm.title">
         </fieldset>

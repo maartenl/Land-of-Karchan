@@ -21,13 +21,10 @@ package mmud.rest.webentities.admin;
 import java.time.LocalDateTime;
 import java.util.Objects;
 
-import jakarta.json.bind.JsonbException;
-import jakarta.ws.rs.core.Response;
 import mmud.JsonUtils;
 import mmud.database.entities.characters.Person;
 import mmud.database.entities.characters.User;
 import mmud.database.entities.web.CharacterInfo;
-import mmud.exceptions.MudWebException;
 
 /**
  * @author maartenl
@@ -39,7 +36,7 @@ public class AdminCharacter
 
   public String name;
   public String address;
-  public String image;
+  public String mugshot;
   public String title;
   public String realname;
   public String newpassword;
@@ -198,7 +195,7 @@ public class AdminCharacter
   public AdminCharacter(Person item)
   {
     this.name = item.getName();
-    this.image = item.getImage();
+    this.mugshot = item.getMugshot();
     this.title = item.getTitle();
     this.race = item.getRace();
     this.sex = item.getSex().toString();

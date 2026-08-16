@@ -678,6 +678,7 @@ public class PrivateRestService
     }
     characterInfo.setImageurl(cinfo.imageurl);
     person.setTitle(StringUtils.trimToNull(cinfo.title));
+    person.setMugshot(StringUtils.trimToNull(cinfo.mugshot));
     person.setFamilyname(StringUtils.trimToNull(cinfo.familyname));
     if (cinfo.websockets != null)
     {

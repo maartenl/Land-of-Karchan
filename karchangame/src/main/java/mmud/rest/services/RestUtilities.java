@@ -66,6 +66,7 @@ public class RestUtilities
     res.name = person.getName();
     res.familyname = person.getFamilyname();
     res.title = person.getTitle();
+    res.mugshot = person.getMugshot();
     res.sex = person.getSex().toString();
     res.description = person.getDescription();
     res.websockets = person.getWebsocketSupport();

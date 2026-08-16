@@ -2,6 +2,7 @@ import {Family} from "./family.model";
 
 export class Player {
   name: string;
+  mugshot: string;
   title: string;
   familyname: string;
   sex: string;
@@ -18,6 +19,7 @@ export class Player {
 
   constructor() {
     this.name = '';
+    this.mugshot = '';
     this.title = '';
     this.familyname = '';
     this.sex = '';

@@ -17,7 +17,7 @@ import {rowSelection} from '../aggrid.utils';
 
 export interface MudCharacterData {
   name: string;
-  image: string;
+  mugshot: string;
   familyname: string;
   title: string;
   room: number | null;
@@ -73,7 +73,7 @@ export class Characters extends AdminComponent<MudCharacter, string> implements 
     god: "",
     hair: "",
     height: "",
-    image: "",
+    mugshot: "",
     leg: "",
     afk: "",
     name: "",
@@ -149,7 +149,7 @@ export class Characters extends AdminComponent<MudCharacter, string> implements 
       god: "DEFAULT_USER",
       hair: character.hair ?? "",
       height: character.height ?? "",
-      image: character.image ?? "",
+      mugshot: character.mugshot ?? "",
       leg: character.leg ?? "",
       afk: character.afk ?? "",
       name: character.name ?? "",
@@ -186,7 +186,7 @@ export class Characters extends AdminComponent<MudCharacter, string> implements 
     character.god = formModel.god;
     character.hair = formModel.hair == "" ? null : formModel.hair;
     character.height = formModel.height == "" ? null : formModel.height;
-    character.image = formModel.image == "" ? null : formModel.image;
+    character.mugshot = formModel.mugshot == "" ? null : formModel.mugshot;
     character.leg = formModel.leg == "" ? null : formModel.leg;
     character.afk = formModel.afk == "" ? null : formModel.afk;
     character.name = formModel.name == "" ? null : formModel.name;

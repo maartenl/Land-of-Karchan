@@ -399,6 +399,7 @@ public class GameRestService
       // everything's cool! Let's do this!
       person.setActive(false);
       person.setTitle(StringUtils.trimToNull(pperson.title));
+      person.setMugshot(StringUtils.trimToNull(pperson.mugshot));
       person.setFamilyname(StringUtils.trimToNull(pperson.familyname));
       person.setRealname(pperson.realname);
       person.setEmail(pperson.email);
