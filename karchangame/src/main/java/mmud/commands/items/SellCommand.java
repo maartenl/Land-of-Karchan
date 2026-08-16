@@ -85,15 +85,15 @@ public class SellCommand extends NormalCommand implements ItemCommand
   {
     PersonCommunicationService communicationService = CommunicationService.getCommunicationService(aUser);
     List<String> parsed = new ArrayList<>(Arrays.asList(parseCommand(command)));
-    parsed.remove(0); // remove "sell"
-    String shopkeeperName = parsed.get(parsed.size() - 1);
-    parsed.remove(parsed.size() - 1); // remove shopkeeper
-    parsed.remove(parsed.size() - 1); // remove "to"
+    parsed.removeFirst(); // remove "sell"
+    String shopkeeperName = parsed.getLast();
+    parsed.removeLast(); // remove shopkeeper
+    parsed.removeLast(); // remove "to"
     int amount = 1;
     try
     {
-      amount = Integer.parseInt(parsed.get(0));
-      parsed.remove(0);
+      amount = Integer.parseInt(parsed.getFirst());
+      parsed.removeFirst();
     } catch (NumberFormatException e)
     {// do nothing here, we assume we need to drop only one item.
     }

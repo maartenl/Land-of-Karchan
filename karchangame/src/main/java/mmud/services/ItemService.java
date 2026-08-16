@@ -240,10 +240,17 @@ public class ItemService
             return null;
         }
         aUser.give(item, shopkeeper);
-        final int amount = item.getCopper() * 80 / 100;
+        final int amount = getMarkdown(item.getCopper());
       shopkeeper.transferMoney(amount, aUser);
       logService.writeLog(aUser, " sold " + item.getDescription() + " to " + shopkeeper.getName() + " for " + amount + ".");
         return amount;
+    }
+
+  /**
+   * Indicates that if you sell something to a shopkeeper, he'll only purchase it for 80% of the original price.
+   */
+  public static int getMarkdown(int copper) {
+      return copper * 80 / 100;
     }
 
     /**

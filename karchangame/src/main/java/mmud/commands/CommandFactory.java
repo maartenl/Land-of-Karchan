@@ -16,38 +16,22 @@
  */
 package mmud.commands;
 
-import java.util.*;
+import mmud.commands.communication.*;
+import mmud.commands.guild.*;
+import mmud.commands.items.*;
+import mmud.commands.movement.*;
+import mmud.constants.Emotions;
+import mmud.database.entities.characters.User;
+import mmud.exceptions.MudException;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.TreeMap;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.function.BiConsumer;
 import java.util.logging.Logger;
 import java.util.regex.PatternSyntaxException;
-
-import mmud.commands.items.*;
-import mmud.constants.Emotions;
-import mmud.commands.communication.*;
-import mmud.commands.guild.AcceptCommand;
-import mmud.commands.guild.ApplyCommand;
-import mmud.commands.guild.ChangeMasterCommand;
-import mmud.commands.guild.CreateGuildCommand;
-import mmud.commands.guild.DeleteGuildCommand;
-import mmud.commands.guild.DetailsCommand;
-import mmud.commands.guild.GuildMessageCommand;
-import mmud.commands.guild.LeaveCommand;
-import mmud.commands.guild.MessageCommand;
-import mmud.commands.guild.RankAssignCommand;
-import mmud.commands.guild.RankChangeCommand;
-import mmud.commands.guild.RankDeleteCommand;
-import mmud.commands.guild.RejectCommand;
-import mmud.commands.guild.RemoveCommand;
-import mmud.commands.movement.DownCommand;
-import mmud.commands.movement.EastCommand;
-import mmud.commands.movement.GoCommand;
-import mmud.commands.movement.NorthCommand;
-import mmud.commands.movement.SouthCommand;
-import mmud.commands.movement.UpCommand;
-import mmud.commands.movement.WestCommand;
-import mmud.database.entities.characters.User;
-import mmud.exceptions.MudException;
 
 /**
  * The factory that creates commands based on the string entered by the user.
@@ -129,17 +113,17 @@ public class CommandFactory
     theCommandStructure.put("up", () -> new UpCommand("up"));
     theCommandStructure.put("down", () -> new DownCommand("down"));
     theCommandStructure.put("go", () -> new GoCommand(
-            "go (up|down|north|south|east|west)?"));
+      "go (up|down|north|south|east|west)?"));
     theCommandStructure.put("help", () -> new HelpCommand("help( (\\w|-)+){1,}"));
     theCommandStructure.put("man", () -> new HelpCommand("man( (\\w|-)+){1,}"));
     theCommandStructure.put("show ignoring", () -> new IgnoringCommand(
-            "show ignoring"));
+      "show ignoring"));
     theCommandStructure.put("fully", () -> new IgnoreCommand(
-            "fully ignore (\\w)+"));
+      "fully ignore (\\w)+"));
     theCommandStructure.put("acknowledge", () -> new AcknowledgeCommand(
-            "acknowledge (\\w)+"));
+      "acknowledge (\\w)+"));
     theCommandStructure.put("curtsey", () -> new CurtseyCommand(
-            "curtsey( to (\\w)+)?"));
+      "curtsey( to (\\w)+)?"));
     theCommandStructure.put("eyebrow", () -> new EyebrowCommand("eyebrow"));
     theCommandStructure.put("wimpy", () -> new WimpyCommand("wimpy( .+|help)?"));
 //        theCommandStructure.put("pkill", new PkillCommand("pkill( (\\w)+)?"));
@@ -206,40 +190,40 @@ public class CommandFactory
       "buy( (\\w|-)+){1,} from (\\w)+"));
     theCommandStructure.put("sell", () -> new SellCommand(
       "sell( (\\w|-)+){1,} to (\\w)+"));
-//        theCommandStructure.put("show", new ShowCommand(
-//                "show( (\\w|-)+){1,4} to (\\w)+"));
+    theCommandStructure.put("show", () -> new ShowCommand(
+      "show( (\\w|-)+){1,4} to (\\w)+"));
 //        theCommandStructure.put("title", new TitleCommand("title .+"));
     theCommandStructure.put("admin", () -> new AdminCommand("admin .+"));
     theCommandStructure.put("owner", () -> new OwnerCommand("owner( (\\w)+)?"));
     theCommandStructure.put("deputies", () -> new OwnerCommand("deputies"));
     // guild commands
     theCommandStructure.put("guildapply", () -> new ApplyCommand(
-            "guildapply( (\\w)+)?"));
+      "guildapply( (\\w)+)?"));
     theCommandStructure.put("guildmessage", () -> new GuildMessageCommand(
-            "guildmessage .+"));
+      "guildmessage .+"));
     theCommandStructure.put("guildleave", () -> new LeaveCommand("guildleave"));
     theCommandStructure.put("guilddetails", () -> new DetailsCommand(
-            "guilddetails"));
+      "guilddetails"));
     theCommandStructure.put("guildaccept", () -> new AcceptCommand(
-            "guildaccept (\\w)+"));
+      "guildaccept (\\w)+"));
     theCommandStructure.put("guildreject", () -> new RejectCommand(
-            "guildreject (\\w)+"));
+      "guildreject (\\w)+"));
     theCommandStructure.put("guildrank", () -> new RankChangeCommand(
-            "guildrank (\\d){1,3} (\\w)+"));
+      "guildrank (\\d){1,3} (\\w)+"));
     theCommandStructure.put("guildaddrank", () -> new RankChangeCommand(
-            "guildaddrank (\\d){1,3} (\\w)+"));
+      "guildaddrank (\\d){1,3} (\\w)+"));
     theCommandStructure.put("guildassignrank", () -> new RankAssignCommand(
-            "guildassignrank (\\w)+ (\\w)+"));
+      "guildassignrank (\\w)+ (\\w)+"));
     theCommandStructure.put("guilddelrank", () -> new RankDeleteCommand(
-            "guilddelrank (\\d){1,3}"));
+      "guilddelrank (\\d){1,3}"));
     theCommandStructure.put("createguild", () -> new CreateGuildCommand(
-            "createguild (\\w)+ .+"));
+      "createguild (\\w)+ .+"));
     theCommandStructure.put("deleteguild", () -> new DeleteGuildCommand(
-            "deleteguild"));
+      "deleteguild"));
     theCommandStructure.put("guildremove", () -> new RemoveCommand(
-            "guildremove (\\w)+"));
+      "guildremove (\\w)+"));
     theCommandStructure.put("guildmasterchange", () -> new ChangeMasterCommand(
-            "guildmasterchange (\\w)+"));
+      "guildmasterchange (\\w)+"));
     theCommandStructure.put("guild", () -> new MessageCommand("guild .+"));
 
     for (String entry : Emotions.getEmotions())
@@ -257,7 +241,8 @@ public class CommandFactory
     return BOGUS.createCommand();
   }
 
-  public static NormalCommand getAdminCommand() {
+  public static NormalCommand getAdminCommand()
+  {
     return theCommandStructure.get("admin").createCommand();
   }
 
@@ -275,7 +260,7 @@ public class CommandFactory
    * </ol>
    * It also means that this collection will always carry at least one
    * command, the bogus command.
-   * <P>
+   * <p>
    * All commands are newly created.
    */
   public static List<NormalCommand> getCommand(String aCommand)
@@ -310,7 +295,7 @@ public class CommandFactory
    * <li>room defined in the user defined commands euqals the room the user is
    * in</li></ul></p>
    *
-   * @param user the user, used to get the room.
+   * @param user     the user, used to get the room.
    * @param aCommand the string containing the command issued by the user
    * @return a list of possibly valid user defined commands.
    */
@@ -329,7 +314,8 @@ public class CommandFactory
             result.add(myCom);
           }
         }
-      } catch (PatternSyntaxException e) {
+      } catch (PatternSyntaxException e)
+      {
         String msg = "PatternSyntaxException executing user command " + aCommand + " for user " + user.getName();
         LOGGER.severe(msg);
         LOGGER.throwing("CommandFactory", "getUserCommands", e);
@@ -360,15 +346,15 @@ public class CommandFactory
     /**
      * constructor for creating a user command for a specific room.
      *
-     * @param aCommand the regular expression for determining the command is
-     * equal to the command entered.
+     * @param aCommand    the regular expression for determining the command is
+     *                    equal to the command entered.
      * @param aMethodName the name of the method to call.
-     * @param aRoom the room in which this command is active. Can be a null
-     * pointer if the command is active in all rooms.
-     * @param aCommandId the identification number for the command
+     * @param aRoom       the room in which this command is active. Can be a null
+     *                    pointer if the command is active in all rooms.
+     * @param aCommandId  the identification number for the command
      */
     public UserCommandInfo(int aCommandId, String aCommand,
-            String aMethodName, Long aRoom)
+                           String aMethodName, Long aRoom)
     {
       theCommandId = aCommandId;
       theCommand = aCommand;
@@ -379,13 +365,13 @@ public class CommandFactory
     /**
      * constructor for creating a user command for all rooms.
      *
-     * @param aCommand the regular expression for determining the command is
-     * equal to the command entered.
+     * @param aCommand    the regular expression for determining the command is
+     *                    equal to the command entered.
      * @param aMethodName the name of the method to call.
-     * @param aCommandId the identification number for the command
+     * @param aCommandId  the identification number for the command
      */
     public UserCommandInfo(int aCommandId, String aCommand,
-            String aMethodName)
+                           String aMethodName)
     {
       theCommandId = aCommandId;
       theCommand = aCommand;
@@ -439,7 +425,7 @@ public class CommandFactory
      * exception.
      */
     public void deactivateCommand()
-            throws MudException
+      throws MudException
     {
       theUserCommandStructure.remove(this);
     }
@@ -468,14 +454,14 @@ public class CommandFactory
   /**
    * Add a user command to the structure.
    *
-   * @param aCommandId the id of the command
-   * @param aCommand the command
+   * @param aCommandId  the id of the command
+   * @param aCommand    the command
    * @param aMethodName the method name
-   * @param aRoom the room, optional, may be null in which case the command is
-   * valid for all rooms.
+   * @param aRoom       the room, optional, may be null in which case the command is
+   *                    valid for all rooms.
    */
   public static void addUserCommand(int aCommandId, String aCommand,
-          String aMethodName, Long aRoom)
+                                    String aMethodName, Long aRoom)
   {
     UserCommandInfo info = new UserCommandInfo(aCommandId, aCommand, aMethodName, aRoom);
     CommandFactory.theUserCommandStructure.add(info);
