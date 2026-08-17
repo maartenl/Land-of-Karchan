@@ -1,15 +1,15 @@
-import {Component, inject, OnInit, signal} from '@angular/core';
-import {form, FormField} from '@angular/forms/signals';
-import {Method} from './method.model';
-import {AdminComponent} from '../admin/admin.component';
-import {ToastService} from '../toast.service';
-import {MethodsRestService} from '../methods-rest.service';
-import {ActivatedRoute} from '@angular/router';
-import {ColDef, SelectionChangedEvent} from 'ag-grid-community';
-import {Command} from '../commands/command.model';
-import {LinkRenderer} from '../link-renderer/link-renderer';
-import {AgGridAngular} from 'ag-grid-angular';
-import {rowSelection} from '../aggrid.utils';
+import { Component, inject, OnInit, signal, ChangeDetectionStrategy } from '@angular/core';
+import { form, FormField } from '@angular/forms/signals';
+import { Method } from './method.model';
+import { AdminComponent } from '../admin/admin.component';
+import { ToastService } from '../toast.service';
+import { MethodsRestService } from '../methods-rest.service';
+import { ActivatedRoute } from '@angular/router';
+import { ColDef, SelectionChangedEvent } from 'ag-grid-community';
+import { Command } from '../commands/command.model';
+import { LinkRenderer } from '../link-renderer/link-renderer';
+import { AgGridAngular } from 'ag-grid-angular';
+import { rowSelection } from '../aggrid.utils';
 
 export interface MethodData {
   name: string;
@@ -19,33 +19,37 @@ export interface MethodData {
 
 @Component({
   selector: 'app-methods',
-  imports: [
-    AgGridAngular, FormField
-  ],
+  imports: [AgGridAngular, FormField],
   templateUrl: './methods.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './methods.css',
 })
 export class Methods extends AdminComponent<Method, string> implements OnInit {
-
   override restService = inject(MethodsRestService);
   private route = inject(ActivatedRoute);
   override toastService = inject(ToastService);
 
   override colDefs: ColDef[] = [
-    {field: "name", filter: true, width: 150},
-    {field: "owner", filter: true, width: 100},
-    {field: "creation"},
+    { field: 'name', filter: true, width: 150 },
+    { field: 'owner', filter: true, width: 100 },
+    { field: 'creation' },
   ];
 
   commandsColDefs: ColDef[] = [
-    {field: "id", filter: true, width: 100, cellRenderer: LinkRenderer, cellRendererParams: {prefix: "/commands"}},
-    {field: "command", filter: true, width: 150},
+    {
+      field: 'id',
+      filter: true,
+      width: 100,
+      cellRenderer: LinkRenderer,
+      cellRendererParams: { prefix: '/commands' },
+    },
+    { field: 'command', filter: true, width: 150 },
   ];
 
   methodModel = signal<MethodData>({
-    name: "",
-    src: "",
-    owner: ""
+    name: '',
+    src: '',
+    owner: '',
   });
 
   form = form(this.methodModel);
@@ -63,9 +67,9 @@ export class Methods extends AdminComponent<Method, string> implements OnInit {
   override setForm(): void {
     const method = this.item();
     this.methodModel.set({
-      name: method.name ?? "",
-      src: method.src ?? "",
-      owner: method.owner ?? ""
+      name: method.name ?? '',
+      src: method.src ?? '',
+      owner: method.owner ?? '',
     });
   }
 
@@ -82,7 +86,7 @@ export class Methods extends AdminComponent<Method, string> implements OnInit {
     const formModel = this.methodModel();
     method.name = formModel.name;
     method.src = formModel.src;
-    method.owner = formModel.owner == "" ? null : formModel.owner;
+    method.owner = formModel.owner == '' ? null : formModel.owner;
     return method;
   }
 
@@ -96,14 +100,14 @@ export class Methods extends AdminComponent<Method, string> implements OnInit {
           this.item.set(data);
           this.setForm();
         }
-      }
+      },
     });
     this.restService.getCommands(id).subscribe({
       next: (data) => {
         if (data !== undefined) {
           this.commands.set(data);
         }
-      }
+      },
     });
     return false;
   }

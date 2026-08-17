@@ -1,13 +1,13 @@
-import {Component, inject, OnInit, signal} from '@angular/core';
-import {form, FormField} from '@angular/forms/signals';
-import {ToastService} from '../toast.service';
-import {CommandsRestService} from '../commands-rest.service';
-import {ActivatedRoute, RouterLink} from '@angular/router';
-import {AdminComponent} from '../admin/admin.component';
-import {Command} from './command.model';
-import {ColDef, SelectionChangedEvent} from "ag-grid-community";
-import {AgGridAngular} from 'ag-grid-angular';
-import {rowSelection} from '../aggrid.utils';
+import { Component, inject, OnInit, signal, ChangeDetectionStrategy } from '@angular/core';
+import { form, FormField } from '@angular/forms/signals';
+import { ToastService } from '../toast.service';
+import { CommandsRestService } from '../commands-rest.service';
+import { ActivatedRoute, RouterLink } from '@angular/router';
+import { AdminComponent } from '../admin/admin.component';
+import { Command } from './command.model';
+import { ColDef, SelectionChangedEvent } from 'ag-grid-community';
+import { AgGridAngular } from 'ag-grid-angular';
+import { rowSelection } from '../aggrid.utils';
 
 export interface CommandData {
   command: string;
@@ -19,19 +19,19 @@ export interface CommandData {
 
 @Component({
   selector: 'app-commands',
-  imports: [FormField, AgGridAngular, RouterLink
-  ],
+  imports: [FormField, AgGridAngular, RouterLink],
   templateUrl: './commands.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './commands.css',
 })
 export class Commands extends AdminComponent<Command, number> implements OnInit {
   override colDefs: ColDef<any, any>[] = [
-    {field: "id", filter: true, width: 150},
-    {field: "command", filter: true, width: 100},
-    {field: "methodName", filter: true, width: 100},
-    {field: "room", filter: true, width: 100},
-    {field: "owner", filter: true, width: 100},
-    {field: "creation"}
+    { field: 'id', filter: true, width: 150 },
+    { field: 'command', filter: true, width: 100 },
+    { field: 'methodName', filter: true, width: 100 },
+    { field: 'room', filter: true, width: 100 },
+    { field: 'owner', filter: true, width: 100 },
+    { field: 'creation' },
   ];
 
   override restService = inject(CommandsRestService);
@@ -40,10 +40,10 @@ export class Commands extends AdminComponent<Command, number> implements OnInit 
 
   commandModel = signal<CommandData>({
     callable: false,
-    command: "",
-    methodName: "",
-    owner: "",
-    room: null
+    command: '',
+    methodName: '',
+    owner: '',
+    room: null,
   });
 
   form = form(this.commandModel);
@@ -63,10 +63,10 @@ export class Commands extends AdminComponent<Command, number> implements OnInit 
   override setForm(): void {
     const command = this.item();
     this.commandModel.set({
-      command: command.command ?? "",
+      command: command.command ?? '',
       callable: command.callable ?? false,
-      methodName: command.methodName ?? "",
-      owner: command.owner ?? "",
+      methodName: command.methodName ?? '',
+      owner: command.owner ?? '',
       room: command.room ?? null,
     });
   }
@@ -85,7 +85,7 @@ export class Commands extends AdminComponent<Command, number> implements OnInit 
     command.command = formModel.command;
     command.callable = formModel.callable;
     command.methodName = formModel.methodName;
-    command.owner = formModel.owner == "" ? null : formModel.owner;
+    command.owner = formModel.owner == '' ? null : formModel.owner;
     command.room = formModel.room;
     return command;
   }
@@ -100,7 +100,7 @@ export class Commands extends AdminComponent<Command, number> implements OnInit 
           this.item.set(data);
           this.setForm();
         }
-      }
+      },
     });
     return false;
   }

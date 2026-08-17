@@ -1,13 +1,13 @@
-import {Component, inject, signal} from '@angular/core';
-import {form, FormField} from '@angular/forms/signals';
-import {AdminComponent} from '../admin/admin.component';
-import {ToastService} from '../toast.service';
-import {ColDef, SelectionChangedEvent} from 'ag-grid-community';
-import {TemplatesRestService} from '../templates-rest.service';
-import {Template} from './template.model';
-import {AgGridAngular} from 'ag-grid-angular';
-import {rowSelection} from '../aggrid.utils';
-import {UnifiedDiffComponent} from 'ngx-diff';
+import { Component, inject, signal, ChangeDetectionStrategy } from '@angular/core';
+import { form, FormField } from '@angular/forms/signals';
+import { AdminComponent } from '../admin/admin.component';
+import { ToastService } from '../toast.service';
+import { ColDef, SelectionChangedEvent } from 'ag-grid-community';
+import { TemplatesRestService } from '../templates-rest.service';
+import { Template } from './template.model';
+import { AgGridAngular } from 'ag-grid-angular';
+import { rowSelection } from '../aggrid.utils';
+import { UnifiedDiffComponent } from 'ngx-diff';
 
 export interface TemplateData {
   name: string;
@@ -19,6 +19,7 @@ export interface TemplateData {
   selector: 'app-templates',
   imports: [AgGridAngular, FormField, UnifiedDiffComponent],
   templateUrl: './templates.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './templates.css',
 })
 class Templates extends AdminComponent<Template, number> {
@@ -26,24 +27,24 @@ class Templates extends AdminComponent<Template, number> {
   override toastService = inject(ToastService);
 
   override colDefs: ColDef[] = [
-    {field: "id", filter: true, width: 150},
-    {field: "name", filter: true, width: 150},
-    {field: "version", filter: true, width: 150},
-    {field: "created", width: 150},
-    {field: "modified", width: 150},
-    {field: "editor", filter: true, width: 150},
+    { field: 'id', filter: true, width: 150 },
+    { field: 'name', filter: true, width: 150 },
+    { field: 'version', filter: true, width: 150 },
+    { field: 'created', width: 150 },
+    { field: 'modified', width: 150 },
+    { field: 'editor', filter: true, width: 150 },
   ];
 
   templateModel = signal<TemplateData>({
-    comment: "",
-    content: "",
-    name: ""
+    comment: '',
+    content: '',
+    name: '',
   });
 
   form = form(this.templateModel);
 
-  oldDocumentContents = signal<string>("");
-  newDocumentContents = signal<string>("");
+  oldDocumentContents = signal<string>('');
+  newDocumentContents = signal<string>('');
 
   historyItem = signal<Template>(new Template());
 
@@ -52,18 +53,19 @@ class Templates extends AdminComponent<Template, number> {
   override setForm(): void {
     const template = this.item();
     this.templateModel.set({
-      comment: template.comment ?? "",
-      content: template.content ?? "",
-      name: template.name ?? "",
+      comment: template.comment ?? '',
+      content: template.content ?? '',
+      name: template.name ?? '',
     });
     this.history.set([]);
   }
 
   getHistory(): boolean {
     this.restService.getHistoricTemplates(this.item()).subscribe({
-      next: (result: Template[]) => { // on success
+      next: (result: Template[]) => {
+        // on success
         this.history.set(result);
-        this.toastService.showRetrieving("History successfully retrieved.", "History retrieved...");
+        this.toastService.showRetrieving('History successfully retrieved.', 'History retrieved...');
       },
     });
     return false;
@@ -84,8 +86,8 @@ class Templates extends AdminComponent<Template, number> {
   override getForm(): Template {
     const template = this.item();
     const formModel = this.templateModel();
-    template.comment = formModel.comment == "" ? null : formModel.comment;
-    template.content = formModel.content == "" ? null : formModel.content;
+    template.comment = formModel.comment == '' ? null : formModel.comment;
+    template.content = formModel.content == '' ? null : formModel.content;
     template.name = formModel.name;
     return template;
   }
@@ -100,7 +102,7 @@ class Templates extends AdminComponent<Template, number> {
           this.item.set(data);
           this.setForm();
         }
-      }
+      },
     });
     return false;
   }
@@ -110,12 +112,12 @@ class Templates extends AdminComponent<Template, number> {
       return;
     }
     if (oldTemplate.content == null) {
-      this.oldDocumentContents.set("");
+      this.oldDocumentContents.set('');
     } else {
       this.oldDocumentContents.set(oldTemplate.content);
     }
     if (newTemplate.content == null) {
-      this.newDocumentContents.set("");
+      this.newDocumentContents.set('');
     } else {
       this.newDocumentContents.set(newTemplate.content);
     }
@@ -127,12 +129,11 @@ class Templates extends AdminComponent<Template, number> {
 
   comparePrevious() {
     const index = this.history().indexOf(this.historyItem());
-    const previousItem = this.history()[index-1];
+    const previousItem = this.history()[index - 1];
     this.compare(previousItem, this.historyItem());
   }
 
   protected readonly rowSelection = rowSelection;
-
 }
 
-export default Templates
+export default Templates;

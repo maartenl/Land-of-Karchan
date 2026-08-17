@@ -1,13 +1,13 @@
-import {Component, inject, OnInit, signal} from '@angular/core';
-import {Router, RouterLink, RouterLinkActive, RouterOutlet} from '@angular/router';
-import {ChristmasUtils} from './christmas.utils';
-import {Toasts} from './toasts/toasts';
-import {Errors} from './errors/errors';
-import {Currentadmin} from './currentadmin/currentadmin';
+import { Component, inject, OnInit, signal, ChangeDetectionStrategy } from '@angular/core';
+import { Router, RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
+import { ChristmasUtils } from './christmas.utils';
+import { Toasts } from './toasts/toasts';
+import { Errors } from './errors/errors';
+import { Currentadmin } from './currentadmin/currentadmin';
 
-import { AllCommunityModule, ModuleRegistry } from "ag-grid-community";
-import {environment} from '../environments/environment';
-import {ThemeService} from './theme.service';
+import { AllCommunityModule, ModuleRegistry } from 'ag-grid-community';
+import { environment } from '../environments/environment';
+import { ThemeService } from './theme.service';
 
 ModuleRegistry.registerModules([AllCommunityModule]);
 
@@ -15,15 +15,15 @@ ModuleRegistry.registerModules([AllCommunityModule]);
   selector: 'app-root',
   imports: [RouterOutlet, RouterLinkActive, Toasts, Errors, Currentadmin, RouterLink],
   templateUrl: './app.html',
-  styleUrl: './app.css'
+  changeDetection: ChangeDetectionStrategy.Eager,
+  styleUrl: './app.css',
 })
 export class App implements OnInit {
-
-  private router = inject(Router)
+  private router = inject(Router);
 
   private themeService = inject(ThemeService);
 
-  protected readonly title = signal('Land of Karchan' + (environment.production ? "" : " (DEV)"));
+  protected readonly title = signal('Land of Karchan' + (environment.production ? '' : ' (DEV)'));
 
   collapsed = signal(true);
 
@@ -41,7 +41,7 @@ export class App implements OnInit {
   }
 
   toggleCollapsed() {
-    this.collapsed.update(value => !value);
+    this.collapsed.update((value) => !value);
   }
 
   getHelpLink(): string {

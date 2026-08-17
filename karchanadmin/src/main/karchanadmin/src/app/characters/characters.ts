@@ -1,19 +1,26 @@
-import {Component, inject, OnInit, signal, viewChild} from '@angular/core';
-import {MudCharacter, Sex} from './character.model';
-import {ActivatedRoute, RouterLink} from '@angular/router';
-import {ToastService} from '../toast.service';
-import {CharactersRestService} from '../characters-rest.service';
+import {
+  Component,
+  inject,
+  OnInit,
+  signal,
+  viewChild,
+  ChangeDetectionStrategy,
+} from '@angular/core';
+import { MudCharacter, Sex } from './character.model';
+import { ActivatedRoute, RouterLink } from '@angular/router';
+import { ToastService } from '../toast.service';
+import { CharactersRestService } from '../characters-rest.service';
 
-import {AgGridAngular} from "ag-grid-angular";
-import {ColDef, SelectionChangedEvent} from "ag-grid-community";
-import {Logger} from '../consolelog.service';
-import {form, FormField} from '@angular/forms/signals';
-import {ItemSub} from '../item-sub/item-sub';
-import {AttributesSub} from '../attributes-sub/attributes-sub';
-import {AdminComponent} from '../admin/admin.component';
-import {LinkRenderer} from '../link-renderer/link-renderer';
-import {AdminMudType} from '../adminmudtype';
-import {rowSelection} from '../aggrid.utils';
+import { AgGridAngular } from 'ag-grid-angular';
+import { ColDef, SelectionChangedEvent } from 'ag-grid-community';
+import { Logger } from '../consolelog.service';
+import { form, FormField } from '@angular/forms/signals';
+import { ItemSub } from '../item-sub/item-sub';
+import { AttributesSub } from '../attributes-sub/attributes-sub';
+import { AdminComponent } from '../admin/admin.component';
+import { LinkRenderer } from '../link-renderer/link-renderer';
+import { AdminMudType } from '../adminmudtype';
+import { rowSelection } from '../aggrid.utils';
 
 export interface MudCharacterData {
   name: string;
@@ -49,10 +56,10 @@ export interface MudCharacterData {
   selector: 'app-characters',
   imports: [AgGridAngular, FormField, RouterLink, ItemSub, AttributesSub],
   templateUrl: './characters.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './characters.css',
 })
 export class Characters extends AdminComponent<MudCharacter, string> implements OnInit {
-
   override restService = inject(CharactersRestService);
   private route = inject(ActivatedRoute);
   override toastService = inject(ToastService);
@@ -62,54 +69,60 @@ export class Characters extends AdminComponent<MudCharacter, string> implements 
 
   characterModel = signal<MudCharacterData>({
     active: false,
-    address: "",
-    age: "",
-    arm: "",
-    beard: "",
-    complexion: "",
-    eyes: "",
-    face: "",
-    familyname: "",
-    god: "",
-    hair: "",
-    height: "",
-    mugshot: "",
-    leg: "",
-    afk: "",
-    name: "",
-    newpassword: "",
-    notes: "",
-    owner: "",
-    race: "",
-    realname: "",
+    address: '',
+    age: '',
+    arm: '',
+    beard: '',
+    complexion: '',
+    eyes: '',
+    face: '',
+    familyname: '',
+    god: '',
+    hair: '',
+    height: '',
+    mugshot: '',
+    leg: '',
+    afk: '',
+    name: '',
+    newpassword: '',
+    notes: '',
+    owner: '',
+    race: '',
+    realname: '',
     room: null,
-    sex: "undefined",
-    title: "",
-    width: "",
-    state: "",
-    storyline: "",
+    sex: 'undefined',
+    title: '',
+    width: '',
+    state: '',
+    storyline: '',
   });
 
-  form = form(this.characterModel)
+  form = form(this.characterModel);
 
   // Column Definitions: Defines & controls grid columns.
   override colDefs: ColDef[] = [
-    {field: "name", filter: true, width: 150},
-    {field: "room", filter: true, width: 100, cellRenderer: LinkRenderer, cellRendererParams: {prefix: "/rooms"}},
-    {field: "race", width: 100},
-    {field: "sex", width: 100},
-    {field: "address", filter: true},
-    {field: "owner", filter: true, width: 100},
-    {field: "creation"},
+    { field: 'name', filter: true, width: 150 },
+    {
+      field: 'room',
+      filter: true,
+      width: 100,
+      cellRenderer: LinkRenderer,
+      cellRendererParams: { prefix: '/rooms' },
+    },
+    { field: 'race', width: 100 },
+    { field: 'sex', width: 100 },
+    { field: 'address', filter: true },
+    { field: 'owner', filter: true, width: 100 },
+    { field: 'creation' },
   ];
 
   ngOnInit() {
     const name: string | null = this.route.snapshot.paramMap.get('name');
     if (name === undefined || name === null) {
-      Logger.logEntering("ngOnInit");
+      Logger.logEntering('ngOnInit');
       return;
     }
-    Logger.logEntering("ngOnInit " + name);
+    Logger.logEntering('ngOnInit ' + name);
     this.setItemById(name);
   }
 
@@ -123,7 +136,7 @@ export class Characters extends AdminComponent<MudCharacter, string> implements 
           this.item.set(data);
           this.setForm();
         }
-      }
+      },
     });
     this.itemSub().getItemsOfCharacter(name);
     this.attributesSub().getAttributesOfCharacter(name);
@@ -138,32 +151,32 @@ export class Characters extends AdminComponent<MudCharacter, string> implements 
     const character = this.item();
     this.characterModel.set({
       active: character.active ?? false,
-      address: character.address ?? "",
-      age: character.age ?? "",
-      arm: character.arm ?? "",
-      beard: character.beard ?? "",
-      complexion: character.complexion ?? "",
-      eyes: character.eyes ?? "",
-      face: character.face ?? "",
-      familyname: character.familyname ?? "",
-      god: "DEFAULT_USER",
-      hair: character.hair ?? "",
-      height: character.height ?? "",
-      mugshot: character.mugshot ?? "",
-      leg: character.leg ?? "",
-      afk: character.afk ?? "",
-      name: character.name ?? "",
-      newpassword: character.newpassword ?? "",
-      notes: character.notes ?? "",
-      owner: character.owner ?? "",
-      race: character.race ?? "",
-      realname: character.realname ?? "",
+      address: character.address ?? '',
+      age: character.age ?? '',
+      arm: character.arm ?? '',
+      beard: character.beard ?? '',
+      complexion: character.complexion ?? '',
+      eyes: character.eyes ?? '',
+      face: character.face ?? '',
+      familyname: character.familyname ?? '',
+      god: 'DEFAULT_USER',
+      hair: character.hair ?? '',
+      height: character.height ?? '',
+      mugshot: character.mugshot ?? '',
+      leg: character.leg ?? '',
+      afk: character.afk ?? '',
+      name: character.name ?? '',
+      newpassword: character.newpassword ?? '',
+      notes: character.notes ?? '',
+      owner: character.owner ?? '',
+      race: character.race ?? '',
+      realname: character.realname ?? '',
       room: character.room ?? null,
-      sex: character.sex ?? "",
-      title: character.title ?? "",
-      width: character.width ?? "",
-      state: character.state ?? "",
-      storyline: character.storyline ?? "",
+      sex: character.sex ?? '',
+      title: character.title ?? '',
+      width: character.width ?? '',
+      state: character.state ?? '',
+      storyline: character.storyline ?? '',
     });
   }
 
@@ -176,48 +189,48 @@ export class Characters extends AdminComponent<MudCharacter, string> implements 
     const formModel = this.characterModel();
     character.active = formModel.active;
     character.address = formModel.address;
-    character.age = formModel.age == "" ? null : formModel.age;
-    character.arm = formModel.arm == "" ? null : formModel.arm;
-    character.beard = formModel.beard == "" ? null : formModel.beard;
-    character.complexion = formModel.complexion == "" ? null : formModel.complexion;
-    character.eyes = formModel.eyes == "" ? null : formModel.eyes;
-    character.face = formModel.face == "" ? null : formModel.face;
-    character.familyname = formModel.familyname == "" ? null : formModel.familyname;
+    character.age = formModel.age == '' ? null : formModel.age;
+    character.arm = formModel.arm == '' ? null : formModel.arm;
+    character.beard = formModel.beard == '' ? null : formModel.beard;
+    character.complexion = formModel.complexion == '' ? null : formModel.complexion;
+    character.eyes = formModel.eyes == '' ? null : formModel.eyes;
+    character.face = formModel.face == '' ? null : formModel.face;
+    character.familyname = formModel.familyname == '' ? null : formModel.familyname;
     character.god = formModel.god;
-    character.hair = formModel.hair == "" ? null : formModel.hair;
-    character.height = formModel.height == "" ? null : formModel.height;
-    character.mugshot = formModel.mugshot == "" ? null : formModel.mugshot;
-    character.leg = formModel.leg == "" ? null : formModel.leg;
-    character.afk = formModel.afk == "" ? null : formModel.afk;
-    character.name = formModel.name == "" ? null : formModel.name;
-    character.newpassword = formModel.newpassword == "" ? null : formModel.newpassword;
-    character.notes = formModel.notes == "" ? null : formModel.notes;
-    character.owner = formModel.owner == "" ? null : formModel.owner;
-    character.race = formModel.race == "" ? null : formModel.race;
-    character.realname = formModel.realname == "" ? null : formModel.realname;
+    character.hair = formModel.hair == '' ? null : formModel.hair;
+    character.height = formModel.height == '' ? null : formModel.height;
+    character.mugshot = formModel.mugshot == '' ? null : formModel.mugshot;
+    character.leg = formModel.leg == '' ? null : formModel.leg;
+    character.afk = formModel.afk == '' ? null : formModel.afk;
+    character.name = formModel.name == '' ? null : formModel.name;
+    character.newpassword = formModel.newpassword == '' ? null : formModel.newpassword;
+    character.notes = formModel.notes == '' ? null : formModel.notes;
+    character.owner = formModel.owner == '' ? null : formModel.owner;
+    character.race = formModel.race == '' ? null : formModel.race;
+    character.realname = formModel.realname == '' ? null : formModel.realname;
     character.room = formModel.room;
     switch (formModel.sex) {
-      case "male": {
+      case 'male': {
         character.sex = Sex.Male;
         break;
       }
-      case "female": {
+      case 'female': {
         character.sex = Sex.Female;
         break;
       }
-      case "other": {
+      case 'other': {
         character.sex = Sex.Other;
         break;
       }
       default: {
-        this.toastService.showError("Sex should be 'male','female' or 'other'.", "Invalid sex.");
-        throw new TypeError("Sex should be 'male','female' or 'other'.")
+        this.toastService.showError("Sex should be 'male','female' or 'other'.", 'Invalid sex.');
+        throw new TypeError("Sex should be 'male','female' or 'other'.");
       }
     }
     character.title = formModel.title;
     character.width = formModel.width;
-    character.state = formModel.state == "" ? null : formModel.state;
-    character.storyline = formModel.storyline == "" ? null : formModel.storyline;
+    character.state = formModel.state == '' ? null : formModel.state;
+    character.storyline = formModel.storyline == '' ? null : formModel.storyline;
     return character;
   }
 

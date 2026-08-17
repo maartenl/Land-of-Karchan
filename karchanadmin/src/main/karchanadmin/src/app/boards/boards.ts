@@ -1,13 +1,13 @@
-import {Component, inject, signal} from '@angular/core';
-import {FormField, form} from '@angular/forms/signals';
-import {AdminComponent} from '../admin/admin.component';
-import {ToastService} from '../toast.service';
-import {ColDef, SelectionChangedEvent} from 'ag-grid-community';
-import {rowSelection} from '../aggrid.utils';
-import {BoardsRestService} from '../boards-rest.service';
-import {LinkRenderer} from '../link-renderer/link-renderer';
-import {Board, BoardMessage} from './board.model';
-import {AgGridAngular} from 'ag-grid-angular';
+import { Component, inject, signal, ChangeDetectionStrategy } from '@angular/core';
+import { FormField, form } from '@angular/forms/signals';
+import { AdminComponent } from '../admin/admin.component';
+import { ToastService } from '../toast.service';
+import { ColDef, SelectionChangedEvent } from 'ag-grid-community';
+import { rowSelection } from '../aggrid.utils';
+import { BoardsRestService } from '../boards-rest.service';
+import { LinkRenderer } from '../link-renderer/link-renderer';
+import { Board, BoardMessage } from './board.model';
+import { AgGridAngular } from 'ag-grid-angular';
 
 export interface BoardData {
   id: number | null;
@@ -21,6 +21,7 @@ export interface BoardData {
   selector: 'app-boards',
   imports: [AgGridAngular, FormField],
   templateUrl: './boards.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './boards.css',
 })
 export class Boards extends AdminComponent<Board, number> {
@@ -28,11 +29,17 @@ export class Boards extends AdminComponent<Board, number> {
   override toastService = inject(ToastService);
 
   override colDefs: ColDef[] = [
-    {field: "id", filter: true, width: 150},
-    {field: "name", filter: true, width: 150},
-    {field: "room", filter: true, width: 150, cellRenderer: LinkRenderer, cellRendererParams: {prefix: "/rooms"}},
-    {field: "owner", filter: true, width: 150},
-    {field: "creation", width: 150},
+    { field: 'id', filter: true, width: 150 },
+    { field: 'name', filter: true, width: 150 },
+    {
+      field: 'room',
+      filter: true,
+      width: 150,
+      cellRenderer: LinkRenderer,
+      cellRendererParams: { prefix: '/rooms' },
+    },
+    { field: 'owner', filter: true, width: 150 },
+    { field: 'creation', width: 150 },
   ];
 
   boardmessage = signal<BoardMessage>(new BoardMessage());
@@ -40,11 +47,11 @@ export class Boards extends AdminComponent<Board, number> {
   boardmessages = signal<BoardMessage[]>([]);
 
   boardModel = signal<BoardData>({
-    description: "",
+    description: '',
     id: null,
-    name: "",
-    owner: "",
-    room: null
+    name: '',
+    owner: '',
+    room: null,
   });
 
   form = form(this.boardModel);
@@ -54,15 +61,17 @@ export class Boards extends AdminComponent<Board, number> {
     if (board.id !== null) {
       this.restService.getMessages(board.id).subscribe({
         next: (data: BoardMessage[]) => {
-          if (data !== undefined) { this.boardmessages.set(data.map(x => new BoardMessage(x))); }
-        }
+          if (data !== undefined) {
+            this.boardmessages.set(data.map((x) => new BoardMessage(x)));
+          }
+        },
       });
     }
     this.boardModel.set({
       id: board.id ?? null,
-      name: board.name ?? "",
-      description: board.description ?? "",
-      owner: board.owner ?? "",
+      name: board.name ?? '',
+      description: board.description ?? '',
+      owner: board.owner ?? '',
       room: board.room ?? null,
     });
   }
@@ -79,9 +88,9 @@ export class Boards extends AdminComponent<Board, number> {
     const board = this.item();
     const formModel = this.boardModel();
     board.id = formModel.id;
-    board.name = formModel.name == "" ? null : formModel.name;
-    board.description = formModel.description == "" ? null : formModel.description;
-    board.owner = formModel.owner == "" ? null : formModel.owner;
+    board.name = formModel.name == '' ? null : formModel.name;
+    board.description = formModel.description == '' ? null : formModel.description;
+    board.owner = formModel.owner == '' ? null : formModel.owner;
     board.room = formModel.room;
     return board;
   }
@@ -96,7 +105,7 @@ export class Boards extends AdminComponent<Board, number> {
           this.item.set(data);
           this.setForm();
         }
-      }
+      },
     });
     return false;
   }
@@ -114,8 +123,11 @@ export class Boards extends AdminComponent<Board, number> {
       next: (data) => {
         message.removed = !message.removed;
         this.boardmessages.set([...this.boardmessages()]);
-        this.toastService.showMessage(message.getType() + ' ' + message.getIdentifier() + " successfully removed.", "Removed...");
-      }
+        this.toastService.showMessage(
+          message.getType() + ' ' + message.getIdentifier() + ' successfully removed.',
+          'Removed...',
+        );
+      },
     });
     return false;
   }
@@ -127,8 +139,11 @@ export class Boards extends AdminComponent<Board, number> {
       next: (data) => {
         message.offensive = !message.offensive;
         this.boardmessages.set([...this.boardmessages()]);
-        this.toastService.showMessage(message.getType() + ' ' + message.getIdentifier() + " successfully offensive.", "Offensive...");
-      }
+        this.toastService.showMessage(
+          message.getType() + ' ' + message.getIdentifier() + ' successfully offensive.',
+          'Offensive...',
+        );
+      },
     });
     return false;
   }
@@ -140,8 +155,11 @@ export class Boards extends AdminComponent<Board, number> {
       next: (data) => {
         message.pinned = !message.pinned;
         this.boardmessages.set([...this.boardmessages()]);
-        this.toastService.showMessage(message.getType() + ' ' + message.getIdentifier() + " successfully pinned.", "Pinned...");
-      }
+        this.toastService.showMessage(
+          message.getType() + ' ' + message.getIdentifier() + ' successfully pinned.',
+          'Pinned...',
+        );
+      },
     });
     return false;
   }

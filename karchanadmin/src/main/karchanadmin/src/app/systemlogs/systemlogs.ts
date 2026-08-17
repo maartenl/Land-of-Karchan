@@ -1,12 +1,12 @@
-import {Component, inject, signal} from '@angular/core';
-import {form, FormField} from '@angular/forms/signals';
-import {Systemlog} from './systemlog.model';
-import {SystemlogsRestService} from '../systemlogs-rest.service';
-import {ToastService} from '../toast.service';
-import {ColDef, SelectionChangedEvent, themeBalham} from 'ag-grid-community';
-import {AgGridAngular} from 'ag-grid-angular';
-import {rowSelection} from '../aggrid.utils';
-import {Logger} from '../consolelog.service';
+import { Component, inject, signal, ChangeDetectionStrategy } from '@angular/core';
+import { form, FormField } from '@angular/forms/signals';
+import { Systemlog } from './systemlog.model';
+import { SystemlogsRestService } from '../systemlogs-rest.service';
+import { ToastService } from '../toast.service';
+import { ColDef, SelectionChangedEvent, themeBalham } from 'ag-grid-community';
+import { AgGridAngular } from 'ag-grid-angular';
+import { rowSelection } from '../aggrid.utils';
+import { Logger } from '../consolelog.service';
 
 export interface SystemlogSearch {
   name: string;
@@ -16,15 +16,12 @@ export interface SystemlogSearch {
 
 @Component({
   selector: 'app-systemlogs',
-  imports: [
-    AgGridAngular,
-    FormField
-  ],
+  imports: [AgGridAngular, FormField],
   templateUrl: './systemlogs.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './systemlogs.css',
 })
 export class Systemlogs {
-
   toastService = inject(ToastService);
   restService = inject(SystemlogsRestService);
 
@@ -33,13 +30,13 @@ export class Systemlogs {
   log = signal<Systemlog>(new Systemlog());
 
   colDefs: ColDef[] = [
-    {field: "id", filter: true, width: 150},
-    {field: "name", filter: true, width: 150},
-    {field: "message", filter: true, width: 150},
-    {field: "creation", filter: true, width: 150},
+    { field: 'id', filter: true, width: 150 },
+    { field: 'name', filter: true, width: 150 },
+    { field: 'message', filter: true, width: 150 },
+    { field: 'creation', filter: true, width: 150 },
   ];
 
-  searchModel = signal<SystemlogSearch>({name: "", from: "", to: ""});
+  searchModel = signal<SystemlogSearch>({ name: '', from: '', to: '' });
 
   form = form<SystemlogSearch>(this.searchModel);
 
@@ -54,22 +51,21 @@ export class Systemlogs {
     var todate = formModel.to;
     Logger.log('search ' + name + ' ' + fromdate + ' ' + todate);
 
-    this.restService.getLogs(name, fromdate, todate)
-      .subscribe({
-          next: (result: Systemlog[]) => {
-            if (result !== undefined) {
-              this.rowData.set(result);
-            }
-            Logger.log('search done');
-            this.toastService.showRetrieving("Logging messages successfully retrieved.", "Logging...");
-          },
-          error: (err: any) => {
-            Logger.logError('error in getLogs', err);
-          },
-          complete: () => { // on completion
-          }
+    this.restService.getLogs(name, fromdate, todate).subscribe({
+      next: (result: Systemlog[]) => {
+        if (result !== undefined) {
+          this.rowData.set(result);
         }
-      );
+        Logger.log('search done');
+        this.toastService.showRetrieving('Logging messages successfully retrieved.', 'Logging...');
+      },
+      error: (err: any) => {
+        Logger.logError('error in getLogs', err);
+      },
+      complete: () => {
+        // on completion
+      },
+    });
   }
 
   protected readonly rowSelection = rowSelection;

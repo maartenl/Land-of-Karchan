@@ -1,16 +1,23 @@
-import {Component, inject, OnInit, signal, viewChild} from '@angular/core';
-import {ItemDefinition} from './item.model';
-import {AdminComponent} from '../admin/admin.component';
-import {ActivatedRoute} from '@angular/router';
-import {ToastService} from '../toast.service';
-import {ItemdefinitionsRestService} from '../itemdefinitions-rest.service';
-import {form, FormField} from '@angular/forms/signals';
-import {ColDef, SelectionChangedEvent} from "ag-grid-community";
-import {ItemSub} from '../item-sub/item-sub';
-import {AgGridAngular} from 'ag-grid-angular';
-import {rowSelection} from '../aggrid.utils';
-import {AdminMudType} from '../adminmudtype';
-import {Logger} from '../consolelog.service';
+import {
+  Component,
+  inject,
+  OnInit,
+  signal,
+  viewChild,
+  ChangeDetectionStrategy,
+} from '@angular/core';
+import { ItemDefinition } from './item.model';
+import { AdminComponent } from '../admin/admin.component';
+import { ActivatedRoute } from '@angular/router';
+import { ToastService } from '../toast.service';
+import { ItemdefinitionsRestService } from '../itemdefinitions-rest.service';
+import { form, FormField } from '@angular/forms/signals';
+import { ColDef, SelectionChangedEvent } from 'ag-grid-community';
+import { ItemSub } from '../item-sub/item-sub';
+import { AgGridAngular } from 'ag-grid-angular';
+import { rowSelection } from '../aggrid.utils';
+import { AdminMudType } from '../adminmudtype';
+import { Logger } from '../consolelog.service';
 
 interface ItemdefinitionData {
   id: number | null;
@@ -52,10 +59,10 @@ interface ItemdefinitionData {
   selector: 'app-items',
   imports: [AgGridAngular, FormField, ItemSub],
   templateUrl: './items.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './items.css',
 })
 export class Items extends AdminComponent<ItemDefinition, number> implements OnInit {
-
   override restService = inject(ItemdefinitionsRestService);
   private route = inject(ActivatedRoute);
   override toastService = inject(ToastService);
@@ -63,11 +70,11 @@ export class Items extends AdminComponent<ItemDefinition, number> implements OnI
   itemSub = viewChild.required(ItemSub);
 
   override colDefs: ColDef[] = [
-    {field: "id", filter: true, width: 150},
-    {field: "adjectives", filter: true, width: 100},
-    {field: "name", filter: true, width: 100},
-    {field: "owner", filter: true, width: 100},
-    {field: "creation"},
+    { field: 'id', filter: true, width: 150 },
+    { field: 'adjectives', filter: true, width: 100 },
+    { field: 'name', filter: true, width: 100 },
+    { field: 'owner', filter: true, width: 100 },
+    { field: 'creation' },
   ];
 
   itemdefinitionModel = signal<ItemdefinitionData>({
@@ -103,10 +110,10 @@ export class Items extends AdminComponent<ItemDefinition, number> implements OnI
     title: '',
     discriminator: null,
     bound: false,
-    owner: ''
+    owner: '',
   });
 
-  form = form(this.itemdefinitionModel)
+  form = form(this.itemdefinitionModel);
 
   ngOnInit() {
     const id: string | null = this.route.snapshot.paramMap.get('id');
@@ -117,9 +124,9 @@ export class Items extends AdminComponent<ItemDefinition, number> implements OnI
     if (isNaN(idNumber)) {
       return;
     }
-    this.route.params.subscribe(res => {
-      if (res['id'] !== 0) this.setItemById(res['id']) // 'id' here is an example url parameter
-    })
+    this.route.params.subscribe((res) => {
+      if (res['id'] !== 0) this.setItemById(res['id']); // 'id' here is an example url parameter
+    });
     this.setItemById(idNumber);
   }
 
@@ -133,7 +140,7 @@ export class Items extends AdminComponent<ItemDefinition, number> implements OnI
           this.item.set(data);
           this.setForm();
         }
-      }
+      },
     });
     this.itemSub().getItemsOfItemdefinition(id);
     return false;
@@ -141,11 +148,11 @@ export class Items extends AdminComponent<ItemDefinition, number> implements OnI
 
   override setForm(): void {
     const itemDefinition = this.item();
-    Logger.logEntering("setForm");
+    Logger.logEntering('setForm');
     this.itemdefinitionModel.set({
       id: itemDefinition.id,
-      adjectives: itemDefinition.adjectives ?? "",
-      name: itemDefinition.name ?? "",
+      adjectives: itemDefinition.adjectives ?? '',
+      name: itemDefinition.name ?? '',
       room: itemDefinition.room == undefined ? null : itemDefinition.room,
       manaincrease: itemDefinition.manaincrease,
       hitincrease: itemDefinition.hitincrease,
@@ -153,16 +160,16 @@ export class Items extends AdminComponent<ItemDefinition, number> implements OnI
       movementincrease: itemDefinition.movementincrease,
       pasdefense: itemDefinition.pasdefense,
       damageresistance: itemDefinition.damageresistance,
-      eatable: itemDefinition.eatable ?? "",
-      drinkable: itemDefinition.drinkable ?? "",
+      eatable: itemDefinition.eatable ?? '',
+      drinkable: itemDefinition.drinkable ?? '',
       lightable: itemDefinition.lightable ?? false,
       getable: itemDefinition.getable ?? false,
       dropable: itemDefinition.dropable ?? false,
       visible: itemDefinition.visible ?? false,
-      wieldable: itemDefinition.wieldable ?? "",
-      description: itemDefinition.description ?? "",
-      readdescr: itemDefinition.readdescr ?? "",
-      wearable: itemDefinition.wearable ?? "",
+      wieldable: itemDefinition.wieldable ?? '',
+      description: itemDefinition.description ?? '',
+      readdescr: itemDefinition.readdescr ?? '',
+      wearable: itemDefinition.wearable ?? '',
       copper: itemDefinition.copper,
       weight: itemDefinition.weight,
       container: itemDefinition.container ?? false,
@@ -170,13 +177,13 @@ export class Items extends AdminComponent<ItemDefinition, number> implements OnI
       isopenable: itemDefinition.isopenable ?? false,
       keyid: itemDefinition.keyid == undefined ? null : itemDefinition.keyid,
       containtype: itemDefinition.containtype == undefined ? null : itemDefinition.containtype,
-      notes: itemDefinition.notes ?? "",
-      image: itemDefinition.image ?? "",
-      title: itemDefinition.title ?? "",
+      notes: itemDefinition.notes ?? '',
+      image: itemDefinition.image ?? '',
+      title: itemDefinition.title ?? '',
       discriminator: itemDefinition.discriminator,
       bound: itemDefinition.bound ?? false,
-      owner: itemDefinition.owner ?? "",
-    })
+      owner: itemDefinition.owner ?? '',
+    });
     Logger.logObject(this.itemdefinitionModel());
   }
 
@@ -193,16 +200,16 @@ export class Items extends AdminComponent<ItemDefinition, number> implements OnI
     itemDefinition.movementincrease = formModel.movementincrease;
     itemDefinition.pasdefense = formModel.pasdefense;
     itemDefinition.damageresistance = formModel.damageresistance;
-    itemDefinition.eatable = formModel.eatable == "" ? null : formModel.eatable;
-    itemDefinition.drinkable = formModel.drinkable == "" ? null : formModel.drinkable;
+    itemDefinition.eatable = formModel.eatable == '' ? null : formModel.eatable;
+    itemDefinition.drinkable = formModel.drinkable == '' ? null : formModel.drinkable;
     itemDefinition.lightable = formModel.lightable;
     itemDefinition.getable = formModel.getable;
     itemDefinition.dropable = formModel.dropable;
     itemDefinition.visible = formModel.visible;
-    itemDefinition.wieldable = formModel.wieldable == "" ? null : formModel.wieldable;
-    itemDefinition.description = formModel.description == "" ? null : formModel.description;
-    itemDefinition.readdescr = formModel.readdescr == "" ? null : formModel.readdescr;
-    itemDefinition.wearable = formModel.wearable == "" ? null : formModel.wearable;
+    itemDefinition.wieldable = formModel.wieldable == '' ? null : formModel.wieldable;
+    itemDefinition.description = formModel.description == '' ? null : formModel.description;
+    itemDefinition.readdescr = formModel.readdescr == '' ? null : formModel.readdescr;
+    itemDefinition.wearable = formModel.wearable == '' ? null : formModel.wearable;
     itemDefinition.copper = formModel.copper;
     itemDefinition.weight = formModel.weight;
     itemDefinition.container = formModel.container;
@@ -210,12 +217,12 @@ export class Items extends AdminComponent<ItemDefinition, number> implements OnI
     itemDefinition.isopenable = formModel.isopenable;
     itemDefinition.keyid = formModel.keyid;
     itemDefinition.containtype = formModel.containtype;
-    itemDefinition.notes = formModel.notes == "" ? null : formModel.notes;
-    itemDefinition.image = formModel.image == "" ? null : formModel.image;
-    itemDefinition.title = formModel.title == "" ? null : formModel.title;
+    itemDefinition.notes = formModel.notes == '' ? null : formModel.notes;
+    itemDefinition.image = formModel.image == '' ? null : formModel.image;
+    itemDefinition.title = formModel.title == '' ? null : formModel.title;
     itemDefinition.discriminator = formModel.discriminator;
     itemDefinition.bound = formModel.bound;
-    itemDefinition.owner = formModel.owner == "" ? null : formModel.owner;
+    itemDefinition.owner = formModel.owner == '' ? null : formModel.owner;
     return itemDefinition;
   }
 

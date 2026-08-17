@@ -1,6 +1,6 @@
-import {Component, inject, TemplateRef} from '@angular/core';
+import { Component, inject, TemplateRef, ChangeDetectionStrategy } from '@angular/core';
 import { ToastService } from '../toast.service';
-import {NgbToast} from '@ng-bootstrap/ng-bootstrap';
+import { NgbToast } from '@ng-bootstrap/ng-bootstrap';
 
 /**
  * See https://ng-bootstrap.github.io/#/components/toast/examples#howto-global
@@ -21,9 +21,9 @@ import {NgbToast} from '@ng-bootstrap/ng-bootstrap';
       </ngb-toast>
     }
   `,
+  changeDetection: ChangeDetectionStrategy.Eager,
   host: { class: 'toast-container position-fixed top-0 end-0 p-3', style: 'z-index: 1200' },
 })
 export class Toasts {
   toastService = inject(ToastService);
-
 }

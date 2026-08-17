@@ -1,18 +1,19 @@
-import {Component, inject, OnInit, signal} from '@angular/core';
-import {Administrator} from './administrator.model';
-import {AdministratorsRestService} from '../administrators-rest.service';
-import {Logger} from '../consolelog.service';
+import { Component, inject, OnInit, signal, ChangeDetectionStrategy } from '@angular/core';
+import { Administrator } from './administrator.model';
+import { AdministratorsRestService } from '../administrators-rest.service';
+import { Logger } from '../consolelog.service';
 
 @Component({
   selector: 'app-currentadmin',
   imports: [],
   templateUrl: './currentadmin.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './currentadmin.css',
 })
 export class Currentadmin implements OnInit {
   administratorsRestService = inject(AdministratorsRestService);
 
-  administrator= signal(new Administrator());
+  administrator = signal(new Administrator());
 
   ngOnInit(): void {
     this.administratorsRestService.get().subscribe({
@@ -21,8 +22,7 @@ export class Currentadmin implements OnInit {
           this.administrator.set(data);
         }
         Logger.logObject(data);
-      }
+      },
     });
   }
-
 }

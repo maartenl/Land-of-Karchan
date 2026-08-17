@@ -1,27 +1,35 @@
-import {Component, inject, OnInit, signal, viewChild} from '@angular/core';
-import {AgGridAngular} from 'ag-grid-angular';
-import {form, FormField} from '@angular/forms/signals';
-import {AdminComponent} from '../admin/admin.component';
-import {Area} from './area.model';
-import {ActivatedRoute} from '@angular/router';
-import {ToastService} from '../toast.service';
-import {AreasRestService} from '../areas-rest.service';
-import {ColDef, GridReadyEvent, SelectionChangedEvent} from 'ag-grid-community';
-import {Logger} from '../consolelog.service';
-import { AdminRestService } from "../admin/admin-rest.service";
-import {rowSelection} from '../aggrid.utils';
+import {
+  Component,
+  inject,
+  OnInit,
+  signal,
+  viewChild,
+  ChangeDetectionStrategy,
+} from '@angular/core';
+import { AgGridAngular } from 'ag-grid-angular';
+import { form, FormField } from '@angular/forms/signals';
+import { AdminComponent } from '../admin/admin.component';
+import { Area } from './area.model';
+import { ActivatedRoute } from '@angular/router';
+import { ToastService } from '../toast.service';
+import { AreasRestService } from '../areas-rest.service';
+import { ColDef, GridReadyEvent, SelectionChangedEvent } from 'ag-grid-community';
+import { Logger } from '../consolelog.service';
+import { AdminRestService } from '../admin/admin-rest.service';
+import { rowSelection } from '../aggrid.utils';
 
 export interface AreaData {
-  area: string,
-  description: string,
-  shortdesc: string,
-  owner: string,
+  area: string;
+  description: string;
+  shortdesc: string;
+  owner: string;
 }
 
 @Component({
   selector: 'app-areas',
   imports: [AgGridAngular, FormField],
   templateUrl: './areas.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './areas.css',
 })
 export class Areas extends AdminComponent<Area, string> implements OnInit {
@@ -30,9 +38,9 @@ export class Areas extends AdminComponent<Area, string> implements OnInit {
   override toastService = inject(ToastService);
 
   override colDefs: ColDef[] = [
-    {field: "area", filter: true, width: 150},
-    {field: "owner", filter: true, width: 100},
-    {field: "creation"},
+    { field: 'area', filter: true, width: 150 },
+    { field: 'owner', filter: true, width: 100 },
+    { field: 'creation' },
   ];
 
   areaModel = signal<AreaData>({
@@ -42,16 +50,16 @@ export class Areas extends AdminComponent<Area, string> implements OnInit {
     owner: '',
   });
 
-  form = form(this.areaModel)
+  form = form(this.areaModel);
 
   ngOnInit() {
     const id: string | null = this.route.snapshot.paramMap.get('id');
     if (id === null) {
       return;
     }
-    this.route.params.subscribe(res => {
-      if (res['id'] !== 0) this.setItemById(res['id']) // 'id' here is an example url parameter
-    })
+    this.route.params.subscribe((res) => {
+      if (res['id'] !== 0) this.setItemById(res['id']); // 'id' here is an example url parameter
+    });
     this.setItemById(id);
   }
 
@@ -65,29 +73,29 @@ export class Areas extends AdminComponent<Area, string> implements OnInit {
           this.item.set(data);
           this.setForm();
         }
-      }
+      },
     });
     return false;
   }
 
   override setForm(): void {
     const area = this.item();
-    Logger.logEntering("setForm");
+    Logger.logEntering('setForm');
     this.areaModel.set({
-      area: area.area ?? "",
-      description: area.description  ?? "",
-      owner: area.owner ?? "",
-      shortdesc: area.shortdesc ?? "",
-    })
+      area: area.area ?? '',
+      description: area.description ?? '',
+      owner: area.owner ?? '',
+      shortdesc: area.shortdesc ?? '',
+    });
   }
 
   override getForm(): Area {
     const area = this.item();
     const formModel = this.areaModel();
     area.area = formModel.area;
-    area.description = formModel.description == "" ? null : formModel.description;
-    area.shortdesc = formModel.shortdesc == "" ? null : formModel.shortdesc;
-    area.owner = formModel.owner == "" ? null : formModel.owner;
+    area.description = formModel.description == '' ? null : formModel.description;
+    area.shortdesc = formModel.shortdesc == '' ? null : formModel.shortdesc;
+    area.owner = formModel.owner == '' ? null : formModel.owner;
     return area;
   }
 

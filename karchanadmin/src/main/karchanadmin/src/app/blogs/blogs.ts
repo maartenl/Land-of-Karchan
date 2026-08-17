@@ -1,12 +1,12 @@
-import {Component, inject, signal} from '@angular/core';
-import {form, FormField} from '@angular/forms/signals';
-import {AdminComponent} from '../admin/admin.component';
-import {ToastService} from '../toast.service';
-import {ColDef, SelectionChangedEvent} from 'ag-grid-community';
-import {BlogsRestService} from '../blogs-rest.service';
-import {Blog} from './blog.model';
-import {rowSelection} from '../aggrid.utils';
-import {AgGridAngular} from 'ag-grid-angular';
+import { Component, inject, signal, ChangeDetectionStrategy } from '@angular/core';
+import { form, FormField } from '@angular/forms/signals';
+import { AdminComponent } from '../admin/admin.component';
+import { ToastService } from '../toast.service';
+import { ColDef, SelectionChangedEvent } from 'ag-grid-community';
+import { BlogsRestService } from '../blogs-rest.service';
+import { Blog } from './blog.model';
+import { rowSelection } from '../aggrid.utils';
+import { AgGridAngular } from 'ag-grid-angular';
 
 export interface BlogData {
   title: string;
@@ -18,6 +18,7 @@ export interface BlogData {
   selector: 'app-blogs',
   imports: [AgGridAngular, FormField],
   templateUrl: './blogs.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './blogs.css',
 })
 export class Blogs extends AdminComponent<Blog, number> {
@@ -25,17 +26,17 @@ export class Blogs extends AdminComponent<Blog, number> {
   override toastService = inject(ToastService);
 
   override colDefs: ColDef[] = [
-    {field: "id", filter: true, width: 150},
-    {field: "title", filter: true, width: 150},
-    {field: "urlTitle", filter: true, width: 150},
-    {field: "creation", width: 150},
-    {field: "modification", width: 150},
+    { field: 'id', filter: true, width: 150 },
+    { field: 'title', filter: true, width: 150 },
+    { field: 'urlTitle', filter: true, width: 150 },
+    { field: 'creation', width: 150 },
+    { field: 'modification', width: 150 },
   ];
 
   blogModel = signal<BlogData>({
-    title: "",
-    urlTitle: "",
-    contents: "",
+    title: '',
+    urlTitle: '',
+    contents: '',
   });
 
   form = form(this.blogModel);
@@ -43,9 +44,9 @@ export class Blogs extends AdminComponent<Blog, number> {
   override setForm(): void {
     const blog = this.item();
     this.blogModel.set({
-      title: blog.title ?? "",
-      urlTitle: blog.urlTitle ?? "",
-      contents: blog.contents ?? "",
+      title: blog.title ?? '',
+      urlTitle: blog.urlTitle ?? '',
+      contents: blog.contents ?? '',
     });
   }
 
@@ -60,8 +61,8 @@ export class Blogs extends AdminComponent<Blog, number> {
   override getForm(): Blog {
     const blog = this.item();
     const formModel = this.blogModel();
-    blog.title = formModel.title == "" ? null : formModel.title;
-    blog.urlTitle = formModel.urlTitle == "" ? null : formModel.urlTitle;
+    blog.title = formModel.title == '' ? null : formModel.title;
+    blog.urlTitle = formModel.urlTitle == '' ? null : formModel.urlTitle;
     blog.contents = formModel.contents;
     return blog;
   }
@@ -76,11 +77,10 @@ export class Blogs extends AdminComponent<Blog, number> {
           this.item.set(data);
           this.setForm();
         }
-      }
+      },
     });
     return false;
   }
 
   protected readonly rowSelection = rowSelection;
-
 }
