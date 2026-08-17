@@ -1,7 +1,7 @@
-import {Component, effect, input, model, signal} from '@angular/core'
-import {FormsModule} from '@angular/forms'
-import {FormValueControl} from '@angular/forms/signals'
-import {AngularEditorConfig, AngularEditorModule} from '@kolkov/angular-editor'
+import { Component, effect, input, model, signal, ChangeDetectionStrategy } from '@angular/core';
+import { FormsModule } from '@angular/forms';
+import { FormValueControl } from '@angular/forms/signals';
+import { AngularEditorConfig, AngularEditorModule } from '@kolkov/angular-editor';
 
 const DEFAULT_CONFIG: AngularEditorConfig = {
   editable: true,
@@ -28,6 +28,7 @@ const DEFAULT_CONFIG: AngularEditorConfig = {
       (blur)="onBlur()"
     />
   `,
+  changeDetection: ChangeDetectionStrategy.Eager,
   styles: `
     :host {
       display: block;
@@ -36,33 +37,33 @@ const DEFAULT_CONFIG: AngularEditorConfig = {
 })
 export class RichTextEditor implements FormValueControl<string> {
   // --- FormValueControl required property ---
-  readonly value = model<string>('')
+  readonly value = model<string>('');
 
   // --- FormValueControl optional state properties ---
-  readonly disabled = input<boolean>(false)
-  readonly touched = model<boolean>(false)
+  readonly disabled = input<boolean>(false);
+  readonly touched = model<boolean>(false);
 
   // --- Component-specific inputs ---
   /** Partial AngularEditorConfig merged on top of defaults. */
-  readonly config = input<Partial<AngularEditorConfig>>({})
+  readonly config = input<Partial<AngularEditorConfig>>({});
 
-  protected readonly mergedConfig = signal<AngularEditorConfig>(DEFAULT_CONFIG)
+  protected readonly mergedConfig = signal<AngularEditorConfig>(DEFAULT_CONFIG);
 
   constructor() {
     // Reflect disabled state into editor config
     effect(() => {
-      const isDisabled = this.disabled()
-      const userConfig = this.config()
+      const isDisabled = this.disabled();
+      const userConfig = this.config();
 
       this.mergedConfig.set({
         ...DEFAULT_CONFIG,
         ...userConfig,
         editable: !isDisabled,
-      })
-    })
+      });
+    });
   }
 
   protected onBlur(): void {
-    this.touched.set(true)
+    this.touched.set(true);
   }
 }

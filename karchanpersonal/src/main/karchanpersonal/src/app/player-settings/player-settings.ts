@@ -1,46 +1,46 @@
-import {Component, inject, OnInit, signal} from '@angular/core';
-import {form, FormField} from '@angular/forms/signals';
+import { Component, inject, OnInit, signal, ChangeDetectionStrategy } from '@angular/core';
+import { form, FormField } from '@angular/forms/signals';
 
-import {Player} from './player.model';
-import {Family} from './family.model';
-import {PlayerService} from '../player.service';
-import {ToastService} from '../toast.service';
-import {ChatlogService} from '../chatlog.service';
-import {Logger, LogLevel} from "../consolelog.service";
-import {ThemeService} from "../theme.service";
+import { Player } from './player.model';
+import { Family } from './family.model';
+import { PlayerService } from '../player.service';
+import { ToastService } from '../toast.service';
+import { ChatlogService } from '../chatlog.service';
+import { Logger, LogLevel } from '../consolelog.service';
+import { ThemeService } from '../theme.service';
 
 export interface PlayerSettingsData {
-  title: string
-  mugshot: string
-  familyname: string
-  homepageurl: string
-  imageurl: string
-  dateofbirth: string
-  cityofbirth: string
-  storyline: string
-  websockets: boolean
-  debuglog: LogLevel
+  title: string;
+  mugshot: string;
+  familyname: string;
+  homepageurl: string;
+  imageurl: string;
+  dateofbirth: string;
+  cityofbirth: string;
+  storyline: string;
+  websockets: boolean;
+  debuglog: LogLevel;
 }
 
 export interface FamilyData {
-  toname: string
-  description: string
+  toname: string;
+  description: string;
 }
 
 export interface PasswordData {
-  oldpassword: string
-  password: string
-  password2: string
+  oldpassword: string;
+  password: string;
+  password2: string;
 }
 
 @Component({
   selector: 'app-player-settings',
   imports: [FormField],
   templateUrl: './player-settings.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './player-settings.css',
 })
 export class PlayerSettings implements OnInit {
-
   private playerService = inject(PlayerService);
   private chatlogService = inject(ChatlogService);
   private toastService = inject(ToastService);
@@ -62,34 +62,33 @@ export class PlayerSettings implements OnInit {
     storyline: '',
     websockets: true,
     debuglog: Logger.getLogLevel() as LogLevel,
-  })
+  });
 
   playerForm = form(this.playerModel);
 
   familyModel = signal<FamilyData>({
     toname: '',
-    description: ''
-  })
+    description: '',
+  });
 
-  familyForm = form(this.familyModel)
+  familyForm = form(this.familyModel);
 
   passwordModel = signal<PasswordData>({
     oldpassword: '',
     password: '',
     password2: '',
-  })
+  });
 
-  resetpasswordForm = form(this.passwordModel)
+  resetpasswordForm = form(this.passwordModel);
 
   ngOnInit() {
-    this.playerService.getPlayer()
-      .subscribe({
-          next: (result: any) => { // on success
-            this.player.set(result as Player);
-            this.resetForm(result);
-          }
-        }
-      );
+    this.playerService.getPlayer().subscribe({
+      next: (result: any) => {
+        // on success
+        this.player.set(result as Player);
+        this.resetForm(result);
+      },
+    });
   }
 
   resetForm(player: Player) {
@@ -111,7 +110,7 @@ export class PlayerSettings implements OnInit {
   setFamilyForm(family: Family) {
     this.familyModel.set({
       toname: family.toname,
-      description: family.description
+      description: family.description,
     });
   }
 
@@ -124,11 +123,11 @@ export class PlayerSettings implements OnInit {
       this.chatlogService.disableWebsockets();
     }
     this.playerService.updatePlayer(newPlayer).subscribe({
-        next: (result: any) => { // on success
-          this.toastService.showMessage("Settings successfully updated.", "Updated...");
-        }
-      }
-    );
+      next: (result: any) => {
+        // on success
+        this.toastService.showMessage('Settings successfully updated.', 'Updated...');
+      },
+    });
   }
 
   darkmode() {
@@ -185,15 +184,16 @@ export class PlayerSettings implements OnInit {
     const oldpassword = formModel.oldpassword as string;
     const password = formModel.password as string;
     const password2 = formModel.password2 as string;
-    this.playerService.resetPassword(this.player().name, oldpassword, password, password2).subscribe((result: any) => {
-      this.toastService.showMessage("Password reset.", "Reset...");
-    })
-    ;
+    this.playerService
+      .resetPassword(this.player().name, oldpassword, password, password2)
+      .subscribe((result: any) => {
+        this.toastService.showMessage('Password reset.', 'Reset...');
+      });
     this.passwordModel.set({
       oldpassword: '',
       password: '',
       password2: '',
-    })
+    });
   }
 
   cancel() {
@@ -204,19 +204,17 @@ export class PlayerSettings implements OnInit {
     const game = this;
     if (confirm('Are you sure you want to delete this character? This cannot be undone.')) {
       // Delete it!
-      this.playerService.deleteCharacter().subscribe(
-        (result: any) => { // on success
-          if (window.location !== window.parent.location) {
-            window.parent.location.href = '/index.html?logout=true';
-          }
-          window.location.href = '/index.html?logout=true';
+      this.playerService.deleteCharacter().subscribe((result: any) => {
+        // on success
+        if (window.location !== window.parent.location) {
+          window.parent.location.href = '/index.html?logout=true';
         }
-      );
+        window.location.href = '/index.html?logout=true';
+      });
     }
   }
 
-  private getFamily(toname: string):
-    Family | null {
+  private getFamily(toname: string): Family | null {
     const found: Family[] = this.player().familyvalues.filter((fam) => fam.toname === toname);
     if (found.length === 0) {
       return null;
@@ -225,38 +223,34 @@ export class PlayerSettings implements OnInit {
   }
 
   delete(family: Family) {
-    this.playerService.deleteFamily(family).subscribe(
-      (result: any) => { // on success
-        this.player.update(player => {
-            const index = player.familyvalues.indexOf(family, 0);
-            if (index > -1) {
-              player.familyvalues.splice(index, 1);
-            }
-            return player;
-          }
-        )
-        this.toastService.showMessage("Family entry successfully deleted.", "Deleted...");
-      }
-    );
+    this.playerService.deleteFamily(family).subscribe((result: any) => {
+      // on success
+      this.player.update((player) => {
+        const index = player.familyvalues.indexOf(family, 0);
+        if (index > -1) {
+          player.familyvalues.splice(index, 1);
+        }
+        return player;
+      });
+      this.toastService.showMessage('Family entry successfully deleted.', 'Deleted...');
+    });
   }
 
   add(family: Family) {
-    this.playerService.updateFamily(family).subscribe(
-      (result: any) => { // on success
-        this.player.update(player => {
-          player.familyvalues.push(family);
-          return player;
-        });
-        this.toastService.showMessage("Family entry successfully added.", "Added...");
-      }
-    );
+    this.playerService.updateFamily(family).subscribe((result: any) => {
+      // on success
+      this.player.update((player) => {
+        player.familyvalues.push(family);
+        return player;
+      });
+      this.toastService.showMessage('Family entry successfully added.', 'Added...');
+    });
   }
 
   update(family: Family) {
     this.playerService.updateFamily(family).subscribe((result: any) => {
-        this.toastService.showMessage("Family entry successfully updated.", "Updated...");
-      }
-    );
+      this.toastService.showMessage('Family entry successfully updated.', 'Updated...');
+    });
   }
 
   public getAllPossibleFamilyValues(): string[] {
@@ -265,10 +259,9 @@ export class PlayerSettings implements OnInit {
 
   getDarkmodeLabel(): string {
     if (this.themeService.isDarkThemeActive()) {
-      return "Turn darkmode off";
+      return 'Turn darkmode off';
     } else {
-      return "Turn darkmode on";
+      return 'Turn darkmode on';
     }
   }
-
 }

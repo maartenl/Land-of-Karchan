@@ -1,8 +1,8 @@
-import {Component, inject, input, Input, signal} from '@angular/core';
-import {Mail} from '../mail.model';
-import {form, FormField} from '@angular/forms/signals';
-import {PlayerService} from '../../player.service';
-import {ToastService} from '../../toast.service';
+import { Component, inject, input, Input, signal, ChangeDetectionStrategy } from '@angular/core';
+import { Mail } from '../mail.model';
+import { form, FormField } from '@angular/forms/signals';
+import { PlayerService } from '../../player.service';
+import { ToastService } from '../../toast.service';
 
 export interface MailData {
   toname: string;
@@ -14,14 +14,14 @@ export interface MailData {
   selector: 'app-compose-mail',
   imports: [FormField],
   templateUrl: './compose-mail.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './compose-mail.css',
 })
 export class ComposeMail {
-
   private playerService = inject(PlayerService);
   private toastService = inject(ToastService);
 
-  mailModel = signal<MailData>({toname: '', subject: '', body: ''})
+  mailModel = signal<MailData>({ toname: '', subject: '', body: '' });
 
   mailForm = form(this.mailModel);
 
@@ -35,7 +35,14 @@ export class ComposeMail {
     this.mailModel.set({
       toname: mail.name,
       subject: 'Re: ' + mail.subject,
-      body: '\n\n<p>On ' + this.getFullWhen(mail) + ' ' + mail.name + ' wrote:</p><hr/>\n' + mail.body + '\n<hr/>'
+      body:
+        '\n\n<p>On ' +
+        this.getFullWhen(mail) +
+        ' ' +
+        mail.name +
+        ' wrote:</p><hr/>\n' +
+        mail.body +
+        '\n<hr/>',
     });
   }
 
@@ -51,24 +58,26 @@ export class ComposeMail {
     event.preventDefault();
     const newMail: Mail = this.prepareSaveMail();
     this.playerService.sendMail(newMail).subscribe({
-        next: (result: any) => { // on success
-          this.resetForm();
-          this.toastService.showMessage("New mail sent.", "Success...");
-        },
-        error: (err: any) => { // error
-          // console.log('error', err);
-        },
-        complete: () => { // on completion
-        }
-      }
-    );
+      next: (result: any) => {
+        // on success
+        this.resetForm();
+        this.toastService.showMessage('New mail sent.', 'Success...');
+      },
+      error: (err: any) => {
+        // error
+        // console.log('error', err);
+      },
+      complete: () => {
+        // on completion
+      },
+    });
   }
 
   resetForm() {
     this.mailModel.set({
       toname: '',
       subject: '',
-      body: ''
+      body: '',
     });
   }
 
@@ -87,5 +96,4 @@ export class ComposeMail {
   public cancel(): void {
     this.resetForm();
   }
-
 }

@@ -1,20 +1,28 @@
-import {Component, inject, OnInit, signal, viewChild} from '@angular/core';
-import {PlayerService} from '../../player.service';
-import {Mail} from '../mail.model';
-import {ShowMail} from '../show-mail/show-mail';
-import {DatePipe, NgClass} from '@angular/common';
-import {Logger} from '../../consolelog.service';
-import {MailService} from '../../mail.service';
+import {
+  Component,
+  inject,
+  OnInit,
+  signal,
+  viewChild,
+  ChangeDetectionStrategy,
+} from '@angular/core';
+import { PlayerService } from '../../player.service';
+import { Mail } from '../mail.model';
+import { ShowMail } from '../show-mail/show-mail';
+import { DatePipe, NgClass } from '@angular/common';
+import { Logger } from '../../consolelog.service';
+import { MailService } from '../../mail.service';
 
 @Component({
   selector: 'app-sent-mail',
   imports: [ShowMail, DatePipe, NgClass],
   templateUrl: './sent-mail.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './sent-mail.css',
 })
 export class SentMail implements OnInit {
   private playerService: PlayerService = inject(PlayerService);
-  private mailService: MailService = inject(MailService)
+  private mailService: MailService = inject(MailService);
 
   showMail = viewChild(ShowMail);
 
@@ -29,22 +37,20 @@ export class SentMail implements OnInit {
     }
     // retrieve the next page of mails starting from the last mail in the array
     this.playerService.getSentMail(this.getMailList().getNumberOfMails()).subscribe({
-        next: (result: Mail[]) => { // on success
-          if (result !== undefined && result.length !== 0) {
-            result.forEach(value => {
-                if (value.whensent !== null) {
-                  value.whensent = value.whensent.replace('[UTC]', '')
-                }
-              }
-            );
-            this.getMailList().addAll(result);
-            this.updateMails()
-          }
+      next: (result: Mail[]) => {
+        // on success
+        if (result !== undefined && result.length !== 0) {
+          result.forEach((value) => {
+            if (value.whensent !== null) {
+              value.whensent = value.whensent.replace('[UTC]', '');
+            }
+          });
+          this.getMailList().addAll(result);
+          this.updateMails();
         }
-      }
-    );
+      },
+    });
   }
-
 
   public setMail(mail: Mail): void {
     this.mail.set(mail);
@@ -71,26 +77,25 @@ export class SentMail implements OnInit {
     }
     // retrieve the next page of mails starting from the last mail in the array
     this.playerService.getSentMail(this.getMailList().getNumberOfMails()).subscribe({
-        next: (result: Mail[]) => { // on success
-          if (result !== undefined && result.length !== 0) {
-            result.forEach(value => {
-                if (value.whensent !== null) {
-                  value.whensent = value.whensent.replace('[UTC]', '')
-                }
-              }
-            );
-            this.getMailList().addAll(result);
-            this.updateMails()
-          }
+      next: (result: Mail[]) => {
+        // on success
+        if (result !== undefined && result.length !== 0) {
+          result.forEach((value) => {
+            if (value.whensent !== null) {
+              value.whensent = value.whensent.replace('[UTC]', '');
+            }
+          });
+          this.getMailList().addAll(result);
+          this.updateMails();
         }
-      }
-    );
+      },
+    });
     return false;
   }
 
   private updateMails() {
     Logger.logEntering('updateMails');
-    var mails = this.getMailList().getMails()
+    var mails = this.getMailList().getMails();
     this.mails.set(mails);
     Logger.logExiting('updateMails');
   }

@@ -1,32 +1,32 @@
-import {Component, inject, OnInit, signal} from '@angular/core';
-import {Picture} from './picture.model';
-import {PlayerService} from '../player.service';
-import {ToastService} from '../toast.service';
-import {form, FormField} from '@angular/forms/signals';
-import {DatePipe} from '@angular/common';
+import { Component, inject, OnInit, signal, ChangeDetectionStrategy } from '@angular/core';
+import { Picture } from './picture.model';
+import { PlayerService } from '../player.service';
+import { ToastService } from '../toast.service';
+import { form, FormField } from '@angular/forms/signals';
+import { DatePipe } from '@angular/common';
 
 @Component({
   selector: 'app-pictures',
   imports: [DatePipe, FormField],
   templateUrl: './pictures.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './pictures.css',
 })
 export class Pictures implements OnInit {
-
-  private playerService = inject(PlayerService)
-  private toastService = inject(ToastService)
+  private playerService = inject(PlayerService);
+  private toastService = inject(ToastService);
 
   pictures = signal(new Array<Picture>(0));
 
   picture = signal<Picture>({
-    content: "",
-    createDate: "",
+    content: '',
+    createDate: '',
     id: 0,
     length: 0,
-    mimeType: "",
-    owner: "",
-    url: ""
-  })
+    mimeType: '',
+    owner: '',
+    url: '',
+  });
 
   player = signal('');
 
@@ -36,17 +36,17 @@ export class Pictures implements OnInit {
     this.player.set(this.playerService.getName());
     // retrieve all pictures
     this.playerService.getPictures().subscribe({
-      next:
-        (result: Picture[]) => { // on success
-          if (result !== undefined && result.length !== 0) {
-            result.forEach(value => {
-              if (value.createDate !== null) {
-                value.createDate = value.createDate.replace('[UTC]', '');
-              }
-            });
-            this.pictures.set(result);
-          }
+      next: (result: Picture[]) => {
+        // on success
+        if (result !== undefined && result.length !== 0) {
+          result.forEach((value) => {
+            if (value.createDate !== null) {
+              value.createDate = value.createDate.replace('[UTC]', '');
+            }
+          });
+          this.pictures.set(result);
         }
+      },
     });
   }
 
@@ -57,26 +57,26 @@ export class Pictures implements OnInit {
     this.playerService.createPicture(newPicture).subscribe({
       complete: () => {
         this.ngOnInit();
-        this.toastService.showMessage("Picture successfully added.", "Added...");
-      }
+        this.toastService.showMessage('Picture successfully added.', 'Added...');
+      },
     });
   }
 
   setPicture(picture: Picture) {
     this.playerService.getPicture(picture.id).subscribe({
-      next:
-        (result: Picture) => { // on success
-          this.picture.set(result);
-        }
+      next: (result: Picture) => {
+        // on success
+        this.picture.set(result);
+      },
     });
   }
 
   deletePicture(picture: Picture) {
     this.playerService.deletePicture(picture).subscribe({
-      next:
-        (result: any) => { // on success
-          this.pictures.update(pictures => pictures.filter(pic => pic.id !== picture.id));
-        }
+      next: (result: any) => {
+        // on success
+        this.pictures.update((pictures) => pictures.filter((pic) => pic.id !== picture.id));
+      },
     });
   }
 
@@ -94,7 +94,7 @@ export class Pictures implements OnInit {
             return;
           }
 
-          this.picture.update(picture => {
+          this.picture.update((picture) => {
             picture.mimeType = content.substring(5).split(';')[0];
             picture.content = content.split(',')[1];
             return picture;

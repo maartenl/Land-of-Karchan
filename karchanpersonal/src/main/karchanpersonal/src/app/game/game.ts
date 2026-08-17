@@ -1,37 +1,39 @@
-import {Component, inject, OnInit} from '@angular/core';
-import {RouterLink} from '@angular/router';
-import {PlayerService} from '../player.service';
-import {ToastService} from '../toast.service';
-import {HasNewMail} from './newmail.model';
-import {ChristmasUtils} from '../christmas.utils';
+import { Component, inject, OnInit, ChangeDetectionStrategy } from '@angular/core';
+import { RouterLink } from '@angular/router';
+import { PlayerService } from '../player.service';
+import { ToastService } from '../toast.service';
+import { HasNewMail } from './newmail.model';
+import { ChristmasUtils } from '../christmas.utils';
 
 @Component({
   selector: 'app-game',
   imports: [RouterLink],
   templateUrl: './game.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './game.css',
 })
 export class Game implements OnInit {
-  private playerService: PlayerService = inject(PlayerService)
-  private toastService: ToastService = inject(ToastService)
+  private playerService: PlayerService = inject(PlayerService);
+  private toastService: ToastService = inject(ToastService);
 
   hasNewMail: boolean = false;
 
   error = false;
 
   ngOnInit() {
-    this.playerService.hasNewMail()
-      .subscribe({
-        next: (result: HasNewMail) => { // on success
-          this.hasNewMail = result.hasMail;
-          if (this.hasNewMail) {
-            this.toastService.showMessage("You have new mail.","Message");
-          }
-        },
-        error: (err: any) => { // error
-          this.error = true;
+    this.playerService.hasNewMail().subscribe({
+      next: (result: HasNewMail) => {
+        // on success
+        this.hasNewMail = result.hasMail;
+        if (this.hasNewMail) {
+          this.toastService.showMessage('You have new mail.', 'Message');
         }
-      });
+      },
+      error: (err: any) => {
+        // error
+        this.error = true;
+      },
+    });
   }
 
   public isLoggedIn(): boolean {

@@ -1,29 +1,34 @@
-import {Component, inject, OnInit, signal, viewChild} from '@angular/core';
-import {ComposeMail} from '../compose-mail/compose-mail';
-import {Mail, MailList} from '../mail.model';
-import {PlayerService} from '../../player.service';
-import {ToastService} from '../../toast.service';
-import {ShowMail} from '../show-mail/show-mail';
-import {DatePipe, NgClass} from '@angular/common';
-import {Logger} from '../../consolelog.service';
-import {MailService} from '../../mail.service';
+import {
+  Component,
+  inject,
+  OnInit,
+  signal,
+  viewChild,
+  ChangeDetectionStrategy,
+} from '@angular/core';
+import { ComposeMail } from '../compose-mail/compose-mail';
+import { Mail, MailList } from '../mail.model';
+import { PlayerService } from '../../player.service';
+import { ToastService } from '../../toast.service';
+import { ShowMail } from '../show-mail/show-mail';
+import { DatePipe, NgClass } from '@angular/common';
+import { Logger } from '../../consolelog.service';
+import { MailService } from '../../mail.service';
 
 @Component({
   selector: 'app-inbox-mail',
-  imports: [
-    ComposeMail, ShowMail, DatePipe, NgClass
-  ],
+  imports: [ComposeMail, ShowMail, DatePipe, NgClass],
   templateUrl: './inbox-mail.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './inbox-mail.css',
 })
 export class InboxMail implements OnInit {
-
   composeMail = viewChild.required(ComposeMail);
   showMail = viewChild.required(ShowMail);
 
-  private playerService: PlayerService = inject(PlayerService)
-  private toastService: ToastService = inject(ToastService)
-  private mailService: MailService = inject(MailService)
+  private playerService: PlayerService = inject(PlayerService);
+  private toastService: ToastService = inject(ToastService);
+  private mailService: MailService = inject(MailService);
 
   mails = signal(new Array<Mail>());
 
@@ -36,25 +41,26 @@ export class InboxMail implements OnInit {
     }
     // retrieve the next page of mails starting from the last mail in the array
     this.playerService.getMail(0).subscribe({
-        next: (result: Mail[]) => { // on success
-          if (result !== undefined && result.length !== 0) {
-            result.forEach(value => {
-                if (value.whensent !== null) {
-                  value.whensent = value.whensent.replace('[UTC]', '')
-                }
-              }
-            );
-            this.getMailList().addAll(result);
-            this.updateMails();
-          }
-        },
-        error: (err: any) => { // error
-          // console.log('error', err);
-        },
-        complete: () => { // on completion
+      next: (result: Mail[]) => {
+        // on success
+        if (result !== undefined && result.length !== 0) {
+          result.forEach((value) => {
+            if (value.whensent !== null) {
+              value.whensent = value.whensent.replace('[UTC]', '');
+            }
+          });
+          this.getMailList().addAll(result);
+          this.updateMails();
         }
-      }
-    );
+      },
+      error: (err: any) => {
+        // error
+        // console.log('error', err);
+      },
+      complete: () => {
+        // on completion
+      },
+    });
   }
 
   replyMail(mail: Mail) {
@@ -76,23 +82,27 @@ export class InboxMail implements OnInit {
 
   public deleteMail(mail: Mail): boolean {
     this.playerService.deleteMail(mail).subscribe({
-        next: (result: any) => { // on success
-          this.getMailList().delete(mail);
-          this.updateMails();
-          this.toastService.showMessage("Mail deleted.", "Deleted...");
-        },
-        error: (err: any) => { // error
-          // console.log('error', err);
-        },
-        complete: () => { // on completion
-        }
-      }
-    );
+      next: (result: any) => {
+        // on success
+        this.getMailList().delete(mail);
+        this.updateMails();
+        this.toastService.showMessage('Mail deleted.', 'Deleted...');
+      },
+      error: (err: any) => {
+        // error
+        // console.log('error', err);
+      },
+      complete: () => {
+        // on completion
+      },
+    });
     return false;
   }
 
   public deleteSelectedMails(): boolean {
-    this.getMailList().getSelectedMails().forEach((mail) => this.deleteMail(mail));
+    this.getMailList()
+      .getSelectedMails()
+      .forEach((mail) => this.deleteMail(mail));
     return false;
   }
 
@@ -127,31 +137,32 @@ export class InboxMail implements OnInit {
     }
     // retrieve the next page of mails starting from the last mail in the array
     this.playerService.getMail(this.getMailList().getNumberOfMails()).subscribe({
-        next: (result: Mail[]) => { // on success
-          if (result !== undefined && result.length !== 0) {
-            result.forEach(value => {
-                if (value.whensent !== null) {
-                  value.whensent = value.whensent.replace('[UTC]', '')
-                }
-              }
-            );
-            this.getMailList().addAll(result);
-            this.updateMails();
-          }
-        },
-        error: (err: any) => { // error
-          // console.log('error', err);
-        },
-        complete: () => { // on completion
+      next: (result: Mail[]) => {
+        // on success
+        if (result !== undefined && result.length !== 0) {
+          result.forEach((value) => {
+            if (value.whensent !== null) {
+              value.whensent = value.whensent.replace('[UTC]', '');
+            }
+          });
+          this.getMailList().addAll(result);
+          this.updateMails();
         }
-      }
-    );
+      },
+      error: (err: any) => {
+        // error
+        // console.log('error', err);
+      },
+      complete: () => {
+        // on completion
+      },
+    });
     return false;
   }
 
   private updateMails() {
     Logger.logEntering('updateMails');
-    var mails = this.getMailList().getMails()
+    var mails = this.getMailList().getMails();
     this.mails.set(mails);
     Logger.logExiting('updateMails');
   }
@@ -159,5 +170,4 @@ export class InboxMail implements OnInit {
   protected getMailList() {
     return this.mailService.inboxList;
   }
-
 }

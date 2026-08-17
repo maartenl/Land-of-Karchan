@@ -1,43 +1,51 @@
-import {Component, inject, OnInit, signal, viewChild} from '@angular/core';
-import {Router} from '@angular/router';
-import {ChatlogService} from '../chatlog.service';
-import {PlayerService} from '../player.service';
-import {GameService} from '../game.service';
-import {AngularEditorConfig, AngularEditorModule} from '@kolkov/angular-editor';
-import {Logonmessages} from './logonmessages/logonmessages';
-import {Display, Item, Person, WhoPerson} from './display.model';
-import {Player} from '../player-settings/player.model';
-import {Logger, LogLevel} from '../consolelog.service';
-import {Log} from './log.model';
-import {form, FormField} from '@angular/forms/signals';
-import {LanguageUtils} from '../language.utils';
-import {StringUtils} from '../string.utils';
-import {Chatlog} from './chatlog/chatlog';
-import {RichTextEditor} from '../rich-text-editor/rich-text-editor';
+import {
+  Component,
+  inject,
+  OnInit,
+  signal,
+  viewChild,
+  ChangeDetectionStrategy,
+} from '@angular/core';
+import { Router } from '@angular/router';
+import { ChatlogService } from '../chatlog.service';
+import { PlayerService } from '../player.service';
+import { GameService } from '../game.service';
+import { AngularEditorConfig, AngularEditorModule } from '@kolkov/angular-editor';
+import { Logonmessages } from './logonmessages/logonmessages';
+import { Display, Item, Person, WhoPerson } from './display.model';
+import { Player } from '../player-settings/player.model';
+import { Logger, LogLevel } from '../consolelog.service';
+import { Log } from './log.model';
+import { form, FormField } from '@angular/forms/signals';
+import { LanguageUtils } from '../language.utils';
+import { StringUtils } from '../string.utils';
+import { Chatlog } from './chatlog/chatlog';
+import { RichTextEditor } from '../rich-text-editor/rich-text-editor';
 
 export interface CommandData {
-  command: string,
-  htmlContent: string,
+  command: string;
+  htmlContent: string;
 }
 
 export interface KarchanData {
-  name: string,
-  sleep: boolean,
-  bigEntry: boolean,
-  editor: string,
+  name: string;
+  sleep: boolean;
+  bigEntry: boolean;
+  editor: string;
 }
 
 @Component({
   selector: 'app-play',
   imports: [AngularEditorModule, FormField, Chatlog, Logonmessages, RichTextEditor],
   templateUrl: './play.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './play.css',
 })
 export class Play implements OnInit {
-  private gameService = inject(GameService)
-  private playerService = inject(PlayerService)
-  private chatlogService = inject(ChatlogService)
-  private router = inject(Router)
+  private gameService = inject(GameService);
+  private playerService = inject(PlayerService);
+  private chatlogService = inject(ChatlogService);
+  private router = inject(Router);
 
   config: AngularEditorConfig = {
     editable: true,
@@ -58,26 +66,26 @@ export class Play implements OnInit {
 
   karchan = signal<KarchanData>({
     bigEntry: false,
-    editor: "",
-    name: "",
-    sleep: false
+    editor: '',
+    name: '',
+    sleep: false,
   });
 
   player: Player | null = null;
 
   commandData = signal<CommandData>({
-    command: "",
-    htmlContent: ""
+    command: '',
+    htmlContent: '',
   });
 
   commandForm = form(this.commandData);
 
-  previousCommandData: CommandData = {command: "", htmlContent: ""};
+  previousCommandData: CommandData = { command: '', htmlContent: '' };
 
   createForms() {
     this.commandData.set({
-      command: "",
-      htmlContent: ""
+      command: '',
+      htmlContent: '',
     });
   }
 
@@ -96,77 +104,83 @@ export class Play implements OnInit {
       this.lookAround();
       return;
     }
-    Logger.log("Game starting ...", LogLevel.INFO);
-    this.playerService.getPlayer()
-      .subscribe({
-          next: (result: any) => { // on success
-            this.player = result;
-            if (this.player?.websockets) {
-              this.chatlogService.enableWebsockets();
-            } else {
-              this.chatlogService.disableWebsockets();
-            }
-            this.gameService.enterGame()
-              .subscribe({
-                  next: (result: Log) => { // on success
-                    this.chatlogService.setLog(new Log(result));
-                    this.gameService.setIsGaming(true);
-                    this.playInit();
-                    this.chatlogService.open(this.karchan.name);
-                    this.lookAround();
-                    Logger.log("Game started...", LogLevel.INFO);
-                  },
-                  error: (err: any) => {
-                    Logger.logError('error', err);
-                  },
-                  complete: () => { // on completion
-                  }
-                }
-              );
+    Logger.log('Game starting ...', LogLevel.INFO);
+    this.playerService.getPlayer().subscribe({
+      next: (result: any) => {
+        // on success
+        this.player = result;
+        if (this.player?.websockets) {
+          this.chatlogService.enableWebsockets();
+        } else {
+          this.chatlogService.disableWebsockets();
+        }
+        this.gameService.enterGame().subscribe({
+          next: (result: Log) => {
+            // on success
+            this.chatlogService.setLog(new Log(result));
+            this.gameService.setIsGaming(true);
+            this.playInit();
+            this.chatlogService.open(this.karchan.name);
+            this.lookAround();
+            Logger.log('Game started...', LogLevel.INFO);
           },
           error: (err: any) => {
             Logger.logError('error', err);
           },
-          complete: () => { // on completion
-          }
-        }
-      );
+          complete: () => {
+            // on completion
+          },
+        });
+      },
+      error: (err: any) => {
+        Logger.logError('error', err);
+      },
+      complete: () => {
+        // on completion
+      },
+    });
   }
 
   public who(): void {
-    this.gameService.getWho()
-      .subscribe({
-          next: (data: any) => { // on success
-            if (data !== undefined) {
-              let users: Array<WhoPerson> = data.map((x: any) => new WhoPerson(x));
-              const display = new Display()
-              display.title = 'Who';
-              display.image = '';
-              if (users.length === 0) {
-                display.body = 'There are no people online at the moment.';
-              } else {
-                display.body = 'There are ' + users.length + ' players.<br/><br/><br/>';
-                display.body += '<ul>';
-                users.forEach(user => {
-                  display.body += '<li>' + user.name + ', ' + user.title + (user.area === 'Land of Karchan' ? '' : ' in ' + user.area);
-                  display.body += (user.sleep !== '' ? ', sleeping ' : ' ');
-                  display.body += user.afk;
-                  display.body += user.idleTime;
-                  display.body += " (logged on " + user.min + " minutes and " + user.sec + " seconds ago.)";
-                  display.body += '</li>\r\n';
-                });
-                display.body += '</ul>\r\n';
-              }
-              this.writeStuff(display);
-            }
-          },
-          error: (err: any) => {
-            Logger.logError('error', err);
-          },
-          complete: () => { // on completion
+    this.gameService.getWho().subscribe({
+      next: (data: any) => {
+        // on success
+        if (data !== undefined) {
+          let users: Array<WhoPerson> = data.map((x: any) => new WhoPerson(x));
+          const display = new Display();
+          display.title = 'Who';
+          display.image = '';
+          if (users.length === 0) {
+            display.body = 'There are no people online at the moment.';
+          } else {
+            display.body = 'There are ' + users.length + ' players.<br/><br/><br/>';
+            display.body += '<ul>';
+            users.forEach((user) => {
+              display.body +=
+                '<li>' +
+                user.name +
+                ', ' +
+                user.title +
+                (user.area === 'Land of Karchan' ? '' : ' in ' + user.area);
+              display.body += user.sleep !== '' ? ', sleeping ' : ' ';
+              display.body += user.afk;
+              display.body += user.idleTime;
+              display.body +=
+                ' (logged on ' + user.min + ' minutes and ' + user.sec + ' seconds ago.)';
+              display.body += '</li>\r\n';
+            });
+            display.body += '</ul>\r\n';
           }
+          this.writeStuff(display);
         }
-      );
+      },
+      error: (err: any) => {
+        Logger.logError('error', err);
+      },
+      complete: () => {
+        // on completion
+      },
+    });
   }
 
   /**
@@ -176,7 +190,7 @@ export class Play implements OnInit {
   public playInit(): void {
     Logger.log('playInit');
     const name = this.retrieveName();
-    this.karchan.update(karchan => {
+    this.karchan.update((karchan) => {
       karchan.name = name;
       karchan.sleep = false;
       return karchan;
@@ -211,23 +225,23 @@ export class Play implements OnInit {
 
   public quit(): boolean {
     Logger.log('quit', LogLevel.INFO);
-    this.gameService.quitGame()
-      .subscribe({
-          next: (result: any) => { // on success
-            this.gameService.setIsGaming(false);
-            if (this.chatlogService.isWebsocketsEnabled()) {
-              this.chatlogService.clear();
-              this.chatlogService.close();
-            }
-            this.router.navigate(['/']);
-          },
-          error: (err: any) => {
-            Logger.logError('error', err);
-          },
-          complete: () => { // on completion
-          }
+    this.gameService.quitGame().subscribe({
+      next: (result: any) => {
+        // on success
+        this.gameService.setIsGaming(false);
+        if (this.chatlogService.isWebsocketsEnabled()) {
+          this.chatlogService.clear();
+          this.chatlogService.close();
         }
-      );
+        this.router.navigate(['/']);
+      },
+      error: (err: any) => {
+        Logger.logError('error', err);
+      },
+      complete: () => {
+        // on completion
+      },
+    });
     return false;
   }
 
@@ -249,12 +263,13 @@ export class Play implements OnInit {
           if (htmlContent.startsWith('<p>')) {
             totalcommand = htmlContent.substring(3);
           } else {
-            totalcommand = htmlContent
+            totalcommand = htmlContent;
           }
         }
       } else {
         // a command was entered, perhaps with a big talk component
-        totalcommand = htmlContent === undefined || htmlContent === '' ? command : command + ' ' + htmlContent;
+        totalcommand =
+          htmlContent === undefined || htmlContent === '' ? command : command + ' ' + htmlContent;
       }
       Logger.log('play: bigtalk "' + totalcommand + '"');
       if (totalcommand === 'who') {
@@ -262,7 +277,7 @@ export class Play implements OnInit {
         this.createForms();
         return false;
       }
-      this.previousCommandData = {command: command, htmlContent: htmlContent};
+      this.previousCommandData = { command: command, htmlContent: htmlContent };
       this.processCall(totalcommand, true);
       return false;
     }
@@ -273,7 +288,7 @@ export class Play implements OnInit {
         this.createForms();
         return false;
       }
-      this.previousCommandData = {command: command, htmlContent: htmlContent};
+      this.previousCommandData = { command: command, htmlContent: htmlContent };
       this.processCall(command, true);
     }
     return false;
@@ -289,27 +304,33 @@ export class Play implements OnInit {
    * @param log if the logging should be refreshed.
    */
   public processCall(command: string, log: boolean) {
-    Logger.log("processCall command=" + command + " log=" + log);
+    Logger.log('processCall command=' + command + ' log=' + log);
     if (command === 'clear') {
       this.chatlogService.clear();
     }
-    this.gameService.processCommand(command, this.chatlogService.getOffset(), !this.chatlogService.isWebsocketsEnabled())
+    this.gameService
+      .processCommand(
+        command,
+        this.chatlogService.getOffset(),
+        !this.chatlogService.isWebsocketsEnabled(),
+      )
       .subscribe({
-          next: (result: Display) => { // on success
-            Logger.logObject(result);
-            this.writeStuff(result);
-            if (result.log !== undefined && result.log !== null) {
-              this.chatlogService.setLog(result.log);
-            }
-            this.createForms();
-          },
-          error: (err: any) => {
-            Logger.logError('error', err);
-          },
-          complete: () => { // on completion
+        next: (result: Display) => {
+          // on success
+          Logger.logObject(result);
+          this.writeStuff(result);
+          if (result.log !== undefined && result.log !== null) {
+            this.chatlogService.setLog(result.log);
           }
-        }
-      );
+          this.createForms();
+        },
+        error: (err: any) => {
+          Logger.logError('error', err);
+        },
+        complete: () => {
+          // on completion
+        },
+      });
   }
 
   public writeStuff(display: Display): void {
@@ -377,7 +398,10 @@ export class Play implements OnInit {
     Logger.log('lookAtItem ');
     Logger.logObject(item);
 
-    const adjectives = item.adjectives.replace(/,/g, ' ').split(" ").reduce((x, y) => x.trim() + ' ' + y.trim())
+    const adjectives = item.adjectives
+      .replace(/,/g, ' ')
+      .split(' ')
+      .reduce((x, y) => x.trim() + ' ' + y.trim());
     const description = adjectives + ' ' + item.name;
     this.processCall('look at ' + description, true);
     return false;
@@ -387,14 +411,14 @@ export class Play implements OnInit {
     Logger.log('toggleSleep');
     if (this.karchan().sleep) {
       // AWAKEN!!!
-      this.karchan.update(karchan => {
+      this.karchan.update((karchan) => {
         karchan.sleep = false;
         return karchan;
       });
       this.processCall('awaken', true);
     } else {
       // GO TO SLEEP!!
-      this.karchan.update(karchan => {
+      this.karchan.update((karchan) => {
         karchan.sleep = true;
         return karchan;
       });
@@ -405,7 +429,7 @@ export class Play implements OnInit {
 
   public toggleEntry(): boolean {
     Logger.log('toggleEntry');
-    this.karchan.update(karchan => {
+    this.karchan.update((karchan) => {
       karchan.bigEntry = !karchan.bigEntry;
       return karchan;
     });

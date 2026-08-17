@@ -1,19 +1,27 @@
-import {Component, inject, OnInit, signal, TemplateRef, ViewChild} from '@angular/core';
-import {Logonmessage} from './logonmessage.model';
-import {ModalDismissReasons, NgbModal} from '@ng-bootstrap/ng-bootstrap';
-import {GameService} from '../../game.service';
-import {Logger} from '../../consolelog.service';
+import {
+  Component,
+  inject,
+  OnInit,
+  signal,
+  TemplateRef,
+  ViewChild,
+  ChangeDetectionStrategy,
+} from '@angular/core';
+import { Logonmessage } from './logonmessage.model';
+import { ModalDismissReasons, NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { GameService } from '../../game.service';
+import { Logger } from '../../consolelog.service';
 
 @Component({
   selector: 'app-logonmessages',
   imports: [],
   templateUrl: './logonmessages.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './logonmessages.css',
 })
 export class Logonmessages implements OnInit {
-
-  private modalService = inject(NgbModal)
-  private gameService = inject(GameService)
+  private modalService = inject(NgbModal);
+  private gameService = inject(GameService);
 
   @ViewChild('content') private content: TemplateRef<any> | null = null;
 
@@ -22,11 +30,9 @@ export class Logonmessages implements OnInit {
   logonmessage = signal(new Logonmessage());
 
   ngOnInit(): void {
-    this.gameService.getLogonmessage()
-      .subscribe({
-          next: (result) => this.logonmessage.set(new Logonmessage(result))
-        }
-      );
+    this.gameService.getLogonmessage().subscribe({
+      next: (result) => this.logonmessage.set(new Logonmessage(result)),
+    });
   }
 
   close(message: string) {
@@ -40,11 +46,14 @@ export class Logonmessages implements OnInit {
   }
 
   open() {
-    this.modalService.open(this.content, {ariaLabelledBy: 'modal-basic-title'}).result.then((result) => {
-      this.closeResult = `Closed with: ${result}`;
-    }, (reason) => {
-      this.closeResult = `Dismissed ${this.getDismissReason(reason)}`;
-    });
+    this.modalService.open(this.content, { ariaLabelledBy: 'modal-basic-title' }).result.then(
+      (result) => {
+        this.closeResult = `Closed with: ${result}`;
+      },
+      (reason) => {
+        this.closeResult = `Dismissed ${this.getDismissReason(reason)}`;
+      },
+    );
   }
 
   private getDismissReason(reason: any): string {
@@ -58,8 +67,8 @@ export class Logonmessages implements OnInit {
   }
 
   getColour(): string {
-    const style = "chat-" + this.logonmessage().colour;
-    Logger.logEntering("getColour " + style);
+    const style = 'chat-' + this.logonmessage().colour;
+    Logger.logEntering('getColour ' + style);
     return style;
   }
 }
