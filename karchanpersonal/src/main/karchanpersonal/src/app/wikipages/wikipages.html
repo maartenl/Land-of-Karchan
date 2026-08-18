@@ -12,7 +12,7 @@
                    readonly>
           }
           @if (isNew()) {
-          <input type="text" class="form-control" id="title" [formField]="wikipageForm.title">
+            <input type="text" class="form-control" id="title" [formField]="wikipageForm.title">
           }
         </fieldset>
         <fieldset class="form-group">
@@ -43,10 +43,10 @@
             </fieldset>
           }
           @if (isNew()) {
-          <fieldset class="form-group form-check">
-            <input type="checkbox" class="form-check-input" id="administration" [formField]="wikipageForm.administration">
-            <label class="form-check-label" for="administration">Administration</label>
-          </fieldset>
+            <fieldset class="form-group form-check">
+              <input type="checkbox" class="form-check-input" id="administration" [formField]="wikipageForm.administration">
+              <label class="form-check-label" for="administration">Administration</label>
+            </fieldset>
           }
         }
         <fieldset class="form-group">
@@ -66,7 +66,7 @@
         </fieldset>
         <fieldset class="form-group">
           <label for="summary">Summary</label>
-          <textarea class="form-control" id="storyline" rows="13" [formField]="wikipageForm.summary"></textarea>
+          <textarea class="form-control" id="summary" rows="13" [formField]="wikipageForm.summary"></textarea>
         </fieldset>
         <fieldset class="form-group">
           <label for="content">Content</label>

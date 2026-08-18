@@ -1,5 +1,4 @@
 import {
-  AfterViewInit,
   Component,
   inject,
   OnInit,
@@ -86,13 +85,13 @@ export class Wikipages implements OnInit {
         this.isNew.set(false);
         this.wikipage.set(Object.assign({}, result));
         const wikipageModel: WikipageModel = {
-          administration: result.administration,
-          comment: result.comment,
-          content: result.content,
-          ordering: result.ordering,
+          administration: result.administration ?? false,
+          comment: result.comment ?? '',
+          content: result.content ?? '',
+          ordering: result.ordering ?? 0,
           parentTitle: result.parentTitle ?? '',
-          summary: result.summary,
-          title: result.title,
+          summary: result.summary ?? '',
+          title: result.title ?? '',
         };
         this.wikipageModel.set(wikipageModel);
       },
@@ -136,7 +135,7 @@ export class Wikipages implements OnInit {
     newWikipage.name = newWikipageModel.title;
     newWikipage.content = newWikipageModel.content;
     newWikipage.summary = newWikipageModel.summary;
-    newWikipage.parentTitle = newWikipageModel.parentTitle;
+    newWikipage.parentTitle = newWikipageModel.parentTitle == '' ? null : newWikipageModel.parentTitle;
     newWikipage.administration = newWikipageModel.administration;
     newWikipage.comment = newWikipageModel.comment;
     newWikipage.ordering = newWikipageModel.ordering;
